@@ -1,2 +1,2 @@
 # sign
-sign normalize programming language now stage is AltJS
+'sign' is desined sign normalizing programming language.
