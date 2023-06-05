@@ -1,0 +1,24 @@
+{
+  "name": "sign",
+  "version": "0.0.0",
+  "description": "Sign normalization programming language",
+  "main": "parser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnny-shaman/sign.git"
+  },
+  "keywords": [
+    "Transpiler",
+    "Algebraic",
+    "Functional"
+  ],
+  "author": "Noboru Okazaki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/johnny-shaman/sign/issues"
+  },
+  "homepage": "https://github.com/johnny-shaman/sign#readme"
+}
