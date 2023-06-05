@@ -1,2 +1,2 @@
 # sign
-'sign' is desined sign normalizing programming language.
+Sign normalize programming language.
