@@ -1,2 +1,2 @@
 # sign
-Sign normalize programming language.
+Sign canonicalization programming language.
