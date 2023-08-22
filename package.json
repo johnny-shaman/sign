@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/johnny-shaman/sign/issues"
   },
-  "homepage": "https://github.com/johnny-shaman/sign#readme"
+  "homepage": "https://github.com/johnny-shaman/sign#readme",
+  "dependencies": {
+    "pegjs": "^0.10.0"
+  }
 }
