@@ -1,7 +1,7 @@
 {
   "name": "sign",
   "version": "0.0.0",
-  "description": "Sign normalization programming language",
+  "description": "sign is a new functional programming language definition",
   "main": "parser.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,9 +11,10 @@
     "url": "git+https://github.com/johnny-shaman/sign.git"
   },
   "keywords": [
-    "Transpiler",
-    "Algebraic",
-    "Functional"
+    "functional",
+    "algebraic",
+    "language",
+    "parser"
   ],
   "author": "Noboru Okazaki",
   "license": "MIT",

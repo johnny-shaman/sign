@@ -1,0 +1,43 @@
+# example
+
+@ "basic"
+@ "./defined.sn"
+
+myFunc:name;[
+    '''This is a "''' name '''".''' `
+]\
+
+myFunc "Pen"
+
+mappedArray: _map_ (* 2) [1 2 3 4 5 6]
+
+foldedValue: _fold_ (+) [1 2 3 4 5 6]
+
+filteredArray: _filter_ (>= 3) [1 2 3 4 5 6]
+
+infixFunc: {
+    mappedArray: [1 2 3 4 5 6] _map_ (* 2)
+    foldedValue: [1 2 3 4 5 6] _fold_ (+)
+    filteredArray: [1 2 3 4 5 6] _filter_ (>= 3) 
+}
+
+myHex: {
+    0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+    "a" | "b" | "c" | "d" | "e" | "f" |
+    "A" | "B" | "C" | "D" | "E" | "F"
+}
+
+myIf: (
+    ?
+    (+ 4),
+    (* 2)
+)
+
+_expect_ ~[((* 2 + 4) 8) (= 20)]
+
+_expect_ (myIf _T_ 3) (= 7)
+_expect_ (myIf _F_ 3) (= 6)
+
+_expect_ (myFunc "Pen") (= [
+    '`This is a "Pen".`' `
+]\)
