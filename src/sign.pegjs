@@ -32,11 +32,11 @@ lambda = identifier+ ";" expression ;
 
 pair = expression "," expression ;
 
-list = "[" expression* "]" / [ pair ] / spread ;
+list = "[" expression* "]" / pair+ / spread ;
 
 spread = (integer / character) "~" (integer / character) ;
 
-dict = "{" [bind ("," / "\n")] "}" ;
+dict = "{" (bind ("," / "\n"))* "}" ;
 
 enum = "{" expression "/" expression "}"
 
@@ -50,11 +50,13 @@ character = "`" (any / hex) ;
 
 string = character+ / ("'`" any "`'") / ("\"" any "\"\n") ;
 
-integer = ["-"] digit+ ;
+integer = "-"* digit+ ;
 
-float = ["-"] digit+ "." digit+ ;
+float = "-"* digit+ "." digit+ ;
 
 hex = "0x" hex_digit+ ;
+
+branch = logical "?" pair ;
 
 logical = logical "^" logical_term / logical_term ;
 
@@ -101,5 +103,7 @@ hex_digit = digit / "A" / "B" / "C" / "D" / "E" / "F" / "a" / "b" / "c" / "d" / 
 letter = "A" / "B" / "C" / "D" / "E" / "F" / "G" / "H" / "I" / "J" / "K" / "L" / "M" / "N" / "O" / "P" / "Q" / "R" / "S" / "T" / "U" / "V" / "W" / "X" / "Y" / "Z" / "a" / "b" / "c" / "d" / "e" / "f" / "g" / "h" / "i" / "j" / "k" / "l" / "m" / "n" / "o" / "p" / "q" / "r" / "s" / "t" / "u" / "v" / "w" / "x" / "y" / "z" ;
 
 digit = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9" ;
+
+binary_operator = "," / "?" / "^" / "|" / "&" / "=" / "<" / ">" / "<=" / ">=" / "+" / "-" / "*" / "/" / "**" ;
 
 any = [ (?any Unicode character?) ] ;

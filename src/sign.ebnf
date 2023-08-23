@@ -57,6 +57,8 @@ float = ["-"] digit+ "." digit+ ;
 
 hex = "0x" hex_digit+ ;
 
+branch = logical "?" pair ;
+
 logical = logical "^" logical_term | logical_term ;
 
 logical_term = logical_term "|" logical_factor | logical_factor ;
