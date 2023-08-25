@@ -59,23 +59,23 @@ hex = "0x" hex_digit+ ;
 
 branch = logical "?" pair ;
 
-logical = logical "^" logical_term | logical_term ;
+logical = logical_term "^" logical | logical_term ;
 
-logical_term = logical_term "|" logical_factor | logical_factor ;
+logical_term = logical_factor "|" logical_term | logical_factor ;
 
-logical_factor = logical_factor "&" logical_unary | logical_unary ;
+logical_factor = logical_unary "&" logical_factor | logical_unary ;
 
-logical_unary = "!" logical_unary | "(" logical_expression ")" | compare | boolean ;
+logical_unary = "!" logical_unary | "(" logical ")" | compare | boolean ;
 
 compare = (arithmetic | character) ("=" | "!=" | "<" | "<=" | ">" | ">=") (arithmetic | character) | (string | list) ("=" | "!=") (string | list) ;
 
-arithmetic = (arithmetic {("+" | "-") arithmetic}) | arithmetic_term ;
+arithmetic = (arithmetic_term {("+" | "-") arithmetic}) | arithmetic_term ;
 
-arithmetic_term = arithmetic_term {("*" | "%" | "/") arithmetic_term} | arithmetic_factor ;
+arithmetic_term = arithmetic_factor {("*" | "%" | "/") arithmetic_term} | arithmetic_factor ;
 
-arithmetic_factor = arithmetic_factor {"**" arithmetic_factor} | arithmetic_base ;
+arithmetic_factor = arithmetic_base {"**" arithmetic_factor} | arithmetic_base ;
 
-arithmetic_base = number | "(" arithmetic ")" ;
+arithmetic_base = integer | float | "(" arithmetic ")" ;
 
 binary_operator_partial = binary_operator value | value binary_operator ;
 
@@ -91,7 +91,7 @@ arguments = argument { argument } ;
 
 argument = expression | "_" ;
 
-identifier = letter { letter | digit } ;
+identifier = (letter { letter | digit }) ;
 
 export = "#" identifier ;
 
@@ -105,4 +105,10 @@ letter = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" |
 
 digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
-any = { (?any Unicode character?) } ;
+binary_operator = "," | "'" | "?" | "^" | "|" | "&" | "=" | "<" | ">" | "<=" | ">=" | "+" | "-" | "*" | "/" | "%" | "**" ;
+
+other = "#" | "@" | "$" | "." | ":" | ";" | "\"" | "(" | ")" | "{" | "}" | "[" | "]" | "\\" | "`" | "~" | "_" ;
+
+value = boolean | integer | float | identifier | reserved_identifier ;
+
+any = letter | digit | binary_operator | other ;
