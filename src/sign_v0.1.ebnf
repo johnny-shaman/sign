@@ -1,12 +1,13 @@
-Expression = Evaluate | Define | Nullish | Pair ;
+Expression = Pair | Evaluate | Define ;
 
-Define = Constant  | List | Map | Enum | Lambda | Literal;
+Pair = ( Evaluate | Define ) { ","  ( Evaluate | Define ) } ;
 
+Define = Constant  | List | Map | Enum | Lambda | Literal | Yet ;
 Constant = Identifier ":" Expression ;
-
-Pair = 
-
-Lambda = ((Identifier+ | "_") ";" Expression) | Operator | PartialAplly ;
+List = Pair+ | "[" Expression* "]" ;
+Map = "{" constant { ( "\n" | "," ) constant } "}" ;
+Enum = "{" Expression { "|" Expression } "}"
+Lambda = (Argument+ ";" Expression) | Operator | PartialAplly ;
 
 Operator = UnaryOP | BinaryOp ;
 UnaryOP = "!" ;
@@ -15,9 +16,9 @@ CmpOp = "=" | "!=" | "<" | ">" | "<=" | ">=" ;
 AddOp = "+" | "-" ;
 MulOp = "*" | "/" | "%" ;
 
-arguments = Identifier+ ;
+Argument = Identifier+ | Yet+;
 
-PartialAplly = PartialLeft | PartialRight | ((Identifier | "(" Lambda ")") (Expression* Nullish+ (Expression* | Nullish*)));
+PartialAplly = PartialLeft | PartialRight | (( Identifier | "(" Lambda ")" ) ( Expression* Nullish+ ( Expression* | Nullish* ))) ;
 
 PartialLeft = PLIf | PLXor | PLOr | PLAnd | PLCmp | PLAdd | PLMul | PLExp ;
 PLIf  = XOrExpr "?" ;
@@ -39,19 +40,18 @@ PRAdd = AddOp AdditiveExpr ;
 PRMul = MulOp MultiplicativeExpr ;
 PRExp = "**" ExponentialExpr ;
 
-Nullish = "_" ;
+Yet = "_" ;
 
-Evaluate ::= Decision ;
+Evaluate = Decision ;
 
-Decision ::= (XOrExpr PRIf) | (PLIf XOrExpr) | OrExpr
-XorExpr ::= (OrExpr PRXor) | (PLXor XOrExpr) | OrExpr
-OrExpr ::= (AndExpr PROr) | (PLOr AndExpr) | AndExpr
-AndExpr ::= (NotExpr PRAnd) | (PLAnd NotExpr) | AndExpr
-NotExpr ::= ("!" NotExpr) | ComparisonExpr | Boolean
-ComparisonExpr ::= (AdditiveExpr PRCmp) | (PLCmp AdditiveExpr)
-AdditiveExpr ::= (MultiplicativeExpr PRAdd) | (PLAdd MultiplicativeExpr)
-AdditiveExpr ::= MultiplicativeExpr { AddOp PartialLeftAddOp | PartialRightAddOp }
-MultiplicativeExpr ::= ExponentialExpr { MulOp PartialLeftMulOp | PartialRightMulOp }
+Decision = (XOrExpr PRIf) | (PLIf XOrExpr) | XOrExpr ;
+XorExpr = (OrExpr PRXor) | (PLXor XOrExpr) | OrExpr ;
+OrExpr = (AndExpr PROr) | (PLOr AndExpr) | AndExpr ;
+AndExpr = (NotExpr PRAnd) | (PLAnd NotExpr) | AndExpr ;
+NotExpr = ("!" NotExpr) | ComparisonExpr | Boolean ;
+ComparisonExpr = (AdditiveExpr PRCmp) | (PLCmp AdditiveExpr) | AdditiveExpr ;
+AdditiveExpr = (MultiplicativeExpr PRAdd) | (PLAdd AdditiveExpr) | MultiplicativeExpr ;
+MultiplicativeExpr ::= ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
 ExponentialExpr ::= PrimaryExpr { "**" PartialLeftExpOp | PartialRightExpOp }
 PrimaryExpr ::= Literal | Identifier | Tuple | FunctionCall | AnonymousFunction
 Tuple ::= "[" { Expression " " } "]" | "[" Expression "]" | Expression "," Expression
