@@ -1,6 +1,6 @@
 Expression = Pair | Evaluate | Define ;
 
-Pair = ( Evaluate | Define ) { ","  ( Evaluate | Define ) } ;
+Pair = ( Evaluate | Define ) { ","  ( Evaluate | Define | Pair ) } ;
 
 Define = Constant  | List | Map | Enum | Lambda | Literal | Yet | "(" Expression ")";
 Constant = Identifier ":" Expression ;
@@ -52,10 +52,8 @@ NotExpr = ( "!" NotExpr ) | ComparisonExpr | Boolean ;
 ComparisonExpr = ( AdditiveExpr PRCmp ) | ( PLCmp AdditiveExpr ) | AdditiveExpr ;
 AdditiveExpr = ( MultiplicativeExpr PRAdd ) | ( PLAdd AdditiveExpr ) | MultiplicativeExpr ;
 MultiplicativeExpr = ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
-ExponentialExpr = ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
-ExponentialExpr ::= PrimaryExpr { "**" PartialLeftExpOp | PartialRightExpOp }
+ExponentialExpr = ( Define PRExp ) | ( PLExp MultiplicativeExpr ) | Define ;
 PrimaryExpr ::= Literal | Identifier | Tuple | FunctionCall | AnonymousFunction
-Tuple ::= "[" { Expression " " } "]" | "[" Expression "]" | Expression "," Expression
 Literal ::= Number | String | Boolean | Character
 Identifier ::= [_a-zA-Z][_a-zA-Z0-9]*
 
