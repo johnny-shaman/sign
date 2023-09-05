@@ -1,0 +1,64 @@
+Expression = Compute | Define | Nullish ;
+
+Define = Constant | Pair | List | Map | Enum | Lambda | Literal;
+
+Lambda = ((Identifier+ | "_") ";" Expression) | Operator | PartialAplly ;
+
+Operator = UnaryOP | BinaryOp ;
+UnaryOP = "!" ;
+BinaryOp = "?" | "^" | "|" | "&" | CmpOp | AddOp | MulOp | "**" ;
+CmpOp = "=" | "!=" | "<" | ">" | "<=" | ">=" ;
+AddOp = "+" | "-" ;
+MulOp = "*" | "/" | "%" ;
+
+arguments = Identifier+ ;
+
+PartialAplly = PartialLeft | PartialRight | ((Identifier | "(" Lambda ")") (Expression* Nullish+ (Expression* | Nullish*)));
+
+PartialLeft = PLIf | PLXor | PLOr | PLAnd | PLCmp | PLAdd | PLMul | PLExp ;
+PLIf  = XOrExpr "?" ;
+PLXor = OrExpr "^" ;
+PLOr  = AndExpr "|" ;
+PLAnd = NotExpr "&" ;
+PLCmp = AdditiveExpr CmpOp ;
+PLAdd = MultiplicativeExpr AddOp ;
+PLMul = ExponentialExpr MulOp ;
+PLExp = Define "**" ;
+
+PartialRight = PRIf | PRXor | PROr | PRAnd | PRCmp | PRAdd | PRMul | PRExp ;
+PRIf = "?" Pair ;
+PRXor = "^" XorExpr ;
+PROr  = "|" OrExpr ;
+PRAnd = "&" AndExpr ;
+PRCmp = CmpOp AdditiveExpr ;
+PRAdd = AddOp AdditiveExpr ;
+PRMul = MulOp MultiplicativeExpr ;
+PRExp = "**" ExponentialExpr ;
+
+Nullish = "_" ;
+
+Compute ::= Decision ;
+
+Decision ::= (XOrExpr PRIf) | (PLIf XOrExpr) | OrExpr
+XorExpr ::= (OrExpr PRXor) | (PLXor XOrExpr) | OrExpr
+OrExpr ::= (AndExpr PROr) | (PLOr AndExpr) | AndExpr
+AndExpr ::= (NotExpr PRAnd) | (PLAnd NotExpr) | AndExpr
+NotExpr ::= ("!" NotExpr) | ComparisonExpr | Boolean
+ComparisonExpr ::= (AdditiveExpr PRCmp) | (PLCmp AdditiveExpr)
+AdditiveExpr ::= (MultiplicativeExpr PRAdd) | (PLAdd MultiplicativeExpr)
+AdditiveExpr ::= MultiplicativeExpr { AddOp PartialLeftAddOp | PartialRightAddOp }
+MultiplicativeExpr ::= ExponentialExpr { MulOp PartialLeftMulOp | PartialRightMulOp }
+ExponentialExpr ::= PrimaryExpr { "**" PartialLeftExpOp | PartialRightExpOp }
+PrimaryExpr ::= Literal | Identifier | Tuple | FunctionCall | AnonymousFunction
+Tuple ::= "[" { Expression " " } "]" | "[" Expression "]" | Expression "," Expression
+FunctionCall ::= Identifier { Expression | "_" }
+AnonymousFunction ::= { Identifier | "_" } ";" Expression
+Declaration ::= Identifier ":" Expression
+Literal ::= Number | String | Boolean | Character
+Identifier ::= [_a-zA-Z][_a-zA-Z0-9]*
+
+
+
+Boolean ::= "_t_" | "_f_"
+Character ::= "`" .
+String ::= "\"" . "\"\n" | "'`" . "`'" | Character+

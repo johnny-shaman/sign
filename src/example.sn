@@ -1,10 +1,12 @@
 # example
 
+
+
 @ "basic"
 @ "./defined.sn"
 
 myFunc:name;[
-    '''This is a "''' name '''".''' `
+    '`This is a "`' name '`".`' `
 ]\
 
 myFunc "Pen"

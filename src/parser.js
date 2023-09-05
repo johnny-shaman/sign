@@ -1,2 +1,5 @@
-var peg = require("pegjs");
+const peg = require("pegjs");
 
+const parser = peg.generate(
+    
+)

@@ -1,4 +1,3 @@
-
 program = expression* ;
 
 expression =
@@ -26,8 +25,7 @@ expression =
   | include
   | "(" expression ")" ;
 
-
-bind = (identifier | reserved_identifier) ":" expression
+bind = (identifier | reserved_identifier) ":" expression ;
 
 lambda = identifier+ ";" expression ;
 
@@ -39,7 +37,7 @@ spread = (number | character) "~" (number | character) ;
 
 dict = "{" {bind ("," | "\n")} "}" ;
 
-enum = "{" expression "|" expression "}"
+enum = "{" expression {"|" expression "} }" ;
 
 unpack = "~" (pair | list | string | map | identifier | "(" expression ")") ;
 
