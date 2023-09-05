@@ -7,7 +7,7 @@ Constant = Identifier ":" Expression ;
 List = Pair+ | "[" Expression* "]" ;
 Map = "{" constant { ( "\n" | "," ) constant } "}" ;
 Enum = "{" Expression { "|" Expression } "}"
-Lambda = (Argument+ ";" Expression) | Operator | PartialAplly ;
+Lambda = ( Argument+ ";" Expression ) | Operator | PartialAplly ;
 
 Argument = Identifier+ | Yet+;
 
@@ -44,7 +44,7 @@ Yet = "_" ;
 
 Evaluate = Decision ;
 
-Decision = ( XOrExpr PRIf ) | ( PLIf XOrExpr ) | XOrExpr ;
+Decision = ( XOrExpr PRIf ) | ( PLIf Pair ) | XOrExpr ;
 XorExpr = ( OrExpr PRXor ) | ( PLXor XOrExpr ) | OrExpr ;
 OrExpr = ( AndExpr PROr ) | ( PLOr AndExpr ) | AndExpr ;
 AndExpr = ( NotExpr PRAnd ) | ( PLAnd AndExpr ) | NotExpr ;
