@@ -1,6 +1,10 @@
-Expression = Compute | Define | Nullish ;
+Expression = Evaluate | Define | Nullish | Pair ;
 
-Define = Constant | Pair | List | Map | Enum | Lambda | Literal;
+Define = Constant  | List | Map | Enum | Lambda | Literal;
+
+Constant = Identifier ":" Expression ;
+
+Pair = 
 
 Lambda = ((Identifier+ | "_") ";" Expression) | Operator | PartialAplly ;
 
@@ -37,7 +41,7 @@ PRExp = "**" ExponentialExpr ;
 
 Nullish = "_" ;
 
-Compute ::= Decision ;
+Evaluate ::= Decision ;
 
 Decision ::= (XOrExpr PRIf) | (PLIf XOrExpr) | OrExpr
 XorExpr ::= (OrExpr PRXor) | (PLXor XOrExpr) | OrExpr
