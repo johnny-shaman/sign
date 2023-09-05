@@ -2,7 +2,7 @@ Expression = Pair | Evaluate | Define ;
 
 Pair = ( Evaluate | Define ) { ","  ( Evaluate | Define ) } ;
 
-Define = Constant  | List | Map | Enum | Lambda | Literal | Yet ;
+Define = Constant  | List | Map | Enum | Lambda | Literal | Yet | "(" Expression ")";
 Constant = Identifier ":" Expression ;
 List = Pair+ | "[" Expression* "]" ;
 Map = "{" constant { ( "\n" | "," ) constant } "}" ;
@@ -51,11 +51,11 @@ AndExpr = ( NotExpr PRAnd ) | ( PLAnd AndExpr ) | NotExpr ;
 NotExpr = ( "!" NotExpr ) | ComparisonExpr | Boolean ;
 ComparisonExpr = ( AdditiveExpr PRCmp ) | ( PLCmp AdditiveExpr ) | AdditiveExpr ;
 AdditiveExpr = ( MultiplicativeExpr PRAdd ) | ( PLAdd AdditiveExpr ) | MultiplicativeExpr ;
-MultiplicativeExpr ::= ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
+MultiplicativeExpr = ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
+ExponentialExpr = ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
 ExponentialExpr ::= PrimaryExpr { "**" PartialLeftExpOp | PartialRightExpOp }
 PrimaryExpr ::= Literal | Identifier | Tuple | FunctionCall | AnonymousFunction
 Tuple ::= "[" { Expression " " } "]" | "[" Expression "]" | Expression "," Expression
-Declaration ::= Identifier ":" Expression
 Literal ::= Number | String | Boolean | Character
 Identifier ::= [_a-zA-Z][_a-zA-Z0-9]*
 
