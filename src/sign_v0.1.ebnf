@@ -9,6 +9,8 @@ Map = "{" constant { ( "\n" | "," ) constant } "}" ;
 Enum = "{" Expression { "|" Expression } "}"
 Lambda = (Argument+ ";" Expression) | Operator | PartialAplly ;
 
+Argument = Identifier+ | Yet+;
+
 Operator = UnaryOP | BinaryOp ;
 UnaryOP = "!" ;
 BinaryOp = "?" | "^" | "|" | "&" | CmpOp | AddOp | MulOp | "**" ;
@@ -16,9 +18,7 @@ CmpOp = "=" | "!=" | "<" | ">" | "<=" | ">=" ;
 AddOp = "+" | "-" ;
 MulOp = "*" | "/" | "%" ;
 
-Argument = Identifier+ | Yet+;
-
-PartialAplly = PartialLeft | PartialRight | (( Identifier | "(" Lambda ")" ) ( Expression* Nullish+ ( Expression* | Nullish* ))) ;
+PartialAplly = PartialLeft | PartialRight | (( Identifier | "(" Lambda ")" ) ( Expression* Yet+ ( Expression* | Yet* ))) ;
 
 PartialLeft = PLIf | PLXor | PLOr | PLAnd | PLCmp | PLAdd | PLMul | PLExp ;
 PLIf  = XOrExpr "?" ;
@@ -44,24 +44,20 @@ Yet = "_" ;
 
 Evaluate = Decision ;
 
-Decision = (XOrExpr PRIf) | (PLIf XOrExpr) | XOrExpr ;
-XorExpr = (OrExpr PRXor) | (PLXor XOrExpr) | OrExpr ;
-OrExpr = (AndExpr PROr) | (PLOr AndExpr) | AndExpr ;
-AndExpr = (NotExpr PRAnd) | (PLAnd NotExpr) | AndExpr ;
-NotExpr = ("!" NotExpr) | ComparisonExpr | Boolean ;
-ComparisonExpr = (AdditiveExpr PRCmp) | (PLCmp AdditiveExpr) | AdditiveExpr ;
-AdditiveExpr = (MultiplicativeExpr PRAdd) | (PLAdd AdditiveExpr) | MultiplicativeExpr ;
+Decision = ( XOrExpr PRIf ) | ( PLIf XOrExpr ) | XOrExpr ;
+XorExpr = ( OrExpr PRXor ) | ( PLXor XOrExpr ) | OrExpr ;
+OrExpr = ( AndExpr PROr ) | ( PLOr AndExpr ) | AndExpr ;
+AndExpr = ( NotExpr PRAnd ) | ( PLAnd AndExpr ) | NotExpr ;
+NotExpr = ( "!" NotExpr ) | ComparisonExpr | Boolean ;
+ComparisonExpr = ( AdditiveExpr PRCmp ) | ( PLCmp AdditiveExpr ) | AdditiveExpr ;
+AdditiveExpr = ( MultiplicativeExpr PRAdd ) | ( PLAdd AdditiveExpr ) | MultiplicativeExpr ;
 MultiplicativeExpr ::= ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
 ExponentialExpr ::= PrimaryExpr { "**" PartialLeftExpOp | PartialRightExpOp }
 PrimaryExpr ::= Literal | Identifier | Tuple | FunctionCall | AnonymousFunction
 Tuple ::= "[" { Expression " " } "]" | "[" Expression "]" | Expression "," Expression
-FunctionCall ::= Identifier { Expression | "_" }
-AnonymousFunction ::= { Identifier | "_" } ";" Expression
 Declaration ::= Identifier ":" Expression
 Literal ::= Number | String | Boolean | Character
 Identifier ::= [_a-zA-Z][_a-zA-Z0-9]*
-
-
 
 Boolean ::= "_t_" | "_f_"
 Character ::= "`" .
