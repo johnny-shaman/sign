@@ -29,7 +29,30 @@ bind = (identifier | reserved_identifier) ":" expression ;
 
 lambda = identifier+ ";" expression ;
 
-pair = expression "," expression ;
+pair = (
+    identifier
+  | bind
+  | lambda
+  | boolean
+  | logical
+  | list
+  | dict
+  | enum
+  | access
+  | integer
+  | float
+  | hex
+  | character
+  | string
+  | unpack
+  | strict_evaluation
+  | binary_operator_partial
+  | partial_apply
+  | function_call
+  | exclude
+  | include
+  | "(" Pair ")"
+  ) {"," expression} ;
 
 list = "[" expression* "]" | {pair} | spread ;
 

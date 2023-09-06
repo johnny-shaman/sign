@@ -42,7 +42,7 @@ PRExp = "**" ExponentialExpr ;
 
 Yet = "_" ;
 
-Evaluate = Decision ;
+Evaluate = Decision | (( Identifier | "(" Lambda ")" ) Expression*) ;
 
 Decision = ( XOrExpr PRIf ) | ( PLIf Pair ) | XOrExpr ;
 XorExpr = ( OrExpr PRXor ) | ( PLXor XOrExpr ) | OrExpr ;
@@ -52,11 +52,10 @@ NotExpr = ( "!" NotExpr ) | ComparisonExpr | Boolean ;
 ComparisonExpr = ( AdditiveExpr PRCmp ) | ( PLCmp AdditiveExpr ) | AdditiveExpr ;
 AdditiveExpr = ( MultiplicativeExpr PRAdd ) | ( PLAdd AdditiveExpr ) | MultiplicativeExpr ;
 MultiplicativeExpr = ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
-ExponentialExpr = ( Define PRExp ) | ( PLExp MultiplicativeExpr ) | Define ;
-PrimaryExpr ::= Literal | Identifier | Tuple | FunctionCall | AnonymousFunction
+ExponentialExpr = ( Define PRExp ) | ( PLExp MultiplicativeExpr ) | Number | Identifier | "(" AdditiveExpr ")";
 Literal ::= Number | String | Boolean | Character
 Identifier ::= [_a-zA-Z][_a-zA-Z0-9]*
 
-Boolean ::= "_t_" | "_f_"
-Character ::= "`" .
-String ::= "\"" . "\"\n" | "'`" . "`'" | Character+
+Boolean = "_T_" | "_F_" ;
+Character = "`" . ;
+String = "\"" . "\"\n" | "'`" . "`'" | Character+ ;
