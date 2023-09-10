@@ -2,7 +2,7 @@ Expression = Pair | Evaluate | Define ;
 
 Pair = ( Evaluate | Define ) { ","  ( Evaluate | Define | Pair ) } ;
 
-Define = Constant  | List | Map | Enum | Lambda | Literal | Yet | "(" Expression ")";
+Define = Constant  | List | Map | Enum | Lambda | Literal | "(" Expression ")";
 Constant = Identifier ":" Expression ;
 List = Pair+ | "[" Expression* "]" ;
 Map = "{" constant { ( "\n" | "," ) constant } "}" ;
@@ -62,9 +62,17 @@ PRAdd = AddOp AdditiveExpr ;
 PRMul = MulOp MultiplicativeExpr ;
 PRExp = Exp ExponentialExpr ;
 
-Yet = "_" ;
+Literal = Number | String | Boolean | Character ;
 
-Evaluate = Decision | (( Identifier | "(" Lambda ")" ) Expression*) ;
+Boolean = "_T_" | "_F_" ;
+Character = "`" . ;
+String = "\"" . "\"\n" | "'`" . "`'" | Character+ ;
+
+Yet = "_" ;
+Identifier = [_a-zA-Z][_a-zA-Z0-9]* ;
+
+
+Evaluate = Decision | (( Identifier | "(" Lambda ")" ) Expression* ) ;
 
 Decision = ( XorExpr If Decision ) | ( XorExpr PRIf ) | ( PLIf Pair ) | XorExpr ;
 XorExpr = ( OrExpr Xor XorExpr ) | ( OrExpr PRXor ) | ( PLXor XorExpr ) | OrExpr ;
@@ -75,9 +83,3 @@ ComparisonExpr = ( AdditiveExpr CmpOp AdditiveExpr ) | ( AdditiveExpr PRCmp ) | 
 AdditiveExpr = ( MultiplicativeExpr Add AdditiveExpr ) | ( MultiplicativeExpr PRAdd ) | ( PLAdd AdditiveExpr ) | MultiplicativeExpr | Character ;
 MultiplicativeExpr = ( ExponentialExpr Mul MultiplicativeExpr ) | ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
 ExponentialExpr = ((Number | Identifier) Exp ExponentialExpr ) | (( Number | Identifier ) PRExp ) | ( PLExp ExponentialExpr ) | Number | Identifier | "(" AdditiveExpr ")";
-Literal ::= Number | String | Boolean | Character
-Identifier ::= [_a-zA-Z][_a-zA-Z0-9]*
-
-Boolean = "_T_" | "_F_" ;
-Character = "`" . ;
-String = "\"" . "\"\n" | "'`" . "`'" | Character+ ;
