@@ -2,7 +2,7 @@ Expression = Pair | Evaluate | Define ;
 
 Pair = ( Evaluate | Define ) { ","  ( Evaluate | Define | Pair ) } ;
 
-Define = Constant  | List | Map | Enum | Lambda | Literal | "(" Expression ")";
+Define = Constant  | List | Map | Enum | Lambda | Literal | "(" Expression ")" ;
 Constant = Identifier ":" Expression ;
 List = Pair+ | "[" Expression* "]" ;
 Map = "{" constant { ( "\n" | "," ) constant } "}" ;
@@ -63,6 +63,12 @@ PRMul = MulOp MultiplicativeExpr ;
 PRExp = Exp ExponentialExpr ;
 
 Literal = Number | String | Boolean | Character ;
+
+Number = Int | UInt | Float ;
+
+Int = [0-9]+ ;
+Uint = {"-"}* [0-9]+ ;
+Float = UInt "." Int ;
 
 Boolean = "_T_" | "_F_" ;
 Character = "`" . ;
