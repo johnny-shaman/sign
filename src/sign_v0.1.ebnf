@@ -1,12 +1,11 @@
-Expression = Pair | Evaluate | Define ;
+Expression = Evaluate | Define ;
 
-Pair = ( Evaluate | Define ) { ( Evaluate | Define | Pair ) } ;
-
-Define = Constant  | List | Map | Enum | Lambda | Number | String | Boolean | Character | "(" Expression ")" ;
+Define = Pair | Constant | List | Map | Enum | Lambda | Number | String | Boolean | Character | "(" Expression ")" ;
+Pair = ( Evaluate | | Constant | List | Map | Enum | Lambda | Number | String | Boolean | Character | "(" Expression ")" ) {"," ( Evaluate | Define ) } ;
 Constant = Identifier ":" Expression ;
 List = Pair+ | "[" Expression* "]" ;
 Map = "{" Constant { ( "\n" | "," ) Constant } "}" ;
-Enum = "{" Expression { "|" Expression } "}"
+Enum = "{" Expression { "|" Expression } "}" ;
 Lambda = ( Argument+ ";" Expression ) | Operator | PartialApply ;
 
 Argument = Identifier+ | Yet+ ;
@@ -44,7 +43,7 @@ Point = "'" ;
 
 PartialApply = PartialLeft | PartialRight | (( Identifier | "(" Lambda ")" ) ( Expression* Yet+ ( Expression* | Yet* ))) ;
 
-PartialLeft = PLIf | PLXor | PLOr | PLAnd | PLCmp | PLAdd | PLMul | PLExp ;
+PartialLeft = PLIf | PLXor | PLOr | PLAnd | PLCmp | PLAdd | PLMul | PLExp | PLPoint ;
 PLIf  = XOrExpr If ;
 PLXor = OrExpr Xor ;
 PLOr  = AndExpr Or ;
@@ -53,8 +52,9 @@ PLCmp = AdditiveExpr CmpOp ;
 PLAdd = MultiplicativeExpr AddOp ;
 PLMul = ExponentialExpr MulOp ;
 PLExp = Define Exp ;
+PLPoint = (( "(" Map ")" ) | Identifier ) Point ;
 
-PartialRight = PRIf | PRXor | PROr | PRAnd | PRCmp | PRAdd | PRMul | PRExp ;
+PartialRight = PRIf | PRXor | PROr | PRAnd | PRCmp | PRAdd | PRMul | PRExp | PRPoint ;
 PRIf = If Pair ;
 PRXor = Xor XorExpr ;
 PROr  = Or OrExpr ;
@@ -63,6 +63,7 @@ PRCmp = CmpOp AdditiveExpr ;
 PRAdd = AddOp AdditiveExpr ;
 PRMul = MulOp MultiplicativeExpr ;
 PRExp = Exp ExponentialExpr ;
+PRPoint = Point (( "[" ( String | Identifier ) "]" ) | PointExpr ) ;
 
 Number = Int | UInt | Float ;
 
@@ -76,7 +77,6 @@ String = "\"" . "\"\n" | "'`" . "`'" | Character+ ;
 
 Yet = "_" ;
 Identifier = [_a-zA-Z][_a-zA-Z0-9]* ;
-
 
 Evaluate = Decision | (( Identifier | "(" Lambda ")" ) Expression* ) ;
 
@@ -96,4 +96,6 @@ AdditiveExpr = ( MultiplicativeExpr Add AdditiveExpr ) | ( MultiplicativeExpr PR
 
 MultiplicativeExpr = ( ExponentialExpr Mul MultiplicativeExpr ) | ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
 
-ExponentialExpr = ((Number | Identifier) Exp ExponentialExpr ) | (( Number | Identifier ) PRExp ) | ( PLExp ExponentialExpr ) | Number | Identifier | "(" AdditiveExpr ")";
+ExponentialExpr = (PointExpr Exp ExponentialExpr ) | ( PointExpr PRExp ) | ( PLExp ExponentialExpr ) | Number | Identifier | "(" AdditiveExpr ")" ;
+
+PointExpr = ((( "(" Map ")" ) | Identifier ) Point (( "[" ( String | Identifier ) "]" ) | PointExpr )) | ((( "(" Map ")" ) | Identifier ) PRPoint ) | (PLPoint (( "[" ( String | Identifier ) "]" ) | PointExpr )) | Number | Identifier ;
