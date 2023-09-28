@@ -2,11 +2,11 @@ Expression = Evaluate | Define ;
 
 Define = Pair | Constant | List | Map | Enum | Lambda | Number | String | Boolean | Character | Import | Export | ( "(" Expression ")" ) ;
 Pair = ( Evaluate | Constant | List | Map | Enum | Lambda | Number | String | Boolean | Character | Import | Export | ( "(" Expression ")" )) {"," ( Evaluate | Define ) } ;
-Constant = Identifier ":" Expression ;
+Constant = ( Identifier | Character | String ) ":" Expression+ ;
 List = Pair+ | "{" Expression* "}" ;
 Map = "{" Constant { ( "\n" | "," ) Constant } "}" ;
 Enum = "{" Expression { "|" Expression } "}" ;
-Lambda = ( Argument+ ";" Expression ) | Operator | PartialApply ;
+Lambda = ( Argument+ ";" Expression+ ) | Operator | PartialApply ;
 
 Argument = Identifier+ | Yet+ ;
 
@@ -82,8 +82,7 @@ Import = "@" (Identifier | ( "[" ( String | Identifier ) "]")) ;
 
 Export = "#" (Identifier | ( "[" ( String | Identifier ) "]")) ;
 
-
-Evaluate = Decision | (( Identifier | "(" Lambda ")" ) Expression* ) ;
+Evaluate = Decision | (( Identifier | "(" Lambda ")" ) Expression+ ) | ( Define Identifier Expression+ ) ;
 
 Decision = ( XorExpr If Decision ) | ( XorExpr PRIf ) | ( PLIf Pair ) | XorExpr ;
 
