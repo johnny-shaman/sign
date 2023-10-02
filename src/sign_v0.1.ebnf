@@ -2,10 +2,10 @@ Expression = Evaluate | Define ;
 
 Define = Pair | Constant | List | Map | Enum | Lambda | Number | String | Boolean | Character | Import | Export | ( "(" Expression ")" ) ;
 Pair = ( Evaluate | Constant | List | Map | Enum | Lambda | Number | String | Boolean | Character | Import | Export | ( "(" Expression ")" )) {"," ( Evaluate | Define ) } ;
-Constant = ( Identifier | Character | String ) ":" Expression+ ;
-List = Pair+ | "{" Expression* "}" ;
-Map = "{" Constant { ( "\n" | "," ) Constant } "}" ;
-Enum = "{" Expression { "|" Expression } "}" ;
+Constant = ( Identifier | Character | String ) ":" Expression ;
+List = Pair+ | "[" Expression* "]" ;
+Map = "[" Constant { ( "\n" | "," ) Constant } "]" ;
+Enum = "[" Expression { "|" Expression } "]" ;
 Lambda = ( Argument+ ";" Expression+ ) | Operator | PartialApply ;
 
 Argument = Identifier+ | Yet+ ;
@@ -102,4 +102,6 @@ MultiplicativeExpr = ( ExponentialExpr Mul MultiplicativeExpr ) | ( ExponentialE
 
 ExponentialExpr = (PointExpr Exp ExponentialExpr ) | ( PointExpr PRExp ) | ( PLExp ExponentialExpr ) | Number | Identifier | "(" AdditiveExpr ")" ;
 
-PointExpr = ((( "(" Map ")" ) | Identifier ) Point (( "[" ( String | Identifier ) "]" ) | PointExpr )) | ((( "(" Map ")" ) | Identifier ) PRPoint ) | (PLPoint (( "[" ( String | Identifier ) "]" ) | PointExpr )) | Number | Identifier | ( "(" Expression ")" );
+PointExpr = (( Map | List | Identifier ) Point (( ( String | Int | Identifier ) ) | PointExpr )) | (( Map | List | Identifier ) PRPoint ) | ( PLPoint (( String | Int | Identifier ) | PointExpr )) | spreadExpr ;
+
+spreadExpr = "~" List | List "\\" | Number | Identifier | ( "(" Expression ")" )
