@@ -2,29 +2,29 @@
 
 @ "basic"
 
-myFunc : name ; {
+myFunc : name ; [
     '`This is a "`' name '`".`' `
-}\
+]\
 
 string : myFunc "Pen"
 
-mappedArray : map (* 2) {1 2 3 4 5 6}
+mappedArray : map (* 2) [1 2 3 4 5 6]
 
-foldedValue : fold (+) {1 2 3 4 5 6}
+foldedValue : fold (+) [1 2 3 4 5 6]
 
-filteredArray : filter (% 2) {1 2 3 4 5 6}
+filteredArray : filter (% 2) [1 2 3 4 5 6]
 
-infixFunc : {
-    mappedArray: {1 2 3 4 5 6} map (* 2)
-    foldedValue: {1 2 3 4 5 6} fold (+)
-    filteredArray: {1 2 3 4 5 6} filter (% 2) 
-}
+infixFunc : [
+    mappedArray :   [1 2 3 4 5 6] map (* 2)
+    foldedValue :   [1 2 3 4 5 6] fold (+)
+    filteredArray : [1 2 3 4 5 6] filter (% 2) 
+]
 
-myHex : {
+myHex : [
     0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
     "a" | "b" | "c" | "d" | "e" | "f" |
     "A" | "B" | "C" | "D" | "E" | "F"
-}
+]
 
 myIf : (
     ?
@@ -33,9 +33,9 @@ myIf : (
 )
 
 
-_expect_ ~{
+_expect_ ~[
     ((* 2 + 4) 8) (= 20)
-}
+]
 
 _expect_ (myIf _T_ 3) (= 7)
 _expect_ (myIf _F_ 3) (= 6)

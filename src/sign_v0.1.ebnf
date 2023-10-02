@@ -104,4 +104,6 @@ ExponentialExpr = (PointExpr Exp ExponentialExpr ) | ( PointExpr PRExp ) | ( PLE
 
 PointExpr = (( Map | List | Identifier ) Point (( ( String | Int | Identifier ) ) | PointExpr )) | (( Map | List | Identifier ) PRPoint ) | ( PLPoint (( String | Int | Identifier ) | PointExpr )) | spreadExpr ;
 
-spreadExpr = "~" List | List "\\" | Number | Identifier | ( "(" Expression ")" )
+spreadExpr = "~" List | flattenExpr ;
+
+flattenExpr = List "\\" | Number | Identifier | ( "(" Expression ")" ) ;
