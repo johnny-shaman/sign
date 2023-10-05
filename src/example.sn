@@ -1,6 +1,6 @@
 # example
 
-@ "basic"
+~[say hear] @ "basic"
 
 myFunc : name ; [
     '`This is a "`' name '`".`' `

@@ -52,7 +52,7 @@ PLCmp = AdditiveExpr CmpOp ;
 PLAdd = MultiplicativeExpr AddOp ;
 PLMul = ExponentialExpr MulOp ;
 PLExp = Define Exp ;
-PLPoint = (( "(" Map ")" ) | Identifier ) Point ;
+PLPoint = ( Map | List | Identifier ) Point ;
 
 PartialRight = PRIf | PRXor | PROr | PRAnd | PRCmp | PRAdd | PRMul | PRExp | PRPoint ;
 PRIf = If Pair ;
@@ -63,7 +63,7 @@ PRCmp = CmpOp AdditiveExpr ;
 PRAdd = AddOp AdditiveExpr ;
 PRMul = MulOp MultiplicativeExpr ;
 PRExp = Exp ExponentialExpr ;
-PRPoint = Point (( "[" ( String | Identifier ) "]" ) | PointExpr ) ;
+PRPoint = Point ( ( String | Identifier  ) | PointExpr ) ;
 
 Number = Int | UInt | Float ;
 
@@ -78,9 +78,10 @@ String = "\"" . "\"\n" | "'`" . "`'" | Character+ ;
 Yet = "_" ;
 Identifier = [_a-zA-Z][_a-zA-Z0-9]* ;
 
-Import = "@" (Identifier | ( "[" ( String | Identifier ) "]")) ;
 
-Export = "#" (Identifier | ( "[" ( String | Identifier ) "]")) ;
+Import = ( Identifier | List ) "@" ( ( String | Identifier ) ( String | Identifier )* ) ;
+
+Export = "#" ( Identifier | String ) ;
 
 Evaluate = Decision | (( Identifier | "(" Lambda ")" ) Expression+ ) | ( Define Identifier Expression+ ) ;
 
@@ -102,8 +103,10 @@ MultiplicativeExpr = ( ExponentialExpr Mul MultiplicativeExpr ) | ( ExponentialE
 
 ExponentialExpr = (PointExpr Exp ExponentialExpr ) | ( PointExpr PRExp ) | ( PLExp ExponentialExpr ) | Number | Identifier | "(" AdditiveExpr ")" ;
 
-PointExpr = (( Map | List | Identifier ) Point (( ( String | Int | Identifier ) ) | PointExpr )) | (( Map | List | Identifier ) PRPoint ) | ( PLPoint (( String | Int | Identifier ) | PointExpr )) | spreadExpr ;
+PointExpr = (( Map | List | Identifier ) Point (( ( String | Int | Identifier ) ) | PointExpr )) | (( Map | List | Identifier ) PRPoint ) | ( PLPoint (( String | Int | Identifier ) | PointExpr )) | flattenExpr ;
 
-spreadExpr = "~" List | flattenExpr ;
+flattenExpr = List "\\" | spreadExpr ;
 
-flattenExpr = List "\\" | Number | Identifier | ( "(" Expression ")" ) ;
+spreadExpr = "~" List | iterateExpr ;
+
+iterateExpr = Number "~" Number | Number | Identifier | ( "(" Expression ")" ) ;
