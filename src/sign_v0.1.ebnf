@@ -11,8 +11,8 @@ Lambda = ( Argument+ ";" Expression+ ) | Operator | PartialApply ;
 Argument = Identifier+ | Yet+ ;
 
 Operator = UnaryOP | BinaryOp ;
-UnaryOP = Not ;
-BinaryOp = If | Xor | Or | And | CmpOp | AddOp | MulOp | Exp ;
+UnaryOP = Not | Flat ;
+BinaryOp = If | Xor | Or | And | CmpOp | AddOp | MulOp | Exp | Point | Iterate | Construct ;
 CmpOp = Equal | NotEqual | Less | More | OrLess | OrMore ;
 AddOp = Add | Sub ;
 MulOp = Mul | Div | Mod ;
@@ -41,6 +41,10 @@ Exp = "**" ;
 
 Point = "'" ;
 
+Flat = "~" ;
+
+Iterate = "~" ;
+
 PartialApply = PartialLeft | PartialRight | (( Identifier | "(" Lambda ")" ) ( Expression* Yet+ ( Expression* | Yet* ))) ;
 
 PartialLeft = PLIf | PLXor | PLOr | PLAnd | PLCmp | PLAdd | PLMul | PLExp | PLPoint ;
@@ -53,6 +57,7 @@ PLAdd = MultiplicativeExpr AddOp ;
 PLMul = ExponentialExpr MulOp ;
 PLExp = Define Exp ;
 PLPoint = ( Map | List | Identifier ) Point ;
+PLIterate = Number Iterate ;
 
 PartialRight = PRIf | PRXor | PROr | PRAnd | PRCmp | PRAdd | PRMul | PRExp | PRPoint ;
 PRIf = If Pair ;
@@ -64,6 +69,7 @@ PRAdd = AddOp AdditiveExpr ;
 PRMul = MulOp MultiplicativeExpr ;
 PRExp = Exp ExponentialExpr ;
 PRPoint = Point ( ( String | Identifier  ) | PointExpr ) ;
+PRIterate = Iterate Number ;
 
 Number = Int | UInt | Float ;
 
@@ -78,35 +84,34 @@ String = "\"" . "\"\n" | "'`" . "`'" | Character+ ;
 Yet = "_" ;
 Identifier = [_a-zA-Z][_a-zA-Z0-9]* ;
 
-
-Import = ( Identifier | List ) "@" ( ( String | Identifier ) ( String | Identifier )* ) ;
+Import = "@" ( ( String | Identifier ) ( String | Identifier )* ) ;
 
 Export = "#" ( Identifier | String ) ;
 
-Evaluate = Decision | (( Identifier | "(" Lambda ")" ) Expression+ ) | ( Define Identifier Expression+ ) ;
+Evaluate = flattenExpr | (( Identifier | "(" Lambda ")" ) Expression ) | ( Define Identifier Expression ) ;
 
-Decision = ( XorExpr If Decision ) | ( XorExpr PRIf ) | ( PLIf Pair ) | XorExpr ;
+flattenExpr = List Flat | Decision ;
 
-XorExpr = ( OrExpr Xor XorExpr ) | ( OrExpr PRXor ) | ( PLXor XorExpr ) | OrExpr ;
+Decision = ( XorExpr If Decision ) | XorExpr ;
 
-OrExpr = ( AndExpr Or OrExpr ) | ( AndExpr PROr ) | ( PLOr OrExpr ) | AndExpr ;
+XorExpr = ( OrExpr Xor XorExpr ) | OrExpr ;
 
-AndExpr = ( NotExpr And AndExpr ) | ( NotExpr PRAnd ) | ( PLAnd AndExpr ) | NotExpr ;
+OrExpr = ( AndExpr Or OrExpr ) | AndExpr ;
+
+AndExpr = ( NotExpr And AndExpr ) | NotExpr ;
 
 NotExpr = ( "!" NotExpr ) | ComparisonExpr | Boolean ;
 
-ComparisonExpr = ( AdditiveExpr CmpOp AdditiveExpr ) | ( AdditiveExpr PRCmp ) | ( PLCmp AdditiveExpr ) | AdditiveExpr ;
+ComparisonExpr = ( AdditiveExpr CmpOp AdditiveExpr ) | AdditiveExpr ;
 
-AdditiveExpr = ( MultiplicativeExpr Add AdditiveExpr ) | ( MultiplicativeExpr PRAdd ) | ( PLAdd AdditiveExpr ) | MultiplicativeExpr | Character ;
+AdditiveExpr = ( MultiplicativeExpr Add AdditiveExpr ) | MultiplicativeExpr | Character ;
 
-MultiplicativeExpr = ( ExponentialExpr Mul MultiplicativeExpr ) | ( ExponentialExpr PRMul ) | ( PLMul MultiplicativeExpr ) | ExponentialExpr ;
+MultiplicativeExpr = ( ExponentialExpr Mul MultiplicativeExpr ) | ExponentialExpr ;
 
-ExponentialExpr = (PointExpr Exp ExponentialExpr ) | ( PointExpr PRExp ) | ( PLExp ExponentialExpr ) | Number | Identifier | "(" AdditiveExpr ")" ;
+ExponentialExpr = (( PointExpr | Number ) Exp ExponentialExpr ) | Number | Identifier | "(" AdditiveExpr ")" ;
 
-PointExpr = (( Map | List | Identifier ) Point (( ( String | Int | Identifier ) ) | PointExpr )) | (( Map | List | Identifier ) PRPoint ) | ( PLPoint (( String | Int | Identifier ) | PointExpr )) | flattenExpr ;
+PointExpr = (( Map | List | Identifier ) Point (( ( String | Int | Identifier ) ) | PointExpr )) | spreadExpr ;
 
-flattenExpr = List "\\" | spreadExpr ;
+spreadExpr = Flat List | iterateExpr | Decision ;
 
-spreadExpr = "~" List | iterateExpr ;
-
-iterateExpr = Number "~" Number | Number | Identifier | ( "(" Expression ")" ) ;
+iterateExpr = Number Iterate Number | Number | Identifier | ( "(" Expression ")" ) ;

@@ -1,12 +1,15 @@
+"Export name"
 # example
 
-~[say hear] @ "basic"
+"Import and Spread variables"
+~ @ "basic"
 
+"Assign Lambda"
 myFunc : name ; [
-    '`This is a "`' name '`".`' `
+    '`This is my "`' name '`".`' `
 ]\
 
-string : myFunc "Pen"
+myStrResult : myFunc "Pen"
 
 mappedArray : map (* 2) [1 2 3 4 5 6]
 
@@ -14,17 +17,17 @@ foldedValue : fold (+) [1 2 3 4 5 6]
 
 filteredArray : filter (% 2) [1 2 3 4 5 6]
 
-infixFunc : [
+infixFunc : {
     mappedArray :   [1 2 3 4 5 6] map (* 2)
     foldedValue :   [1 2 3 4 5 6] fold (+)
     filteredArray : [1 2 3 4 5 6] filter (% 2) 
-]
+}
 
-myHex : [
+myHex : {
     0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
     "a" | "b" | "c" | "d" | "e" | "f" |
     "A" | "B" | "C" | "D" | "E" | "F"
-]
+}
 
 myIf : (
     ?
@@ -33,13 +36,13 @@ myIf : (
 )
 
 
-_expect_ ~[
+expect ~[
     ((* 2 + 4) 8) (= 20)
 ]
 
-_expect_ (myIf _T_ 3) (= 7)
-_expect_ (myIf _F_ 3) (= 6)
+expect (myIf _T_ 3) (= 7)
+expect (myIf _F_ 3) (= 6)
 
-_expect_ (myFunc "Pen") (exact {
+expect (myFunc "Pen") (exact {
     '`This is a "Pen".`' `
 }\)
