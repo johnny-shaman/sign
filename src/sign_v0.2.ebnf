@@ -1,0 +1,16 @@
+start = Object | Eval ;
+
+Object = Symbol | Atom ;
+
+Symbol = [.]+ ;
+
+Atom = Character
+    | Number
+    | Lambda
+    | String
+    | Pair ;
+
+Lambda = ( Symbol+ ";" ( Assembly | Eval ) )
+    | Atom Symbol
+    | Symbol Atom ;
+
