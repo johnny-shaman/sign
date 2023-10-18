@@ -1,7 +1,10 @@
 const sign = (code) => ({
     split () {
         return code
-        .replaceAll(/(\[`.+`\])|_[\W]+_|[\w]+/g, " $& ")
+        .replaceAll(
+            /`{2}[\s\S]*?`{2}|`[\s\S]|_[\S]*?_|\[+[\S]*?\]+|[\w]+|[\n]|[{}():;_, ]|[!-'*-/:-@\\^`|~]+/g,
+            " $& "
+        )
         .replaceAll("\n"," ")
         .split(/ +/g)
         .filter(x => x.length);
