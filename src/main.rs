@@ -1,3 +1,4 @@
-fn main() {
-    println!("Hello, world!");
+
+fn main () {
+    println!("{}", (|x| x + 2)(2));
 }

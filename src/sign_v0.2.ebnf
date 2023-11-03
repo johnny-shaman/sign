@@ -2,7 +2,7 @@ start = Object | Eval ;
 
 Object = Symbol | Atom ;
 
-Symbol = [.]+ ;
+Symbol = [\s\S]+ ;
 
 Atom = Character
     | Number
