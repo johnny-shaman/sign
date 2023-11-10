@@ -1,4 +1,4 @@
-start = Object | Eval ;
+start -> Object / Eval ;
 
 Object = Symbol | Atom ;
 

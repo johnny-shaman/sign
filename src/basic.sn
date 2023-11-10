@@ -1,0 +1,139 @@
+# Calc
+
+!$ ``!$ は、ブロック内を評価しないという前置演算子、よって、この行はコメント``
+
+!$ ``これは、文字列の定義で改行を含むことは出来ない。!$ によって、この行は評価されない``
+
+!$ ```これは正規表現用文字列、ただしこの行では!$によって評価されない```
+
+!$ [
+
+
+    backtick の後の任意の1文字は、文字型の任意の1文字となる
+    `
+    つまりすぐ後の改行は文字になる。
+
+    バックティックを文字として使う場合はすぐ後ろに改行を入れるか、````` と、1文字だけの文字列を作る
+    ``
+
+    文字列は、文字のリストである。
+
+    infix と、 infixL は左単位元、infixR は右単位元
+    スプレッド演算子については、中のスコープを一つ上のスコープに展開して、その値を演算に使う。
+    演算子の冒頭に別の演算子が存在しない場合は、thisポインタ（ファイルスコープ）上に対するものとして扱う。
+
+    具体例…
+
+    {
+        Tool : ``pen``
+
+        PenCase : {
+            Tool : ink : color : ``blue``
+            pen  : ``feather``
+        }
+
+        Tool = 'Tool
+
+        PenCase' Tool' ink' color [=] ``blue``
+
+        PenCase' ~Tool [=] ``feather``
+
+
+        name : ``Johnny``
+        birthDay : ``12.November``
+
+        aboutMe : ~[
+            ``私の名前は、`` name ``です。`` `
+            ``私の誕生日は、`` birthDay ``です。`` `
+        ]
+    }
+]
+
+
+
+
+
+$! ``上から順に、評価の優先度が高いものとする。``
+
+expression : [
+
+    !$ [
+        括弧内の方が優先的に評価される、括弧は必ず独自スコープを作るため、高階関数（accessorなど）を以て内側のスコープにアクセスする。
+    ]
+
+    scope : {
+        `[ expression `] | `{ expression `} | `( expression `)
+    }
+
+    !$ [
+        文字列の定義、文字の定義、即値の定義
+    ]
+
+    atom : {
+        UInt        : ```\d{1,3}(,\d{3})*\b```
+        Int         : ```-?\d{1,3}(,\d{3})*\b```
+        Float       : ```-?\d{1,3}(,\d{3})*\.?\d*\b```
+        Charactor   : ```[`][\s\S]```
+        String      : ```[`]{2}[\s\S]*[`]{2}```
+        Regex       : ```[`]{3}[\s\S]*[`]{3}```
+    }
+
+    !$ [
+        「辞書、配列」へのアクセッサ。　由来は「's」
+    ]
+
+    accessor : {
+        infix `' : {Dictionary | List} -> {Symbol | String | Charactor | Int} -> ForAll
+    }
+
+    spread : {
+        prefix `~ : flat {Dictionary | List}
+        prefix `~ : Symbol -> forAll
+    }
+
+    exponential : {
+        infixR ``**``   : Float -> Float -> Float
+    }
+
+    factrial : {
+        suffix `!       : UInt -> UInt
+    }
+
+    multiplicative : {
+        infixL `*        : Float -> Float -> Float
+        infixL `/        : Float -> Float -> Float
+        infixL `%        : Float -> Float -> Float
+        infixL ``[*]``   : List -> List -> [List List]
+    }
+
+    additive : {
+        infixL `+        : Float -> Float -> Float (`add`)
+        infixL `-        : Float -> Float -> Float (`sub`)
+        infixL `         : forAll -> forAll -> List
+        infixL ``[+]``   : List -> List -> List
+    }
+
+    comparison : {
+        infixL `<        : Float -> Float -> Logic
+        infixL ``<=``    : Float -> Float -> Logic
+        infixL ``=<``    : Float -> Float -> Logic
+        infixL `=        : Float -> Float -> Logic
+        infixL ``>=``    : Float -> Float -> Logic
+        infixL ``=>``    : Float -> Float -> Logic
+        infixL `>        : Float -> Float -> Logic
+        infixL ``!=``    : Float -> Float -> Logic
+        infixL ``[=]``   : List -> List -> Logic
+    }
+
+    logical
+    branch
+    definition
+    evaluation
+]
+
+¡ ™ £ ¢ ∞ § ¶ • ª º – ≠ \
+œ ∑ ´ ® † ¥ ¨ ˆ ø π “ ‘
+å ß ∂ ƒ © ˙ ∆ ˚ ¬ … æ «
+  ≈ ç √ ∫ ˜ µ ≤ ≥ ÷ `
+
+
