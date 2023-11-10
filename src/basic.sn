@@ -115,13 +115,9 @@ expression : [
 
     comparison : {
         infixL `<        : Float -> Float -> Logic
-        infixL ``<=``    : Float -> Float -> Logic
-        infixL ``=<``    : Float -> Float -> Logic
         infixL `=        : Float -> Float -> Logic
-        infixL ``>=``    : Float -> Float -> Logic
-        infixL ``=>``    : Float -> Float -> Logic
         infixL `>        : Float -> Float -> Logic
-        infixL ``!=``    : Float -> Float -> Logic
+        infixL ``!``    : Float -> Float -> Logic
         infixL ``[=]``   : List -> List -> Logic
     }
 
