@@ -103,7 +103,7 @@ expression : [
         infixL `*        : Float -> Float -> Float
         infixL `/        : Float -> Float -> Float
         infixL `%        : Float -> Float -> Float
-        infixL ``[*]``   : List -> List -> [List List]
+        infixL ``[*]``   : List -> List -> [List,List]
     }
 
     additive : {
