@@ -2,12 +2,11 @@
 
 !$ ``!$ は、ブロック内を評価しないという前置演算子、よって、この行はコメント``
 
-!$ ``これは、文字列の定義で改行を含むことは出来ない。!$ によって、この行は評価されない``
+!$ ``backtick dangle は、文字列の定義で改行を含むことは出来ない。!$ によって、この行は評価されない``
 
-!$ ```これは正規表現用文字列、ただしこの行では!$によって評価されない```
+!$ ```[`]{3}は、正規表現用文字列、ただしこの行では!$によって評価されない```
 
 !$ [
-
 
     backtick の後の任意の1文字は、文字型の任意の1文字となる
     `
@@ -18,7 +17,7 @@
 
     文字列は、文字のリストである。
 
-    infix と、 infixL は左単位元、infixR は右単位元
+    infixL は左単位元、infixR は右単位元
     スプレッド演算子については、中のスコープを一つ上のスコープに展開して、その値を演算に使う。
     演算子の冒頭に別の演算子が存在しない場合は、thisポインタ（ファイルスコープ）上に対するものとして扱う。
 
@@ -62,7 +61,7 @@ expression : [
     ]
 
     scope : {
-        `[ expression `] | `{ expression `} | `( expression `)
+        `[ definision `] | `{ definition `} | `( expression `)
     }
 
     !$ [
@@ -79,57 +78,90 @@ expression : [
     }
 
     !$ [
+        bit演算
+    ]
+
+    BitOperation : {
+        infixL ``[&]``  : Bit -> Bit -> Bit
+        infixL ``[|]``  : Bit -> Bit -> Bit
+        infixL ``[^]``  : Bit -> Bit -> Bit
+        prefix ``[!]``  : Bit -> Bit
+    }
+
+    !$ [
         「辞書、配列」へのアクセッサ。　由来は「's」
     ]
 
     accessor : {
-        infix `' : {Dictionary | List} -> {Symbol | String | Charactor | Int} -> ForAll
+        infixL `' : {Dictionary | List} -> {Symbol | String | Charactor | Int} -> ForAll
     }
 
     spread : {
-        prefix `~ : flat {Dictionary | List}
-        prefix `~ : Symbol -> forAll
+        prefix `~   : flat {Dictionary | List}
+        prefix `~   : Symbol -> forAll
     }
 
     exponential : {
-        infixR ``**``   : Float -> Float -> Float
+        infixR `^   : Float -> Float -> Float
     }
 
     factrial : {
-        suffix `!       : UInt -> UInt
+        suffix `!   : UInt -> Float
     }
 
     multiplicative : {
-        infixL `*        : Float -> Float -> Float
-        infixL `/        : Float -> Float -> Float
-        infixL `%        : Float -> Float -> Float
-        infixL ``[*]``   : List -> List -> [List,List]
+        infixL `*   : Float -> Float -> Float
+        infixL `/   : Float -> Float -> Float
+        infixL `%   : Float -> Float -> Float
+        infixL `*   : ListL -> ListR -> [[ListL ' 0, ListR ' 0], [ListL ' 1, ListR ' 1]...]
     }
 
     additive : {
-        infixL `+        : Float -> Float -> Float (`add`)
-        infixL `-        : Float -> Float -> Float (`sub`)
-        infixL `         : forAll -> forAll -> List
-        infixL ``[+]``   : List -> List -> List
+        infixL `+   : Float -> Float -> Float 
+        infixL `-   : Float -> Float -> Float 
+        infixL `    : forAll -> forAll -> List
+        infixL `    : ListL -> ListR -> [~ListL ~ListR]
     }
 
     comparison : {
-        infixL `<        : Float -> Float -> Logic
-        infixL `=        : Float -> Float -> Logic
-        infixL `>        : Float -> Float -> Logic
-        infixL ``!``     : Float -> Float -> Logic
-        infixL ``[=]``   : List -> List -> Logic
+        infixL `<   : Float -> Float -> Logic
+        infixL `=   : Float -> Float -> Logic
+        infixL `>   : Float -> Float -> Logic
+        infixL `!   : Float -> Float -> Logic
+        infixL `=   : List -> List -> Logic
     }
 
-    logical
-    branch
-    definition
-    evaluation
+    logical : {
+        infixL `&   : Logic -> Logic -> Logic
+        infixL `|   : Logic -> Logic -> Logic
+        infixL `^   : Logic -> Logic -> Logic
+        prefix `!   : Logic -> Logic -> Logic
+    }
+
+    !$ {
+        三項演算子
+    }
+
+    branch : {
+        infixL `?   : Logic -> List -> forAll
+    }
+
+    !$ {
+        直積構造を定義するための演算子
+    }
+
+    product : {
+        infixL `,   : forAll -> forAll -> List
+        infixL `~   : Float -> Float -> List
+    }
+
+    definition : {
+        infixL `:   : Symbol -> forAll -> forAll
+        infixL `;   : Symbol -> forAll -> lambda
+    }
+
+    evaluation : {
+        prefix `$       : List -> forAll
+        prefix ``!$``
+    }
 ]
-
-¡ ™ £ ¢ ∞ § ¶ • ª º – ≠ \
-œ ∑ ´ ® † ¥ ¨ ˆ ø π “ ‘
-å ß ∂ ƒ © ˙ ∆ ˚ ¬ … æ «
-  ≈ ç √ ∫ ˜ µ ≤ ≥ ÷ `
-
-
