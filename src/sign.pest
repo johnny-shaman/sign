@@ -1,0 +1,71 @@
+grammar;
+
+// リテラルの定義
+true = { "_T_" }
+false = { "_F_" }
+
+
+
+compare = { "<" | "=" | ">" }
+
+not = { "!" }
+
+and = { "&" }
+
+xor = { "^" }
+
+or = { "|" }
+
+conditional_op = { "?" }
+
+coproduct_op = { " " }
+
+lazy_op = { "\r" | "\n" }
+
+lambda_op = { ";" }
+
+define_op = { ":" }
+
+
+
+// 基本的な要素：リテラル、括弧で囲まれた式
+
+primary = {
+    literal
+    | "(" ~ expression ~ ")"
+    | "{" ~ expression ~ "}"
+    | "[" ~ expression ~  "]"
+}
+
+// 単項演算式の定義
+not_expr = { not* ~ primary }
+
+// 論理積（AND）式の構築
+and_expr = _{
+    not_expr ~ ("&" ~ not_expr)*
+}
+
+// 排他的論理和（XOR）式の構築
+xor_expression = _{
+    and_expression ~ ("^" ~ and_expression)*
+}
+
+// 論理和（OR）式の構築
+or_expression = _{
+    xor_expression ~ ("|" ~ xor_expression)*
+}
+
+// タプル生成式の定義
+tuple_expression = _{
+    or_expression ~ (product_op ~ or_expression)+
+}
+
+// 条件分岐式の定義
+conditional_expression = _{
+    or_expression ~ conditional_op ~ tuple_expression
+}
+
+// 式の定義を更新して、条件分岐式を含める
+expression = {
+    conditional_expression | tuple_expression | or_expression
+}

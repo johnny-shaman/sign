@@ -1,4 +1,4 @@
-# Calc
+# Basic
 
 !$ ``!$ は、ブロック内を評価しないという前置演算子、よって、この行はコメント``
 
@@ -120,7 +120,7 @@ expression : [
         infixL `+   : Float -> Float -> Float 
         infixL `-   : Float -> Float -> Float 
         infixL `    : forAll -> forAll -> List
-        infixL `    : ListL -> ListR -> [~ListL ~ListR]
+        infixL `    : ListL -> ListR -> ~[ListL ListR]
     }
 
     comparison : {
