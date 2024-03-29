@@ -4,7 +4,25 @@ grammar;
 true = { "_T_" }
 false = { "_F_" }
 
+// 基本的な構文規則
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
+// 数値
+integer = @{ "-"? ~ ("0".."9")+ }
+float = @{ "-"? ~ ("0".."9")+ ~ "." ~ ("0".."9")* }
+
+// 識別子の定義
+identifier = @{ ("a".."z" | "A".."Z" | "_") ~ ("a".."z" | "A".."Z" | "0".."9" | "_")* }
+
+// 文字列
+content = { (!("\"" ~ WHITESPACE) ~ ANY)* }
+string = { "\"" ~ content ~ "\"" ~ WHITESPACE }
+
+// 積（product）
+list = { expression ~ ("," ~ expression)+ }
+
+// 余積（coproduct）
+coproduct = { expression ~ (" " ~ expression)+ }
 
 compare = { "<" | "=" | ">" }
 
