@@ -1,13 +1,15 @@
 grammar;
 
-// リテラルの定義
-true = { "_T_" }
-false = { "_F_" }
-
 // 基本的な構文規則
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
+// リテラルの定義
+
+true = { "true" }
+false = { "fail" }
+
 // 数値
+number = { integer | float }
 integer = @{ "-"? ~ ("0".."9")+ }
 float = @{ "-"? ~ ("0".."9")+ ~ "." ~ ("0".."9")* }
 
@@ -18,32 +20,47 @@ identifier = @{ ("a".."z" | "A".."Z" | "_") ~ ("a".."z" | "A".."Z" | "0".."9" | 
 content = { (!("\"" ~ WHITESPACE) ~ ANY)* }
 string = { "\"" ~ content ~ "\"" ~ WHITESPACE }
 
-// 積（product）
-list = { expression ~ ("," ~ expression)+ }
+// 文字
+charactor = { "`" ~ ANY }
 
-// 余積（coproduct）
-coproduct = { expression ~ (" " ~ expression)+ }
+// 積
+list = { expression ~ ("," ~ expression)* }
 
-compare = { "<" | "=" | ">" }
+// 関数
+function = { lamda | op_fn | prefix | suffix ~ "_"}
 
-not = { "!" }
+lamda = { identifier ~ ((" " | ",") ~ identifier)* ~ ";" ~ expression }
+op_fn = { (("(" | "{" | "[") ~ (binary_op | (expression ~ binary_op) | (binary_op ~ expression)) ~ ("]" | "}" | ")")) }
 
-and = { "&" }
+unary_op = { prefix | suffix }
 
-xor = { "^" }
+prefix = { not_op | spread_op }
 
-or = { "|" }
+binary_op = { infix_l | infix_r }
 
-conditional_op = { "?" }
+infix_l = {}
 
-coproduct_op = { " " }
-
-lazy_op = { "\r" | "\n" }
-
-lambda_op = { ";" }
+infix_r = {}
 
 define_op = { ":" }
 
+lambda_op = { ";" }
+
+product_op = { "," }
+
+condition_op = { "?" }
+
+or_op = { "|" }
+
+xor_op = { "^" }
+
+and_op = { "&" }
+
+not_op = { "!" }
+
+compare = { "<" | "=" | ">" }
+
+coproduct_op = { " " }
 
 
 // 基本的な要素：リテラル、括弧で囲まれた式
