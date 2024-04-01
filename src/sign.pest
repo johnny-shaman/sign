@@ -5,8 +5,9 @@ WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
 // リテラルの定義
 
-true = { "true" }
-false = { "fail" }
+true = { "_T_" }
+false = { "_F_" }
+null = { "_0_" }
 
 // 数値
 number = { integer | float }
@@ -30,7 +31,7 @@ list = { expression ~ ("," ~ expression)* }
 function = { lamda | op_fn | prefix | suffix ~ "_"}
 
 lamda = { identifier ~ ((" " | ",") ~ identifier)* ~ ";" ~ expression }
-op_fn = { (("(" | "{" | "[") ~ (binary_op | (expression ~ binary_op) | (binary_op ~ expression)) ~ ("]" | "}" | ")")) }
+op_fn = {prefix | (binary_op | (expression ~ binary_op) | (binary_op ~ expression)) | (suffix ~ "_" )}
 
 unary_op = { prefix | suffix }
 
@@ -38,9 +39,15 @@ prefix = { not_op | spread_op }
 
 binary_op = { infix_l | infix_r }
 
-infix_l = {}
+infix_l = { | or_op | xor_op | and_op | compare_op | add_op | mul_op }
 
-infix_r = {}
+compare_op = { "<" | "=" | ">" }
+
+add_op = { "+" | "-" }
+
+mul_op = { "*" | "/" | "%" }
+
+infix_r = { pow_op }
 
 define_op = { ":" }
 
@@ -58,8 +65,7 @@ and_op = { "&" }
 
 not_op = { "!" }
 
-compare = { "<" | "=" | ">" }
-
+compare = 
 coproduct_op = { " " }
 
 
