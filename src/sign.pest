@@ -1,18 +1,32 @@
 grammar;
 
+expression = {
+    (expression+ ~ suffix)
+    | (literal ~ " " ~ (infix_l | infix_r) ~ " " ~ expression+)
+    | (prefix ~ expression+)
+    | (literal ~ (" " ~ expression)*)
+    | "(" ~ expression ~ ")"
+    | "{" ~ expression ~ "}"
+    | "[" ~ expression ~  "]"
+}
+
 // 基本的な構文規則
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
 // リテラルの定義
+literal = { boolean | number | charactor | string | list | table | function | identifier }
 
-true = { "_T_" }
-false = { "_F_" }
-null = { "_0_" }
+boolean = { true | false }
+
+true = @{ "_" ~ "T" ~ "_" }
+false = @{ "_" ~ "F" ~ "_" }
 
 // 数値
-number = { integer | float }
+number = { integer | float | hex | bit }
 integer = @{ "-"? ~ ("0".."9")+ }
 float = @{ "-"? ~ ("0".."9")+ ~ "." ~ ("0".."9")* }
+hex = @{ "#" ~ (("0".."9") | ("a".."f") | ("A" ~ "F")) ~ (("0".."9") | ("a".."f") | ("A" ~ "F"))+ }
+bit = @{ "#" ~ "b" ~ ("0" | "1")+ }
 
 // 識別子の定義
 identifier = @{ ("a".."z" | "A".."Z" | "_") ~ ("a".."z" | "A".."Z" | "0".."9" | "_")* }
@@ -25,29 +39,21 @@ string = { "\"" ~ content ~ "\"" ~ WHITESPACE }
 charactor = { "`" ~ ANY }
 
 // 積
-list = { expression ~ ("," ~ expression)* }
+list = { expression ~ (product_op ~ expression)* }
 
 // 関数
-function = { lamda | op_fn | prefix | suffix ~ "_"}
+lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression) | op_fn }
+op_fn = { prefix | (binary_op | (expression ~ (infix_l | infix_r)) | ((infix_l | infix_r) ~ expression)) | (suffix ~ "_" ) }
 
-lamda = { identifier ~ ((" " | ",") ~ identifier)* ~ ";" ~ expression }
-op_fn = {prefix | (binary_op | (expression ~ binary_op) | (binary_op ~ expression)) | (suffix ~ "_" )}
+prefix = { not_op | icmt_op | dcmt_op | spread_op }
 
-unary_op = { prefix | suffix }
-
-prefix = { not_op | spread_op }
+suffix = { factrial_op | spread_op | icmt_op | dcmt_op }
 
 binary_op = { infix_l | infix_r }
 
-infix_l = { | or_op | xor_op | and_op | compare_op | add_op | mul_op }
+infix_l = { define_op | lambda_op | product_op | condition_op | or_op | xor_op | and_op | compare_op | add_op | mul_op }
 
-compare_op = { "<" | "=" | ">" }
-
-add_op = { "+" | "-" }
-
-mul_op = { "*" | "/" | "%" }
-
-infix_r = { pow_op }
+infix_r = { pow_op | coproduct_op }
 
 define_op = { ":" }
 
@@ -65,48 +71,14 @@ and_op = { "&" }
 
 not_op = { "!" }
 
-compare = 
+compare_op = { "<" | ">" | "=" }
+
+add_op = { "+" | "-" }
+
+mul_op = { "*" | "/" | "%" }
+
+factrial_op = { "!" }
+
 coproduct_op = { " " }
 
-
-// 基本的な要素：リテラル、括弧で囲まれた式
-
-primary = {
-    literal
-    | "(" ~ expression ~ ")"
-    | "{" ~ expression ~ "}"
-    | "[" ~ expression ~  "]"
-}
-
-// 単項演算式の定義
-not_expr = { not* ~ primary }
-
-// 論理積（AND）式の構築
-and_expr = _{
-    not_expr ~ ("&" ~ not_expr)*
-}
-
-// 排他的論理和（XOR）式の構築
-xor_expression = _{
-    and_expression ~ ("^" ~ and_expression)*
-}
-
-// 論理和（OR）式の構築
-or_expression = _{
-    xor_expression ~ ("|" ~ xor_expression)*
-}
-
-// タプル生成式の定義
-tuple_expression = _{
-    or_expression ~ (product_op ~ or_expression)+
-}
-
-// 条件分岐式の定義
-conditional_expression = _{
-    or_expression ~ conditional_op ~ tuple_expression
-}
-
-// 式の定義を更新して、条件分岐式を含める
-expression = {
-    conditional_expression | tuple_expression | or_expression
-}
+spread_op = { "~" }
