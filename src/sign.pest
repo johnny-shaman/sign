@@ -45,11 +45,9 @@ list = { expression ~ (product_op ~ expression)* }
 lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression) | op_fn }
 op_fn = { prefix | (binary_op | (expression ~ (infix_l | infix_r)) | ((infix_l | infix_r) ~ expression)) | (suffix ~ "_" ) }
 
-prefix = { not_op | icmt_op | dcmt_op | spread_op }
+prefix = { not_op | increment_op | decrement_op | spread_op }
 
-suffix = { factrial_op | spread_op | icmt_op | dcmt_op }
-
-binary_op = { infix_l | infix_r }
+suffix = { factrial_op | increment_op | decrement_op | spread_op }
 
 infix_l = { define_op | lambda_op | product_op | condition_op | or_op | xor_op | and_op | compare_op | add_op | mul_op }
 
