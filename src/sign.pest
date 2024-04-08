@@ -1,23 +1,24 @@
 grammar;
 
-expression = {
+expression = _{
     (expression+ ~ suffix)
-    | (literal ~ " " ~ (infix_l | infix_r) ~ " " ~ expression+)
+    | (literal ~ coproduct_evaluate_op ~ (infix_l | infix_r) ~ coproduct_evaluate_op ~ expression+)
     | (prefix ~ expression+)
-    | (literal ~ (" " ~ expression)*)
-    | "(" ~ expression ~ ")"
-    | "{" ~ expression ~ "}"
-    | "[" ~ expression ~  "]"
+    | (literal ~ (coproduct_evaluate_op ~ expression)*)
+    | "(" ~ expression+ ~ ")" ~ coproduct_evaluate_op ~ expression*
+    | "{" ~ expression+ ~ "}" ~ coproduct_evaluate_op ~ expression*
+    | "[" ~ expression+ ~ "]" ~ coproduct_evaluate_op ~ expression*
 }
 
 // 基本的な構文規則
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
 // リテラルの定義
-literal = { boolean | number | charactor | string | list | table | function | identifier }
+literal = { none | boolean | number | charactor | string | list | table | lambda | identifier }
+
+none = @{ "_" ~ "0" ~ "_" }
 
 boolean = { true | false }
-
 true = @{ "_" ~ "T" ~ "_" }
 false = @{ "_" ~ "F" ~ "_" }
 
@@ -47,11 +48,11 @@ op_fn = { prefix | (binary_op | (expression ~ (infix_l | infix_r)) | ((infix_l |
 
 prefix = { not_op | increment_op | decrement_op | spread_op }
 
-suffix = { factrial_op | increment_op | decrement_op | spread_op }
+suffix = { factrial_op | increment_op | decrement_op | spread_op | coproduct_evaluate_op }
 
-infix_l = { define_op | lambda_op | product_op | condition_op | or_op | xor_op | and_op | compare_op | add_op | mul_op }
+infix_l = { define_op | lambda_op | product_op | condition_op | or_op | and_op | compare_op | additive_op | multiplicative_op }
 
-infix_r = { pow_op | coproduct_op }
+infix_r = { pow_op | coproduct_evaluate_op }
 
 define_op = { ":" }
 
@@ -61,9 +62,7 @@ product_op = { "," }
 
 condition_op = { "?" }
 
-or_op = { "|" }
-
-xor_op = { "^" }
+or_xor_op = { "|" | "^" }
 
 and_op = { "&" }
 
@@ -71,12 +70,12 @@ not_op = { "!" }
 
 compare_op = { "<" | ">" | "=" }
 
-add_op = { "+" | "-" }
+additive_op = { "+" | "-" }
 
-mul_op = { "*" | "/" | "%" }
+multiplicative_op = { "*" | "/" | "%" }
 
 factrial_op = { "!" }
 
-coproduct_op = { " " }
+coproduct_evaluate_op = { " " }
 
 spread_op = { "~" }
