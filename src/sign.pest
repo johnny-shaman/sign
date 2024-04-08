@@ -76,6 +76,8 @@ multiplicative_op = { "*" | "/" | "%" }
 
 factrial_op = { "!" }
 
+pow_op = { "^" }
+
 coproduct_evaluate_op = { " " }
 
 spread_op = { "~" }
