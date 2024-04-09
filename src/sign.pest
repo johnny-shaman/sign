@@ -43,8 +43,7 @@ charactor = { "`" ~ ANY }
 list = { expression ~ (product_op ~ expression)* }
 
 // 関数
-lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression) | op_fn }
-op_fn = { prefix | (binary_op | (expression ~ (infix_l | infix_r)) | ((infix_l | infix_r) ~ expression)) | (suffix ~ "_" ) }
+// 型システムのために、関数の型は構文で出来る限り推論する
 
 prefix = { not_op | increment_op | decrement_op | spread_op }
 
@@ -56,11 +55,17 @@ infix_r = { pow_op | coproduct_evaluate_op }
 
 define_op = { ":" }
 
+set = { identifier ~ define_op ~ expression+ }
+
 lambda_op = { ";" }
+lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression) | op_fn }
+op_fn = { prefix | (binary_op | (expression ~ (infix_l | infix_r)) | ((infix_l | infix_r) ~ expression)) | (suffix ~ "_" ) | (lambda ~ ("_" | literal)* ~ "_" ) }
 
 product_op = { "," }
 
-condition_op = { "?" }
+selection_op = { "?" }
+
+get_op = { "'" }
 
 or_xor_op = { "|" | "^" }
 
