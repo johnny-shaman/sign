@@ -14,7 +14,10 @@ expression = _{
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
 // リテラルの定義
-literal = { none | boolean | number | charactor | string | list | table | lambda | identifier }
+atom = { none | boolean | number | charactor | string | list | dictionary | lambda }
+literal = { atom | identifier }
+
+
 
 none = @{ "_" ~ "0" ~ "_" }
 
@@ -26,8 +29,8 @@ false = @{ "_" ~ "F" ~ "_" }
 number = { integer | float | hex | bit }
 integer = @{ "-"? ~ ("0".."9")+ }
 float = @{ "-"? ~ ("0".."9")+ ~ "." ~ ("0".."9")* }
-hex = @{ "#" ~ (("0".."9") | ("a".."f") | ("A" ~ "F")) ~ (("0".."9") | ("a".."f") | ("A" ~ "F"))+ }
-bit = @{ "#" ~ "b" ~ ("0" | "1")+ }
+hex = @{ "0" ~ "x" (("0".."9") | ("a".."f") | ("A" ~ "F")) ~ (("0".."9") | ("a".."f") | ("A" ~ "F"))+ }
+bit = @{ "0" ~ "b" ~ ("0" | "1") }
 
 // 識別子の定義
 identifier = @{ ("a".."z" | "A".."Z" | "_") ~ ("a".."z" | "A".."Z" | "0".."9" | "_")* }
@@ -39,50 +42,61 @@ string = { "\"" ~ content ~ "\"" ~ WHITESPACE }
 // 文字
 charactor = { "`" ~ ANY }
 
-// 積
-list = { expression ~ (product_op ~ expression)* }
 
 // 関数
 // 型システムのために、関数の型は構文で出来る限り推論する
 
-prefix = { not_op | increment_op | decrement_op | spread_op }
-
-suffix = { factrial_op | increment_op | decrement_op | spread_op | coproduct_evaluate_op }
-
-infix_l = { define_op | lambda_op | product_op | condition_op | or_op | and_op | compare_op | additive_op | multiplicative_op }
-
-infix_r = { pow_op | coproduct_evaluate_op }
-
 define_op = { ":" }
+assign = { identifier ~ define_op ~ expression+ }
 
-set = { identifier ~ define_op ~ expression+ }
+access_op = { "'" }
+set = { (list | dictionary | identifier) ~ access_op ~ (string | identifier) ~ define_op ~ expression+ }
 
+//匿名関数
 lambda_op = { ";" }
-lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression) | op_fn }
-op_fn = { prefix | (binary_op | (expression ~ (infix_l | infix_r)) | ((infix_l | infix_r) ~ expression)) | (suffix ~ "_" ) | (lambda ~ ("_" | literal)* ~ "_" ) }
+lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression+) }
 
+// 積
 product_op = { "," }
+list = { expression ~ (product_op ~ expression)* }
 
+//論理演算域
+boolean_domain = { not | and | or_xor | compare | boolean | identifier }
+
+//選択演算子
 selection_op = { "?" }
+selection = { boolean_domain ~ selection_op ~ list }
 
-get_op = { "'" }
-
+//or xor
 or_xor_op = { "|" | "^" }
+or_xor = { boolean_domain ~ or_xor_op ~ boolean_domain }
 
+//and
 and_op = { "&" }
+and = { boolean_domain ~ and_op ~ boolean_domain }
 
+//not
 not_op = { "!" }
+not = @{ not_op ~ boolean_domain }
 
-compare_op = { "<" | ">" | "=" }
+//算術演算域
+number_domain = { number | additive | multiplicative | pow }
+
+//比較演算子
+compare_op = @{ "<" | ">" | "=" | ("<" ~ "=") | (">" ~ "=") }
+compare = { number_domain ~ compare_op ~ number_domain }
 
 additive_op = { "+" | "-" }
+additive = { number_domain ~ additive_op ~ number_domain }
 
 multiplicative_op = { "*" | "/" | "%" }
 
 factrial_op = { "!" }
 
-pow_op = { "^" }
+pow_op = @{ "*" ~ "*" }
 
 coproduct_evaluate_op = { " " }
 
 spread_op = { "~" }
+
+get = { (list | dictionary | identifier) ~ access_op ~ (string | identifier) }
