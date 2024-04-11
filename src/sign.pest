@@ -12,6 +12,12 @@ expression = _{
 
 // 基本的な構文規則
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+l_paren = { "(" }
+r_paren = { ")" }
+l_brace = { "{" }
+r_brace = { "}" }
+l_brack = { "[" }
+r_brack = { "]" }
 
 // リテラルの定義
 atom = { none | boolean | number | charactor | string | list | dictionary | lambda }
@@ -59,17 +65,23 @@ lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op
 // 積
 product_op = { "," }
 list = { expression ~ (product_op ~ expression)* }
+lambda_product_l = { expression+ ~ product_op }
+lambda_product_r = { product_op ~ expression+ }
 
 //論理演算域
 boolean_domain = { not | and | or_xor | compare | boolean | identifier }
 
 //選択演算子
 selection_op = { "?" }
-selection = { boolean_domain ~ selection_op ~ list }
+selection = { boolean_domain ~ selection_op ~ (list | identifier) }
+lambda_selection_l = { boolean_domain ~ selection_op }
+lambda_selection_r = { (selection_op ~ list) }
 
 //or xor
 or_xor_op = { "|" | "^" }
 or_xor = { boolean_domain ~ or_xor_op ~ boolean_domain }
+lambda_or_xor_l = { boolean_domain ~ or_xor_op }
+lambda_or_xor_r = { or_xor_op ~ boolean_domain }
 
 //and
 and_op = { "&" }
