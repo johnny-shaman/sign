@@ -23,8 +23,6 @@ r_brack = { "]" }
 atom = { none | boolean | number | charactor | string | list | dictionary | lambda }
 literal = { atom | identifier }
 
-
-
 none = @{ "_" ~ "0" ~ "_" }
 
 boolean = { true | false }
@@ -48,12 +46,17 @@ string = { "\"" ~ content ~ "\"" ~ WHITESPACE }
 // 文字
 charactor = { "`" ~ ANY }
 
-
 // 関数
 // 型システムのために、関数の型は構文で出来る限り推論する
 
 define_op = { ":" }
 assign = { identifier ~ define_op ~ expression+ }
+dictionary = {
+    (l_paren ~ assign+ ~ r_brace)
+    | (l_brace ~ assign+ ~ r_brace)
+    | (l_brack ~ assign+ ~ r_brack)
+
+}
 
 access_op = { "'" }
 set = { (list | dictionary | identifier) ~ access_op ~ (string | identifier) ~ define_op ~ expression+ }
@@ -64,48 +67,61 @@ lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op
 
 // 積
 product_op = { "," }
-list = { expression ~ (product_op ~ expression)* }
+lambda_product = { product_op }
 lambda_product_l = { expression+ ~ product_op }
 lambda_product_r = { product_op ~ expression+ }
+list = { expression ~ (product_op ~ expression)* }
 
 //論理演算域
 boolean_domain = { not | and | or_xor | compare | boolean | identifier }
 
 //選択演算子
 selection_op = { "?" }
-selection = { boolean_domain ~ selection_op ~ (list | identifier) }
+lambda_selection = { selection_op }
 lambda_selection_l = { boolean_domain ~ selection_op }
-lambda_selection_r = { (selection_op ~ list) }
+lambda_selection_r = { selection_op ~ (list | identifier) }
+selection = { boolean_domain ~ selection_op ~ (list | identifier) }
 
-//or xor
+//論理和　論理非交和
 or_xor_op = { "|" | "^" }
-or_xor = { boolean_domain ~ or_xor_op ~ boolean_domain }
+lambda_or_xor = { or_xor_op }
 lambda_or_xor_l = { boolean_domain ~ or_xor_op }
 lambda_or_xor_r = { or_xor_op ~ boolean_domain }
+or_xor = { boolean_domain ~ or_xor_op ~ boolean_domain }
 
-//and
+//論理積
 and_op = { "&" }
+lambda_and = { and_op }
+lambda_and_l = { boolean_domain ~ and_op }
+lambda_and_r = { and_op ~ boolean_domain }
 and = { boolean_domain ~ and_op ~ boolean_domain }
 
-//not
+//否定
 not_op = { "!" }
-not = @{ not_op ~ boolean_domain }
+lambda_not = { not_op+ }
+not = @{ not_op+ ~ boolean_domain }
 
 //算術演算域
-number_domain = { number | additive | multiplicative | pow }
+number_domain = { additive | multiplicative | factrial | power | number }
 
 //比較演算子
 compare_op = @{ "<" | ">" | "=" | ("<" ~ "=") | (">" ~ "=") }
+lambda_compare = { compare_op }
+lambda_compare_l = { number_domain ~ compare_op }
+lambda_compare_r = { compare_op ~ number_domain }
 compare = { number_domain ~ compare_op ~ number_domain }
 
 additive_op = { "+" | "-" }
-additive = { number_domain ~ additive_op ~ number_domain }
+additive = { number_domain ~ (additive_op ~ number_domain)+ }
 
 multiplicative_op = { "*" | "/" | "%" }
+multiplicative = { number_domain ~ (multiplicative_op ~ number_domain)+ }
 
 factrial_op = { "!" }
+factrial = { number_domain ~ factrial_op }
 
-pow_op = @{ "*" ~ "*" }
+power_op = { "^" }
+power = { }
 
 coproduct_evaluate_op = { " " }
 
