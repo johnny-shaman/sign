@@ -1,5 +1,7 @@
 grammar;
 
+program = { SOI ~ expression ~ EOI }
+
 expression = _{
     (expression+ ~ suffix)
     | (literal ~ coproduct_evaluate_op ~ (infix_l | infix_r) ~ coproduct_evaluate_op ~ expression+)
@@ -12,6 +14,7 @@ expression = _{
 
 // 基本的な構文規則
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+
 l_paren = { "(" }
 r_paren = { ")" }
 l_brace = { "{" }
@@ -20,8 +23,8 @@ l_brack = { "[" }
 r_brack = { "]" }
 
 // リテラルの定義
-atom = { none | boolean | number | charactor | string | list | dictionary | lambda }
-literal = { atom | identifier }
+atom = { none | boolean | number | charactor | string | product | dictionary }
+literal = { atom | lambda | identifier }
 
 none = @{ "_" ~ "0" ~ "_" }
 
@@ -31,13 +34,13 @@ false = @{ "_" ~ "F" ~ "_" }
 
 // 数値
 number = { integer | float | hex | bit }
-integer = @{ "-"? ~ ("0".."9")+ }
-float = @{ "-"? ~ ("0".."9")+ ~ "." ~ ("0".."9")* }
-hex = @{ "0" ~ "x" (("0".."9") | ("a".."f") | ("A" ~ "F")) ~ (("0".."9") | ("a".."f") | ("A" ~ "F"))+ }
-bit = @{ "0" ~ "b" ~ ("0" | "1") }
+integer = @{ "-"? ~ ASCII_DIGIT+ }
+float = @{ "-"? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* }
+hex = @{ "0" ~ "x" ASCII_HEX_DIGIT ~ ASCII_HEX_DIGIT+ }
+bit = @{ "0" ~ "b" ~ ("0" | "1")+ }
 
 // 識別子の定義
-identifier = @{ ("a".."z" | "A".."Z" | "_") ~ ("a".."z" | "A".."Z" | "0".."9" | "_")* }
+identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
 
 // 文字列
 content = { (!("\"" ~ WHITESPACE) ~ ANY)* }
@@ -52,25 +55,38 @@ charactor = { "`" ~ ANY }
 define_op = { ":" }
 assign = { identifier ~ define_op ~ expression+ }
 dictionary = {
-    (l_paren ~ assign+ ~ r_brace)
+    (l_paren ~ assign+ ~ r_paren)
     | (l_brace ~ assign+ ~ r_brace)
     | (l_brack ~ assign+ ~ r_brack)
-
 }
 
 access_op = { "'" }
-set = { (list | dictionary | identifier) ~ access_op ~ (string | identifier) ~ define_op ~ expression+ }
+set = { (product | dictionary | identifier) ~ access_op ~ (string | identifier) ~ define_op ~ expression+ }
+post_spread_flatten = {(product | dictionary | string | identifier)  ~ spread_flatten_op }
 
 //匿名関数
 lambda_op = { ";" }
-lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression+) }
+lambda = { (identifier ~ ((coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression+) | point_free }
+point_free = {
+    lambda_product | lambda_product_l | lambda_product_r
+    | lambda_selection | lambda_selection_l | lambda_selection_r
+    | lambda_or_xor | lambda_or_xor_l | lambda_or_xor_r
+    | lambda_and | lambda_and_r | lambda_and_r
+    | lambda_not
+    | lambda_compare | lambda_compare_l | lambda_compare_r
+    | lambda_additive | lambda_additive_l | lambda_additive_r
+    | lambda_multiplicative | lambda_multiplicative_l | lambda_multiplicative_r
+    | lambda_power | lambda_power_l | lambda_power_r
+}
+
+lambda_compose = _{ lambda ~ (coproduct_evaluate_op ~ lambda)+ }
 
 // 積
 product_op = { "," }
 lambda_product = { product_op }
 lambda_product_l = { expression+ ~ product_op }
 lambda_product_r = { product_op ~ expression+ }
-list = { expression ~ (product_op ~ expression)* }
+product = { expression ~ (product_op ~ expression)* }
 
 //論理演算域
 boolean_domain = { not | and | or_xor | compare | boolean | identifier }
@@ -79,8 +95,8 @@ boolean_domain = { not | and | or_xor | compare | boolean | identifier }
 selection_op = { "?" }
 lambda_selection = { selection_op }
 lambda_selection_l = { boolean_domain ~ selection_op }
-lambda_selection_r = { selection_op ~ (list | identifier) }
-selection = { boolean_domain ~ selection_op ~ (list | identifier) }
+lambda_selection_r = { selection_op ~ (product | identifier) }
+selection = { boolean_domain ~ selection_op ~ (product | identifier) }
 
 //論理和　論理非交和
 or_xor_op = { "|" | "^" }
@@ -112,19 +128,30 @@ lambda_compare_r = { compare_op ~ number_domain }
 compare = { number_domain ~ compare_op ~ number_domain }
 
 additive_op = { "+" | "-" }
+lambda_additive = { additive_op }
+lambda_additive_l = { number_domain ~ additive_op }
+lambda_additive_r = { additive_op ~ number_domain }
 additive = { number_domain ~ (additive_op ~ number_domain)+ }
 
 multiplicative_op = { "*" | "/" | "%" }
+lambda_multiplicative = { multiplicative_op }
+lambda_multiplicative_l = { number_domain ~ multiplicative_op }
+lambda_multiplicative_r = { multiplicative_op ~ number_domain }
 multiplicative = { number_domain ~ (multiplicative_op ~ number_domain)+ }
 
 factrial_op = { "!" }
-factrial = { number_domain ~ factrial_op }
+lambda_factrial = { "_" ~ factrial_op+ }
+factrial = @{ number_domain ~ factrial_op+ }
 
-power_op = { "^" }
-power = { }
+power_op = @{ "*" ~ "*" }
+lambda_power = { power_op }
+lambda_power_l = { number_domain ~ power_op }
+lambda_power_r = { power_op ~ number_domain }
+power = { number_domain ~ power_op ~ number_domain }
 
 coproduct_evaluate_op = { " " }
 
-spread_op = { "~" }
+spread_flatten_op = { "~" }
+pre_spread_flatten = { spread_op ~ (product | dictionary | string | identifier) }
 
-get = { (list | dictionary | identifier) ~ access_op ~ (string | identifier) }
+get = { (product | dictionary | identifier) ~ access_op ~ (string | ASCII_DIGIT+ | identifier) }
