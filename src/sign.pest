@@ -51,7 +51,7 @@ string = { "\"" ~ content ~ "\"" ~ WHITESPACE }
 // 文字
 charactor = { "`" ~ ANY }
 
-//演算子の意味
+//演算子
 
 define_op = { ":" }
 access_op = { "'" }
@@ -67,12 +67,16 @@ additive_op = { "+" | "-" }
 multiplicative_op = { "*" | "/" | "%" }
 factrial_op = { "!" }
 power_op = @{ "*" ~ "*" }
-coproduct_evaluate_op = _{ " " }
+coproduct_op = _{ " " }
+evaluate_op = _{ NEWLINE }
+map_op = _{ l_brace ~ lambda ~ r_brace }
 
 
 //定義、事後制御域
 
 assign = { identifier ~ define_op ~ expression+ }
+
+
 dictionary = {
     (l_paren ~ assign+ ~ r_paren)
     | (l_brace ~ assign+ ~ r_brace)
@@ -162,7 +166,7 @@ power = { number_domain ~ power_op ~ number_domain }
 
 //優先制御域
 concat_list = { (concattable | identifier) ~ (coproduct_evaluate_op ~ (concattable | identifier)+) }
-try_evaluate = { lambda ~ coproduct_evaluate_op ~ (values)+ }
+evaluate = { lambda ~ coproduct_evaluate_op ~ (values)+ }
 
 pre_spread_flatten = { spread_op ~ (product | dictionary | string | identifier) }
 get = { (product | dictionary | identifier) ~ access_op ~ (string | ASCII_DIGIT+ | identifier) }
