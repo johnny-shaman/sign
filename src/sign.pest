@@ -27,6 +27,7 @@ none = @{ "_" ~ "0" ~ "_" }
 
 false = @{ "_" ~ "F" ~ "_" }
 true = @{ "_" ~ "T" ~ "_" }
+file_scope = @{"_" ~ "m" ~ "y" ~ "_" }
 logic = { false | true }
 
 // 数値
@@ -48,15 +49,16 @@ charactor = { "`" ~ ANY }
 
 //型
 atom = { none | logic | number }
-functor = { string | product | dictionary | lambda }
-concattable = { charactor | functor }
+list = { string | product | dictionary }
+concattable = { charactor | list }
 values = { atom | concattable }
-literal = { values | identifier }
+function = { lambda | identifier }
+literal = { values | function }
 
 //演算子
 define_op = { ":" }
 access_op = { "'" }
-spread_flatten_loop_op = { "~" }
+spread_op = { "~" }
 lambda_op = { ";" }
 product_op = { "," }
 selection_op = { "?" }
@@ -86,14 +88,15 @@ mod_op = { "%" }
 
 additive_op = { add_op | sub_op }
 multiplicative_op = { mul_op | div_op | mod_op }
-factrial_op = { "!" }
 power_op = @{ "*" ~ "*" }
 coproduct_op = _{ " " }
 
 
 //定義、事後制御域
 
-assign = { identifier ~ define_op ~ expression+ }
+export = { "#" ~ expression+ }
+
+assign = { (identifier | access) ~ define_op ~ expression+ }
 
 dictionary = {
     (l_paren ~ assign+ ~ r_paren)
@@ -101,7 +104,7 @@ dictionary = {
     | (l_brack ~ assign+ ~ r_brack)
 }
 
-post_spread_flatten = {(product | dictionary | string | identifier)  ~ spread_flatten_op }
+post_spread_flatten = @{(product | dictionary | string | identifier)  ~ spread_op }
 
 // 関数
 // 型システムのために、関数の型は構文で出来る限り推論する
@@ -116,16 +119,23 @@ point_free = {
     | lambda_compare | lambda_compare_l | lambda_compare_r
     | lambda_additive | lambda_additive_l | lambda_additive_r
     | lambda_multiplicative | lambda_multiplicative_l | lambda_multiplicative_r
+    | lambda_factrial
     | lambda_power | lambda_power_l | lambda_power_r
+    | lambda_access | lambda_access_l | lambda_access_r
 }
 
-lambda_compose = _{ lambda ~ (coproduct_op ~ lambda)+ }
+left_compose = _{ function ~ (coproduct_op ~ function)+ }
+right_compose = { function ~ ("$" ~ function)+ }
 
 // 積
 lambda_product = { product_op }
 lambda_product_l = { expression+ ~ product_op }
 lambda_product_r = { product_op ~ expression+ }
 product = { expression ~ (product_op ~ expression)* }
+
+lambda_generator_l = { number_domain ~ spread_op }
+lambda_generator_r = { spread_op ~ number_domain }
+generator = { number_domain ~ spread_op ~ number_domain }
 
 //論理演算域
 logical_domain = { not | and | or_xor | compare | logic | identifier }
@@ -134,7 +144,7 @@ logical_domain = { not | and | or_xor | compare | logic | identifier }
 lambda_selection = { selection_op }
 lambda_selection_l = { logical_domain ~ selection_op }
 lambda_selection_r = { selection_op ~ (product | identifier) }
-selection = { logical_domain ~ selection_op ~ (product | identifier) }
+selection = { logical_domain ~ selection_op ~ (product | dictionary | identifier) }
 
 //論理和　論理非交和
 lambda_or_xor = { or_xor_op }
@@ -171,19 +181,20 @@ lambda_multiplicative_l = { number_domain ~ multiplicative_op }
 lambda_multiplicative_r = { multiplicative_op ~ number_domain }
 multiplicative = { number_domain ~ (multiplicative_op ~ number_domain)+ }
 
-lambda_factrial = @{ "_" ~ factrial_op+ }
-factrial = @{ number_domain ~ factrial_op+ }
-
 lambda_power = { power_op }
 lambda_power_l = { number_domain ~ power_op }
 lambda_power_r = { power_op ~ number_domain }
 power = { number_domain ~ power_op ~ number_domain }
 
-
 //優先制御域
+import = { "@" ~ string }
+assign_import = { identifier ~ "@" string }
 concat_list = { (concattable | identifier) ~ (coproduct_op ~ (concattable | identifier)+) }
-evaluate = { lambda ~ (coproduct_op ~ values)+ }
+apply = { function ~ (coproduct_op ~ expression)+ }
+partial_apply = { function ~ (coproduct_op ~ expression)* ~ "_" ~ (coproduct_op ~ expression)* }
 
-
-pre_spread_flatten = { spread_op ~ (product | dictionary | string | identifier) }
-access = { (product | dictionary | identifier) ~ access_op ~ (string | ASCII_DIGIT+ | identifier) }
+pre_spread_flatten = @{ spread_op ~ (product | dictionary | string | identifier) }
+lambda_access = { access_op }
+lambda_access_l = { (product | string | dictionary | identifier) ~ access_op }
+lambda_access_r = { access_op ~ (string | number | identifier | charactor) }
+access = { (product | string | dictionary | identifier) ~ access_op ~ (string | number | identifier | charactor) }
