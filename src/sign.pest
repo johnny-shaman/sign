@@ -1,15 +1,10 @@
 grammar;
 
-program = { SOI ~ expression ~ EOI }
+program = { SOI ~ expression+ ~ EOI }
 
-expression = _{
-    (expression+ ~ suffix)
-    | (literal ~ coproduct_op ~ (infix_l | infix_r) ~ coproduct_op ~ expression+)
-    | (prefix ~ expression+)
-    | (literal ~ (coproduct_op ~ expression)*)
-    | "(" ~ expression+ ~ ")" ~ coproduct_op ~ expression*
-    | "{" ~ expression+ ~ "}" ~ coproduct_op ~ expression*
-    | "[" ~ expression+ ~ "]" ~ coproduct_op ~ expression*
+expression = {
+    lambda
+    |
 }
 
 // 基本的な構文規則
@@ -23,19 +18,18 @@ l_brack = { "[" }
 r_brack = { "]" }
 
 // リテラルの定義
-none = @{ "_" ~ "0" ~ "_" }
-
-false = @{ "_" ~ "F" ~ "_" }
-true = @{ "_" ~ "T" ~ "_" }
-file_scope = @{"_" ~ "m" ~ "y" ~ "_" }
+none = @{ "None" }
+false = @{ "Nop"  }
+true = @{ "Yep" }
 logic = { false | true }
 
 // 数値
-integer = @{ "-"? ~ ASCII_DIGIT+ }
-float = @{ "-"? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* }
+natural = @{ ASCII_DIGIT+ }
 hex = @{ "0" ~ "x" ASCII_HEX_DIGIT ~ ASCII_HEX_DIGIT+ }
 bit = @{ "0" ~ "b" ~ ("0" | "1")+ }
-number = { integer | float | hex | bit }
+integer = @{ "-"? ~ ASCII_DIGIT+ }
+float = @{ "-"? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* }
+number = { natural | bit | hex | integer | float }
 
 // 識別子の定義
 identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
@@ -96,7 +90,8 @@ coproduct_op = _{ " " }
 
 export = { "#" ~ expression+ }
 
-assign = { (identifier | access) ~ define_op ~ expression+ }
+logical_assign = { (identifier | access) ~ define_op ~ logical_term }
+N_assign = { (identifier | access) ~ define_op ~ N_term }
 
 dictionary = {
     (l_paren ~ assign+ ~ r_paren)
@@ -133,12 +128,13 @@ lambda_product_l = { expression+ ~ product_op }
 lambda_product_r = { product_op ~ expression+ }
 product = { expression ~ (product_op ~ expression)* }
 
-lambda_generator_l = { number_domain ~ spread_op }
-lambda_generator_r = { spread_op ~ number_domain }
-generator = { number_domain ~ spread_op ~ number_domain }
+lambda_loop_l = { number_domain ~ spread_op }
+lambda_loop_r = { spread_op ~ number_domain }
+loop = { number_domain ~ spread_op ~ number_domain }
 
 //論理演算域
-logical_domain = { not | and | or_xor | compare | logic | identifier }
+logical_term = { not | and | or_xor | compare | logic }
+logical_domain = { logical_term | ident_logic }
 
 //選択演算
 lambda_selection = { selection_op }
@@ -163,7 +159,7 @@ lambda_not = { not_op+ }
 not = @{ not_op+ ~ logical_domain }
 
 //算術演算域
-number_domain = { additive | multiplicative | factrial | power | number | identifier }
+number_domain = { additive | multiplicative | power | number | identifier }
 
 //比較演算子
 lambda_compare = { compare_op }

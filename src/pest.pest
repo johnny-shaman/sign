@@ -1,0 +1,72 @@
+program      =   { SOI ~ expr* ~ EOI }
+  expr       =   {
+      assign_logic
+    | assign_number
+    | assign_char
+    | assign_str
+    | assign_list
+    | assign_dict
+    | assign_fn
+    | fn
+    | reason
+  }
+
+    assign_logic  = { logic_id ~ f_set ~ logical }
+    assign_number = { number_id ~ f_set ~ calculate }
+    assign_char   = { char_id ~ f_set ~ char }
+    assign_str    = { str_id ~ f_set ~ str }
+    assign_list   = { list_id ~ f_set ~ list }
+    assign_dict   = { dict_id ~ f_set ~ dict }
+    assign_fn     = { fn_id ~ f_set ~ fn }
+
+      logic_id  = { ident }
+      number_id = { ident }
+      char_id   = { ident }
+      str_id    = { ident }
+      list_id   = { ident }
+      dict_id   = { ident }
+      fn_id     = { ident }
+  
+      ident = { (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")+ }
+
+      fn = {
+          f_get
+      }
+
+lp            = { "(" }
+rp            = { ")" }
+lbc           = { "{" }
+rbc           = { "}" }
+lbk           = { "[" }
+rbk           = { "]" }
+f_get         = { "'" }        // (dict_id | list_id) -> ( ident | string | number ) -> expr // same of ~. and ?.
+f_set         = { ":" }        // ident -> expr -> expr
+f_pair        = { "," }        // x -> y -> (x, y)
+f_sum_eval    = { " " }        // (a, b) -> (c, d) -> (a, b, c, d) | f -> g -> f(g)
+f_zip         = { "[,]" }      // (a, b) -> (c, d) -> ((a, c), (b, d))
+f_map         = { "[ ]" }      // (a, b) -> f -> (f(a) -> f(b))
+f_product     = { "[*]" }      // (a, b) -> (c, d) -> ((a, c), (a, d), (b, c), (b, d))
+f_coproduct   = { "[^]" }      // (a, b) -> (c) -> ((a), (b), (c), (a, b), (a, c), (b, c), (a, b, c))
+f_compose_l   = { "$" }        // f -> g -> g(f)
+f_post_eval   = { "\n" }       // f -> x -> f(x)
+f_select      = { "?" }        // bool -> pair -> expr
+f_or          = { "|" }        // bool -> bool -> bool
+f_xor         = { "^" }        // bool -> bool -> bool
+f_and         = { "&" }        // bool -> bool -> bool
+f_not         = { "!" }        // bool -> bool
+f_less        = { "<" }        // number -> number -> bool
+f_less_eq     = { "<=" }       // number -> number -> bool
+f_equal       = { "=" }        // number -> number -> bool
+f_not_eq      = { "!=" }       // number -> number -> bool
+f_more_eq     = { ">=" }       // number -> number -> bool
+f_more        = { ">" }        // number -> number -> bool
+f_add         = { "+" }        // number -> number -> number
+f_sub         = { "-" }        // number -> number -> number
+f_mul         = { "*" }        // number -> number -> number
+f_div         = { "/" }        // number -> number -> float
+f_mod         = { "%" }        // number -> number -> uint
+f_fac         = { "!" }        // number -> number
+f_pow         = { "^" }        // number -> number -> float
+f_spread      = { "~" }
+char          = { '\\' ~ ANY }
+str           = { "`" ~ ANY* ~ "`" }
