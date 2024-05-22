@@ -1,10 +1,6 @@
 "文字列だけの行は実行されない。"
 "文字列は、'"'で始まり、'"[\n\t]{1}'で終わる"
-
-"Hello World"
-
-"この言語はファイルごとのスコープを持つ。"
-
+"この言語はファイルごとのローカルスコープを持つ。"
 "":"は英文では「即ち」、「代入」を表す。"
 "この言語ではカッコはブロックを表し、ローカルスコープを持ち、優先に処理されるものと認識される。"
 "辞書型も表現可能で、カッコの種類は問わない。"
@@ -35,16 +31,16 @@ false: _F_
 
 My: `M`y` `D`o`m`e`s`t`i`c
 
-("Hello "	My " World!"	) = "Hello My Domestic World!"
+"Hello "	My " World!"	 = "Hello My Domestic World!"
 
-(Hello `  My `  "World"	`!) = "Hello My Domestic World!"
+Hello `  My `  "World"	`! = "Hello My Domestic World!"
 
 "Hello"	`!`  My World `! = "Hello! My Domestic World!"
 
 "空白を含めたい場合。"
 says : "You say "Good Bye..." "I say "Hello""
 
-"改行を含めたい場合
+"改行を含めたい場合"
 HW_in_enter:
 	"Hello"	`
 	"World!"
@@ -140,7 +136,7 @@ x;
 [3 *] 2
 
 "3 * 2 でのラムダ項の評価は通常の数式と変わらない構文であるため、通常の式の評価とする"
-"ポイントフリーな記述も、字下げ"
+"ポイントフリーな記述も、字下げで複数行定義可能"
 ? 	[
 		AM: "Good Morining Sur."
 		PM: "Good Afternoon Sur."
@@ -154,7 +150,7 @@ x;
 [!] false = !false
 [_!] 8 = 8!
 
-"関数合成は以下のように書く、この場合、lambdaはカッコで囲む"
+"関数合成は以下のように書く"
 
 h: f g
 
@@ -165,7 +161,6 @@ h 3 = f g 3
 3 f g = g f 3
 
 "途中の引数の変化に対して対応する。"
-
 ([+ 2] [*] [+ 3] 5 4) = (5 + 3) * 4 + 2
 
 "配列をスプレッドオペレータで分割代入する。"
@@ -173,8 +168,6 @@ h 3 = f g 3
 
 "多引数関数のパイプは配列とスプレッドオペレータでやる。"
 ~[5 4] [+] [+ 3] [* 2] = (5 + 3) * 4 + 2
-
-
 
 "分割代入は後置スプレッドオペレータ"
 [a~ ; a] 1 2 3 4 5
@@ -235,6 +228,13 @@ h 3 = f g 3
 		"xor："logic ^ or_xor""
 
 	"product："expr([,]expr)+""
+
+	"select"
+		"logic ? list"
+		"logic ? dict"
+		"number ? list"
+		"ident ? dict"
+		"string ? dict""
 
 	"function"
 		"infix"

@@ -1,196 +1,146 @@
-grammar;
+// sign.pest
 
-program = { SOI ~ expression+ ~ EOI }
+WHITESPACE = _{ " " | "\t" | NEWLINE }
 
-expression = {
-    lambda
-    |
+input = { SOI ~ expression* ~ EOI }
+
+expression = _{
+    export
+    | assignment
+    | function
+    | eval_compose
+    | compare
+    | add_sub
+    | mul_div
+    | power
+    | factorial
+    | select
+    | product
+    | not
+    | and
+    | or_xor
+    | get
+    | preSpread
+    | literal
+    | import
 }
 
-// 基本的な構文規則
-WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+import = { "import" ~ "@" ~ ident ~ "," ~ "@" ~ string }
 
-l_paren = { "(" }
-r_paren = { ")" }
-l_brace = { "{" }
-r_brace = { "}" }
-l_brack = { "[" }
-r_brack = { "]" }
-
-// リテラルの定義
-none = @{ "None" }
-false = @{ "Nop"  }
-true = @{ "Yep" }
-logic = { false | true }
-
-// 数値
-natural = @{ ASCII_DIGIT+ }
-hex = @{ "0" ~ "x" ASCII_HEX_DIGIT ~ ASCII_HEX_DIGIT+ }
-bit = @{ "0" ~ "b" ~ ("0" | "1")+ }
-integer = @{ "-"? ~ ASCII_DIGIT+ }
-float = @{ "-"? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* }
-number = { natural | bit | hex | integer | float }
-
-// 識別子の定義
-identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
-
-// 文字列
-content = { (!(("\"" ~ WHITESPACE) | NEWLINE) ~ ANY)* }
-string = { "\"" ~ content ~ "\"" ~ WHITESPACE }
-
-// 文字
-charactor = { "`" ~ ANY }
-
-//型
-atom = { none | logic | number }
-list = { string | product | dictionary }
-concattable = { charactor | list }
-values = { atom | concattable }
-function = { lambda | identifier }
-literal = { values | function }
-
-//演算子
-define_op = { ":" }
-access_op = { "'" }
-spread_op = { "~" }
-lambda_op = { ";" }
-product_op = { "," }
-selection_op = { "?" }
-or_xor_op = { or | xor }
-or_op = { "|" }
-xor_op = { "^" }
-and_op = { "&" }
-not_op = { "!" }
-less_op = { "<" }
-more_op = { ">" }
-equal_op = { "=" }
-
-compare_op = @{
-    less_op
-    | more_op
-    | (less_op ~ equal_op)
-    | (more_op ~ equal_op)
-    | (not_op ~ equal_op)
-    | equal_op
+literal = _{
+    number
+    | hex
+    | bit
+    | logic
+    | char
+    | string
+    | awaiting_or_null
+    | higherExpr
 }
 
-add_op = { "+" }
-sub_op = { "-" }
-mul_op = { "*" }
-div_op = { "/" }
-mod_op = { "%" }
+number = @{ "-"? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT*)? }
+hex = @{ "0x" ~ ASCII_HEX_DIGIT+ }
+bit = @{ "0b" ~ ASCII_BIN_DIGIT+ }
+logic = { true | false }
+true = { "_T_" }
+false = { "_F_" }
+char = @{ "`" ~ ANY }
+string = { "\"" ~ (!("\n" | "\t") ~ ANY)* ~ "\"" ~ ("\n" | "\t") }
+awaiting_or_null = { "_" }
+higherExpr = _{ "[" ~ expression+ ~ "]" | "{" ~ expression+ ~ "}" | "(" ~ expression+ ~ ")" | function }
 
-additive_op = { add_op | sub_op }
-multiplicative_op = { mul_op | div_op | mod_op }
-power_op = @{ "*" ~ "*" }
-coproduct_op = _{ " " }
+preSpread = { "~" ~ (higherExpr | ident) }
 
+get = { list_get | dict_get }
+list_get = { ident ~ "'" ~ number }
+dict_get = { ident ~ "'" ~ ident | ident ~ "'" ~ string }
 
-//定義、事後制御域
-
-export = { "#" ~ expression+ }
-
-logical_assign = { (identifier | access) ~ define_op ~ logical_term }
-N_assign = { (identifier | access) ~ define_op ~ N_term }
-
-dictionary = {
-    (l_paren ~ assign+ ~ r_paren)
-    | (l_brace ~ assign+ ~ r_brace)
-    | (l_brack ~ assign+ ~ r_brack)
+eval_compose = _{
+    eval
+    | pipe
+    | compose
 }
 
-post_spread_flatten = @{(product | dictionary | string | identifier)  ~ spread_op }
+eval = { function ~ WHITESPACE ~ expression ~ NEWLINE }
+pipe = { literal ~ WHITESPACE ~ function+ }
+compose = { literal ~ (WHITESPACE ~ literal)+ }
 
-// 関数
-// 型システムのために、関数の型は構文で出来る限り推論する
+factorial = { power ~ "!" }
+power = { mul_div ~ "^" ~ power }
 
-lambda = _{ (identifier ~ ((lambda_op | coproduct_op | product_op) ~ identifier)* ~ lambda_op ~ expression+) | point_free }
-point_free = {
-    lambda_product | lambda_product_l | lambda_product_r
-    | lambda_selection | lambda_selection_l | lambda_selection_r
-    | lambda_or_xor | lambda_or_xor_l | lambda_or_xor_r
-    | lambda_and | lambda_and_r | lambda_and_r
-    | lambda_not
-    | lambda_compare | lambda_compare_l | lambda_compare_r
-    | lambda_additive | lambda_additive_l | lambda_additive_r
-    | lambda_multiplicative | lambda_multiplicative_l | lambda_multiplicative_r
-    | lambda_factrial
-    | lambda_power | lambda_power_l | lambda_power_r
-    | lambda_access | lambda_access_l | lambda_access_r
+mul_div = _{ mul | div | mod }
+
+mul = { add_sub ~ "*" ~ mul_div }
+div = { add_sub ~ "/" ~ mul_div }
+mod = { add_sub ~ "%" ~ mul_div }
+
+add_sub = _{ add | sub }
+
+add = { number ~ "+" ~ add_sub }
+sub = { number ~ "-" ~ add_sub }
+
+compare = _{
+    less
+    | lessEq
+    | equal
+    | notEq
+    | moreEq
+    | more
 }
 
-left_compose = _{ function ~ (coproduct_op ~ function)+ }
-right_compose = { function ~ ("$" ~ function)+ }
+less = { number ~ "<" ~ number }
+lessEq = { number ~ "<=" ~ number }
+equal = { number ~ "=" ~ number }
+notEq = { number "!=" number }
+moreEq = { number ~ ">=" ~ number }
+more = { number ~ ">" ~ number }
 
-// 積
-lambda_product = { product_op }
-lambda_product_l = { expression+ ~ product_op }
-lambda_product_r = { product_op ~ expression+ }
-product = { expression ~ (product_op ~ expression)* }
+not = { "!" ~ not }
+and = { not ~ "&" ~ and }
 
-lambda_loop_l = { number_domain ~ spread_op }
-lambda_loop_r = { spread_op ~ number_domain }
-loop = { number_domain ~ spread_op ~ number_domain }
+or_xor = _{
+    or
+    | xor
+}
 
-//論理演算域
-logical_term = { not | and | or_xor | compare | logic }
-logical_domain = { logical_term | ident_logic }
+or = { logic ~ "|" ~ or_xor }
+xor = { logic ~ "^" ~ or_xor }
 
-//選択演算
-lambda_selection = { selection_op }
-lambda_selection_l = { logical_domain ~ selection_op }
-lambda_selection_r = { selection_op ~ (product | identifier) }
-selection = { logical_domain ~ selection_op ~ (product | dictionary | identifier) }
+product = { expression ~ ("," ~ expression)+ }
 
-//論理和　論理非交和
-lambda_or_xor = { or_xor_op }
-lambda_or_xor_l = { logical_domain ~ or_xor_op }
-lambda_or_xor_r = { or_xor_op ~ logical_domain }
-or_xor = { logical_domain ~ or_xor_op ~ logical_domain }
+select = _{
+    logic_select
+    | dict_select
+    | list_select
+    | dict_ident_select
+    | dict_string_select
+}
 
-//論理積
-lambda_and = { and_op }
-lambda_and_l = { logical_domain ~ and_op }
-lambda_and_r = { and_op ~ logical_domain }
-and = { logical_domain ~ and_op ~ logical_domain }
+logic_select = { logic ~ "?" ~ list }
+dict_select = { logic ~ "?" ~ dict }
+list_select = { number ~ "?" ~ list }
+dict_ident_select = { ident ~ "?" ~ dict }
+dict_string_select = { string ~ "?" ~ dict }
 
-//否定
-lambda_not = { not_op+ }
-not = @{ not_op+ ~ logical_domain }
+function = _{
+    infix_function
+    | prefix_function
+    | postfix_function
+    | function_def
+}
 
-//算術演算域
-number_domain = { additive | multiplicative | power | number | identifier }
+infix_function = { infix_operator ~ expression* | expression* ~ infix_operator }
+infix_operator = _{ "+" | "-" | "*" | "/" | "%" | "^" | "&" | "|" | "=" | "!=" | "<" | ">" | "<=" | ">=" | "?" }
 
-//比較演算子
-lambda_compare = { compare_op }
-lambda_compare_l = { number_domain ~ compare_op }
-lambda_compare_r = { compare_op ~ number_domain }
-compare = { number_domain ~ compare_op ~ number_domain }
+prefix_function = { prefix_operator }
+prefix_operator = { "!" }
 
-lambda_additive = { additive_op }
-lambda_additive_l = { number_domain ~ additive_op }
-lambda_additive_r = { additive_op ~ number_domain }
-additive = { number_domain ~ (additive_op ~ number_domain)+ }
+postfix_function = { "_" ~ postfix_operator }
+postfix_operator = { "!" }
 
-lambda_multiplicative = { multiplicative_op }
-lambda_multiplicative_l = { number_domain ~ multiplicative_op }
-lambda_multiplicative_r = { multiplicative_op ~ number_domain }
-multiplicative = { number_domain ~ (multiplicative_op ~ number_domain)+ }
+function_def = { ident+ ~ ";" ~ expression }
 
-lambda_power = { power_op }
-lambda_power_l = { number_domain ~ power_op }
-lambda_power_r = { power_op ~ number_domain }
-power = { number_domain ~ power_op ~ number_domain }
+assignment = { ident ~ ":" ~ expression }
+export = { "#" ~ assignment }
 
-//優先制御域
-import = { "@" ~ string }
-assign_import = { identifier ~ "@" string }
-concat_list = { (concattable | identifier) ~ (coproduct_op ~ (concattable | identifier)+) }
-apply = { function ~ (coproduct_op ~ expression)+ }
-partial_apply = { function ~ (coproduct_op ~ expression)* ~ "_" ~ (coproduct_op ~ expression)* }
-
-pre_spread_flatten = @{ spread_op ~ (product | dictionary | string | identifier) }
-lambda_access = { access_op }
-lambda_access_l = { (product | string | dictionary | identifier) ~ access_op }
-lambda_access_r = { access_op ~ (string | number | identifier | charactor) }
-access = { (product | string | dictionary | identifier) ~ access_op ~ (string | number | identifier | charactor) }
+ident = @{ ASCII_ALPHANUMERIC+ }
