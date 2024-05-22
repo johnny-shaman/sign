@@ -1,5 +1,5 @@
 "文字列だけの行は実行されない。"
-"文字列は、"""で始まり、""[\n]"で終わる"
+"文字列は、'"'で始まり、'"[\n\t]{1}'で終わる"
 
 "Hello World"
 
@@ -16,27 +16,42 @@
 x: 3
 y: 4
 point: [
-  x: 0
-  y: 3
-  z: 2
+	x: 0
+	y: 3
+	z: 2
 ]
 
-message: "Hello World"
+Hello: "Hello"
+World: "World"
 
-
-"空白を含めたい場合は、文字と文字列を結合する"
-says : "You say "Good Bye..." "I say "Hello""
+true : _T_
+false: _F_
 
 "改行を含む文字列を結合したい場合は、ブロックのような書き方となる。"
 "理由は、" "が、「リストの結合、及び関数合成」を意味するため。"
+""`"の後の任意の１文字は必ず文字型の値を１文字分とする！"
+"スカラ値のリスト化は、通常は"[\s,]"を使うが、文字リテラルと文字列リテラルの場合は、"
+"直結した記述で連結を表わせる場合があるので、そのパターン記述しておく。"
 
-message_in_enter :
- "Hello"
- `
- "World"
+My: `M`y` `D`o`m`e`s`t`i`c
+
+("Hello "	My " World!"	) = "Hello My Domestic World!"
+
+(Hello `  My `  "World"	`!) = "Hello My Domestic World!"
+
+"Hello"	`!`  My World `! = "Hello! My Domestic World!"
+
+"空白を含めたい場合。"
+says : "You say "Good Bye..." "I say "Hello""
+
+"改行を含めたい場合
+HW_in_enter:
+	"Hello"	`
+	"World!"
 
 ""'"は英文の"'s"「所有」を由来とし、アクセッサー演算子である。"
 "キー名を文字列指定もできる。変数に代入された文字列の場合、展開演算子"~"で中の文字列を取り出して使う"
+"アクセッサー演算子は、必ず非同期処理となる。"
 
 point ' x
 point ' x : 2
@@ -52,13 +67,12 @@ x ? point
 condition ? [3 , 2]
 
 caseValue ? [
-  mike : "Hi mike!"
-  kate : "Hi Mom!"
-  1 : "first"
-  2 : "second"
+	mike : "Hi mike!"
+	kate : "Hi Mom!"
+	1 : "first"
+	2 : "second"
 ]
 
-"プロパティアクセスは、nullに対するあらゆるアクセスはnullを返す。"
 
 "","は英文では「強い区切り」、「直積」を表す。"
 "" "は「直和」に使われる。"
@@ -66,20 +80,20 @@ caseValue ? [
 
 "ここから単一の値の型では同じ意味"
 
-  p0: x, y
-  p1: x y
-  p2: (x, y)
-  p3: (x y)
-  p4: {x, y}
-  p5: {x y}
-  p6: [x, y]
-  p7: [x y]
+	p0: x, y
+	p1: x y
+	p2: (x, y)
+	p3: (x y)
+	p4: {x, y}
+	p5: {x y}
+	p6: [x, y]
+	p7: [x y]
 
 "ここまでスカラー型では同じ意味"
 
 q: [
-  r: [1 2]
-  s: [2 4]
+	r: [1 2]
+	s: [2 4]
 ]
 
 "これは直和（配列の合成）"
@@ -90,8 +104,26 @@ s: [1 2],[3 4]
 
 "この言語では、あくまでラムダとしての関数定義のみ行える。"
 "よって名前を付けたければ、「即ち」を使う"
+
+id: x; x
+dup: x; x, x
+f: * 2
+g: + 3
+
 "関数に対する「直和」とは、「関数合成、及び関数の評価」となる、よって関数をリストにしたければ「直積」のみが表記として可能"
-""  "（字下げ）によって、関数を複数行に分けることも可能"
+
+[f, g]
+
+""	"（字下げ）によって、関数を複数行に分けることも可能,"
+
+x;
+	x ?
+	[
+		AM: "Good Morining Sur."
+		PM: "Good Afternoon Sur."
+	]
+
+"演算子は全て関数として扱えるため、ポイントフリーな記述は可能"
 
 (x ; x * 2) 3
 {x ; x * 2} 3
@@ -108,11 +140,19 @@ s: [1 2],[3 4]
 [3 *] 2
 
 "3 * 2 でのラムダ項の評価は通常の数式と変わらない構文であるため、通常の式の評価とする"
+"ポイントフリーな記述も、字下げ"
+? 	[
+		AM: "Good Morining Sur."
+		PM: "Good Afternoon Sur."
+	]
 
-id: x; x
-dup: x; x, x
-f: * 2
-g: + 3
+
+"前置演算子はそのまま関数名としても問題ない"
+"後置演算子は、 "_" 使う"
+"前置演算子及び後置演算子は間に空白を置いてはならない。"
+
+[!] false = !false
+[_!] 8 = 8!
 
 "関数合成は以下のように書く、この場合、lambdaはカッコで囲む"
 
@@ -120,19 +160,89 @@ h: f g
 
 h 3 = f g 3
 
-"関数をパイプするように合成したい場合は、関数を後ろに置く"
+"関数をパイプするように合成したい場合は、第１引数を前に置く"
 
-3 f g
+3 f g = g f 3
 
-"配列をスプレッドオペレータで分割代入する"
-[* 2] [+ 3] [+] ~[5 4]
+"途中の引数の変化に対して対応する。"
+
+([+ 2] [*] [+ 3] 5 4) = (5 + 3) * 4 + 2
+
+"配列をスプレッドオペレータで分割代入する。"
+[* 2] [*] [+ 3] ~[5 4] = (5 + 3) * 4 + 2
+
+"多引数関数のパイプは配列とスプレッドオペレータでやる。"
+~[5 4] [+] [+ 3] [* 2] = (5 + 3) * 4 + 2
+
+
 
 "分割代入は後置スプレッドオペレータ"
 [a~ ; a] 1 2 3 4 5
 
 "スプレッドオペレータによる配列の定義"
-[1 ~ 10]
+[0 ~ 10]
 
-"演算子と優先順位"
+"演算子、優先順位等の定義（優先順）"
 
-""number ^ number" は冪乗"
+	"import："@ident","@string""
+
+	"literal"
+		"number："[-]? [0-9]+ [.]? [0-9]*""
+		"hex："0x[0-9a-f]+""
+		"bit："0b[01]+""
+		"logic"
+			"true："_T_""
+			"false："_F_"
+		"char："`[\w\W]{1}""
+		"string：'"[\w\W]+"[\t\n]'"
+		"awaiting_or_null："_""
+		"higherExpr："\[ expr+ \]", "\{ expr+ \}", "\( expr+ \)", function"
+
+	"preSpread："~higherExpr""
+
+	"get："list ' number", "dict ' ident", "dict ' string""
+
+	"eval_compose"
+		"eval："function[\s]expr[\n]{1}""
+		"pipe："literal[\s]functon+""
+		"compose：literal([\s]literal)+"
+
+	"factrial："power!""
+
+	"power："mul_div ^ power", "
+
+	"mul_div"
+		"mul："add_sub * mul_div""
+		"div："add_sub / mul_div""
+		"mod："add_sub % mul_div""
+
+	"add_sub"
+		"add："number + add_sub""
+		"sub："number - add_sub""
+
+	"compare"
+		"less："number < number""
+		"lessEq："number <= number""
+		"equal："number = number""
+		"notEq："number ! number""
+		"moreEq："number >= number""
+		"more："number > number""
+
+	"not："!not""
+	"and："not & and""
+	"or_xor"
+		"or："logic | or_xor""
+		"xor："logic ^ or_xor""
+
+	"product："expr([,]expr)+""
+
+	"function"
+		"infix"
+		"infix expr"
+		"expr infix"
+		"prefix"
+		"_postfix"
+		"ident+ ; expr"
+
+	"assign："ident : expr""
+	"export："#assign""
