@@ -9,16 +9,16 @@ expression = _{
     | assignment
     | function
     | postSpread
+    | product
+    | select
+    | not
+    | and
+    | or_xor
     | compare
     | add_sub
     | mul_div
     | power
     | factorial
-    | select
-    | product
-    | not
-    | and
-    | or_xor
     | get
     | preSpread
     | eval_compose
@@ -45,7 +45,7 @@ logic = { true | false }
 true = { "_T_" }
 false = { "_F_" }
 char = @{ "`" ~ ANY }
-string = { "\"" ~ (!("\n" | "\t") ~ ANY)* ~ "\"" ~ ("\n" | "\t") }
+string = { "\"" ~ (!("\t" | NEWLINE) ~ ANY)* ~ "\"" ~ ("\t" | NEWLINE) }
 awaiting_or_null = { "_" }
 higherExpr = _{
     "[" ~ expression+ ~ "]"
@@ -70,9 +70,12 @@ eval_compose = _{
     | compose
 }
 
-eval = { function ~ WHITESPACE ~ expression ~ NEWLINE }
-pipe = { literal ~ WHITESPACE ~ function+ }
-pipish_compose = { literal ~ (WHITESPACE ~ literal)+ }
+eval = { function ~ WHITESPACE ~ expression }
+pipe_eval = {
+    (number | hex | bit | logic | char | string | list | dict | ident) ~ WHITESPACE ~ function+
+    | "~" ~ (list | dict | ident) ~ WHITESPACE ~ function+
+}
+pipish_compose_sum = { literal ~ (WHITESPACE ~ literal)+ }
 
 factorial = { power ~ "!" }
 power = { mul_div ~ "**" ~ power }
