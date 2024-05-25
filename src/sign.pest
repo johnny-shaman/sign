@@ -8,7 +8,7 @@ expression = _{
     export
     | assignment
     | function
-    | eval_compose
+    | postSpread
     | compare
     | add_sub
     | mul_div
@@ -21,11 +21,12 @@ expression = _{
     | or_xor
     | get
     | preSpread
+    | eval_compose
     | literal
     | import
 }
 
-import = { "import" ~ "@" ~ ident ~ "," ~ "@" ~ string }
+import = { "@" ~ ident | "@" ~ string }
 
 literal = _{
     number
@@ -33,7 +34,6 @@ literal = _{
     | bit
     | logic
     | char
-    | string
     | awaiting_or_null
     | higherExpr
 }
@@ -47,7 +47,16 @@ false = { "_F_" }
 char = @{ "`" ~ ANY }
 string = { "\"" ~ (!("\n" | "\t") ~ ANY)* ~ "\"" ~ ("\n" | "\t") }
 awaiting_or_null = { "_" }
-higherExpr = _{ "[" ~ expression+ ~ "]" | "{" ~ expression+ ~ "}" | "(" ~ expression+ ~ ")" | function }
+higherExpr = _{
+    "[" ~ expression+ ~ "]"
+    | "{" ~ expression+ ~ "}"
+    | "(" ~ expression+ ~ ")"
+    | string
+    | list
+    | dict
+    | function
+    | ident
+}
 
 preSpread = { "~" ~ (higherExpr | ident) }
 
@@ -63,10 +72,10 @@ eval_compose = _{
 
 eval = { function ~ WHITESPACE ~ expression ~ NEWLINE }
 pipe = { literal ~ WHITESPACE ~ function+ }
-compose = { literal ~ (WHITESPACE ~ literal)+ }
+pipish_compose = { literal ~ (WHITESPACE ~ literal)+ }
 
 factorial = { power ~ "!" }
-power = { mul_div ~ "^" ~ power }
+power = { mul_div ~ "**" ~ power }
 
 mul_div = _{ mul | div | mod }
 
@@ -106,8 +115,6 @@ or_xor = _{
 or = { logic ~ "|" ~ or_xor }
 xor = { logic ~ "^" ~ or_xor }
 
-product = { expression ~ ("," ~ expression)+ }
-
 select = _{
     logic_select
     | dict_select
@@ -122,6 +129,10 @@ list_select = { number ~ "?" ~ list }
 dict_ident_select = { ident ~ "?" ~ dict }
 dict_string_select = { string ~ "?" ~ dict }
 
+product = { expression ~ ("," ~ expression)+ }
+list = { product }
+dict = { assignment ~ ("," | "\n") ~ assignment* }
+
 function = _{
     infix_function
     | prefix_function
@@ -130,7 +141,7 @@ function = _{
 }
 
 infix_function = { infix_operator ~ expression* | expression* ~ infix_operator }
-infix_operator = _{ "+" | "-" | "*" | "/" | "%" | "^" | "&" | "|" | "=" | "!=" | "<" | ">" | "<=" | ">=" | "?" }
+infix_operator = _{ "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | "^" | "=" | "!=" | "<" | ">" | "<=" | ">=" | "?" | "," | ":" }
 
 prefix_function = { prefix_operator }
 prefix_operator = { "!" }
@@ -143,4 +154,4 @@ function_def = { ident+ ~ ";" ~ expression }
 assignment = { ident ~ ":" ~ expression }
 export = { "#" ~ assignment }
 
-ident = @{ ASCII_ALPHANUMERIC+ }
+ident = @{ (ASCII_ALPHANUMERIC | "_")+}
