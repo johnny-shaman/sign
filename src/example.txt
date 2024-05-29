@@ -227,3 +227,23 @@ g (f 3) = g(f(3))
 
 [0 ~ 10]
 
+
+"展開演算子による、文字列のkey化"
+
+~"testValue" : _T_
+
+
+"　定義された関数は必ず最後の結果を返す。(この場合は5を返す)"
+
+returnTest: x y z;
+	x
+	z
+	y
+
+returnTest 4 5 6
+
+"　"#"はexportになる。"
+
+# myDict : name value; ~name : value
+# gets : ?
+
