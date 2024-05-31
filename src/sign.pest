@@ -25,10 +25,13 @@ expression = {
 }
 
 block = {
-  NEWLINE ~ "\t" ~ expression+
+  (NEWLINE ~ "\t" ~ expression+)+
   | "[" ~ expression+ ~ "]"
   | "{" ~ expression+ ~ "}"
   | "(" ~ expression+ ~ ")"
+  | "[" (NEWLINE ~ "\t" ~ expression+)+ ~ "]"
+  | "{" (NEWLINE ~ "\t" ~ expression+)+ ~ "}"
+  | "(" (NEWLINE ~ "\t" ~ expression+)+ ~ ")"
 }
 
 operator    = { prefix | infix_L | compare_op | infix_R | postfix }
@@ -69,17 +72,17 @@ f_import    = { "@" }
 export      = { f_export ~ expression* }
 assign      = { ident ~ f_assgin ~ expression* }
 lambda      = {
-  ident+ ~ f_lambda ~ expression+
+  ident+ ~ f_lambda ~ (expression+ | block)
   | under_scored
   | point_free
 }
 
 under_scored = {
-  "_" ~ (infix_L | compare_op | infix_R) ~ expression+
-  | expression+ ~ (compare_op | infix_L | infix_R) ~ "_"
+  "_" ~ (infix_L | compare_op | infix_R) ~ ("_" | expression)*
+  | ("_" | expression)* ~ (compare_op | infix_L | infix_R) ~ "_"
   | prefix ~ "_"
   | "_" ~ postfix
-  | ident ~ "_"
+  | (ident | lambda) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)* 
 }
 
 point_free = {
