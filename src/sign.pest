@@ -1,6 +1,6 @@
-start = { SOI ~ expression* ~ EOI }
+start         = { SOI ~ expression* ~ EOI }
 
-expression = {
+expression    = {
   export
   | assign
   | lambda
@@ -20,11 +20,11 @@ expression = {
   | get
   | literal
   | evaluate
-  | block
   | import
+  | block
 }
 
-block = {
+block         = {
   (NEWLINE ~ "\t" ~ expression+)+
   | "[" ~ expression+ ~ "]"
   | "{" ~ expression+ ~ "}"
@@ -34,50 +34,52 @@ block = {
   | "(" (NEWLINE ~ "\t" ~ expression+)+ ~ ")"
 }
 
-operator    = { prefix | infix_L | compare_op | infix_R | postfix }
-prefix      = { f_export | f_not | f_spread | f_import }
-infix_L     = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_get }
-compare_op  = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
-infix_R     = { f_assign | f_select | f_power }
-postfix     = { f_spread | f_factrial }
+operator      = { prefix | infix_L | compare_op | infix_R | postfix }
+prefix        = { f_export | f_not | f_spread | f_import }
+infix_L       = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_get }
+compare_op    = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
+infix_R       = { f_assign | f_select | f_power }
+postfix       = { f_spread | f_factrial }
 
-f_export    = { "#" }
-f_assign    = { ":" }
-f_lambda    = { ";" }
-f_product   = { "," }
-f_coproduct = { " " }
-f_spread    = { "~" }
-f_select    = { "?" }
-f_or        = { "|" }
-f_xor       = { "^" }
-f_and       = { "&" }
-f_not       = { "!" }
-f_less      = { "<" }
-f_less_eq   = { "<=" }
-f_eq        = { "=" | "==" }
-f_neq       = { "!=" }
-f_more_eq   = { ">=" }
-f_more      = { ">" }
-f_add       = { "+" }
-f_sub       = { "-" }
-f_mul       = { "*" }
-f_div       = { "/" }
-f_mod       = { "%" }
-f_power     = { "**" }
-f_factrial  = { "!" }
-f_get       = { "'" }
-f_evaluate  = { NEWLINE }
-f_import    = { "@" }
+f_export      = { "#" }
+f_assign      = { ":" }
+f_lambda      = { ";" }
+f_product     = { "," }
+f_coproduct   = { " " }
+f_spread      = { "~" }
+f_select      = { "?" }
+f_or          = { "|" }
+f_xor         = { "^" }
+f_and         = { "&" }
+f_not         = { "!" }
+f_less        = { "<" }
+f_less_eq     = { "<=" }
+f_eq          = { "=" | "==" }
+f_neq         = { "!=" }
+f_more_eq     = { ">=" }
+f_more        = { ">" }
+f_add         = { "+" }
+f_sub         = { "-" }
+f_mul         = { "*" }
+f_div         = { "/" }
+f_mod         = { "%" }
+f_power       = { "**" }
+f_factrial    = { "!" }
+f_get         = { "'" }
+f_evaluate    = { NEWLINE }
+f_import      = { "@" }
 
-export      = { f_export ~ expression* }
-assign      = { ident ~ f_assgin ~ expression* }
-lambda      = {
+export        = { f_export ~ expression* }
+
+assign        = { ident ~ f_assgin ~ expression* }
+
+lambda        = {
   ident+ ~ f_lambda ~ (expression+ | block)
   | under_scored
   | point_free
 }
 
-under_scored = {
+under_scored  = {
   "_" ~ (infix_L | compare_op | infix_R) ~ ("_" | expression)*
   | ("_" | expression)* ~ (compare_op | infix_L | infix_R) ~ "_"
   | prefix ~ "_"
@@ -85,9 +87,27 @@ under_scored = {
   | (ident | lambda) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)* 
 }
 
-point_free = {
+point_free    = {
   (infix_L | infix_R) ~ expression+ ~ " "
   | expression+ ~ (infix_L | infix_R) ~" "
-  | prefix
-  | "_" ~ postfix
+  | prefix ~ " "
+  | "_" ~ postfix ~ " "
+}
+
+product       = { expression+ ~ ("," ~ expression)+ }
+
+coproduct     = {
+  compose_L
+  | concat
+}
+
+compose_L     = {
+  (lambda | ident) ~ (" " ~ compose_L)+ 
+  | point_free ~ compose_L*
+}
+
+concat        = {
+  (product | ident) ~ (" " ~ (product | ident))+
+  | charactor+ ~ (" " ~ (string | ident))*
+  | string+ ~ (charactor | ident)
 }
