@@ -75,11 +75,15 @@ x ? point
 
 condition ? [3 , 2]
 
-caseValue ? 
-	mike : "Hi mike!"
-	kate : "Hi Mom!"
-	1 : "first"
-	2 : "second"
+
+myTest : caseValue ;
+	caseValue ? 
+		mike : "Hi mike!"
+		kate : "Hi Mom!"
+		1 : "first"
+		2 : "second"
+
+myTest 1 = "first"
 
 "","は英文では「強い区切り」、「直積」を表す。"
 "" "は「直和」に使われる。"
@@ -124,11 +128,9 @@ f, g
 
 ""\t"（字下げ）によって、関数を複数行に分けることも可能。"
 
-x;
-	x ?
-
-		AM: "Good Morining Sur."
-		PM: "Good Afternoon Sur."
+x; x ?
+	AM: "Good Morining Sur."
+	PM: "Good Afternoon Sur."
 
 
 "演算子は全て関数として扱えるため、ポイントフリーな記述が可能。"
@@ -177,7 +179,7 @@ g: +3
 fop: /2 
 gop: -3 
 
-"ポイントフリーな記述も、字下げで複数行定義可能"
+"ポイントフリーな記述も、字下げなどのブロック構文で複数行定義可能"
 
 ?
 	AM: "Good Morining Sur."
@@ -216,7 +218,7 @@ g (f 3) = g(f(3))
 +2 * +3 ~[5 4] = (5 + 2) * 4 + 3
 
 
-"多引数関数の前置記法で、配列とスプレッドオペレータでやる。"
+"多引数関数のパイプを、配列とスプレッドオペレータでやる。"
 
 ~[5 4] +2 * +3 = (5 + 3) * 4 + 2
 
@@ -231,12 +233,11 @@ g (f 3) = g(f(3))
 [0 ~ 10]
 
 
-"展開演算子による、文字列のkey化"
+"後置展開演算子による、文字列のkey化"
 
-~"myPrime" : 57
+"myPrime"~ : 57
 
-~"true"
-
+"true"~
 
 "定義された関数は必ず最後の結果を返す。(この場合は5を返す)"
 
@@ -246,6 +247,14 @@ returnTest: x y z;
 	y
 
 returnTest 4 5 6
+
+
+"getのブロック記法は、with構文の代わりとして使える。"
+
+point '
+	x : x + 3
+	y : y * 2
+
 
 ""#"はexportになる。"
 
