@@ -18,13 +18,13 @@ expression  = {
   | get
   | coproduct
   | evaluate
-  | block
   | literal
   | import
+  | block
 }
 
 block = {
-  NEWLINE ~ "\t"+
+  (indent_line ~ expression+)+ ~ NEWLINE
   | "[" ~ expression+ ~ "]"
   | "{" ~ expression+ ~ "}"
   | "(" ~ expression+ ~ ")"
@@ -33,8 +33,11 @@ block = {
   | "(" ~ (NEWLINE ~ "\t" ~ expression+)+ ")"
 }
 
+indent_line = {
+  NEWLINE ~ indent+
+}
 
-
+indent      = { "\t" }
 
 operator    = { prefix | infix_L | compare_op | infix_R | postfix }
 prefix      = { f_export | f_not | f_spread | f_import }
@@ -73,14 +76,10 @@ f_import    = { "@" }
 
 export      = { f_export ~ expression* }
 
-assign      = { ident ~ f_assgin ~ expression* }
-
-dictionary  = {
-  assign ~ (block ~ assign)
-}
+assign      = { ident ~ f_assgin ~ expression+ }
 
 lambda      = {
-  (ident | ident ~ "~")+ ~ f_lambda ~ (expression+ | block)
+  (ident | ident ~ "~")+ ~ f_lambda ~ ((NEWLINE ~ "\t" ~ expression+)+ ~ NEWLINE | expression+)
   | under_bar
   | point_free
 }
@@ -94,7 +93,7 @@ under_bar   = {
 }
 
 point_free  = {
-  (infix_L | infix_R) ~ expression+ ~ " "
+  (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ ~ NEWLINE | expression+  ~ " ")
   | expression+ ~ (infix_L | infix_R) ~" "
   | prefix ~ " "
   | "_" ~ postfix ~ " "
@@ -187,7 +186,44 @@ cat_list    = {
 }
 
 cat_string  = {
-  charactor+ ~ " " ~ (ident | cat_string+)
-  | string+ ~ cat_string+
+  charactor+ ~ (" " ~ ident | cat_string+)*
+  | string+ ~ cat_string*
 }
 
+literal     = @{
+  number
+  | charactor
+  | string
+  | list
+  | dictionary
+  | ident
+}
+
+number      = @{
+  natural
+  | integer
+  | real
+  | hex
+}
+
+natural     = @{ ASCII_DIGIT+ }
+
+integer     = @{ ("-" | "+") ~ ASCII_DIGIT+ }
+
+real        = @{ "-"? ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+
+hex         = @{ "0x"~ ASCII_HEX_DIGIT+ }
+
+charactor   = @{ "`" ~ ANY }
+
+string      = { "\"" ~ !("\t" | NEWLINE) ~ "\"" ~ ("\t" | NEWLINE) }
+
+list        = { product | cat_list }
+
+dictionary  = { indent ~ key ~ f_assign ~ (dictionary | expression+) }
+
+ident       = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
+
+key         = { (ASCII_ALPHANUMERIC | "_")+ | string }
+
+import      = { f_import ~ (ident | string)}
