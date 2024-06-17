@@ -78,7 +78,7 @@ condition ? [3 , 2]
 
 
 myTest : caseValue ;
-	caseValue ? 
+	~caseValue ? 
 		mike : "Hi mike!"
 		kate : "Hi Mom!"
 		1 : "first"
