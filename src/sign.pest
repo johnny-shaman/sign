@@ -47,13 +47,11 @@ infix_R     = { f_assign | f_select | f_power }
 postfix     = { f_spread | f_factrial }
 
 f_export    = { "#" }
-f_fix       = { "$" }
 f_assign    = { ":" }
-f_lambda    = { ";" }
+f_lambda    = { "?" }
 f_product   = { "," }
 f_coproduct = _{ " " }
 f_spread    = { "~" }
-f_select    = { "?" }
 f_or        = { "|" }
 f_xor       = { "^" }
 f_and       = { "&" }
