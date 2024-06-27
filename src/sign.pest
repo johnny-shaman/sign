@@ -81,6 +81,7 @@ lambda      = _{
   (ident | ident ~ "~")+ ~ f_lambda ~ ((NEWLINE ~ "\t" ~ expression+)+ ~ NEWLINE | expression+)
   | under_bar
   | point_free
+  | arg_list
 }
 
 under_bar   = {
@@ -90,6 +91,15 @@ under_bar   = {
   | "_" ~ postfix
   | (ident | lambda) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)* 
 }
+
+arg_list    = {
+  args ~ (infix_L | compare_op | infix_R) ~ (args | expression)*
+  | (args | expression)* ~ (compare_op | infix_L | infix_R) ~ args
+  | prefix ~ args
+  | args ~ postfix
+}
+
+args        = @{ "$" ~ ASCII_DIGIT | "~$" | "$~" }
 
 point_free  = _{
   (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ ~ NEWLINE | expression+  ~ " ")
@@ -161,6 +171,10 @@ pre_spread  = {
   f_spread ~ (dictionary | list | ident)
 }
 
+seq_num     = {
+  number ~ f_spread ~ number
+}
+
 get         = {
   (dictionary | list | ident) ~ f_get ~ (string | ident | number | or_xor)
 }
@@ -188,6 +202,7 @@ cat_string  = {
   charactor+ ~ (f_coproduct ~ ident | cat_string+)*
   | string+ ~ cat_string*
 }
+
 
 literal     = @{
   number
