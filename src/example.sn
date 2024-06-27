@@ -13,7 +13,7 @@ y: 4
 Hello: "Hello"
 World: "World"
 
-true : !\
+true : $
 
 "ブロックになっていない代入演算子は、右単位元であり、分配的構文に対するシンタックスシュガーである。"
 
@@ -27,13 +27,15 @@ false : \
 
 
 "この言語ではカッコ、インデントの双方はブロックを表し、ローカルスコープを持ち、優先に処理されるものと認識される。"
-"辞書型も表現可能で、カッコの種類は問わず、インデントでも定義可能。"
+"辞書型はmatch caseとして表現可能で、カッコの種類は問わず、インデントでも定義可能。"
 "ただし、開カッコと閉カッコは必ず対になる必要がある。"
 
-myHW0:
-	hello: "hello"
+myGreet: ?
+	greet: ?
+		hello: "hello"
+		welcome: "welcome"
 	world: "world"
-
+	
 
 ";を使うことで、わざわざブロック化しなくて良い長さの定義の略記が可能。"
 
@@ -50,17 +52,17 @@ io: @io
 ~@iterator
 
 
-""`"の後の任意の１文字は必ず文字型の値１文字分とする。例外はない！"
+""'"の後の任意の１文字は、必ず文字型の値１文字分とする。"
 "スカラ値のリスト化は、通常は"[\s,]"を使うが、文字リテラルと文字列リテラルの場合は、"
 "直結した記述で連結を表わせる場合があるので、そのパターン記述しておく。"
 
-My: `M`y` `D`o`m`e`s`t`i`c
+My: 'M'y' 'D'o'm'e's't'i'c
 "Hello "	"World!"	= "Hello World!"
-"Hello"	`  "World!"	= "Hello World!"
-`H "ello"	`  "World"	`!  = "Hello World!"
+"Hello"	'  "World!"	= "Hello World!"
+'H "ello"	'  "World"	'!  = "Hello World!"
 "Hello "	My " World!"	= "Hello My Domestic World!"
-Hello `  My `  "World"	`! = "Hello My Domestic World!"
-"Hello"	`!`  My World `! = "Hello! My Domestic World!"
+Hello '  My '  "World"	'! = "Hello My Domestic World!"
+"Hello"	'!'  My World '! = "Hello! My Domestic World!"
 
 says : "You say "Good Bye..." "I say "Hello""
 
@@ -71,25 +73,40 @@ says : "You say "Good Bye..." "I say "Hello""
 "改行を含めたい場合。"
 
 HW_in_enter:
-	"Hello"	`
+	"Hello"	'
 	"World!"
 
 
-""'"は英文の"'s"「所有」を由来とし、アクセッサー演算子である。"
-"キー名を文字列指定もできる。変数に代入された文字列の場合、展開演算子"~"で中の文字列を取り出して使う"
-"アクセッサー演算子は、必ず非同期処理となる。"
 
-point ' x
-point ' x : 2
+"match caseに対するアクセスには、ブロックを用いることでwith構文のような働きを持つ。"
+"ブロック終了時に、文字列やリストであれば結合する。"
 
-myAxis: "z"
+myGreet
+	greet hello
+	world
 
-point ' ~myAxis
+"文字列指定も可能、単純な文字列結合との構文の混乱を避けるため、引数渡しのためのスペースを必ず間にいれる。"
+
+myGreet
+	"greet"	 "welcome"
+q	"world"
+
+"多段も可能"
+
+myGreet
+	greet
+		hello
+	world
+
+"多段かつ文字列指定の場合は、引数渡しはブロックだけで表現できる。"
+
+myGreet
+	"greet"
+		"hello"
+	"world"
 
 
-""?"は、' の左右を逆にしたものだが、その正体はラムダ定義であり、単純な定数を引数とすることも可能。"
-
-`x ? point
+""?"の正体は単純なラムダ定義。リストに対しては３項演算子のような振る舞いをする。"
 
 myTest0_1 : ?
 	"yep"
@@ -99,12 +116,12 @@ myTest0_2 : ? "yep"	; "nop"
 
 
 myTest0_0 : ?
-	!\ : "yep"
-	 \ : "nop"
+	$ : "yep"
+	\ : "nop"
 
-myTest0_0 !\ = myTest0_1 !\
+myTest0_0 $ = myTest0_1 $
 
-myTest0_0 !\ = myTest0_2 !\
+myTest0_0 $ = myTest0_2 $
 
 myTest1_0 : ?
 	"mike" : "Hi mike!"
@@ -166,7 +183,7 @@ f, g
 
 "Tab（字下げ）によって、関数を複数行に分けることも可能。"
 
-x ?
+?
 	AM: "Good Morining Sur."
 	PM: "Good Afternoon Sur."
 
@@ -202,9 +219,9 @@ x ?
 
 "引数リスト（Dollar記法）を利用する。"
 
-($1 * $0) 2 3
-{$1 * $0} 2 3
-[$1 * $0] 2 3
+(`1 * `0) 2 3
+{`1 * `0} 2 3
+[`1 * `0] 2 3
 
 
 "演算のカリー化（高階化）による、ポイントフリーな記述。"
@@ -230,6 +247,7 @@ gop: - 3
 
 
 "ポイントフリーな記述も、字下げなどのブロック構文で複数行定義可能"
+"辞書型へのアクセスに対する記法は、ポイントフリーで記述することによるシンタックスシュガーを持つ"
 
 greetTime: ?
 	AM: "Good Morining Sur."
@@ -241,13 +259,16 @@ greetTime "AM"
 "引数リストを使った表現との一致"
 
 myTest1_1 : ?
-	$0 = "mike" : "Hi mike!"
-	$0 = "kate" : "Hi Mom!"
-	$0 = 1 : "first"
-	$0 = 2 : "second"
-	$0 > 3 : "more"
-	$0 < 1 : "less"
+	`0 = "mike" : "Hi mike!"
+	`0 = "kate" : "Hi Mom!"
+	`0 = 1 : "first"
+	`0 = 2 : "second"
+	`0 > 3 : "more"
+	`0 < 1 : "less"
 	\ : "none"
+
+
+"2引数以上のmatch case 記述は辞書型へのアクセス"
 
 
 "前置演算子はそのまま関数名としても問題ない。"
@@ -277,7 +298,7 @@ g (f 3) = g(f(3))
 
 [_ + 2 * _ + 3] 5 4 = 5 + 2 * 4 + 3
 
-greet : "Hello "	_ `
+greet : "Hello "	_ '
 greet "johnny!"
 
 
@@ -298,9 +319,9 @@ myList: 0 ~ 10
 
 "後置展開演算子による、文字列のkey化"
 
-"myPrime"~ : 57
+~"myPrime" : 57
 
-"true"~
+~"true"
 
 "定義された関数は必ず最後の結果を返す。(この場合は5を返す)"
 

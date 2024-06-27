@@ -69,7 +69,6 @@ f_div       = { "/" }
 f_mod       = { "%" }
 f_power     = { "**" }
 f_factrial  = { "!" }
-f_get       = { "'" }
 f_evaluate  = _{ NEWLINE }
 f_import    = { "@" }
 
@@ -85,8 +84,8 @@ lambda      = _{
 }
 
 under_bar   = {
-  "_" ~ (infix_L | compare_op | infix_R) ~ ("_" | expression)*
-  | ("_" | expression)* ~ (compare_op | infix_L | infix_R) ~ "_"
+  "_" ~ (infix_L | compare_op | infix_R) ~ ("_" ~ "~"? | expression)*
+  | ("_" | expression)* ~ (compare_op | infix_L | infix_R) ~ "_"  ~ "~"?
   | prefix ~ "_"
   | "_" ~ postfix
   | (ident | lambda) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)* 
@@ -99,7 +98,7 @@ arg_list    = {
   | args ~ postfix
 }
 
-args        = @{ "$" ~ ASCII_DIGIT | "~$" | "$~" }
+args        = @{ "`" ~ ASCII_DIGIT ~ "~"? }
 
 point_free  = _{
   (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ ~ NEWLINE | expression+  ~ " ")
@@ -205,13 +204,22 @@ cat_string  = {
 
 
 literal     = @{
-  number
+  logic
+  | number
   | charactor
   | string
   | list
   | dictionary
   | ident
 }
+
+logic       = {
+  true
+  | false
+}
+
+true        = { "$" }
+false       = { "\" }
 
 number      = @{
   natural
@@ -222,13 +230,13 @@ number      = @{
 
 natural     = @{ ASCII_DIGIT+ }
 
-integer     = @{ ("-" | "+") ~ ASCII_DIGIT+ }
+integer     = @{ "-"? ~ natural }
 
-real        = @{ "-"? ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+real        = @{ integer ~ "." ~ natural }
 
 hex         = @{ "0x"~ ASCII_HEX_DIGIT+ }
 
-charactor   = @{ "`" ~ ANY }
+charactor   = @{ "'" ~ ANY }
 
 string      = _{ "\"" ~ !("\t" | NEWLINE) ~ "\"" ~ ("\t" | NEWLINE) }
 
