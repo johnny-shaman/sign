@@ -14,8 +14,6 @@ expression  = {
   | mul_div
   | power
   | factrial
-  | pre_spread
-  | get
   | coproduct
   | evaluate
   | literal
@@ -28,20 +26,20 @@ block = _{
   | "[" ~ expression+ ~ "]"
   | "{" ~ expression+ ~ "}"
   | "(" ~ expression+ ~ ")"
-  | "[" ~ (NEWLINE ~ "\t" ~ expression+)+ "]"
-  | "{" ~ (NEWLINE ~ "\t" ~ expression+)+ "}"
-  | "(" ~ (NEWLINE ~ "\t" ~ expression+)+ ")"
+  | "[" ~ (NEWLINE ~ indent ~ expression+)+ "]"
+  | "{" ~ (NEWLINE ~ indent ~ expression+)+ "}"
+  | "(" ~ (NEWLINE ~ indent ~ expression+)+ ")"
 }
 
 indent_line = _{
   NEWLINE ~ indent+
 }
 
-indent      = _{ "\t" }
+indent      = _{ "\t" | "  " }
 
 operator    = { prefix | infix_L | compare_op | infix_R | postfix }
 prefix      = { f_export | f_not | f_spread | f_import }
-infix_L     = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_get }
+infix_L     = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod }
 compare_op  = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
 infix_R     = { f_assign | f_select | f_power }
 postfix     = { f_spread | f_factrial }
@@ -50,10 +48,9 @@ f_export    = { "#" }
 f_assign    = { ":" }
 f_lambda    = { "?" }
 f_product   = { "," }
-f_coproduct = _{ " " }
-f_spread    = { "~" }
-f_or        = { ";" }
-f_xor       = { "|" }
+f_coproduct = { " " }
+f_or        = { "|" }
+f_xor       = { ";" }
 f_and       = { "&" }
 f_not       = { "!" }
 f_less      = { "<" }
@@ -69,7 +66,7 @@ f_div       = { "/" }
 f_mod       = { "%" }
 f_power     = { "^" }
 f_factrial  = { "!" }
-f_evaluate  = _{ NEWLINE }
+f_evaluate  = { NEWLINE }
 f_import    = { "@" }
 
 export      = { f_export ~ expression* }
@@ -77,18 +74,9 @@ export      = { f_export ~ expression* }
 assign      = { ident ~ f_assgin ~ expression+ }
 
 lambda      = _{
-  (ident | ident ~ "~")+ ~ f_lambda ~ ((NEWLINE ~ "\t" ~ expression+)+ ~ NEWLINE | expression+)
-  | under_bar
-  | point_free
+  ident ~ (ident | "~" ~ ident)* ~ f_lambda ~ (block | expression)+
   | arg_list
-}
-
-under_bar   = {
-  "_" ~ (infix_L | compare_op | infix_R) ~ ("_" ~ "~"? | expression)*
-  | ("_" | expression)* ~ (compare_op | infix_L | infix_R) ~ "_"  ~ "~"?
-  | prefix ~ "_"
-  | "_" ~ postfix
-  | (ident | lambda) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)* 
+  | point_free
 }
 
 arg_list    = {
@@ -96,9 +84,10 @@ arg_list    = {
   | (args | expression)* ~ (compare_op | infix_L | infix_R) ~ args
   | prefix ~ args
   | args ~ postfix
+  | (ident | lambda) ~ (args | expression)* ~ args ~ (args | expression)* 
 }
 
-args        = @{ "`" ~ ASCII_DIGIT ~ "~"? }
+args        = @{ "_" ~ (ASCII_DIGIT)* ~ "~"? }
 
 point_free  = _{
   (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ ~ NEWLINE | expression+  ~ " ")
@@ -174,10 +163,6 @@ seq_num     = {
   number ~ f_spread ~ number
 }
 
-get         = {
-  (dictionary | list | ident) ~ f_get ~ (string | ident | number | or_xor)
-}
-
 coproduct   = {
   compose_L
   | concat
@@ -218,8 +203,8 @@ logic       = {
   | false
 }
 
-true        = { "$" }
-false       = { "\\" }
+true        = @{ f_not ~ false }
+false       = @{ "\\" }
 
 number      = @{
   natural
