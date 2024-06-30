@@ -52,8 +52,8 @@ f_lambda    = { "?" }
 f_product   = { "," }
 f_coproduct = _{ " " }
 f_spread    = { "~" }
-f_or        = { "|" }
-f_xor       = { "^" }
+f_or        = { ";" }
+f_xor       = { "|" }
 f_and       = { "&" }
 f_not       = { "!" }
 f_less      = { "<" }
@@ -67,7 +67,7 @@ f_sub       = { "-" }
 f_mul       = { "*" }
 f_div       = { "/" }
 f_mod       = { "%" }
-f_power     = { "**" }
+f_power     = { "^" }
 f_factrial  = { "!" }
 f_evaluate  = _{ NEWLINE }
 f_import    = { "@" }
@@ -219,7 +219,7 @@ logic       = {
 }
 
 true        = { "$" }
-false       = { "\" }
+false       = { "\\" }
 
 number      = @{
   natural
@@ -238,7 +238,7 @@ hex         = @{ "0x"~ ASCII_HEX_DIGIT+ }
 
 charactor   = @{ "'" ~ ANY }
 
-string      = _{ "\"" ~ !("\t" | NEWLINE) ~ "\"" ~ ("\t" | NEWLINE) }
+string      = _{ "`" ~ (!NEWLINE ~ ANY)* ~ "`" }
 
 list        = { product | cat_list }
 
