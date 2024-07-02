@@ -5,7 +5,6 @@ expression  = {
   | assign
   | lambda
   | product
-  | select
   | or_xor
   | and
   | not
@@ -15,7 +14,6 @@ expression  = {
   | power
   | factrial
   | coproduct
-  | evaluate
   | literal
   | import
   | block
@@ -26,9 +24,9 @@ block = _{
   | "[" ~ expression+ ~ "]"
   | "{" ~ expression+ ~ "}"
   | "(" ~ expression+ ~ ")"
-  | "[" ~ (NEWLINE ~ indent ~ expression+)+ "]"
-  | "{" ~ (NEWLINE ~ indent ~ expression+)+ "}"
-  | "(" ~ (NEWLINE ~ indent ~ expression+)+ ")"
+  | "[" ~ (NEWLINE ~ indent ~ expression+)+ ~ "]"
+  | "{" ~ (NEWLINE ~ indent ~ expression+)+ ~ "}"
+  | "(" ~ (NEWLINE ~ indent ~ expression+)+ ~ ")"
 }
 
 indent_line = _{
@@ -37,12 +35,11 @@ indent_line = _{
 
 indent      = _{ "\t" | "  " }
 
-operator    = { prefix | infix_L | compare_op | infix_R | postfix }
-prefix      = { f_export | f_not | f_spread | f_import }
+prefix      = { f_export | f_not | f_import }
 infix_L     = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod }
 compare_op  = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
-infix_R     = { f_assign | f_select | f_power }
-postfix     = { f_spread | f_factrial }
+infix_R     = { f_assign | f_power }
+postfix     = { f_factrial }
 
 f_export    = { "#" }
 f_assign    = { ":" }
@@ -66,12 +63,11 @@ f_div       = { "/" }
 f_mod       = { "%" }
 f_power     = { "^" }
 f_factrial  = { "!" }
-f_evaluate  = { NEWLINE }
 f_import    = { "@" }
 
 export      = { f_export ~ expression* }
 
-assign      = { ident ~ f_assgin ~ expression+ }
+assign      = { ident ~ f_assign ~ expression+ }
 
 lambda      = _{
   ident ~ (ident | "~" ~ ident)* ~ f_lambda ~ (block | expression)+
@@ -103,11 +99,6 @@ place_holder = {
 
 product     = { expression+ ~ (f_product ~ expression)+ }
 
-select      = {
-  (string | ident | number | or_xor) ~ f_select ~ (dictionary | list | ident)
-  | or_xor
-}
-
 or_xor      = {
   and ~ f_or ~ or_xor
   | and ~ f_xor ~ or_xor
@@ -123,7 +114,7 @@ not        = {
   f_not ~ (compare | logic | ident)
   | compare
   | logic
-  | idnet
+  | ident
 }
 
 compare     = {
@@ -158,14 +149,6 @@ factrial    = {
   (number | ident) ~ f_factrial
   | number
   | ident
-}
-
-pre_spread  = {
-  f_spread ~ (dictionary | list | ident)
-}
-
-seq_num     = {
-  number ~ f_spread ~ number
 }
 
 coproduct   = {
@@ -209,7 +192,7 @@ logic       = {
 }
 
 true        = @{ "$" }
-false       = @{ "\" }
+false       = @{ "\\" }
 
 number      = @{
   natural
