@@ -77,6 +77,7 @@ lambda      = _{
   ident ~ (ident | "~" ~ ident)* ~ f_lambda ~ (block | expression)+
   | arg_list
   | point_free
+  | place_holder
 }
 
 arg_list    = {
@@ -84,16 +85,20 @@ arg_list    = {
   | (args | expression)* ~ (compare_op | infix_L | infix_R) ~ args
   | prefix ~ args
   | args ~ postfix
-  | (ident | lambda) ~ (args | expression)* ~ args ~ (args | expression)* 
+  | f_lambda ~ args
 }
 
 args        = @{ "_" ~ (ASCII_DIGIT)* ~ "~"? }
 
 point_free  = _{
-  (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ ~ NEWLINE | expression+  ~ " ")
+  (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ | expression+) ~ NEWLINE
   | expression+ ~ (infix_L | infix_R) ~" "
   | prefix ~ " "
-  | "_" ~ postfix ~ " "
+}
+
+place_holder = {
+  (ident | lambda) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)*
+  | "_" ~ postfix
 }
 
 product     = { expression+ ~ (f_product ~ expression)+ }
@@ -203,8 +208,8 @@ logic       = {
   | false
 }
 
-true        = @{ f_not ~ false }
-false       = @{ "\\" }
+true        = @{ "$" }
+false       = @{ "\" }
 
 number      = @{
   natural
