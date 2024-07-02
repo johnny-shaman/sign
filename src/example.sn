@@ -27,26 +27,13 @@ false: \
 unit: \
 
 
-`リストの定義は,区切り。`
+`リストの定義は原則comma区切り。`
+`スカラー型の余積がリストを形成するので、commaを省略出来ることもある。`
 `上から順に、糖衣構文が変換される様となる。（予定でありあくまで考え方の一つ）`
 
-myPairs_2: 1, 2, 3, 4, 5
+myPairs: 1, 2, 3, 4, 5
 
-myPairs_1: ? 1, 2, 3, 4, 5
-
-myPairs_0: ?
-  0 : 1
-  1 : 2
-  2 : 3
-  3 : 4
-  4 : 5
-
-myPairs: ?
-  _0 = 0 : 1
-  _0 = 1 : 2
-  _0 = 2 : 3
-  _0 = 3 : 4
-  _0 = 4 : 5
+myPairs 1 ~ 3 = 2 3 4
 
 
 `この言語ではカッコ、インデントの双方はブロックを表し、ローカルスコープを持ち、優先に処理されるものと認識される。`
@@ -54,29 +41,25 @@ myPairs: ?
 `ただし、開カッコと閉カッコは必ず対になる必要がある。`
 `上から順に、糖衣構文が変換される様となる。`
 
-myGreet_3:
+myGreet:
   greet: 
     hello: `hello`
     welcome: `welcome`
-  world: `world`
+  world: ` world`
 
-myGreet_2: ?
-  greet: ?
-    hello: `hello`
-    welcome: `welcome`
-  world: `world`
 
-myGreet_1: ?
-  _0 = greet : ?
-    _1 = hello : `hello`
-    _1 = welcome : `welcome`
-  _0 = world : `world`
+myGreet greet hello = `hello`
 
-myGreet: ?
-  _0 = `greet` : ?
-    _1 = `hello` : `hello`
-    _1 = `welcome` : `welcome`
-  _0 = `world` : `world`
+
+  ~ myGreet
+    [greet welcome] world
+    = `welcome world`
+
+
+`値のmodifyが可能`
+
+~ myPairs
+    _1 : _0 + 2
 
 
 `,を使うことで、わざわざブロック化しなくて良い長さの定義の略記が可能。`
@@ -115,39 +98,6 @@ Hello '  My '  `World` '! = `Hello My Domestic World!`
 HW_in_enter :
  `Hello` '
  `World!`
-
-
-`match caseに対するアクセスには、ブロックを用いることでwith構文のような働きを持つ。`
-`ブロック終了時に、文字列やリストであれば結合する。`
-`先頭のidが、ブロック内で定義済みである場合、" "はcoproductを優先する`
-
-myGreet
-  greet hello
-  world
-
-
-`文字列指定も可能、単純な文字列結合との構文の混乱を避けるため、ブロックの深さに従った記述が必要。`
-
-myGreet
-  `greet` 
-    `welcome`
-  `world`
-
-
-`多段も可能`
-
-myGreet
-  greet
-    hello
-  world
-
-
-`多段かつ文字列指定の場合は、引数渡しはブロックだけで表現できる。`
-
-myGreet
-  `greet`
-    `hello`
-  `world`
 
 
 `match_caseの正体は単純なラムダ定義。３項演算子のような振る舞いも、以下のように定義可能。`

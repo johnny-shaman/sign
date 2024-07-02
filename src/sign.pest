@@ -35,8 +35,8 @@ indent_line = _{
 
 indent      = _{ "\t" | "  " }
 
-prefix      = { f_export | f_not | f_import }
-infix_L     = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod }
+prefix      = { f_export | f_not | f_import | f_spread }
+infix_L     = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_spread }
 compare_op  = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
 infix_R     = { f_assign | f_power }
 postfix     = { f_factrial }
@@ -63,6 +63,7 @@ f_div       = { "/" }
 f_mod       = { "%" }
 f_power     = { "^" }
 f_factrial  = { "!" }
+f_spread    = { "~" }
 f_import    = { "@" }
 
 export      = { f_export ~ expression* }
@@ -70,7 +71,7 @@ export      = { f_export ~ expression* }
 assign      = { ident ~ f_assign ~ expression+ }
 
 lambda      = _{
-  ident ~ (ident | "~" ~ ident)* ~ f_lambda ~ (block | expression)+
+  ident ~ (ident | f_spread ~ ident)* ~ f_lambda ~ (block | expression)+
   | arg_list
   | point_free
   | place_holder
@@ -88,16 +89,29 @@ args        = @{ "_" ~ (ASCII_DIGIT)* ~ "~"? }
 
 point_free  = _{
   (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ | expression+) ~ NEWLINE
-  | expression+ ~ (infix_L | infix_R) ~" "
-  | prefix ~ " "
+  | prefix
 }
 
 place_holder = {
-  (ident | lambda) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)*
+  (ident | prefix | infix_L | infix_R) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)*
   | "_" ~ postfix
 }
 
-product     = { expression+ ~ (f_product ~ expression)+ }
+product     = {
+  (
+    lambda
+    | or_xor
+    | and
+    | not
+    | compare
+    | add_sub
+    | mul_div
+    | power
+    | factrial
+    | coproduct
+    | literal
+  ) ~ (f_product ~ expression)+
+}
 
 or_xor      = {
   and ~ f_or ~ or_xor
@@ -167,7 +181,7 @@ concat      = {
 }
 
 cat_list    = {
-  (product | ident) ~ (f_coproduct ~ (product | ident))+
+  (list | ident) ~ (f_coproduct ~ (product | ident))+
 }
 
 cat_string  = {
@@ -179,7 +193,6 @@ cat_string  = {
 literal     = @{
   logic
   | number
-  | charactor
   | string
   | list
   | dictionary
@@ -212,8 +225,6 @@ hex         = @{ "0x"~ ASCII_HEX_DIGIT+ }
 charactor   = @{ "'" ~ ANY }
 
 string      = _{ "`" ~ (!NEWLINE ~ ANY)* ~ "`" }
-
-list        = { product | cat_list }
 
 dictionary  = { indent ~ key ~ f_assign ~ (dictionary | expression+) }
 
