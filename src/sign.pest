@@ -15,11 +15,11 @@ expression  = {
   | factrial
   | coproduct
   | literal
-  | import
+  | get_import
   | block
 }
 
-block = _{
+block = {
   (indent_line ~ expression+)+ ~ NEWLINE
   | "[" ~ expression+ ~ "]"
   | "{" ~ expression+ ~ "}"
@@ -29,11 +29,11 @@ block = _{
   | "(" ~ (NEWLINE ~ indent ~ expression+)+ ~ ")"
 }
 
-indent_line = _{
+indent_line = {
   NEWLINE ~ indent+
 }
 
-indent      = _{ "\t" | "  " }
+indent      = { "\t" | "  " }
 
 prefix      = { f_export | f_not | f_import | f_spread }
 infix_L     = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_spread }
@@ -70,8 +70,8 @@ export      = { f_export ~ expression* }
 
 assign      = { ident ~ f_assign ~ expression+ }
 
-lambda      = _{
-  ident ~ (ident | f_spread ~ ident)* ~ f_lambda ~ (block | expression)+
+lambda      = {
+  ident ~ (ident | f_spread ~ ident)* ~ f_lambda ~ expression+
   | arg_list
   | point_free
   | place_holder
@@ -87,7 +87,7 @@ arg_list    = {
 
 args        = @{ "_" ~ (ASCII_DIGIT)* ~ "~"? }
 
-point_free  = _{
+point_free  = {
   (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ | expression+) ~ NEWLINE
   | prefix
 }
@@ -97,20 +97,33 @@ place_holder = {
   | "_" ~ postfix
 }
 
+l_product   = {
+  lambda
+  | or_xor
+  | and
+  | not
+  | compare
+  | add_sub
+  | mul_div
+  | power
+  | factrial
+  | logic
+  | number
+  | string
+  | dictionary
+  | ident
+}
+
 product     = {
-  (
-    lambda
-    | or_xor
-    | and
-    | not
-    | compare
-    | add_sub
-    | mul_div
-    | power
-    | factrial
-    | coproduct
-    | literal
-  ) ~ (f_product ~ expression)+
+  l_product ~ (f_product ~ expression)+
+  | (indent_line ~ (expression ~ f_product))+ ~ NEWLINE
+  | "[" ~ (expression ~ f_product)+ ~ "]"
+  | "{" ~ (expression ~ f_product)+ ~ "}"
+  | "(" ~ (expression ~ f_product)+ ~ ")"
+  | "[" ~ (NEWLINE ~ indent ~ (expression ~ f_product))+ ~ "]"
+  | "{" ~ (NEWLINE ~ indent ~ (expression ~ f_product))+ ~ "}"
+  | "(" ~ (NEWLINE ~ indent ~ (expression ~ f_product))+ ~ ")"
+
 }
 
 or_xor      = {
@@ -181,7 +194,7 @@ concat      = {
 }
 
 cat_list    = {
-  (list | ident) ~ (f_coproduct ~ (product | ident))+
+  (product | ident) ~ (f_coproduct ~ (product | ident))+
 }
 
 cat_string  = {
@@ -224,12 +237,24 @@ hex         = @{ "0x"~ ASCII_HEX_DIGIT+ }
 
 charactor   = @{ "'" ~ ANY }
 
-string      = _{ "`" ~ (!NEWLINE ~ ANY)* ~ "`" }
+string      = { "`" ~ (!NEWLINE ~ ANY)* ~ "`" }
 
-dictionary  = { indent ~ key ~ f_assign ~ (dictionary | expression+) }
+list        = { product | cat_list }
 
-ident       = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
+dictionary  = { 
+  | (indent_line ~ dictionary)+ ~ NEWLINE
+  | "[" ~ (NEWLINE ~ indent ~ dictionary)+ ~ "]"
+  | "{" ~ (NEWLINE ~ indent ~ dictionary)+ ~ "}"
+  | "(" ~ (NEWLINE ~ indent ~ dictionary)+ ~ ")"
+  | assign
+}
 
-key         = { (ASCII_ALPHANUMERIC | "_")+ | string }
+ident       = {
+  (ASCII_ALPHANUMERIC | "_")+ ~ (ASCII_ALPHA | "_")
+  | f_spread ~ string
+}
 
-import      = { f_import ~ (ident | string)}
+get_import      = {
+  f_import ~ ident ~ block*
+  | (ident ~ f_import)+ ~ ident
+}

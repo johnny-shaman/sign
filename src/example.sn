@@ -31,9 +31,7 @@ unit: \
 `スカラー型の余積がリストを形成するので、commaを省略出来ることもある。`
 `上から順に、糖衣構文が変換される様となる。（予定でありあくまで考え方の一つ）`
 
-myPairs: 1, 2, 3, 4, 5
-
-myPairs 1 ~ 3 = 2 3 4
+myPairs: 1 2 3 4 5
 
 
 `この言語ではカッコ、インデントの双方はブロックを表し、ローカルスコープを持ち、優先に処理されるものと認識される。`
@@ -43,23 +41,33 @@ myPairs 1 ~ 3 = 2 3 4
 
 myGreet:
   greet: 
-    hello: `hello`
-    welcome: `welcome`
+    hello: `hello,`
+    welcome: `welcome,`
   world: ` world`
 
 
-myGreet greet hello = `hello`
+`blockで値を取り出せる`
+
+myGreetgreet
+    hello = `hello,`
+
+myPairs 0
 
 
-  ~ myGreet
+
+`import演算子@を用いることで、スコープ内でオブジェクトを扱える。`
+`これはファイルの内外関係なくimport演算子で統一する。`
+
+  @ myGreet
     [greet welcome] world
-    = `welcome world`
+  = `welcome, world`
 
 
 `値のmodifyが可能`
 
-~ myPairs
+  @ myPairs
     _1 : _0 + 2
+    _2 : _1 * 3
 
 
 `,を使うことで、わざわざブロック化しなくて良い長さの定義の略記が可能。`
@@ -70,8 +78,8 @@ point: x: 0, y: 3, z: 2
 `プリミティブな型のみを推論することで、実際の型の問題が解決できるような設計となる。`
 `与えられた名前は全て定義であり、それが自明な型でもあるため、名前が型である。`
 
-`"@"は他のファイルをインポートしてくる。返り値は辞書型`
-`辞書型の名前を上のスコープに展開したい場合は、展開演算子を使う`
+`"@"はファイル名からの指定も可能で、path指定も可`
+`辞書型の名前を上のスコープに展開したい場合は、展開演算子を使う。`
 
 io: @io
 ~@iterator
