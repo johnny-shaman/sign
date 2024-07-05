@@ -124,7 +124,7 @@ product     = {
   | "[" ~ (indent_line ~ (expression ~ f_product))+ ~ "]"
   | "{" ~ (indent_line ~ (expression ~ f_product))+ ~ "}"
   | "(" ~ (indent_line ~ (expression ~ f_product))+ ~ ")"
-
+  | (ident | charactor | number) ~ f_spread ~ (ident | charactor | number)
 }
 
 or_xor      = {
@@ -195,7 +195,7 @@ concat      = {
 }
 
 cat_list    = {
-  (product | ident) ~ (f_coproduct ~ (product | ident))+
+  (product | dictionary | ident) ~ (f_coproduct ~ (product |dictionary | ident))+
 }
 
 cat_string  = {
@@ -210,6 +210,7 @@ literal     = @{
   | string
   | list
   | dictionary
+  | f_spread ~ (dictionary | product)
   | ident
 }
 
