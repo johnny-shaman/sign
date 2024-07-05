@@ -24,9 +24,9 @@ block = {
   | "[" ~ expression+ ~ "]"
   | "{" ~ expression+ ~ "}"
   | "(" ~ expression+ ~ ")"
-  | "[" ~ (NEWLINE ~ indent ~ expression+)+ ~ "]"
-  | "{" ~ (NEWLINE ~ indent ~ expression+)+ ~ "}"
-  | "(" ~ (NEWLINE ~ indent ~ expression+)+ ~ ")"
+  | "[" ~ (indent_line ~ expression+)+ ~ "]"
+  | "{" ~ (indent_line ~ expression+)+ ~ "}"
+  | "(" ~ (indent_line ~ expression+)+ ~ ")"
 }
 
 indent_line = {
@@ -85,7 +85,7 @@ arg_list    = {
   | f_lambda ~ args
 }
 
-args        = @{ "_" ~ (ASCII_DIGIT)* ~ "~"? }
+args        = @{ "@" ~ (ASCII_DIGIT)* ~ "~"? }
 
 point_free  = {
   (infix_L | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ | expression+) ~ NEWLINE
@@ -93,8 +93,8 @@ point_free  = {
 }
 
 place_holder = {
-  (ident | prefix | infix_L | infix_R) ~ ("_" | expression)* ~ "_" ~ ("_" | expression)*
-  | "_" ~ postfix
+  (ident | prefix | infix_L | infix_R) ~ ("@" | expression)* ~ "@" ~ ("@" | expression)*
+  | "@" ~ postfix
 }
 
 l_product   = {
@@ -112,17 +112,18 @@ l_product   = {
   | string
   | dictionary
   | ident
+  | block
 }
 
 product     = {
   l_product ~ (f_product ~ expression)+
-  | (indent_line ~ (expression ~ f_product))+ ~ NEWLINE
-  | "[" ~ (expression ~ f_product)+ ~ "]"
-  | "{" ~ (expression ~ f_product)+ ~ "}"
-  | "(" ~ (expression ~ f_product)+ ~ ")"
-  | "[" ~ (NEWLINE ~ indent ~ (expression ~ f_product))+ ~ "]"
-  | "{" ~ (NEWLINE ~ indent ~ (expression ~ f_product))+ ~ "}"
-  | "(" ~ (NEWLINE ~ indent ~ (expression ~ f_product))+ ~ ")"
+  | (indent ~ (expression ~ f_product))+ ~ NEWLINE
+  | "[" ~ (expression ~ f_product)* ~ expression ~ "]"
+  | "{" ~ (expression ~ f_product)* ~ expression ~  "}"
+  | "(" ~ (expression ~ f_product)* ~ expression ~  ")"
+  | "[" ~ (indent_line ~ (expression ~ f_product))+ ~ "]"
+  | "{" ~ (indent_line ~ (expression ~ f_product))+ ~ "}"
+  | "(" ~ (indent_line ~ (expression ~ f_product))+ ~ ")"
 
 }
 
@@ -217,8 +218,9 @@ logic       = {
   | false
 }
 
-true        = @{ "$" }
-false       = @{ "\\" }
+true        = @{ "\\" }
+false       = @{ "_" }
+
 
 number      = @{
   natural
@@ -243,9 +245,9 @@ list        = { product | cat_list }
 
 dictionary  = { 
   | (indent_line ~ dictionary)+ ~ NEWLINE
-  | "[" ~ (NEWLINE ~ indent ~ dictionary)+ ~ "]"
-  | "{" ~ (NEWLINE ~ indent ~ dictionary)+ ~ "}"
-  | "(" ~ (NEWLINE ~ indent ~ dictionary)+ ~ ")"
+  | "[" ~ (indent_line ~ dictionary)+ ~ "]"
+  | "{" ~ (indent_line ~ dictionary)+ ~ "}"
+  | "(" ~ (indent_line ~ dictionary)+ ~ ")"
   | assign
 }
 
