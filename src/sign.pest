@@ -102,7 +102,7 @@ rest_param  = { "~" }
 p_holder    = { "@" }
 otherwise   = { "\\" }
 
-export      = { f_export ~ expression* }
+export      = { f_export ~ expression+ }
 
 assign      = { ident ~ f_assign ~ expression+ }
 
