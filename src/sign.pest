@@ -15,7 +15,8 @@ expression  = {
   | factrial
   | coproduct
   | literal
-  | get_import
+  | get
+  | import
   | block
 }
 
@@ -35,10 +36,42 @@ indent_line = {
 
 indent      = { "\t" | "  " }
 
-prefix      = { f_export | f_not | f_import | f_spread }
-infix_L     = { f_product | f_coproduct | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_spread }
-compare_op  = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
-infix_R     = { f_assign | f_power }
+prefix      = {
+  f_export
+  | f_not
+  | f_get
+  | f_spread
+}
+
+infix_L     = {
+  f_product
+  | f_coproduct
+  | f_or
+  | f_xor
+  | f_and
+  | f_add
+  | f_sub
+  | f_mul
+  | f_div
+  | f_mod
+  | f_spread
+  | f_get
+}
+
+compare_op  = {
+  f_less
+  | f_less_eq
+  | f_eq
+  | f_neq
+  | f_more_eq
+  | f_more
+}
+
+infix_R     = {
+  f_assign
+  | f_power
+}
+
 postfix     = { f_factrial }
 
 f_export    = { "#" }
@@ -64,10 +97,10 @@ f_mod       = { "%" }
 f_power     = { "^" }
 f_factrial  = { "!" }
 f_spread    = { "~" }
-f_import    = { "@" }
+f_get       = { "@" }
 rest_param  = { "~" }
 p_holder    = { "@" }
-otherwise   = { "_" }
+otherwise   = { "\\" }
 
 export      = { f_export ~ expression* }
 
@@ -258,7 +291,10 @@ list        = {
   product
   | cat_list
   | (ident | charactor | number) ~ f_spread ~ (ident | charactor | number) ~ product
+  | unit
 }
+
+unit = { "_" }
 
 dictionary  = {
   assign ~ (f_product ~ assign)+
@@ -273,7 +309,11 @@ ident       = {
   | f_spread ~ string
 }
 
-get_import      = {
-  f_import ~ ident ~ block*
-  | (ident ~ f_import)+ ~ ident
+get         = {
+  f_get ~ ident ~ block*
+  | (ident ~ f_get)+ ~ ident
+}
+
+import      = {
+  f_get ~ (ident | string)
 }

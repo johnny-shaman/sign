@@ -112,8 +112,8 @@ HW_in_enter :
 
 
 myTest0_0 :
-  \ : `yep`
-  _ : `nop`
+  $ : `yep`
+  \ : `nop`
 
 myTest0_0 \ = `yep`
 
@@ -125,7 +125,9 @@ myTest1_0 :
   2 : `second`
   > 3 : `more`
   < 1 : `less`
-  _ : `none`
+  \ : `other(false)`
+  _ : `none(unit)`
+
 
 myTest1_0 4 = `more`
 
