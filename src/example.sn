@@ -125,8 +125,8 @@ myTest1_0 :
   2 : `second`
   > 3 : `more`
   < 1 : `less`
-  \ : `other(false)`
-  _ : `none(unit)`
+  \ : `false`
+  _ : `none or unit or otherwise`
 
 
 myTest1_0 4 = `more`

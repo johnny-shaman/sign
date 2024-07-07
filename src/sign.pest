@@ -100,7 +100,7 @@ f_spread    = { "~" }
 f_get       = { "@" }
 rest_param  = { "~" }
 p_holder    = { "@" }
-otherwise   = { "\\" }
+otherwise   = { "_" }
 
 export      = { f_export ~ expression+ }
 
@@ -247,6 +247,14 @@ cat_string  = {
   | string+ ~ cat_string*
 }
 
+get         = {
+  f_get ~ ident ~ block*
+  | (ident ~ f_get)+ ~ ident
+}
+
+import      = {
+  f_get ~ (ident | string)
+}
 
 literal     = @{
   logic
@@ -257,6 +265,7 @@ literal     = @{
   | dictionary
   | f_spread ~ (dictionary | product)
   | ident
+  | none
 }
 
 logic       = {
@@ -294,7 +303,7 @@ list        = {
   | unit
 }
 
-unit = { "_" }
+unit        = { otherwise }
 
 dictionary  = {
   assign ~ (f_product ~ assign)+
@@ -309,11 +318,4 @@ ident       = {
   | f_spread ~ string
 }
 
-get         = {
-  f_get ~ ident ~ block*
-  | (ident ~ f_get)+ ~ ident
-}
-
-import      = {
-  f_get ~ (ident | string)
-}
+none        = { otherwise }
