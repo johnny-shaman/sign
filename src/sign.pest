@@ -1,7 +1,7 @@
 start       = { SOI ~ expression* ~ EOI }
 
-expression  = {
-  export
+expression  = _{
+    export
   | assign
   | lambda
   | product
@@ -21,30 +21,26 @@ expression  = {
 }
 
 block = {
-  (indent_line ~ expression+)+ ~ NEWLINE
-  | "[" ~ expression+ ~ "]"
-  | "{" ~ expression+ ~ "}"
-  | "(" ~ expression+ ~ ")"
-  | "[" ~ (indent_line ~ expression+)+ ~ "]"
-  | "{" ~ (indent_line ~ expression+)+ ~ "}"
-  | "(" ~ (indent_line ~ expression+)+ ~ ")"
+    PEEK_ALL ~ PUSH(indent+) ~ block_content ~
+    (PEEK_ALL ~ block_content)* ~
+    DROP
 }
 
-indent_line = {
-  NEWLINE ~ indent
+block_content = { 
+    expression ~ NEWLINE?
 }
 
-indent      = { "\t" | "  " }
+indent      = { " "+ | "\t"+ }
 
-prefix      = {
-  f_export
+prefix      = _{
+    f_export
   | f_not
   | f_get
   | f_spread
 }
 
-infix_L     = {
-  f_product
+infix_L     = _{
+    f_product
   | f_coproduct
   | f_or
   | f_xor
@@ -58,8 +54,8 @@ infix_L     = {
   | f_get
 }
 
-compare_op  = {
-  f_less
+compare_op  = _{
+    f_less
   | f_less_eq
   | f_eq
   | f_neq
@@ -67,12 +63,12 @@ compare_op  = {
   | f_more
 }
 
-infix_R     = {
-  f_assign
+infix_R     = _{
+    f_assign
   | f_power
 }
 
-postfix     = { f_factrial }
+postfix     = _{ f_factrial }
 
 f_export    = { "#" }
 f_assign    = { ":" }
@@ -99,7 +95,6 @@ f_factrial  = { "!" }
 f_spread    = { "~" }
 f_get       = { "@" }
 rest_param  = { "~" }
-p_holder    = { "@" }
 otherwise   = { "_" }
 
 export      = { f_export ~ expression+ }
@@ -107,42 +102,62 @@ export      = { f_export ~ expression+ }
 assign      = { ident ~ f_assign ~ expression+ }
 
 lambda      = {
-  ident ~ (ident | f_spread ~ ident)* ~ f_lambda ~ expression+
+    function_definition
+  | match_case_lambda
+  | simple_lambda
   | arg_list
   | point_free
   | place_holdered
-  | match_case
 }
 
+function_definition = {
+    ident ~ f_assign ~ simple_lambda
+}
+
+match_case_lambda = {
+    ident ~ f_assign ~ NEWLINE ~
+    (indent ~ case_expression ~ NEWLINE)+
+}
+
+simple_lambda = {
+    (ident | placeholder)* ~ f_lambda ~ expression
+}
+
+case_expression = {
+    (comparison | literal | ident | placeholder | otherwise) ~ f_assign ~ expression
+}
+
+comparison = {
+    (ident | placeholder)? ~ compare_op ~ (literal | ident | placeholder)
+}
+
+placeholder = @{ "@" ~ ASCII_DIGIT* }
+
 arg_list    = {
-  args ~ (infix_L | compare_op | infix_R) ~ (args | expression)*
+    args ~ (infix_L | compare_op | infix_R) ~ (args | expression)*
   | (args | expression)* ~ (compare_op | infix_L | infix_R) ~ args
   | prefix ~ args
   | args ~ postfix
   | f_lambda ~ args
 }
 
-args        = @{ p_holder ~ (ASCII_DIGIT)* ~ rest_param? }
+args        = @{ placeholder+ }
 
 point_free  = {
-  (infix_L | compare_op | infix_R) ~ literal
-  | (logic | number | charactor | string) ~ (infix_L | compare_op | infix_R)
-  | (infix_L | compare_op | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ | expression+) ~ NEWLINE
+    (infix_L | compare_op | infix_R) ~ (literal | placeholder)
+  | (logic | number | charactor | string | placeholder) ~ (infix_L | compare_op | infix_R)
+  | (infix_L | compare_op | infix_R) ~ ((NEWLINE ~ indent ~ expression+)+ | expression+) ~ NEWLINE
   | prefix
 }
 
 place_holdered = {
-  (ident | prefix | infix_L | infix_R) ~ (p_holder | expression)+
-  | p_holder ~ postfix
-  | f_lambda ~ p_holder
+    (ident | prefix | infix_L | infix_R) ~ (placeholder | expression)+
+  | placeholder ~ postfix
+  | f_lambda ~ placeholder
 }
 
-match_case = {
-  (ident | f_spread ~ ident)* ~ f_lambda ~ (indent_line ~ ((logic | number | charactor | string | point_free | otherwise) ~ f_assign ~ expression+))+
-}
-
-l_product   = {
-  lambda
+l_product   = _{
+    lambda
   | or_xor
   | and
   | not
@@ -160,33 +175,31 @@ l_product   = {
 }
 
 product     = {
-  l_product ~ (f_product ~ expression)+
+    l_product ~ (f_product ~ expression)+
   | (indent ~ (expression ~ f_product))+ ~ NEWLINE
   | "[" ~ (expression ~ f_product)* ~ expression ~ "]"
   | "{" ~ (expression ~ f_product)* ~ expression ~  "}"
   | "(" ~ (expression ~ f_product)* ~ expression ~  ")"
-  | "[" ~ (indent_line ~ (expression ~ f_product))+ ~ indent_line ~ expression ~ "]"
-  | "{" ~ (indent_line ~ (expression ~ f_product))+ ~ indent_line ~ expression ~ "}"
-  | "(" ~ (indent_line ~ (expression ~ f_product))+ ~ indent_line ~ expression ~ ")"
-  | (ident | charactor | number) ~ f_spread ~ (ident | charactor | number)
+  | (ident | charactor | number | placeholder) ~ f_spread ~ (ident | charactor | number | placeholder)
 }
 
 or_xor      = {
-  and ~ f_or ~ or_xor
+    and ~ f_or ~ or_xor
   | and ~ f_xor ~ or_xor
   | and
 }
 
 and         = {
-  not ~ f_and ~ and
+    not ~ f_and ~ and
   | not
 }
 
 not        = {
-  f_not ~ (compare | logic | ident)
+    f_not ~ (compare | logic | ident | placeholder)
   | compare
   | logic
   | ident
+  | placeholder
 }
 
 compare     = {
@@ -200,64 +213,65 @@ compare     = {
 }
 
 add_sub     = {
-  mul_div ~ f_add ~ add_sub
+    mul_div ~ f_add ~ add_sub
   | mul_div ~ f_sub ~ add_sub
   | mul_div
 }
 
 mul_div     = {
-  power ~ f_mul ~ mul_div
+    power ~ f_mul ~ mul_div
   | power ~ f_div ~ mul_div
   | power ~ f_mod ~ mul_div
   | power
 }
 
 power       = {
-  factrial ~ f_power ~ power
+    factrial ~ f_power ~ power
   | factrial
 }
 
 factrial    = {
-  (number | ident) ~ f_factrial
+    (number | ident | placeholder) ~ f_factrial
   | number
   | ident
+  | placeholder
 }
 
 coproduct   = {
-  compose_L
+    compose_L
   | concat
 }
 
 compose_L   = {
-  (lambda | ident) ~ (f_coproduct ~ compose_L)+ 
+    (lambda | ident | placeholder) ~ (f_coproduct ~ compose_L)+ 
   | point_free ~ compose_L+
 }
 
 concat      = {
-  cat_list
+    cat_list
   | cat_string
 }
 
 cat_list    = {
-  (product | dictionary | ident) ~ (f_coproduct ~ (product |dictionary | ident))+
+    (product | dictionary | ident | placeholder) ~ (f_coproduct ~ (product | dictionary | ident | placeholder))+
 }
 
 cat_string  = {
-  charactor+ ~ (f_coproduct ~ ident | cat_string+)*
+    charactor+ ~ (f_coproduct ~ (ident | placeholder) | cat_string+)*
   | string+ ~ cat_string*
 }
 
 get         = {
-  f_get ~ ident ~ block*
-  | (ident ~ f_get)+ ~ ident
+    f_get ~ (ident | placeholder) ~ block*
+  | (ident ~ f_get)+ ~ (ident | placeholder)
 }
 
 import      = {
-  f_get ~ (ident | string)
+    f_get ~ (ident | string)
 }
 
-literal     = @{
-  logic
+literal     = {
+    logic
   | number
   | charactor
   | string
@@ -265,20 +279,20 @@ literal     = @{
   | dictionary
   | f_spread ~ (dictionary | product)
   | ident
+  | placeholder
   | none
 }
 
 logic       = {
-  true
+    true
   | false
 }
 
 true        = @{ "$" }
 false       = @{ "\\" }
 
-
 number      = @{
-  natural
+    natural
   | integer
   | real
   | hex
@@ -297,24 +311,21 @@ charactor   = @{ "'" ~ ANY }
 string      = { "`" ~ (!NEWLINE ~ ANY)* ~ "`" }
 
 list        = {
-  product
+    product
   | cat_list
-  | (ident | charactor | number) ~ f_spread ~ (ident | charactor | number) ~ product
+  | (ident | charactor | number | placeholder) ~ f_spread ~ (ident | charactor | number | placeholder) ~ product
   | unit
 }
 
 unit        = { otherwise }
 
 dictionary  = {
-  assign ~ (f_product ~ assign)+
-  | (indent_line ~ (assign | dictionary))+ ~ NEWLINE
-  | "[" ~ (indent_line ~ (assign | dictionary))+ ~ "]"
-  | "{" ~ (indent_line ~ (assign | dictionary))+ ~ "}"
-  | "(" ~ (indent_line ~ (assign | dictionary))+ ~ ")"
+    assign ~ (f_product ~ assign)+
+  | (indent ~ (assign | dictionary))+ ~ NEWLINE
 }
 
-ident       = {
-  (ASCII_ALPHANUMERIC | "_")+ ~ (ASCII_ALPHA | "_")
+ident       = @{
+    (ASCII_ALPHANUMERIC | "_")+ ~ (ASCII_ALPHA | "_")
   | f_spread ~ string
 }
 
