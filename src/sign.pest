@@ -131,7 +131,7 @@ comparison = {
     (ident | placeholder)? ~ compare_op ~ (literal | ident | placeholder)
 }
 
-placeholder = @{ "@" ~ ASCII_DIGIT* }
+placeholder = @{ "@" ~ ASCII_DIGIT* ~ rest_param? }
 
 arg_list    = {
     args ~ (infix_L | compare_op | infix_R) ~ (args | expression)*
