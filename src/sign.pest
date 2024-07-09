@@ -13,10 +13,10 @@ expression  = _{
   | mul_div
   | power
   | factrial
-  | coproduct
-  | literal
   | get
   | import
+  | coproduct
+  | literal
   | block
 }
 
@@ -30,7 +30,7 @@ block_content = {
     expression ~ NEWLINE?
 }
 
-indent      = { " "+ | "\t"+ }
+indent      = { "  " | "\t" }
 
 prefix      = _{
     f_export
