@@ -1,15 +1,15 @@
-`文字列は、backQuort`
-`意味をなさないリテラルだけの開始行や中間行は実行されない。よって、上の行も実行されない。`
-`リテラルだけの行であっても、それが関数の最終行であれば、それを返値とする`
-`この文字列の特性により、正規表現オブジェクトを扱いやすくなるメリットが有る。`
+`Strings are enclosed in backquotes`
+`Meaningless literal-only lines at the beginning or middle are not executed. Therefore, the line above is not executed.`
+`Even if it's a line with only a literal, if it's the final line of a function, it becomes the return value`
+`This string characteristic has the advantage of making regular expression objects easier to handle.`
 
-`改行は「評価する」という後置演算子。`
-`行頭indentはブロックの形成となる。`
+`A newline is a postfix operator meaning "evaluate".`
+`Leading indentation forms a block.`
 
-`この言語の通常の評価戦略は、遅延評価である。`
+`The normal evaluation strategy in this language is lazy evaluation.`
 
-`":"は英文では「即ち」なので代入演算子とし、=は飽くまで比較演算子である。`
-`下を見ただけでも、この言語は名前が型となるのは自明であろう。`
+`":" in English means "namely", so it's used as the assignment operator, while = is strictly a comparison operator.`
+`Just by looking below, it should be obvious that in this language, names become types.`
 
 x: 3
 y: 4
@@ -20,27 +20,27 @@ World: `World`
 yep : $
 nop : \
 
-`ブロックになっていない代入演算子は、右単位元であり、分配的構文に対するシンタックスシュガーである。`
+`Assignment operators that are not in a block are right identity elements and are syntactic sugar for distributive syntax.`
 
 unit: otherwise: none: @
 
-`上述は、以下の構文と同じ意味`
+`The above means the same as the following syntax`
 
 otherwise: @
 none: @
 unit: @
 
-`この言語ではカッコ、インデントの双方はブロックを表し、ローカルスコープを持ち、優先に処理されるものと認識される。`
-`つまり、名前のスコープはブロックで決まる`
+`In this language, both parentheses and indentation represent blocks, have local scope, and are recognized as being processed with priority.`
+`In other words, the scope of names is determined by blocks`
 
   y: $
   n: _
 
-`未定義であるため、y wasn't defined というエラーと同時に、none(unit)を返す。`
+`Because it's undefined, it returns an error "y wasn't defined" along with none (unit).`
 
 (y = $) = @
 
-ただし、以下であればアクセスできることになる。
+However, it can be accessed as follows:
 
 [
   y: $
@@ -48,15 +48,15 @@ unit: @
 ] ' y
 
 
-`ラムダ項の定義方法`
-`ラムダ項の基本は、?を使う。`
-`代入を伴わない関数は、カッコで囲む必要がある。なぜなら、カッコの最初は、スタックの生成を意味するから。`
+`How to define lambda terms`
+`The basic lambda term uses ?.`
+`Functions without assignment need to be enclosed in parentheses. This is because the start of parentheses means the creation of a stack.`
 
 [x y ? x ^ 2 + 2 * x * y + y ^ 2] 3 4
 
 
-`上述をプレースホルダ記号@を使って記述し直す。`
-`関数であることを明示するため、頭に?を付けておいても良い。`
+`Rewrite the above using the placeholder symbol @.`
+`You can add ? at the beginning to explicitly show it's a function.`
 
 [@0 ^ 2 + 2 * @0 * @1 + @1 ^ 2] 3 4
 
@@ -64,28 +64,28 @@ unit: @
 
 
 
-`上述は因数分解によって、この式は以下と等価。`
+`The above is equivalent to the following expression by factorization.`
 
 [(@0 + @1) ^ 2] 3 4
 
 [? (@0 + @1) ^ 2] 3 4
 
 
-`インクリメンタルな引数呼び出しは、プレースホルダの添字を省略可能。`
+`For incremental argument calls, the subscript of placeholders can be omitted.`
 
 [(@ + @) ^ 2] 3 4
 
 [? (@ + @) ^ 2] 3 4
 
 
-`ポイントフリーと関数合成を使って、更に記述を簡約する。`
-`ポイントフリーな関数の記述は、直接的な演算子の記述であるため、型が自明である。`
-`この言語では、関数合成は左単位元である。空白は抽象的に"合成する演算子"である。`
+`Using point-free style and function composition to further simplify the description.`
+`The description of point-free functions is a direct description of operators, so the type is obvious.`
+`In this language, function composition is a left identity. Space is abstractly an "operator for composition".`
 
 [+] [^ 2] 3 4
 
 
-`関数の第1引数は、関数の前に書いても良い`
+`The first argument of a function can be written before the function`
 
  3 [+] [^ 2] 4
 
@@ -96,37 +96,37 @@ unit: @
 4 [+ 3] [^ 2]
 
 
-`高階関数に対する、関数の適用について。`
-`関数の引数に関数を渡す場合は、関数合成よりも関数適用のほうが優先されるため、空白記号で出来る。`
-`これにより、以下のように、関数を評価する関数を記述できている。`
+`Regarding function application to higher-order functions.`
+`When passing a function as an argument to a function, function application takes precedence over function composition, so it can be done with a space symbol.`
+`This allows us to write functions that evaluate functions as follows.`
 
 [@ @] [+ 2] [* 3] 4
 
 
-`最後に来る添字が省略されたプレースホルダは、暗黙に"rest parameter"となる。`
+`The placeholder with the last subscript omitted implicitly becomes a "rest parameter".`
 
 [@ @] [*] [+ 5] 2 3
 [@0 @1~] [*] [+ 5] 2 3
 
 
-`以下はid射と同じで、命名せずに記号のみでid射の即時生成、即時適用、即時削除を可能にしている。`
-`これは、この言語の究極系である。`
-`なぜなら、id:と命名しても良いが、あえて命名しないことによって、型などの振る舞いも省略可能。`
+`The following is the same as the id morphism, enabling immediate generation, immediate application, and immediate deletion of the id morphism without naming.`
+`This is the ultimate form of this language.`
+`Because even though we could name it id:, by deliberately not naming it, we can omit behaviors like types.`
 
 [@] 1 2
 
 
-`以下は、headを返す関数としてうまく機能する。`
+`The following functions well as a function that returns the head.`
 
 [@0] 1 2 3 = 1
 
 
-`以下はtailを返す関数として、うまく機能する。添字の省略がなされていないので、rest parameterを明示している。`
+`The following functions well as a function that returns the tail. Since the subscript is not omitted, it explicitly shows the rest parameter.`
 
 [@1~] 1 2 3 = 2 3
 
 
-`ラムダに代入演算子で命名する場合、添字省略型プレースホルダのみで記述された関数は、? またはカッコを省略できない。`
+`When naming a lambda with an assignment operator, functions described only with subscript-omitted placeholders cannot omit ? or parentheses.`
 
 add : +
 exp : ^
@@ -139,25 +139,25 @@ eval : ? @ @
 eval_0 : [@ @]
 eval_1 : @0 @1~
 
-`余談だが、rest_parameterを引数とする場合の記述として以下も可能ではある。`
-`これはすぐ下のプレースホルダと等価である。`
+`As a side note, it's also possible to write as follows when taking a rest_parameter as an argument.`
+`This is equivalent to the placeholder just below.`
 
 map : [f x ~y ? map f x y~ ]
 map : [map @ @ @]
 
-`~演算子は奥深い。match_caseに対する~演算子がスコープをプロモートする根拠は、`
-`~が不動点であるから。`
-`故に、map関数の無名化に関しては、愚直に不動点をラムダで定義する方法もある。`
+`The ~ operator is profound. The reason why the ~ operator promotes scope for match_case is that`
+`~ is a fixed point.`
+`Therefore, for the anonymization of the map function, there's also a method to naively define a fixed point with lambda.`
 
 [~ @ @ @] [* 2] 1 2 3 4 5
 
 
-`match_caseは、ブロック構文を使い、以下のように記述出来る。`
-`ブロックがガード記法となる。`
-`ブロック化された代入演算もこれが正体`
-`ブロックそのものを代入するかカッコでくくって即時生成すれば、ただの関数と同じ。`
-`よってこれは辞書型と等価である。`
-`よってid射がotherwiseとなるのは自明`
+`match_case can be written using block syntax as follows.`
+`The block becomes guard notation.`
+`Block-ified assignment operators are also this in essence`
+`If you assign the block itself or enclose it in parentheses for immediate generation, it's the same as just a function.`
+`Therefore, this is equivalent to a dictionary type.`
+`Therefore, it's obvious that the id morphism becomes otherwise`
 
 [
   0 : `zero`
@@ -167,7 +167,7 @@ map : [map @ @ @]
 ] 3
 
 
-`３項演算子のような振る舞いも、以下のように定義可能。`
+`Behavior like a ternary operator can also be defined as follows.`
 
 myTest0 :
   $ : `yep`
@@ -176,7 +176,7 @@ myTest0 :
 myTest0 \ = `yep`
 
 
-`代入する場合。`
+`In case of assignment.`
 
 myTest1 :
   mike : `Hi mike!`
@@ -193,26 +193,26 @@ myTest1 4 = `more`
 
 
 
-`代入演算子の頭がラムダの場合は、つまりif thenと同義となる。if then はelseがunitを返すだけ。`
-`しかしこれも、match_caseと同等である。`
+`If the head of the assignment operator is lambda, it becomes equivalent to if then. if then just returns unit for else.`
+`However, this is also equivalent to match_case.`
 
 [[> 3] : + 3] 3 4
 
 
-`関数は必ず値を返す。`
+`Functions always return a value.`
 
 
-`リストの定義は原則comma区切り。`
-`","は英文では「強い区切り」、「直積」を表す。`
-`" "は「直和」に使われる。`
-`要素に任意に要素を追加出来る。`
-`スカラー型の余積がリストを形成するので、commaを省略出来ることもある。`
-`[@] は、id射の実装をプレースホルダで示したもの`
-`ラムダの評価が、他の式や項より優先順位が低いのもよく分かる。`
-`リストがイテレータとして機能する様も、頭の関数の省略がされてない形を見るとよく分かる。`
-`実装が型であることを、見事に再現できている。`
-`@ と , が、随伴関手定理による随伴であることも、キレイに現れる。`
-`同じように、,とspaceが随伴関手定理による随伴であることも、現れている。`
+`List definitions are primarily comma-separated.`
+`"," in English represents a "strong separation" or "direct product".`
+`" " is used for "coproduct".`
+`Elements can be arbitrarily added to elements.`
+`Since the coproduct of scalar types forms a list, commas can sometimes be omitted.`
+`[@] shows the implementation of the id morphism with placeholders`
+`It's also clear that the evaluation of lambda has lower priority than other expressions or terms.`
+`The way lists function as iterators is also clear when you look at the form where the head function is not omitted.`
+`It beautifully reproduces that implementation is type.`
+`It's beautifully shown that @ and , are adjoint by the adjoint functor theorem.`
+`Similarly, it's shown that , and space are adjoint by the adjoint functor theorem.`
 
 myPairs: 1 2 3 4 5
 
@@ -229,18 +229,18 @@ myPairs13: [@0, @1~] 1, 2, 3, 4, 5
 myPairs14: [,] 1, 2, 3, 4, 5
 
 
-`これは直和（配列の合成）`
+`This is coproduct (array composition)`
 
 r: [1 2] [3 4]
 
 
-`これは直積（2次元配列）`
+`This is product (2D array)`
 
 s: [1 2],[3 4]
 
 
-`辞書型に見える表現は、はmatch_caseを行う無名関数と同じでカッコの種類は問わず、インデントでも定義可能。`
-`ただし、開カッコと閉カッコは必ず対になる必要がある。`
+`Expressions that look like dictionary types are the same as anonymous functions performing match_case, and the type of parentheses doesn't matter; they can also be defined with indentation.`
+`However, opening and closing parentheses must always be in pairs.`
 
 myGreet:
   greet: 
@@ -249,8 +249,8 @@ myGreet:
   world: ` world`
 
 
-`よって、アクセスはidentか文字列、またはnaturalかhexを引数にすることになるが、getという評価関数が必要となる。`
-`つまり、lensやprismとして作用するコモナドが暗示されることになる。`
+`Therefore, access will be with ident or string, or natural or hex as arguments, but a get evaluation function becomes necessary.`
+`In other words, it implies a comonad that acts as a lens or prism.`
 
 myGreet ' greet ' hello = `hello,`
 
@@ -259,10 +259,10 @@ myPairs ' 0 = 1
 myPairs ' [1 ~ 3] = 2 3 4
 
 
-`ブロックスコープを使うことで、ブロックスコープ内に添え字に対するgetを直接記述できる。`
-`これはファイルの内外関係なくimport演算子で統一する。`
-`このブロック構文も、もちろん演算終了時に返り値がある。`
-`これはブロックスコープでの結果の直和が可能であれば直和を返す。`
+`By using block scope, you can directly write get for subscripts within the block scope.`
+`This is unified with the import operator regardless of inside or outside files.`
+`Of course, this block syntax also has a return value at the end of the operation.`
+`This returns a coproduct if a coproduct of results is possible in the block scope.`
 
 myGreet
   ' greet ' welcome
@@ -270,24 +270,24 @@ myGreet
 = `welcome, world`
 
 
-`値のmodifyが可能`
+`Value modification is possible`
 
 myGreet~
   ' greet ' welcome : `welcome`
   ' world : `univese`
 
 
-`,を使うことで、わざわざブロック化しなくて良い長さの定義の略記が可能。`
+`Using , allows for abbreviated notation of definitions that are not long enough to require blocking.`
 
 point: x: 0, y: 3, z: 2
 
 
-`プリミティブな型のみを推論することで、実際の型の問題が解決できるような設計となる。`
-`与えられた名前は全て定義であり、それが自明な型でもあるため、名前が型である。`
+`By inferring only primitive types, the design is such that actual type problems can be solved.`
+`All given names are definitions, and because they are also obvious types, names are types.`
 
 
-`~演算子は、対象のスコープ上に辞書型を模倣するmatch_caseのみを展開できる。`
-`前置であれば、他の項より優先され、後置であれば他の項を優先する。`
+`The ~ operator can only expand match_case mimicking dictionary types on the target scope.`
+`If it's a prefix, it takes precedence over other terms, and if it's a postfix, other terms take precedence.`
 
 ~[
   y: $
@@ -296,16 +296,16 @@ point: x: 0, y: 3, z: 2
 
   y = $
 
-`@前置演算子はトップレベルで使う時はimportの役も負う。ファイル名からの指定も可能で、path指定も可`
-`辞書型の名前を上のスコープに展開したい場合は、~演算子を使う。`
+`The @ prefix operator also plays the role of import when used at the top level. Specification from file names is possible, and path specification is also possible`
+`If you want to expand the name of a dictionary type to the upper scope, use the ~ operator.`
 
 ~@io
 ~@iterator
 
 
-`\の後の任意の１文字は、必ず文字型の値１文字分とする。`
-`スカラ値のリスト化は、通常はspaceかcommaを使うが、文字リテラルと文字列リテラルの場合は、`
-`直結した記述で連結を表わせる場合があるので、そのパターン記述しておく。`
+`Any single character after \ is always one character value of character type.`
+`Scalar value list creation usually uses space or comma, but in the case of character literals and string literals,`
+`there are cases where concatenation can be represented by direct description, so write that pattern.`
 
 M: \M
 
@@ -318,17 +318,17 @@ Hello '  My '  `World` '! = `Hello My Domestic World!`
 `Hello` '!' My World '! = `Hello! My Domestic World!`
 
 
-`改行を含む文字列を表現したい場合は、ブロックのような書き方となる。`
-`理由は、` `が、「リストの結合、及び関数合成、関数適用」を意味するため。`
-`ただし、文字列の合成はtabの後ろの` `を省略可能。`
-`改行を含めたい場合。`
+`If you want to express a string containing newlines, it becomes a block-like writing.`
+`The reason is that ` ` means "list concatenation, function composition, and function application".`
+`However, ` ` after tab can be omitted for string composition.`
+`If you want to include newlines.`
 
 HWinEnter :
  `Hello` \
  `World!`
 
 
-`"#"はexportになる。`
+`"#" becomes export.`
 
 # myDict : name value; ~name : value
 # gets : ?
