@@ -18,7 +18,7 @@ Hello: `Hello`
 World: `World`
 
 yep : $
-nop : \
+nop : _
 
 `Assignment operators that are not in a block are right identity elements and are syntactic sugar for distributive syntax.`
 
