@@ -1,6 +1,6 @@
 `Strings are enclosed in backquotes`
-`Meaningless literal-only lines at the beginning or middle are not executed. Therefore, the line above is not executed.`
-`Even if it's a line with only a literal, if it's the final line of a function, it becomes the return value`
+`Meaningless literal-only lines at the start or middle are not executed. Therefore, the line above is not executed.`
+`Even if a line contains only a literal, if it's the last line of a function, it becomes the return value.`
 `This string characteristic has the advantage of making regular expression objects easier to handle.`
 
 `A newline is a postfix operator meaning "evaluate".`
@@ -17,18 +17,19 @@ y: 4
 Hello: `Hello`
 World: `World`
 
-yep : $
-nop : _
+`true is $, false is _`
+
+yep: $
+nop: _
 
 `Assignment operators that are not in a block are right identity elements and are syntactic sugar for distributive syntax.`
 
-unit: otherwise: none: @
+unit: none: []
 
 `The above means the same as the following syntax`
 
-otherwise: @
-none: @
-unit: @
+none: []
+unit: []
 
 `In this language, both parentheses and indentation represent blocks, have local scope, and are recognized as being processed with priority.`
 `In other words, the scope of names is determined by blocks`
@@ -36,9 +37,9 @@ unit: @
   y: $
   n: _
 
-`Because it's undefined, it returns an error "y wasn't defined" along with none (unit).`
+`The above is deleted when leaving the block, so it returns an error "y wasn't defined" along with none (unit).`
 
-(y = $) = @
+(y = 1) = []
 
 However, it can be accessed as follows:
 
@@ -47,29 +48,25 @@ However, it can be accessed as follows:
   n: _
 ] ' y
 
-
 `How to define lambda terms`
 `The basic lambda term uses ?.`
 `Functions without assignment need to be enclosed in parentheses. This is because the start of parentheses means the creation of a stack.`
 
 [x y ? x ^ 2 + 2 * x * y + y ^ 2] 3 4
 
-
 `Rewrite the above using the placeholder symbol @.`
 `You can add ? at the beginning to explicitly show it's a function.`
 
-[@0 ^ 2 + 2 * @0 * @1 + @1 ^ 2] 3 4
+[@1 ^ 2 + 2 * @1 * @2 + @2 ^ 2] 3 4
 
-[? @0 ^ 2 + 2 * @0 * @1 + @1 ^ 2] 3 4
-
-
+[? @1 ^ 2 + 2 * @1 * @2 + @2 ^ 2] 3 4
 
 `The above is equivalent to the following expression by factorization.`
+`Parentheses are still perceived as the start of a block definition, allowing expression of operation priority.`
 
 [(@0 + @1) ^ 2] 3 4
 
 [? (@0 + @1) ^ 2] 3 4
-
 
 `For incremental argument calls, the subscript of placeholders can be omitted.`
 
@@ -77,54 +74,57 @@ However, it can be accessed as follows:
 
 [? (@ + @) ^ 2] 3 4
 
-
-`Using point-free style and function composition to further simplify the description.`
+`Using point-free style and function composition can further simplify the description in some cases.`
 `The description of point-free functions is a direct description of operators, so the type is obvious.`
-`In this language, function composition is a left identity. Space is abstractly an "operator for composition".`
+`While function application is typically a right identity, left identity is also possible with explicit ? or placeholders.`
+`This is the limit of point-free transformation for polynomials.`
 
-[+] [^ 2] 3 4
+[? [+] [^ 2]] 3 4
+[[@ + @] ^ 2] 3 4
 
-
+`Point-free descriptions of monomials take arguments in right, left order.`
 `The first argument of a function can be written before the function`
+`If it's after :, [] can be omitted if the point-free description is a monomial.`
 
- 3 [+] [^ 2] 4
+result2: - 1 3
 
-[+] 3 [^ 2] 4
-
-[+ 3] [^ 2] 4
-
-4 [+ 3] [^ 2]
+[-] 1 3 = [- 1] 3
+[-] 1 3 = 3 - 1
+[-] 1 3 = [@1 - @0] 1 3
 
 
 `Regarding function application to higher-order functions.`
 `When passing a function as an argument to a function, function application takes precedence over function composition, so it can be done with a space symbol.`
-`This allows us to write functions that evaluate functions as follows.`
+`This allows us to describe a function that evaluates functions as self-referential, but in actual compilation, this description becomes a contradiction.`
 
 [@ @] [+ 2] [* 3] 4
-
 
 `The placeholder with the last subscript omitted implicitly becomes a "rest parameter".`
 
 [@ @] [*] [+ 5] 2 3
 [@0 @1~] [*] [+ 5] 2 3
 
-
 `The following is the same as the id morphism, enabling immediate generation, immediate application, and immediate deletion of the id morphism without naming.`
-`This is the ultimate form of this language.`
-`Because even though we could name it id:, by deliberately not naming it, we can omit behaviors like types.`
+`The last placeholder becoming a rest parameter means arguments always function as a list.`
+`Therefore, passing a list and passing multiple arguments are inherently equivalent in this language.`
+`The reason is that the natural equivalence (natural isomorphism) in the background of this language is regarded as an adjoint functor.`
+`As a result, spaces and commas can be explained by adjoint functors.`
+`? can also be explained by this natural equivalence system.`
+`This is one of the ultimate forms of this language.`
+`Because even though we could name it id:, by deliberately not naming it, the type description becomes unnecessary.`
 
+[? @] 1 2
+[? @] 1,2
 [@] 1 2
-
+[@] 1,2
 
 `The following functions well as a function that returns the head.`
 
 [@0] 1 2 3 = 1
 
-
-`The following functions well as a function that returns the tail. Since the subscript is not omitted, it explicitly shows the rest parameter.`
+`The following functions well as a function that returns the tail. The subscript is not omitted, so it explicitly shows the rest parameter.`
 
 [@1~] 1 2 3 = 2 3
-
 
 `When naming a lambda with an assignment operator, functions described only with subscript-omitted placeholders cannot omit ? or parentheses.`
 
@@ -141,16 +141,22 @@ eval_1 : @0 @1~
 
 `As a side note, it's also possible to write as follows when taking a rest_parameter as an argument.`
 `This is equivalent to the placeholder just below.`
+`@' refers to the callee, so fixed points can be easily reproduced`
+`This language allows type annotation or type reading by enclosing names in " for those who really want to write types (not recommended)`
+`Why correct syntax automatically results in correct types is self-evident from the following type annotation`
+`Because the type to which a function is applied is expressed as is, it becomes the same as the implementation.`
+`Of course, the type of an executed function is automatically type-cast to the post-execution type, but`
+`this is related to the fact that type calculation is done later due to lazy evaluation.`
+`As a result, the compiler or interpreter doesn't need to guarantee type safety.`
 
-map : [f x ~y ? map f x y~ ]
-map : [map @ @ @]
+typeOf : "@"
+id : [@]
 
-`The ~ operator is profound. The reason why the ~ operator promotes scope for match_case is that`
-`~ is a fixed point.`
-`Therefore, for the anonymization of the map function, there's also a method to naively define a fixed point with lambda.`
+"Functor": "F"
+  "map" : "F" "x" "y" "~z" ? ["F" "x"] , "map" "F" "y" "~z"
 
-[~ @ @ @] [* 2] 1 2 3 4 5
-
+map : f x y ~z ? [f x] , map f y ~z
+map : @0 @1 , @' @0 @2 @3~
 
 `match_case can be written using block syntax as follows.`
 `The block becomes guard notation.`
@@ -166,7 +172,6 @@ map : [map @ @ @]
   @ : `other`
 ] 3
 
-
 `Behavior like a ternary operator can also be defined as follows.`
 
 myTest0 :
@@ -174,7 +179,6 @@ myTest0 :
   _ : `nop`
 
 myTest0 $ = `yep`
-
 
 `In case of assignment.`
 
@@ -186,21 +190,21 @@ myTest1 :
   > 3 : `more`
   < 1 : `less`
   _ : `false`
-  @ : `none or unit or otherwise`
-
+  [] : `none or unit or otherwise`
 
 myTest1 4 = `more`
-
-
 
 `If the head of the assignment operator is lambda, it becomes equivalent to if then. if then just returns unit for else.`
 `However, this is also equivalent to match_case.`
 
-[[> 3] : + 3] 3 4
+[[@0 > 3] : @1 + 3] 3 4
 
+`The so-called let ~ in is written as follows.`
+`In fact, it becomes the same as a monadic description.`
 
-`Functions always return a value.`
-
+myValue : 3
+  [+ 4]
+  [* 2]
 
 `List definitions are primarily comma-separated.`
 `"," in English represents a "strong separation" or "direct product".`
@@ -228,16 +232,13 @@ myPairs12: [@, @] 1, 2, 3, 4, 5
 myPairs13: [@0, @1~] 1, 2, 3, 4, 5
 myPairs14: [,] 1, 2, 3, 4, 5
 
-
 `This is coproduct (array composition)`
 
 r: [1 2] [3 4]
 
-
 `This is product (2D array)`
 
 s: [1 2],[3 4]
-
 
 `Expressions that look like dictionary types are the same as anonymous functions performing match_case, and the type of parentheses doesn't matter; they can also be defined with indentation.`
 `However, opening and closing parentheses must always be in pairs.`
@@ -248,7 +249,6 @@ myGreet:
     welcome: `welcome,`
   world: ` world`
 
-
 `Therefore, access will be with ident or string, or natural or hex as arguments, but a get evaluation function becomes necessary.`
 `In other words, it implies a comonad that acts as a lens or prism.`
 
@@ -257,7 +257,6 @@ myGreet ' greet ' hello = `hello,`
 myPairs ' 0 = 1
 
 myPairs ' [1 ~ 3] = 2 3 4
-
 
 `By using block scope, you can directly write get for subscripts within the block scope.`
 `This is unified with the import operator regardless of inside or outside files.`
@@ -269,22 +268,18 @@ myGreet
   ' world
 = `welcome, world`
 
-
 `Value modification is possible`
 
 myGreet~
   ' greet ' welcome : `welcome`
   ' world : `univese`
 
-
 `Using , allows for abbreviated notation of definitions that are not long enough to require blocking.`
 
 point: x: 0, y: 3, z: 2
 
-
 `By inferring only primitive types, the design is such that actual type problems can be solved.`
 `All given names are definitions, and because they are also obvious types, names are types.`
-
 
 `The ~ operator can only expand match_case mimicking dictionary types on the target scope.`
 `If it's a prefix, it takes precedence over other terms, and if it's a postfix, other terms take precedence.`
@@ -302,7 +297,6 @@ point: x: 0, y: 3, z: 2
 ~@io
 ~@iterator
 
-
 `Any single character after \ is always one character value of character type.`
 `Scalar value list creation usually uses space or comma, but in the case of character literals and string literals,`
 `there are cases where concatenation can be represented by direct description, so write that pattern.`
@@ -317,7 +311,6 @@ My: M \y\ \D\o\m\e\s\t\i\c
 Hello '  My '  `World` '! = `Hello My Domestic World!`
 `Hello` '!' My World '! = `Hello! My Domestic World!`
 
-
 `If you want to express a string containing newlines, it becomes a block-like writing.`
 `The reason is that ` ` means "list concatenation, function composition, and function application".`
 `However, ` ` after tab can be omitted for string composition.`
@@ -327,8 +320,9 @@ HWinEnter :
  `Hello` \
  `World!`
 
-
 `"#" becomes export.`
+`Normal functions always return the value of the last line, and match_case returns the value or function corresponding to the specified value`
+`The entire file is also a function, but anything not indicated by export, i.e., #, does not leave its own scope.`
 
 # myDict : name value; ~name : value
 # gets : ?
