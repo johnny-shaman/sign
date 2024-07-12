@@ -44,7 +44,7 @@ However, it can be accessed as follows:
 
 [
   y: $
-  n: \
+  n: _
 ] ' y
 
 
@@ -171,9 +171,9 @@ map : [map @ @ @]
 
 myTest0 :
   $ : `yep`
-  \ : `nop`
+  _ : `nop`
 
-myTest0 \ = `yep`
+myTest0 $ = `yep`
 
 
 `In case of assignment.`
@@ -185,7 +185,7 @@ myTest1 :
   2 : `second`
   > 3 : `more`
   < 1 : `less`
-  \ : `false`
+  _ : `false`
   @ : `none or unit or otherwise`
 
 
@@ -291,7 +291,7 @@ point: x: 0, y: 3, z: 2
 
 ~[
   y: $
-  n: \
+  n: _
 ]
 
   y = $
