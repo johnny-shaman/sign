@@ -69,40 +69,35 @@ However, it can be accessed as follows:
 [? (@0 + @1) ^ 2] 3 4
 
 `For incremental argument calls, the subscript of placeholders can be omitted.`
+`Parentheses can be of the same type without problems.`
 
-[(@ + @) ^ 2] 3 4
+[[@ + @] ^ 2] 3 4
 
 [? (@ + @) ^ 2] 3 4
 
-`Using point-free style and function composition can further simplify the description in some cases.`
+`Using point-free style and function composition can further simplify the description in some cases`
 `The description of point-free functions is a direct description of operators, so the type is obvious.`
-`While function application is typically a right identity, left identity is also possible with explicit ? or placeholders.`
-`This is the limit of point-free transformation for polynomials.`
 
-[? [+] [^ 2]] 3 4
-[[@ + @] ^ 2] 3 4
+ [^ 2] [+ 3] 4
+
+`Function composition with the first argument written at the head becomes a left identity.`
+
+4 [+ 3] [^ 2]
+
+`To prevent function application or composition, you can respond by putting a , immediately after the function to make it a direct product.`
+
+result8 : [@0 @0 @1] [+ 2], 4
 
 `Point-free descriptions of monomials take arguments in right, left order.`
 `The first argument of a function can be written before the function`
 `If it's after :, [] can be omitted if the point-free description is a monomial.`
 
 result2: - 1 3
+add : +
 
 [-] 1 3 = [- 1] 3
 [-] 1 3 = 3 - 1
 [-] 1 3 = [@1 - @0] 1 3
-
-
-`Regarding function application to higher-order functions.`
-`When passing a function as an argument to a function, function application takes precedence over function composition, so it can be done with a space symbol.`
-`This allows us to describe a function that evaluates functions as self-referential, but in actual compilation, this description becomes a contradiction.`
-
-[@ @] [+ 2] [* 3] 4
-
-`The placeholder with the last subscript omitted implicitly becomes a "rest parameter".`
-
-[@ @] [*] [+ 5] 2 3
-[@0 @1~] [*] [+ 5] 2 3
 
 `The following is the same as the id morphism, enabling immediate generation, immediate application, and immediate deletion of the id morphism without naming.`
 `The last placeholder becoming a rest parameter means arguments always function as a list.`
@@ -152,11 +147,18 @@ eval_1 : @0 @1~
 typeOf : "@"
 id : [@]
 
-"Functor": "F"
-  "map" : "F" "x" "y" "~z" ? ["F" "x"] , "map" "F" "y" "~z"
+"map" : "f" "x" "~y" ? "f" "x" , "map" "f", "y~"
+map : f x ~y ? f x , map f, y~
 
-map : f x y ~z ? [f x] , map f y ~z
-map : @0 @1 , @' @0 @2 @3~
+"map" : "@0" "@1" , "@'" "@0" "@2~"
+map : @0 @1, @' @0, @2~
+
+"fold" : "@'" "@0", "@0" "@1" "@2" , "@3~"
+fold : @' @0, @0 @1 @2, @3~
+
+`Applying map and fold without naming them.`
+
+result30 : [@' @0, @0 @1 @2, @3~] [+] [@0 @1, @' @0, @2~] [* 2] 1 2 3 4 5
 
 `match_case can be written using block syntax as follows.`
 `The block becomes guard notation.`
@@ -224,7 +226,7 @@ myPairs00: 1 2 3 4 5
 myPairs01: [@] 1 2 3 4 5
 myPairs02: [@, @] 1 2 3 4 5
 myPairs03: [@0, @1~] 1 2 3 4 5
-myPairs04: [,] 1 2 3 4 5
+myPairs05: [,] 1 2 3 4 5
 
 myPairs10: 1, 2, 3, 4, 5
 myPairs11: [@] 1, 2, 3, 4, 5
@@ -263,16 +265,16 @@ myPairs ' [1 ~ 3] = 2 3 4
 `Of course, this block syntax also has a return value at the end of the operation.`
 `This returns a coproduct if a coproduct of results is possible in the block scope.`
 
-myGreet
-  ' greet ' welcome
-  ' world
+@myGreet
+  greet ' welcome
+  world
 = `welcome, world`
 
 `Value modification is possible`
 
-myGreet~
-  ' greet ' welcome : `welcome`
-  ' world : `univese`
+@myGreet
+  greet ' welcome : `welcome to our `
+  world : `metaverse!`
 
 `Using , allows for abbreviated notation of definitions that are not long enough to require blocking.`
 
@@ -289,13 +291,25 @@ point: x: 0, y: 3, z: 2
   n: _
 ]
 
-  y = $
+y = $
 
 `The @ prefix operator also plays the role of import when used at the top level. Specification from file names is possible, and path specification is also possible`
-`If you want to expand the name of a dictionary type to the upper scope, use the ~ operator.`
+`When match_case can be viewed as a dictionary type, it can be expanded to one scope up using the ~ operator, so using ~@ allows for imports that can be used within the file.`
 
+@io
+  say Hello World
+
+`Because it's not an import at the file scope, the line below returns a "Say is not defined" error.`
+
+say Hello World
+
+`Expand to file scope and use.`
+
+~@Funnctor
+~@Monoid
 ~@io
-~@iterator
+
+say fold [+] map [* 4] 1 2 3 4 5
 
 `Any single character after \ is always one character value of character type.`
 `Scalar value list creation usually uses space or comma, but in the case of character literals and string literals,`
@@ -313,7 +327,6 @@ Hello '  My '  `World` '! = `Hello My Domestic World!`
 
 `If you want to express a string containing newlines, it becomes a block-like writing.`
 `The reason is that ` ` means "list concatenation, function composition, and function application".`
-`However, ` ` after tab can be omitted for string composition.`
 `If you want to include newlines.`
 
 HWinEnter :
@@ -327,3 +340,18 @@ HWinEnter :
 # myDict : name value; ~name : value
 # gets : ?
 
+`Logical operators are short-circuit evaluated.`
+
+_ & `me` = _
+$ & `me` = `me`
+
+_ | `me` = `me`
+$ | `me` = $
+
+_ ; `me` = `me`
+$ ; `me` = _
+
+`The approach to syntax trees can be considered as natural transformations.`
+`The following is a consideration of such natural transformations.`
+`The fact that folding and product correspond to adjoint functors is equivalent to replacing , with some infix operator.`
+`We want to consider syntax that can express such expressions.`
