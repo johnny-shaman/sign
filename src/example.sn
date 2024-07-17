@@ -354,4 +354,11 @@ $ ; `me` = _
 `The approach to syntax trees can be considered as natural transformations.`
 `The following is a consideration of such natural transformations.`
 `The fact that folding and product correspond to adjoint functors is equivalent to replacing , with some infix operator.`
-`We want to consider syntax that can express such expressions.`
+`Therefore, since lists are formed with comma separators...,
+`that is, as expressions of products, we use the operator ,~ to indicate`
+`what we want to replace , with.`
+
+,~ [@ * 2,], 1 2 3 4 5
+,~ [+], 1 2 3 4 5
+
+
