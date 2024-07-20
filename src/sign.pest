@@ -21,25 +21,34 @@ expression  = _{
 }
 
 block = {
-    PEEK_ALL ~ PUSH(indent+) ~ block_content ~
-    (PEEK_ALL ~ block_content)* ~
-    DROP
+  indent_block
+  | "[" ~ expression+ ~ "]"
+  | "{" ~ expression+ ~ "}"
+  | "(" ~ expression+ ~ ")"
+}
+
+indent_block  = {
+  PEEK_ALL ~ PUSH(indent+) ~ block_content ~
+  (PEEK_ALL ~ block_content)* ~
+  DROP
 }
 
 block_content = { 
-    expression ~ NEWLINE?
+    expression ~ NEWLINE
 }
 
-indent      = { "  " | "\t" }
+indent        = { "  " | "    " | "\t" }
 
-prefix      = _{
+prefix        = _{
     f_export
   | f_not
   | f_get
   | f_spread
+  | f_p_to_cp
+  | f_cp_to_p
 }
 
-infix_L     = _{
+infix_L       = _{
     f_product
   | f_coproduct
   | f_or
@@ -54,7 +63,7 @@ infix_L     = _{
   | f_get
 }
 
-compare_op  = _{
+compare_op    = _{
     f_less
   | f_less_eq
   | f_eq
@@ -63,60 +72,56 @@ compare_op  = _{
   | f_more
 }
 
-infix_R     = _{
+infix_R       = _{
     f_assign
   | f_power
 }
 
-postfix     = _{ f_factrial }
+postfix       = _{ f_factrial }
 
-f_export    = { "#" }
-f_assign    = { ":" }
-f_lambda    = { "?" }
-f_product   = { "," }
-f_coproduct = { " " }
-f_or        = { "|" }
-f_xor       = { ";" }
-f_and       = { "&" }
-f_not       = { "!" }
-f_less      = { "<" }
-f_less_eq   = { "<=" }
-f_eq        = { "=" | "==" }
-f_neq       = { "!=" }
-f_more_eq   = { ">=" }
-f_more      = { ">" }
-f_add       = { "+" }
-f_sub       = { "-" }
-f_mul       = { "*" }
-f_div       = { "/" }
-f_mod       = { "%" }
-f_power     = { "^" }
-f_factrial  = { "!" }
-f_spread    = { "~" }
-f_get       = { "@" }
-rest_param  = { "~" }
-otherwise   = { "_" }
+f_export      = { "#" }
+f_assign      = { ":" }
+f_lambda      = { "?" }
+f_product     = { "," }
+f_coproduct   = { " " }
+f_or          = { "|" }
+f_xor         = { ";" }
+f_and         = { "&" }
+f_not         = { "!" }
+f_less        = { "<" }
+f_less_eq     = { "<=" }
+f_eq          = { "=" | "==" }
+f_neq         = { "!=" }
+f_more_eq     = { ">=" }
+f_more        = { ">" }
+f_add         = { "+" }
+f_sub         = { "-" }
+f_mul         = { "*" }
+f_div         = { "/" }
+f_mod         = { "%" }
+f_power       = { "^" }
+f_factrial    = { "!" }
+f_spread      = { "~" }
+f_get         = { "@" }
+f_p_to_cp     = { ",~" }
+f_cp_to_p     = { "?~" }
+rest_param    = { "~" }
+otherwise     = { "_" }
 
-export      = { f_export ~ expression+ }
+export        = { f_export ~ expression+ }
 
-assign      = { ident ~ f_assign ~ expression+ }
+assign        = { ident ~ f_assign ~ expression+ }
 
-lambda      = {
-    function_definition
+lambda        = {
+  simple_lambda
   | match_case_lambda
-  | simple_lambda
   | arg_list
   | point_free
   | place_holdered
 }
 
-function_definition = {
-    ident ~ f_assign ~ simple_lambda
-}
-
 match_case_lambda = {
-    ident ~ f_assign ~ NEWLINE ~
-    (indent ~ case_expression ~ NEWLINE)+
+  (indent ~ case_expression ~ NEWLINE)+
 }
 
 simple_lambda = {
@@ -280,6 +285,7 @@ literal     = {
   | f_spread ~ (dictionary | product)
   | ident
   | placeholder
+  | lambda
   | none
 }
 
