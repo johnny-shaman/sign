@@ -351,14 +351,42 @@ $ | `me` = $
 _ ; `me` = `me`
 $ ; `me` = _
 
+
 `The approach to syntax trees can be considered as natural transformations.`
 `The following is a consideration of such natural transformations.`
-`The fact that folding and product correspond to adjoint functors is equivalent to replacing , with some infix operator.`
-`Therefore, since lists are formed with comma separators...,
-`that is, as expressions of products, we use the operator ,~ to indicate`
+`That folding and product correspond to adjoint functors is synonymous with replacing , with some infix operator.`
+`Therefore, since lists are formed with comma-separated... that is, product expressions, we use the operator ,~ to mean`
 `what we want to replace , with.`
 
-,~ [@ * 2,], 1 2 3 4 5
-,~ [+], 1 2 3 4 5
+,~ [1,2,3,4,5], [@ * 2,]
+,~ [1,2,3,4,5], [+]
 
 
+`This operator ,~ which means "what do you want to replace , with?" becomes, by the adjoint functor theorem, an operator meaning "what do you want to replace the function's behavior with"`
+`It evokes ?~`
+`This is rewriting an iterator to a list.`
+
+?~ [,], 1 ? 2 ? 3
+
+
+`In other words, the adjoint functor theorem is realized with the following operators.`
+
+,~
+?~
+
+
+`By enclosing the space operator in [], you can functionalize the space operation.`
+`In the case of type assignment, since it's defined by enclosing up to ident with ", " " is for obtaining type information.`
+
+coproduct : [ ]
+"type_of_coproduct" : " "
+
+
+`Because it's mathematically difficult and not uniquely determined to identify the original function from the value after evaluation, the " "~ operator does not exist.`
+`It becomes similar to left identity function composition.`
+
+,~ [3, [+ 4], [* 2]], [ ]
+
+`If it's right identity function composition...`
+
+,~ [[* 2], [+ 4], 3], [ ]
