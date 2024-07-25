@@ -2,7 +2,9 @@ start       = { SOI ~ expression* ~ EOI }
 
 expression  = {
   export
-  | assign
+  | define_type
+  | get_type
+  | define
   | lambda
   | list
   | or_xor
@@ -40,10 +42,6 @@ indent      = { "\t" | "  " | "    " }
 prefix      = {
   f_export
   | f_not
-  | f_get
-  | f_spread
-  | f_p_a
-  | f_f_a
 }
 
 infix_L     = {
@@ -59,8 +57,6 @@ infix_L     = {
   | f_mod
   | f_spread
   | f_get
-  | f_p_a
-  | f_f_a
 }
 
 compare_op  = {
@@ -77,13 +73,13 @@ infix_R     = {
   | f_power
 }
 
-postfix     = { f_factrial }
+postfix     = @{ "_" ~ f_factrial }
 
 f_export    = { "#" }
 f_assign    = { ":" }
 f_lambda    = { "?" }
 f_product   = { "," }
-f_coproduct = { " " }
+f_coproduct = { " " | "\" \""}
 f_or        = { "|" }
 f_xor       = { ";" }
 f_and       = { "&" }
@@ -101,109 +97,37 @@ f_div       = { "/" }
 f_mod       = { "%" }
 f_power     = { "^" }
 f_factrial  = { "!" } //postfix
-f_spread    = { "~" }
 f_get       = { "'" }
-f_p_a       = { ",~" }
-f_f_a       = { "?~" }
-rest_param  = { "~" }
+f_spread    = { "~" }
 otherwise   = { unit }
 
 export      = { f_export ~ expression+ }
 
-assign      = {
-    as_logic
-  | as_number
-  | as_char
-  | as_string
-  | as_list
-  | as_lambda
-  | as_none
+define_type = {
+  "\"" ~ (ANY) ~ "\"" ~ f_assign ~ expression+
 }
 
-as_logic    = {
-  id_logic ~ f_assign ~ (logic | not)
+get_type = {
+  "\"" ~ expression+ ~"\""
 }
 
-as_number   = {
-    as_natural
-  | as_integer
-  | as_real
-  | as_hex
+define      = {
+  ident ~ f_assign ~ expression+
 }
-
-as_natural  = {
-  id_natural ~ f_assign ~ (natural | factrial)
-}
-
-as_integer  = {
-  id_integer ~ f_assign ~ (integer | factrial)
-}
-
-as_real     = {
-  id_real ~ f_assign ~ (real | factrial)
-}
-
-as_hex      = {
-  id_hex ~ f_assign ~ (hex | factrial)
-}
-
-as_char     = {
-  id_char ~ f_assign ~ charactor
-}
-
-as_string   = {
-  id_string ~ f_assign ~ string
-}
-
-as_lambda   = {
-  id_lambda ~ f_assign ~ lambda
-}
-
-as_list     = {
-  id_list ~ f_assign ~ list
-}
-
-as_none     = {
-  id_none ~ f_assign ~ none
-}
-
-id_logic    = { ident }
-id_natural  = { ident }
-id_integer  = { ident }
-id_real     = { ident }
-id_hex      = { ident }
-id_char     = { ident }
-id_string   = { ident }
-id_list     = { ident }
-id_lambda   = { ident }
-id_none     = { ident }
 
 lambda      = {
   ident ~ (ident | f_spread ~ ident)* ~ f_lambda ~ expression+
-  | arg_list
   | point_free
   | match_case
   | unit
 }
 
-arg_list    = {
-  args? ~ (infix_L | compare_op | infix_R | id_lambda ) ~ (args | expression)*
-  | (args | expression)* ~ (compare_op | infix_L | infix_R) ~ args
-  | prefix ~ args
-  | args ~ postfix
-  | f_lambda ~ args+
-  | "[" ~ args+ ~ "]"
-  | "{" ~ args+ ~ "}"
-  | "(" ~ args+ ~ ")"
-}
-
-args        = @{ "@" ~ (ASCII_DIGIT)* ~ rest_param? }
-
 point_free  = {
-  (id_lambda | infix_L | compare_op | infix_R) ~ literal
+  (ident | infix_L | compare_op | infix_R) ~ literal
   | (logic | number | charactor | string) ~ (infix_L | compare_op | infix_R)
-  | (infix_L | compare_op | infix_R) ~ ((NEWLINE ~ "\t" ~ expression+)+ | expression+) ~ NEWLINE
+  | (infix_L | compare_op | infix_R) ~ expression+ ~ NEWLINE
   | prefix
+  | postfix
 }
 
 match_case = {
@@ -224,7 +148,6 @@ l_product   = _{
   | number
   | string
   | dictionary
-  | literal
   | block
 }
 
@@ -234,14 +157,14 @@ dictionary  = {
 
 list     = {
   l_product ~ (f_product ~ expression)+
-  | (indent ~ (expression ~ f_product))+ ~ NEWLINE
+  | ((indent ~ (expression ~ f_product))+ ~ NEWLINE)+
   | "[" ~ (expression ~ f_product)* ~ expression ~ "]"
   | "{" ~ (expression ~ f_product)* ~ expression ~  "}"
   | "(" ~ (expression ~ f_product)* ~ expression ~  ")"
-  | (id_integer | id_char | charactor | integer | args) ~ f_spread ~ (id_integer | id_char | charactor | integer | args)
+  | (integer) ~ f_spread ~ (integer)
 }
 
-unit        = { "[]" }
+unit        = { "_" }
 
 or_xor      = {
   and ~ f_or ~ or_xor
@@ -301,7 +224,7 @@ coproduct   = {
 }
 
 compose   = {
-  (lambda | id_lambda) ~ (f_coproduct ~ compose)+ 
+  lambda ~ (f_coproduct ~ compose)+ 
 }
 
 concat      = {
@@ -310,12 +233,11 @@ concat      = {
 }
 
 get         = {
-  f_get ~ ident ~ block*
-  | (ident ~ f_get)+ ~ ident
+  ident ~ (f_get ~ ident)*
 }
 
 import      = {
-  f_get ~ (ident | string)
+  "@" ~ (ident | string)
 }
 
 literal     = @{
@@ -324,26 +246,18 @@ literal     = @{
   | charactor
   | string
   | lambda
+  | list
   | none
-  | id_logic
-  | id_natural
-  | id_integer
-  | id_real
-  | id_hex
-  | id_char
-  | id_string
-  | id_list
-  | id_lambda
-  | id_none
+  | ident
 }
 
 logic       = {
-  true
-  | false
+  false
+  | true
 }
 
-true        = @{ "$" }
-false       = @{ "_" }
+false       = { "\\" }
+true        = { "$" }
 
 number = {
   natural
@@ -360,7 +274,7 @@ real        = @{ integer ~ "." ~ natural }
 
 hex         = @{ "0x"~ ASCII_HEX_DIGIT+ }
 
-charactor   = @{ "\\" ~ ANY }
+charactor   = @{ f_get ~ ANY }
 
 string      = { "`" ~ (!NEWLINE ~ ANY)* ~ "`" }
 
