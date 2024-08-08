@@ -1,0 +1,116 @@
+// Main structure
+start <- expression* EOF
+
+expression <- export
+            / define_type
+            / get_type
+            / define
+            / lambda
+            / list
+            / or_xor
+            / and
+            / not
+            / compare
+            / add_sub
+            / mul_div
+            / power
+            / factorial
+            / coproduct
+            / get
+            / import
+            / literal
+            / block
+
+// Block structures
+block <- NEWLINE indent expression (NEWLINE indent expression)*
+       / '[' expression+ ']'
+       / '{' expression+ '}'
+       / '(' expression+ ')'
+
+indent <- [ \t]+
+
+// Operators
+prefix <- f_export / f_not
+
+infix_L <- f_product / f_coproduct / f_or / f_xor / f_and / f_add / f_sub / f_mul / f_div / f_mod / f_spread / f_get
+
+compare_op <- f_less / f_less_eq / f_eq / f_neq / f_more_eq / f_more
+
+infix_R <- f_assign / f_power
+
+postfix <- '_' f_factorial
+
+// Operator definitions
+f_export <- '#'
+f_assign <- ':'
+f_lambda <- '?'
+f_product <- ','
+f_coproduct <- ' ' / '\\ \\'
+f_or <- '|'
+f_xor <- ';'
+f_and <- '&'
+f_not <- '!'
+f_less <- '<'
+f_less_eq <- '<='
+f_eq <- '=' / '=='
+f_neq <- '!='
+f_more_eq <- '>='
+f_more <- '>'
+f_add <- '+'
+f_sub <- '-'
+f_mul <- '*'
+f_div <- '/'
+f_mod <- '%'
+f_power <- '^'
+f_factorial <- '!'
+f_get <- '\''
+f_spread <- '~'
+
+// Language constructs
+export <- f_export expression+
+
+define_type <- '"' [^"]+ '"' f_assign expression+
+
+get_type <- '"' expression+ '"'
+
+define <- ident f_assign expression+
+
+lambda <- ident (ident / f_spread ident)* f_lambda expression+
+        / point_free
+        / match_case
+        / unit
+
+point_free <- (ident / infix_L / compare_op / infix_R) literal
+            / (logic / number / character / string) (infix_L / compare_op / infix_R)
+            / (infix_L / compare_op / infix_R) expression+ NEWLINE
+            / prefix
+            / postfix
+
+match_case <- (NEWLINE indent (literal / otherwise) f_assign expression+)+
+
+// Literals and basic types
+literal <- logic / number / character / string / lambda / list / none / ident
+
+logic <- false / true
+false <- '\\'
+true <- '$'
+
+number <- natural / integer / real / hex
+natural <- [0-9]+
+integer <- '-'? natural
+real <- integer '.' natural
+hex <- '0x' [0-9a-fA-F]+
+
+character <- f_get .
+
+string <- '`' [^`]* '`'
+
+ident <- [a-zA-Z0-9_]+ [a-zA-Z_]
+       / f_spread string
+
+none <- unit
+unit <- '_'
+
+// Utility
+NEWLINE <- '\r\n' / '\n' / '\r'
+EOF <- !.

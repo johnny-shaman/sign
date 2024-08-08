@@ -17,16 +17,16 @@ x: 3
 
 `直下の行は評価演算子が文字としてエスケープされているので、評価されない。`
 
-y: 4 '
+y: 4 \
 
 Hello: `Hello`
 World: `World`
 
 
-`trueは$、falseは\`
+`trueは全ての有効値、falseは0か長さ0のリスト`
 
-yep: $
-nop: \
+yep: 1
+nop: 0
 
 `ブロックになっていない代入演算子は、右単位元であり、分配的構文に対するシンタックスシュガーである。`
 
@@ -40,18 +40,18 @@ unit: []
 `この言語ではカッコ、インデントの双方はブロックを表し、ローカルスコープを持ち、優先に処理されるものと認識される。`
 `つまり、名前のスコープはブロックで決まる`
 
-  y: $
-  n: \
+  y: 1
+  n: 0
 
 `上述はブロックを抜けると削除されるため、y wasn't defined というエラーと同時に、none(unit)を返す。`
 
-[y = $] = _
+[y = 1] = 0
 
 `ただし、以下であればアクセスできることになる。`
 
 [
-  `y`: $
-  `n`: \
+  `y`: 1
+  `n`: 0
 ] `y`
 
 
@@ -74,6 +74,11 @@ unit: []
 
 [[+] ^ 2]
 
+`もし[^2]を優先する表記をポイントフリーで記述するなら…`
+
+[[^ 2] + ]
+
+`となる。`
 
 `比較演算はショートハンドがある。`
 
@@ -87,7 +92,7 @@ x = y = z
 
 `ただし、カッコで優先順位が示された場合は、中が先に評価される。`
 
-[3 = 3] = $
+[3 = 3] = 1
 
 
 `関数適用や合成をさせたくない場合は、関数のすぐ後ろに、,を打ち、直積とすることで対応する。`
@@ -103,9 +108,9 @@ iterate3 : 1 ? 2 ? 3
 
 `後ろに空白があることで評価される。`
 
-iterate3 = 1, [? 2 ? 3]
-iterate3 = 2, [? 3]
-iterate3 = 3, []
+iterate3 = 1
+iterate3 = 2
+iterate3 = 3
 iterate3 = []
 iterate3 = []
 
@@ -139,8 +144,8 @@ id : x ? x
 [_ ~y ? y~] 1 2 3 = 2 3
 [_ ~y ? y~] 1, 2, 3 = 2 3
 
-['1~] 1 2 3 = 2 3
-['1~] 1, 2, 3 = 2 3
+[1 2 3] '1~ = 2 3
+[1, 2, 3] '1~ = 2 3
 
 
 `この言語は、どうしても型を記述したい人のために"で名前を囲むことで、型付けや型の読み出しは出来る(非推奨)`
@@ -165,46 +170,59 @@ fold: f x y ~z ? fold f, f x y, z~
 `ブロックがガード記法となる。`
 `ブロック化された代入演算もこれが正体`
 `ブロックそのものを代入するかカッコでくくって即時生成すれば、ただの関数と同じ。`
+`ラムダを無名のまま使用する場合、カッコで括られていないといけない。`
 
 [ x ?
-  x = 0 : `zero`
-  x > 0 : `more`
-  x < 0 : `less`
-  _     : `other`
+	x = 0 : 0
+	x > 0 : `more`
+	x < 0 : `less`
+	`other_wise`
+] 3
+
+`上述はプリプロセスで、以下に置き換えられる。`
+
+[
+	x ? 
+	x = 0 & 0 &
+	x > 0 & `more` ;
+	x < 0 & `less` ;
+	`other_wise`
 ] 3
 
 
 `コンストラクタのような記述。`
-`動的なキーの名前を割り当てることも可能。`
+`動的なキー名を割り当てることも可能で、その場合は変数や引数に代入された値を強制で取り出すには~を使う。`
 
-Person : name age etc x key ?
-  key = `name` : name
-  key = `age`  : age
-  key = etc : x
+
+Person : name age etc x ?
+  name
+  age
+  ~etc : x
 
 john : Person `john` 18 `Like` `Sushi`
 
 john `name`
 
-`Quoteは以後のidentを文字列にキャストする。`
+`Quoteは以後のidentを文字列としてそのまま利用する。`
 
-john ' name
+john 'name = john `name`
 
 
 `person インスタンスのコピーを展開演算子で行い、値を上書きして作る`
 
 person : Person [] [] [] []
 
+
 mary : 
   ~person
-    ' name : `mary`
-    ' age  : 16
+    'name : `mary`
+    'age  : 16
 
 
 charie : 
   ~person
-    ' name : `charie`
-    ' age  : 24
+    'name : `charie`
+    'age  : 24
 
 `ここより以下はショートハンド記法の方を使う。`
 
@@ -212,15 +230,15 @@ charie :
   0   : `zero`
   > 0 : `more`
   < 0 : `less`
-  _   : `other`
+  `other`
 ] 3
 
 `３項演算子のような振る舞いも、以下のように定義可能。`
 
 [
-  $ : `yep`
-  \ : `nop`
-] $ = `yep`
+  1 : `yep`
+  0 : `nop`
+] 1
 
 
 `これも、match_caseと同等であり、この記述により if then を再現可能`
@@ -282,19 +300,27 @@ s: [1 2],[3 4]
 `ただし、開カッコと閉カッコは必ず対になる必要がある。`
 
 myGreet:
-  greet: 
-    hello: `hello,`
-    welcome: `welcome,`
+	greet: 
+	  hello: `hello,`
+	  welcome: `welcome,`
   world: ` world`
 
+`上述、myGreetは、プリプロセスで以下に置換される。`
+
+myGreet: ~x ?
+	x '0 = `greet` & 
+		x '1 = `hello` & `hello,` ;
+		x '1 = `welcome` & `welcome,` ;
+	x '0 = `world` & ` world`;
+	[]
 
 `よって、アクセスはidentか文字列、またはnaturalかhexを引数にすることになる。`
 
 myGreet ' greet ' hello = `hello,`
 
-myPairs ' 0 = 1
+myPairs '0 = 1
 
-myPairs ' [1 ~ 3] = 2 3 4
+myPairs '[1 ~ 3] = 2 3 4
 
 
 `ブロックスコープを使うことで、ブロックスコープ内にgetを直接記述できる。`
@@ -324,11 +350,12 @@ myGreet
 `前置であれば、他の項より優先され、後置であれば他の項を優先する。`
 
 ~[
-  y: $
-  n: _
+  y: 1
+  n: 0
 ]
 
-y = $
+y = 1
+
 
 `@前置演算子はimport。ファイル名からの指定も可能で、path指定も可`
 `match_caseが辞書型とみなせる場合、~演算子で一つ上のスコープへ展開できるため、~@を使うことで、ファイル内で使えるインポートも可能。`
@@ -351,27 +378,29 @@ say Hello World
 say fold [+] map [* 4] 1 2 3 4 5
 
 
-`'の後の任意の１文字は、必ず文字型の値１文字分とする。`
+`\の後の任意の１文字は、必ず文字型の値１文字分とする。`
+`文字の連結の場合、\の後は1文字と決まっているため、identや文字列が来れば、素直に文字列結合とみなす。`
 `スカラ値のリスト化は、通常はspaceかcommaを使うが、文字リテラルと文字列リテラルの場合は、`
 `直結した記述で連結を表わせる場合があるので、そのパターン記述しておく。`
+`文字列はあくまで文字のリストである。`
 
-M: 'M
+M: \M
 
-My: M 'y' 'D'o'm'e's't'i'c
+My: M \y\ \D\o\m\e\s\t\i\c
 `Hello ` `World!` = `Hello World!`
-`Hello` '  `World!` = `Hello World!`
-'H `ello` '  `World` '! = `Hello World!`
-`Hello ` My ' World!` = `Hello My Domestic World!`
-Hello '  My '  `World` '! = `Hello My Domestic World!`
-`Hello` '!' My World '! = `Hello! My Domestic World!`
+`Hello` \ `World!` = `Hello World!`
+\H `ello` \ `World` \! = `Hello World!`
+`Hello ` My `World!` = `Hello My Domestic World!`
+Hello \ My \ `World` \! = `Hello My Domestic World!`
+`Hello` \!\ My World \! = `Hello! My Domestic World!`
 
 
 `改行を含む文字列を表現したい場合は、ブロックのような書き方となる。`
-`理由は、` `が、「リストの結合、及び関数合成、関数適用」を意味するため。`
+`理由は、" " が、「リストの結合、及び関数合成、関数適用」を意味するため。`
 `改行を含めたい場合。`
 
 HWinEnter :
- `Hello` '
+ `Hello` \
  `World!`
 
 
@@ -385,12 +414,11 @@ HWinEnter :
 
 `論理演算子は短絡評価される。`
 
-\ & `me` = \
-$ & `me` = `me`
+0 & `me` = 0
+1 & `me` = `me`
 
-\ | `me` = `me`
-$ | `me` = $
+0 | `me` = `me`
+1 | `me` = 1
 
-\ ; `me` = `me`
-$ ; `me` = \
-
+0 ; `me` = `me`
+1 ; `me` = 0

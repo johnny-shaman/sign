@@ -37,7 +37,7 @@ indent_line = {
   NEWLINE ~ indent
 }
 
-indent      = { "\t" | "  " | "    " }
+indent      = { "\t" }
 
 prefix      = {
   f_export
@@ -124,7 +124,7 @@ lambda      = {
 
 point_free  = {
   (ident | infix_L | compare_op | infix_R) ~ literal
-  | (logic | number | charactor | string) ~ (infix_L | compare_op | infix_R)
+  | (number | charactor | string) ~ (infix_L | compare_op | infix_R)
   | (infix_L | compare_op | infix_R) ~ expression+ ~ NEWLINE
   | prefix
   | postfix
@@ -144,7 +144,6 @@ l_product   = _{
   | mul_div
   | power
   | factrial
-  | logic
   | number
   | string
   | dictionary
@@ -164,7 +163,7 @@ list     = {
   | (integer) ~ f_spread ~ (integer)
 }
 
-unit        = { "_" }
+unit        = @{ "_" | "[]"}
 
 or_xor      = {
   and ~ f_or ~ or_xor
@@ -178,9 +177,9 @@ and         = {
 }
 
 not        = {
-  f_not ~ (compare | logic | ident)
+  f_not ~ (number | compare | ident)
+  | number
   | compare
-  | logic
   | ident
 }
 
@@ -241,8 +240,7 @@ import      = {
 }
 
 literal     = @{
-  logic
-  | number
+  number
   | charactor
   | string
   | lambda
@@ -250,14 +248,6 @@ literal     = @{
   | none
   | ident
 }
-
-logic       = {
-  false
-  | true
-}
-
-false       = { "\\" }
-true        = { "$" }
 
 number = {
   natural
@@ -274,7 +264,7 @@ real        = @{ integer ~ "." ~ natural }
 
 hex         = @{ "0x"~ ASCII_HEX_DIGIT+ }
 
-charactor   = @{ f_get ~ ANY }
+charactor   = @{ "\\" ~ ANY }
 
 string      = { "`" ~ (!NEWLINE ~ ANY)* ~ "`" }
 

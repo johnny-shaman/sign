@@ -19,7 +19,7 @@
 構文の例：
 
 型取得： typeOf : "@0"
-関数定義： map : F ? x ~y ? F x , map F y~
+関数定義： map : F x ~y ? F x , map F y~
 型アノテーション： "myStr" : "String"
 
 
