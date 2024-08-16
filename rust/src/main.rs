@@ -1,124 +1,59 @@
+use std::env;
+use std::fs::File;
+use std::io::{self, BufRead, BufReader, Write};
 use regex::Regex;
-use std::collections::HashMap;
 
-pub struct SignPreprocessor {
-    replacements: Vec<(Regex, Box<dyn Fn(&regex::Captures) -> String>)>,
-}
-
-impl SignPreprocessor {
-    pub fn new() -> Self {
-        let mut preprocessor = SignPreprocessor {
-            replacements: Vec::new(),
-        };
-
-        // Dictionaryからmatch_caseへの変換
-        preprocessor.add_replacement(
-            r"(?s)(\w+)\s*:\s*\n((?:\s+\w+\s*:\s*.+\n?)+)",
-            Box::new(|caps: &regex::Captures| {
-                let name = &caps[1];
-                let entries = caps[2].trim().split('\n');
-                let mut match_case = format!("{} : ?\n", name);
-                for entry in entries {
-                    let parts: Vec<&str> = entry.splitn(2, ':').collect();
-                    if parts.len() == 2 {
-                        let key = parts[0].trim();
-                        let value = parts[1].trim();
-                        match_case.push_str(&format!("  [= `{}`] & {} ;\n", key, value));
-                    }
-                }
-                match_case.push_str("  []");
-                match_case
-            })
-        );
-
-        // 関数定義の自動カリー化
-        preprocessor.add_replacement(
-            r"(\w+)\s*:\s*(\w+(?:\s+\w+)*)\s*\?\s*(.+)",
-            Box::new(|caps: &regex::Captures| {
-                let name = &caps[1];
-                let params: Vec<_> = caps[2].split_whitespace().collect();
-                let body = &caps[3];
-                let mut curried = format!("{} : ", name);
-                for (i, param) in params.iter().enumerate() {
-                    if i == params.len() - 1 {
-                        curried.push_str(&format!("{} ? {}", param, body));
-                    } else {
-                        curried.push_str(&format!("{} ? ", param));
-                    }
-                }
-                curried
-            })
-        );
-
-        // 比較演算子の連鎖の変換
-        preprocessor.add_replacement(
-            r"(\w+(?:\s*(?:==|!=|<|<=|>|>=|=)\s*\w+)+)",
-            Box::new(|caps: &regex::Captures| {
-                let expr = &caps[1];
-                let parts: Vec<&str> = expr.split_whitespace().collect();
-                let mut result = String::new();
-                let mut last_var = parts[0];
-                for i in (1..parts.len()).step_by(2) {
-                    if i > 1 {
-                        result.push_str(" & ");
-                    }
-                    result.push_str(&format!("({} {} {})", last_var, parts[i], parts[i+1]));
-                    last_var = parts[i+1];
-                }
-                result
-            })
-        );
-
-        preprocessor
+fn main() -> io::Result<()> {
+    let args: Vec<String> = env::args().collect();
+    if args.len() < 2 {
+        eprintln!("ファイル名を指定してください。");
+        std::process::exit(1);
     }
 
-    pub fn add_replacement(&mut self, pattern: &str, replacement: Box<dyn Fn(&regex::Captures) -> String>) {
-        let regex = Regex::new(pattern).expect("Invalid regex pattern");
-        self.replacements.push((regex, replacement));
-    }
+    let filename = &args[1];
+    let input_file = File::open(filename)?;
+    let output_file = File::create(format!("{}.ready", filename))?;
+    let debug_file = File::create(format!("{}.debug", filename))?;
 
-    pub fn process(&self, input: &str) -> String {
-        let mut result = input.to_string();
-        for (regex, replacement_fn) in &self.replacements {
-            result = regex.replace_all(&result, |caps: &regex::Captures| {
-                replacement_fn(caps)
-            }).to_string();
-        }
-        result
-    }
-}
+    let reader = BufReader::new(input_file);
+    let mut writer = io::BufWriter::new(output_file);
+    let mut debug_writer = io::BufWriter::new(debug_file);
 
-pub struct SignCompiler {
-    preprocessor: SignPreprocessor,
-}
+    let comment_regex = Regex::new(r"^`[^\r\n]*`").unwrap();
+    let string_regex = Regex::new(r"`[^`\r\n]*`").unwrap();
 
-impl SignCompiler {
-    pub fn new() -> Self {
-        SignCompiler {
-            preprocessor: SignPreprocessor::new(),
+    for line in reader.lines() {
+        let line = line?;
+        
+        // コメントを削除
+        let l0 = comment_regex.replace_all(&line, "");
+
+        // 削除された行か空行でないなら
+        if !l0.trim().is_empty() {
+            // 文字列をプリプロセスから除外する
+            let mut string_lifted = Vec::new();
+            let mut last_end = 0;
+            for cap in string_regex.captures_iter(&l0) {
+                let m = cap.get(0).unwrap();
+                let start = m.start();
+                let end = m.end();
+                if start > last_end {
+                    string_lifted.push(l0[last_end..start].to_string());
+                }
+                string_lifted.push(m.as_str().to_string());
+                last_end = end;
+            }
+            if last_end < l0.len() {
+                string_lifted.push(l0[last_end..].to_string());
+            }
+
+            // デバッグ出力
+            writeln!(debug_writer, "{:?}", string_lifted)?;
+
+            // 処理済みの行を書き込み
+            writeln!(writer, "{}", l0)?;
         }
     }
 
-    pub fn compile(&self, input: &str) -> Result<String, String> {
-        let processed_sign = self.preprocessor.process(input);
-        Ok(processed_sign)
-    }
-}
-
-fn main() {
-    let compiler = SignCompiler::new();
-    let inputs = vec![
-        "foo : \n  t : $\n  f : \\\n  n : _",
-        "add : x y ? x + y",
-        "x < y < z",
-    ];
-
-    for input in inputs {
-        println!("Original Sign Input:\n{}", input);
-        match compiler.compile(input) {
-            Ok(output) => println!("Processed Sign Output:\n{}", output),
-            Err(e) => eprintln!("Processing error: {}", e),
-        }
-        println!();
-    }
+    Ok(())
 }

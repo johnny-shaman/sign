@@ -52,7 +52,7 @@ f_and <- '&'
 f_not <- '!'
 f_less <- '<'
 f_less_eq <- '<='
-f_eq <- '=' / '=='
+f_eq <- '='
 f_neq <- '!='
 f_more_eq <- '>='
 f_more <- '>'
@@ -81,7 +81,7 @@ lambda <- ident (ident / f_spread ident)* f_lambda expression+
         / unit
 
 point_free <- (ident / infix_L / compare_op / infix_R) literal
-            / (logic / number / character / string) (infix_L / compare_op / infix_R)
+            / (number / character / string) (infix_L / compare_op / infix_R)
             / (infix_L / compare_op / infix_R) expression+ NEWLINE
             / prefix
             / postfix
@@ -89,11 +89,7 @@ point_free <- (ident / infix_L / compare_op / infix_R) literal
 match_case <- (NEWLINE indent (literal / otherwise) f_assign expression+)+
 
 // Literals and basic types
-literal <- logic / number / character / string / lambda / list / none / ident
-
-logic <- false / true
-false <- '\\'
-true <- '$'
+literal <- number / character / string / lambda / list / none / ident
 
 number <- natural / integer / real / hex
 natural <- [0-9]+
