@@ -252,9 +252,9 @@ Item :
 	use
 	effect
 
-medicalWeed    : Item `medicalWeed`, _, [[' medicalWeed], [- 1]], [[' HP], [+ 20]]
+medicalWeed    : Item `medicalWeed`, _, [['medicalWeed], [- 1]], [['HP], [+ 20]]
 
-lightningStaff : Item `lightningStaff`, [[' Atk] [+ 8]], $, [' ThunderBolt]
+lightningStaff : Item `lightningStaff`, [['Atk] [+ 8]], $, ['ThunderBolt]
 
 
 `いわゆるlet ~ inも以下のように記述する。`
@@ -290,15 +290,12 @@ myPairs0 = myPairs = myPairs1 = [,] ~myPairs2
 `ライブラリの提供は考えている。`
 
 
-[,,] myPairs = [[1], [2], [3], [4], [5]]
+[,,] myPairs = [1], [2], [3], [4], [5]
 [?] myPairs = 1 ? 2 ? 3 ? 4 ? 5
 [+] myPairs = 15
 
-" " :
-
-
-
 `mapは、この様な記述で可能で有るが、`
+
 [* 2,] myPairs = 2 4 6 8 10
 
 
@@ -323,16 +320,16 @@ myGreet:
 
 `上述、myGreetは、プリプロセスで以下に置換される。`
 
-myGreet: ~x ?
-	x '0 = `greet` & 
-		x '1 = `hello` & `hello,` ;
-		x '1 = `welcome` & `welcome,` ;
-	x '0 = `world` & ` world`;
+myGreet: ~a ?
+	a '0 = `greet` & 
+		a '1 = `hello` & `hello,` ;
+		a '1 = `welcome` & `welcome,` ;
+	a '0 = `world` & ` world`;
 	[]
 
 `よって、アクセスはidentか文字列、またはnaturalかhexを引数にすることになる。`
 
-myGreet ' greet ' hello = `hello,`
+myGreet 'greet 'hello = `hello,`
 
 myPairs '0 = 1
 
@@ -405,18 +402,18 @@ M: \M
 My: M \y\ \D\o\m\e\s\t\i\c
 My = M \y \  \D \o \m \e \s \t \i \c = `My Domestic`
 
-`Hello ` `World!` = `Hello World!`
-`Hello` \ `World!` = `Hello World!`
-\H `ello` \ `World` \! = `Hello World!`
-`Hello ` My `World!` = `Hello My Domestic World!`
-Hello \ My \ `World` \! = `Hello My Domestic World!`
-`Hello` \!\ My World \! = `Hello! My Domestic World!`
+	`Hello ` `World!` = `Hello World!`
+	`Hello` \ `World!` = `Hello World!`
+	\H `ello` \ `World` \! = `Hello World!`
+	`Hello ` My `World!` = `Hello My Domestic World!`
+	Hello \ My \ `World` \! = `Hello My Domestic World!`
+	`Hello` \!\ My World \! = `Hello! My Domestic World!`
 
 `\ バックスラッシュを含む文字列は定義できる。エスケープシーケンスではないので要注意`
 
 `back_quortが含まれる文字列の定義は、back_quortを文字として扱い、文字列結合（余積）で扱う`
 
-`Sign's ` \` `define a string literal`
+`Sign\s ` \` `define a string literal`
 
 `改行を含む文字列を表現したい場合は、ブロックのような書き方となる。`
 `理由は、" " が、「リストの結合、及び関数合成、関数適用」を意味するため。`
@@ -432,7 +429,7 @@ HWinEnter :
 `ファイル全体は一つの関数でもあるが、export つまり#で示されたもの以外は自身のスコープを出ることはない。`
 
 #myDict : name value ? ~name : value
-#gets : [?]
+#gets : name ? myDict '~name
 
 
 `論理演算子は短絡評価される。`
@@ -446,5 +443,5 @@ HWinEnter :
 0 ; `me` = `me`
 1 ; `me` = 0
 
-# `It:`\	`365` `is number of date at 1 year`
+#`It:`\	`365` `is number of date at 1 year`
 \	4 + 5

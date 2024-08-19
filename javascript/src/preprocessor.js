@@ -44,30 +44,50 @@
             ? lift(o, /\\[\s\S]/g) //文字
             : [o]
           )
-          .flatMap(
+          .map(
             o => typeof o === "string"
-            ? lift(o, /\\/g, /\\/g, '$&\n') //改行文字
-            : [o]
+            ? o.replace(/<=|>=|!=|,+|[:?|;&<=>+\-*\/%^]/g,' $& ')
+            : o
           )
-          .flatMap(
+          .map(
             o => typeof o === "string"
-            ? lift(o, /([!~]*|['#@]?)[a-zA-Z]\w+[!~]*/g) //前置、後置含むident
-            : [o]
+            ? o.replace(/ +/g,' ')
+            : o
           )
-          .flatMap(
+          .map(
             o => typeof o === "string"
-            ? lift(o, /0x[0-9a-fA-F]+/g) //hexリテラル
-            : [o]
+            ? o.replace(/\[ /g,'[')
+            : o
           )
-          .flatMap(
+          .map(
             o => typeof o === "string"
-            ? lift(o, /-?[0-9]+\.?[0-9]*/g) //Numberリテラル
-            : [o]
+            ? o.replace(/\ \]/g,']')
+            : o
           )
-  
-        await debugWrite.write(`${JSON.stringify(preamble)}\n`);
+          .map(
+            o => typeof o === "string"
+            ? o.replace(/\{ /g,'{')
+            : o
+          )
+          .map(
+            o => typeof o === "string"
+            ? o.replace(/ \}/g,'}')
+            : o
+          )
+          .map(
+            o => typeof o === "string"
+            ? o.replace(/\( /g,'(')
+            : o
+          )
+          .map(
+            o => typeof o === "string"
+            ? o.replace(/ \)/g,')')
+            : o
+          ).flat()
+          
+        await debugWrite.write(`${preamble.join('')}\n`);
         await writeStream.write(commentRemoved + '\n');
-  
+
         ++counter;
       };
     }
@@ -79,3 +99,5 @@
     })
   );
 }
+
+

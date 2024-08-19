@@ -39,6 +39,7 @@ indent      = { "\t" }
 
 prefix      = {
   f_export
+  | f_import
   | f_not
 }
 
@@ -77,7 +78,7 @@ f_export    = { "#" }
 f_assign    = { ":" }
 f_lambda    = { "?" }
 f_product   = { "," }
-f_coproduct = { " " | "\" \""}
+f_coproduct = { " " }
 f_or        = { "|" }
 f_xor       = { ";" }
 f_and       = { "&" }
@@ -97,7 +98,12 @@ f_power     = { "^" }
 f_factrial  = { "!" } //postfix
 f_get       = { "'" }
 f_spread    = { "~" }
+f_import    = { "@" }
 otherwise   = { unit }
+
+/*
+  /<=|>=|!=|,+|[:?,|;&<=>+\-*\/%^]/g
+*/
 
 export      = { f_export ~ expression+ }
 
@@ -230,7 +236,7 @@ get         = {
 }
 
 import      = {
-  "@" ~ (ident | string)
+  f_import ~ (ident | string)
 }
 
 literal     = @{
@@ -263,7 +269,7 @@ charactor   = @{ "\\" ~ ANY }
 string      = { "`" ~ (!NEWLINE ~ ANY)* ~ "`" }
 
 ident       = {
-  (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")+
+  ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")+
   | f_spread ~ string
 }
 
