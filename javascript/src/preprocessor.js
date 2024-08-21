@@ -1,9 +1,11 @@
 {
   const fs = require('fs');
   const readline = require('readline');
+  const check = require('./check.js');
 
   // コマンドライン引数からファイル名を取得
   const filename = process.argv[2];
+  console.log(filename);
 
   if (!filename) {
     console.error('ファイル名を指定してください。');
@@ -12,48 +14,76 @@
 
   // 読み込みストリームと書き込みストリームを作成
   const readStream  = fs.createReadStream(filename, {});
-  const writeStream = fs.createWriteStream(`${filename}.ready`);
-  const debugWrite  = fs.createWriteStream(`${filename}.debug`);
+  const commentRemoved  = fs.createWriteStream(`${filename}.remcm`);
+  const preamble = fs.createWriteStream(`${filename}.pre`);
 
   // readline インターフェースを作成
-  (async function (rl) {
+  (async function (rl, remcm, pre) {
     const lift = require('./lifter.js');
-    let counter = 1;
+    let lineNumber = 1;
     //対象とするreaderを巡回する。
     for await (const line of rl) {
-  
       //コメントを削除
       const commentRemoved = line.replace(/^`.*`/g, '');
-  
-      ///require('./syntax_checker.js')(counter, commentRemoved, [/(?=_)\w+/g]);
-  
+
       //削除された行か空行でないなら
       if (commentRemoved !== '') {
-  
-        /*
-          プリプロセスしないトークンを持ち上げる。
-          最初のliftで文字列を
-          flatMapを上から順に
-          文字
-          エスケープされた改行の再挿入
-  
-        */
-        const preamble = lift(commentRemoved, /[@]?`[^`\r\n`]*`/g) //import含む文字列
+
+        //言語仕様上、予約されている記号を再定義することは出来ないので、そのcheck。
+        check(
+          commentRemoved,
+          (
+            `Illegal Definition that "${commentRemoved}" at line ${lineNumber}.\n` +
+            `',? \`"(){}[]\\' is reserved... and You can't redefine there Symbols.`
+          ),
+          /"[,]" ?:/g,
+          /"[?]" ?:/g,
+          /" " ?:/g,
+          /"`" ?:/g,
+          /"\\" ?:/g,
+          /"\\""|"\""|""" ?:/g,
+          /"\(" ?:/g,
+          /"\)" ?:/g,
+          /"\{" ?:/g,
+          /"\}" ?:/g,
+          /"\[" ?:/g,
+          /"\]" ?:/g
+        );
+
+        //Syntax Error
+        check(
+          commentRemoved,
+          `Syntax Error "${commentRemoved}" at line ${lineNumber}`,
+          / ! /g
+        );
+
+        const preamble = (
+          
+          //import含む文字列を持ち上げる。
+          lift(commentRemoved, /[@]?`[^`\r\n`]*`/g)
+
+          //文字を持ち上げる
           .flatMap(
             o => typeof o === "string"
-            ? lift(o, /\\[\s\S]/g) //文字
+            ? lift(o, /\\[\s\S]/g)
             : [o]
           )
+
+          //二項演算子のみ両側に空白を挿入
           .map(
             o => typeof o === "string"
             ? o.replace(/<=|>=|!=|,+|[:?|;&<=>+\-*\/%^]/g,' $& ')
             : o
           )
+
+          //空白文字は演算子なので、重複をたたむ。
           .map(
             o => typeof o === "string"
-            ? o.replace(/ +/g,' ')
+            ? o.replace(/ +/g,' ') 
             : o
           )
+
+          //各カッコの種類に対して、空白を削除
           .map(
             o => typeof o === "string"
             ? o.replace(/\[ /g,'[')
@@ -83,20 +113,25 @@
             o => typeof o === "string"
             ? o.replace(/ \)/g,')')
             : o
-          ).flat()
+          )
+          //持ち上げて処理から除外したものを均す。
+          .flat()
+        )
           
-        await debugWrite.write(`${preamble.join('')}\n`);
-        await writeStream.write(commentRemoved + '\n');
+        remcm.write(`${commentRemoved}\n`);
+        pre.write(`${preamble.join('')}\n`);
 
-        ++counter;
+        ++lineNumber;
       };
     }
   })(
     readline.createInterface({
       input: readStream,
-      output: writeStream,
+      output: preamble,
       crlfDelay: Infinity
-    })
+    }),
+    commentRemoved,
+    preamble
   );
 }
 
