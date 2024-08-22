@@ -1,5 +1,5 @@
 module.exports = function (str, message, ...tests) {
-  const result = tests.reduce((result, test) => result | test.test(str), false);
+  const result = tests.reduce((result, regex) => result | regex.test(str), false);
   if(result) {
     console.error(message);
   }

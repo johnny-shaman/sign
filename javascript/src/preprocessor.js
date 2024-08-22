@@ -5,7 +5,6 @@
 
   // コマンドライン引数からファイル名を取得
   const filename = process.argv[2];
-  console.log(filename);
 
   if (!filename) {
     console.error('ファイル名を指定してください。');
@@ -16,9 +15,10 @@
   const readStream  = fs.createReadStream(filename, {});
   const commentRemoved  = fs.createWriteStream(`${filename}.remcm`);
   const preamble = fs.createWriteStream(`${filename}.pre`);
+  const jsonWriter = fs.createWriteStream(`${filename}.json`);
 
   // readline インターフェースを作成
-  (async function (rl, remcm, pre) {
+  (async function (rl, remcm, pre, jsonW) {
     const lift = require('./lifter.js');
     let lineNumber = 1;
     //対象とするreaderを巡回する。
@@ -48,13 +48,6 @@
           /"\}" ?:/g,
           /"\[" ?:/g,
           /"\]" ?:/g
-        );
-
-        //Syntax Error
-        check(
-          commentRemoved,
-          `Syntax Error "${commentRemoved}" at line ${lineNumber}`,
-          / ! /g
         );
 
         const preamble = (
@@ -114,13 +107,21 @@
             ? o.replace(/ \)/g,')')
             : o
           )
-          //持ち上げて処理から除外したものを均す。
-          .flat()
-        )
+          .flatMap(
+            o => typeof o === "string"
+            ? lift(o, /[a-zA-Z]\w*/g)
+            : [o]
+          )
+          .flatMap(
+            o => typeof o === "string"
+            ? lift(o, /-?[0-9]+\.?[0-9]*/g)
+            : [o]
+          )
+        );
           
         remcm.write(`${commentRemoved}\n`);
-        pre.write(`${preamble.join('')}\n`);
-
+        pre.write(`${preamble}\n`);
+        jsonW.write(`${JSON.stringify(preamble)}\n`);
         ++lineNumber;
       };
     }
@@ -131,8 +132,7 @@
       crlfDelay: Infinity
     }),
     commentRemoved,
-    preamble
+    preamble,
+    jsonWriter
   );
 }
-
-
