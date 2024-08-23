@@ -21,6 +21,7 @@
   (async function (rl, remcm, pre, jsonW) {
     const lift = require('./lifter.js');
     let lineNumber = 1;
+    let stack = [];
     //対象とするreaderを巡回する。
     for await (const line of rl) {
       //コメントを削除
@@ -34,7 +35,8 @@
           commentRemoved,
           (
             `Illegal Definition that "${commentRemoved}" at line ${lineNumber}.\n` +
-            `',? \`"(){}[]\\' is reserved... and You can't redefine there Symbols.`
+            `"'", ",", "?", "\`", '"', "(", ")", "{", "}", "[", "]", "\t", "\\"' is reserved...\n` +
+            `Please define that, 2 or more letters operator.`
           ),
           /"[,]" ?:/g,
           /"[?]" ?:/g,
@@ -47,21 +49,26 @@
           /"\{" ?:/g,
           /"\}" ?:/g,
           /"\[" ?:/g,
-          /"\]" ?:/g
+          /"\]" ?:/g,
+          /"[\t]" ?:/g
         );
 
         const preamble = (
           
-          //import含む文字列を持ち上げる。
-          lift(commentRemoved, /[@]?`[^`\r\n`]*`/g)
+          //imporot,export付きを含み、文字列を持ち上げる。
+          lift(commentRemoved, /[@#]?`[^`\r\n]*`/g)
 
           //文字を持ち上げる
+          .map(
+            o => typeof o === "string"
+            ? o.replace(/\\[\s\S]/g, " $&")
+            : o
+          )
           .flatMap(
             o => typeof o === "string"
             ? lift(o, /\\[\s\S]/g)
             : [o]
           )
-
           //二項演算子のみ両側に空白を挿入
           .map(
             o => typeof o === "string"
@@ -107,11 +114,27 @@
             ? o.replace(/ \)/g,')')
             : o
           )
+          .map(
+            o => typeof o === "string"
+            ? o.replace(/^ +/g,'')
+            : o
+          )
+
+          //lambdaを持ち上げる
           .flatMap(
             o => typeof o === "string"
-            ? lift(o, /[a-zA-Z]\w*/g)
+            ? lift(o, /\[[\s\S]+\]/g)
             : [o]
           )
+
+          //imporot,export,get付きを含み、identを持ち上げる。
+          .flatMap(
+            o => typeof o === "string"
+            ? lift(o, /[@#']?[~!]*[a-zA-Z]\w*[~!]*/g)
+            : [o]
+          )
+
+          //numberを持ち上げる
           .flatMap(
             o => typeof o === "string"
             ? lift(o, /-?[0-9]+\.?[0-9]*/g)
@@ -120,7 +143,7 @@
         );
           
         remcm.write(`${commentRemoved}\n`);
-        pre.write(`${preamble}\n`);
+        pre.write(`${preamble.flat(Infinity).join("")}\n`);
         jsonW.write(`${JSON.stringify(preamble)}\n`);
         ++lineNumber;
       };

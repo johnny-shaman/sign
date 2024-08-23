@@ -1,6 +1,5 @@
 module.exports = function (str, pattern) {
   const matches = str.match(pattern) || [];
-
   const parts = str.split(pattern);
   const result = [];
   for (let i = 0; i < parts.length; i++) {
@@ -11,6 +10,5 @@ module.exports = function (str, pattern) {
       result.push([matches[i]]);
     }
   }
-
   return result;
 }
