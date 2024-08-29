@@ -22,6 +22,7 @@
     const lift = require('./lifter.js');
     let lineNumber = 1;
     let stack = [];
+
     //対象とするreaderを巡回する。
     for await (const line of rl) {
       //コメントを削除
@@ -59,75 +60,43 @@
           lift(commentRemoved, /[@#]?`[^`\r\n]*`/g)
 
           //文字を持ち上げる
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/\\[\s\S]/g, " $&")
-            : o
-          )
           .flatMap(
             o => typeof o === "string"
             ? lift(o, /\\[\s\S]/g)
             : [o]
           )
+
           //二項演算子のみ両側に空白を挿入
           .map(
             o => typeof o === "string"
-            ? o.replace(/<=|>=|!=|,+|[:?|;&<=>+\-*\/%^]/g,' $& ')
+            ? o.replace(/(<=|>=|!=|,|[:?|;&<=>+\-*\/%^,])/g,' $& ')
             : o
           )
 
           //空白文字は演算子なので、重複をたたむ。
           .map(
             o => typeof o === "string"
-            ? o.replace(/ +/g,' ') 
+            ? o.replace(/  +/g,' ')
             : o
           )
 
           //各カッコの種類に対して、空白を削除
           .map(
             o => typeof o === "string"
-            ? o.replace(/\[ /g,'[')
-            : o
-          )
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/\ \]/g,']')
-            : o
-          )
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/\{ /g,'{')
-            : o
-          )
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/ \}/g,'}')
-            : o
-          )
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/\( /g,'(')
-            : o
-          )
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/ \)/g,')')
-            : o
-          )
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/^ +/g,'')
+            ? o
+              .replace(/(\[|\{|\() /g,'$1')
+              .replace(/ (\]|\}|\))/g,'$1')
             : o
           )
 
           //lambdaを持ち上げる
           .flatMap(
             o => typeof o === "string"
-            ? lift(o, /\[[\s\S]+\]/g)
+            ? lift(o, /[[{(][\s\S]+[\]})]/g)
             : [o]
           )
 
-          //imporot,export,get付きを含み、identを持ち上げる。
+          //前置演算子付きを含み、identを持ち上げる。
           .flatMap(
             o => typeof o === "string"
             ? lift(o, /[@#']?[~!]*[a-zA-Z]\w*[~!]*/g)
@@ -140,14 +109,40 @@
             ? lift(o, /-?[0-9]+\.?[0-9]*/g)
             : [o]
           )
+
+          //Unitを持ち上げる
+          .flatMap(
+            o => typeof o === "string"
+            ? lift(o, /\[\]/g)
+            :[o]
+          )
         );
-          
+
+        //ブロック構文に対する処理
+        const joind = preamble.flat(Infinity).join("");
+
+        if(/[:?] ?$/g.test(joind) || /[[{(] ?$/g.test(joind) || /\t/g.test(joind)) {
+          preamble.push("\n");
+          stack.push(preamble);
+        } else if(stack.length) {
+          preamble.push("\n");
+          stack.push(preamble);
+          jsonW.write(`${JSON.stringify(stack)}\n`);
+          pre.write(`${stack.flat(Infinity).join("")}`);
+          stack = [];
+        } else {
+          pre.write(`${joind}\n`);
+          jsonW.write(`${JSON.stringify(preamble)}\n`);
+        }
+
         remcm.write(`${commentRemoved}\n`);
-        pre.write(`${preamble.flat(Infinity).join("")}\n`);
-        jsonW.write(`${JSON.stringify(preamble)}\n`);
-        ++lineNumber;
-      };
+      }
+
+      ++lineNumber;
     }
+
+    console.log("done!");
+
   })(
     readline.createInterface({
       input: readStream,
