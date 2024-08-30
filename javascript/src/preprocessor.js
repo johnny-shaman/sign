@@ -23,6 +23,13 @@
     let lineNumber = 1;
     let stack = [];
 
+
+    //preASTの冒頭を記述
+    jsonW.write(
+      `{\n` +
+      `"program" : [\n`
+    )
+
     //対象とするreaderを巡回する。
     for await (const line of rl) {
       //コメントを削除
@@ -127,12 +134,12 @@
         } else if(stack.length) {
           preamble.push("\n");
           stack.push(preamble);
-          jsonW.write(`${JSON.stringify(stack)}\n`);
+          jsonW.write(`${JSON.stringify(stack)},\n`);
           pre.write(`${stack.flat(Infinity).join("")}`);
           stack = [];
         } else {
           pre.write(`${joind}\n`);
-          jsonW.write(`${JSON.stringify(preamble)}\n`);
+          jsonW.write(`${JSON.stringify(preamble)},\n`);
         }
 
         remcm.write(`${commentRemoved}\n`);
@@ -140,6 +147,11 @@
 
       ++lineNumber;
     }
+
+    //preASTの終わりを記述
+    jsonW.write(
+      `]\n}\n`
+    )
 
     console.log("done!");
 
