@@ -233,15 +233,25 @@ charie :
 
 `データクラスっぽい記述もmatch_caseのショートハンド。`
 
-Item : 
+Item :
 	name
 	equip
 	use
 	effect
 
-medicalWeed    : Item `medicalWeed`, _, [['medicalWeed], [- 1]], [['HP], [+ 20]]
+medicalWeed :
+	Item
+		`medicalWeed`
+		[]
+		['medicalWeed], [- 1]
+		['HP], [+ 20]
 
-lightningStaff : Item `lightningStaff`, [['Atk] [+ 8]], $, ['ThunderBolt]
+lightningStaff :
+	Item
+		`lightningStaff`
+		['Atk], [+ 8],
+		['ThunderBolt]
+		['HP], [- 40]
 
 
 `いわゆるlet ~ inも以下のように記述する。`

@@ -2,6 +2,7 @@
   const fs = require('fs');
   const readline = require('readline');
   const check = require('./check.js');
+  const lift = require('./lifter.js');
 
   // コマンドライン引数からファイル名を取得
   const filename = process.argv[2];
@@ -19,7 +20,6 @@
 
   // readline インターフェースを作成
   (async function (rl, remcm, pre, jsonW) {
-    const lift = require('./lifter.js');
     let lineNumber = 1;
     let stack = [];
 
@@ -46,19 +46,7 @@
             `"'", ",", "?", "\`", '"', "(", ")", "{", "}", "[", "]", "\t", "\\"' is reserved...\n` +
             `Please define that, 2 or more letters operator.`
           ),
-          /"[,]" ?:/g,
-          /"[?]" ?:/g,
-          /" " ?:/g,
-          /"`" ?:/g,
-          /"\\" ?:/g,
-          /"\\""|"\""|""" ?:/g,
-          /"\(" ?:/g,
-          /"\)" ?:/g,
-          /"\{" ?:/g,
-          /"\}" ?:/g,
-          /"\[" ?:/g,
-          /"\]" ?:/g,
-          /"[\t]" ?:/g
+          /"[,? `\\\[\]\{\}\(\)\t]" ?:/g
         );
 
         const preamble = (
@@ -128,7 +116,7 @@
         //ブロック構文に対する処理
         const joind = preamble.flat(Infinity).join("");
 
-        if(/[:?] ?$/g.test(joind) || /[[{(] ?$/g.test(joind) || /\t/g.test(joind)) {
+        if(/[:?] ?$/g.test(joind) || /[[{(] ?$/g.test(joind) || /^\t+/g.test(joind)) {
           preamble.push("\n");
           stack.push(preamble);
         } else if(stack.length) {
@@ -136,6 +124,7 @@
           stack.push(preamble);
           jsonW.write(`${JSON.stringify(stack)},\n`);
           pre.write(`${stack.flat(Infinity).join("")}`);
+          console.log(stack);
           stack = [];
         } else {
           pre.write(`${joind}\n`);
@@ -154,7 +143,6 @@
     )
 
     console.log("done!");
-
   })(
     readline.createInterface({
       input: readStream,
