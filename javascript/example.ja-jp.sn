@@ -12,8 +12,8 @@
 `":"は英文では「即ち」なので代入演算子とし、=は飽くまで比較演算子である。`
 `下を見ただけでも、この言語は名前が型となるのは自明であろう。`
 
-x: 3
-y: 4
+x: -353.15134
+y: 4001.35364502
 
 Hello: `Hello`
 World: `World`
@@ -167,10 +167,10 @@ id : x ? x
 
 [
 	x ? 
-		x = 0 & 0 &
-		x > 0 & `more` ;
-		x < 0 & `less` ;
-		`other_wise`
+		x = 0 & [_ ? 0] ;
+		x > 0 & [_ ? `more`] ;
+		x < 0 & [_ ? `less`] ;
+		[_ ? `other_wise`]
 ] 3
 
 
@@ -249,7 +249,7 @@ medicalWeed :
 lightningStaff :
 	Item
 		`lightningStaff`
-		['Atk], [+ 8],
+		['Atk], [+ 8]
 		['ThunderBolt]
 		['HP], [- 40]
 
@@ -257,7 +257,8 @@ lightningStaff :
 `いわゆるlet ~ inも以下のように記述する。`
 `実はモナディックな記述と同じになる。`
 
-myValue : 3
+myValue :
+	3
 	[+ 4]
 	[* 2]
 
@@ -439,5 +440,7 @@ HWinEnter :
 0 ; `me` = `me`
 1 ; `me` = 0
 
+
+`以下の行はコンパイラのデバッグ用`
 #`It:`\	`365` `is number of date at 1 year`
 \	4 + 5

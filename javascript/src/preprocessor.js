@@ -1,156 +1,112 @@
-{
-  const fs = require('fs');
-  const readline = require('readline');
-  const check = require('./check.js');
-  const lift = require('./lifter.js');
+const fs = require('fs');
+const readline = require('readline');
 
-  // コマンドライン引数からファイル名を取得
-  const filename = process.argv[2];
+function tokenizeLine(line) {
+  const tokens = [];
+  let current = '';
+  let inQuote = false;
+  let quoteChar = '';
 
-  if (!filename) {
-    console.error('ファイル名を指定してください。');
-    process.exit(1);
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+
+    if ((char === '`' || char === '"') && !inQuote) {
+      if (current) tokens.push(current);
+      current = char;
+      inQuote = true;
+      quoteChar = char;
+    } else if (char === quoteChar && inQuote) {
+      current += char;
+      tokens.push(current);
+      current = '';
+      inQuote = false;
+    } else if (inQuote) {
+      current += char;
+    } else if (char === '\\' && i + 1 < line.length) {
+      tokens.push(char + line[i + 1]);
+      i++;
+    } else if (char === '[' && line[i+1] === ']') {
+      if (current) tokens.push(current);
+      tokens.push('[]');
+      i++;
+      current = '';
+    } else if (/[(){}[\]:?]/.test(char)) {
+      if (current) tokens.push(current);
+      tokens.push(char);
+      current = '';
+    } else if (char === ',') {
+      if (current) tokens.push(current);
+      tokens.push(',');
+      current = '';
+    } else if (/\s/.test(char)) {
+      if (current) tokens.push(current);
+      current = '';
+    } else {
+      current += char;
+    }
   }
 
-  // 読み込みストリームと書き込みストリームを作成
-  const readStream  = fs.createReadStream(filename, {});
-  const commentRemoved  = fs.createWriteStream(`${filename}.remcm`);
-  const preamble = fs.createWriteStream(`${filename}.pre`);
-  const jsonWriter = fs.createWriteStream(`${filename}.json`);
+  if (current) tokens.push(current);
+  return tokens;
+}
 
-  // readline インターフェースを作成
-  (async function (rl, remcm, pre, jsonW) {
-    let lineNumber = 1;
-    let stack = [];
+function buildStructure(lines) {
+  const result = [];
+  const stack = [result];
+  let indentLevels = [0];
 
+  for (const line of lines) {
+    const indent = line.match(/^\t*/)[0].length;
+    const tokens = tokenizeLine(line.trimLeft());
 
-    //preASTの冒頭を記述
-    jsonW.write(
-      `{\n` +
-      `"program" : [\n`
-    )
-
-    //対象とするreaderを巡回する。
-    for await (const line of rl) {
-      //コメントを削除
-      const commentRemoved = line.replace(/^`.*`/g, '');
-
-      //削除された行か空行でないなら
-      if (commentRemoved !== '') {
-
-        //言語仕様上、予約されている記号を再定義することは出来ないので、そのcheck。
-        check(
-          commentRemoved,
-          (
-            `Illegal Definition that "${commentRemoved}" at line ${lineNumber}.\n` +
-            `"'", ",", "?", "\`", '"', "(", ")", "{", "}", "[", "]", "\t", "\\"' is reserved...\n` +
-            `Please define that, 2 or more letters operator.`
-          ),
-          /"[,? `\\\[\]\{\}\(\)\t]" ?:/g
-        );
-
-        const preamble = (
-          
-          //imporot,export付きを含み、文字列を持ち上げる。
-          lift(commentRemoved, /[@#]?`[^`\r\n]*`/g)
-
-          //文字を持ち上げる
-          .flatMap(
-            o => typeof o === "string"
-            ? lift(o, /\\[\s\S]/g)
-            : [o]
-          )
-
-          //二項演算子のみ両側に空白を挿入
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/(<=|>=|!=|,|[:?|;&<=>+\-*\/%^,])/g,' $& ')
-            : o
-          )
-
-          //空白文字は演算子なので、重複をたたむ。
-          .map(
-            o => typeof o === "string"
-            ? o.replace(/  +/g,' ')
-            : o
-          )
-
-          //各カッコの種類に対して、空白を削除
-          .map(
-            o => typeof o === "string"
-            ? o
-              .replace(/(\[|\{|\() /g,'$1')
-              .replace(/ (\]|\}|\))/g,'$1')
-            : o
-          )
-
-          //lambdaを持ち上げる
-          .flatMap(
-            o => typeof o === "string"
-            ? lift(o, /[[{(][\s\S]+[\]})]/g)
-            : [o]
-          )
-
-          //前置演算子付きを含み、identを持ち上げる。
-          .flatMap(
-            o => typeof o === "string"
-            ? lift(o, /[@#']?[~!]*[a-zA-Z]\w*[~!]*/g)
-            : [o]
-          )
-
-          //numberを持ち上げる
-          .flatMap(
-            o => typeof o === "string"
-            ? lift(o, /-?[0-9]+\.?[0-9]*/g)
-            : [o]
-          )
-
-          //Unitを持ち上げる
-          .flatMap(
-            o => typeof o === "string"
-            ? lift(o, /\[\]/g)
-            :[o]
-          )
-        );
-
-        //ブロック構文に対する処理
-        const joind = preamble.flat(Infinity).join("");
-
-        if(/[:?] ?$/g.test(joind) || /[[{(] ?$/g.test(joind) || /^\t+/g.test(joind)) {
-          preamble.push("\n");
-          stack.push(preamble);
-        } else if(stack.length) {
-          preamble.push("\n");
-          stack.push(preamble);
-          jsonW.write(`${JSON.stringify(stack)},\n`);
-          pre.write(`${stack.flat(Infinity).join("")}`);
-          console.log(stack);
-          stack = [];
-        } else {
-          pre.write(`${joind}\n`);
-          jsonW.write(`${JSON.stringify(preamble)},\n`);
-        }
-
-        remcm.write(`${commentRemoved}\n`);
-      }
-
-      ++lineNumber;
+    while (indent < indentLevels[indentLevels.length - 1]) {
+      stack.pop();
+      indentLevels.pop();
     }
 
-    //preASTの終わりを記述
-    jsonW.write(
-      `]\n}\n`
-    )
+    if (indent > indentLevels[indentLevels.length - 1]) {
+      const newBlock = [];
+      stack[stack.length - 1].push(newBlock);
+      stack.push(newBlock);
+      indentLevels.push(indent);
+    }
 
-    console.log("done!");
-  })(
-    readline.createInterface({
-      input: readStream,
-      output: preamble,
-      crlfDelay: Infinity
-    }),
-    commentRemoved,
-    preamble,
-    jsonWriter
-  );
+    if (tokens.length > 0) {
+      stack[stack.length - 1].push(tokens);
+    }
+  }
+
+  return result;
 }
+
+async function processFile(inputFile, outputFile) {
+  const fileStream = fs.createReadStream(inputFile);
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
+  const lines = [];
+  for await (const line of rl) {
+    const cleanLine = line.replace(/^`.*`$/, '');  // コメント行を完全に削除
+    if (cleanLine.trim()) {
+      lines.push(cleanLine);
+    }
+  }
+
+  const structure = buildStructure(lines);
+  
+  await fs.promises.writeFile(outputFile, JSON.stringify(structure, null, 2));
+  console.log("Preprocessing completed.");
+}
+
+// Usage
+const inputFile = process.argv[2];
+const outputFile = `${inputFile}.sexp`;
+
+if (!inputFile) {
+  console.error('Please specify an input file.');
+  process.exit(1);
+}
+
+processFile(inputFile, outputFile).catch(console.error);
