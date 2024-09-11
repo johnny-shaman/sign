@@ -280,7 +280,7 @@ myPairs0: [,] 1 2 3 4 5
 myPairs1: 1, 2, 3, 4, 5
 myPairs2: 1 ? 2 ? 3 ? 4 ? 5
 
-myPairs0 = myPairs = myPairs1 = [,] ~myPairs2
+myPairs0 = myPairs = myPairs1 = [,] myPairs2~
 
 `よって、高階の記述も自然に行える、これは概念上はカンマを何かの関数に差し替えて畳み込むだけである。`
 `よって畳み込み（foldL）は、２引数関数にリストを渡すだけとなり、これはLISPと一致する。`
@@ -317,12 +317,13 @@ myGreet:
 
 `上述、myGreetは、プリプロセスで以下に置換される。`
 
-myGreet: ~a ?
-	a '0 = `greet` & 
-		a '1 = `hello` & `hello,` ;
-		a '1 = `welcome` & `welcome,` ;
-	a '0 = `world` & ` world`;
-	[]
+myGreet: _0 ?
+	_0 = `greet` & [_1 ?
+		_1 = `hello` & [_ ? `hello,`] |
+		_1 = `welcome` & [_ ? `welcome,`]
+	] |
+	_0 = `world` & [_ ? ` world`] |
+	_
 
 `よって、アクセスはidentか文字列、またはnaturalかhexを引数にすることになる。`
 
@@ -373,16 +374,10 @@ y = 1
 @io
 	say Hello World
 
-`ファイルスコープ上のインポートではないため、下の行は、Say is not definedエラーを返す。`
-
-say Hello World
-
 
 `ファイルスコープへ展開して使う。`
 
-~@Funnctor
-~@Monoid
-~@io
+@io~
 
 say[1 2 3 4 5 [* 4,] [+]]
 

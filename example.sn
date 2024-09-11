@@ -13,10 +13,7 @@
 `Just by looking below, it should be obvious that in this language, names become types.`
 
 x: 3
-
-`The line directly below is not evaluated because the evaluation operator is escaped as a character.`
-
-y: 4 \
+y: 4
 
 Hello: `Hello`
 World: `World`
@@ -67,11 +64,11 @@ unit: []
 `The description of point-free functions is a direct description of operators, so the type is self-evident.`
 `The position of parentheses for the priority of function composition remains unchanged.`
 
-[[+] ^ 2]
+[+] [^ 2]
 
 `If you want to write a notation that prioritizes [^2] in point-free...`
 
-[[^ 2] + ]
+[^ 2] [+]
 
 `it becomes like this.`
 
@@ -85,18 +82,17 @@ x = y = z
 
 1 <= x <= 9
 
-`However, if priority is indicated by parentheses, the inside is evaluated first.`
-
-[3 = 3] = 1
 
 `If you don't want function application or composition, you can deal with it by putting a comma immediately after the function to make it a direct product.`
 
 [+ 2] 2 = 4
 [+ 2], 2 = [+ 2], 2
 
+
 `Lambda terms can also describe constant assignments and constant functions`
 
 iterate3 : 1 ? 2 ? 3
+
 
 `It is evaluated because there is a space at the end.`
 
@@ -105,6 +101,7 @@ iterate3 = 2
 iterate3 = 3
 iterate3 = []
 iterate3 = []
+
 
 `Point-free descriptions of unary expressions take arguments in the order of right, then left.`
 `The first argument of a function can be written before the function`
@@ -115,9 +112,10 @@ add : +
 exp : ^
 id : x ? x
 
+
 `Since the priority of function evaluation is lower than lambda definition, parentheses cannot be omitted for processing such expressions.`
 
-[[-] 1 3] = [[- 1] 3] = 3 - 1
+
 
 `The following functions as a function that returns the head.`
 
@@ -135,6 +133,7 @@ id : x ? x
 [1 2 3] '1~ = 2 3
 [1, 2, 3] '1~ = 2 3
 
+
 `In this language, for those who really want to write types, you can do type annotation or type reading by enclosing names with " (not recommended)`
 `Why the type automatically becomes correct if the syntax is correct is self-evident from the following type annotation`
 `Because the type to which a function is applied is expressed as the type to which the function is applied, it becomes the same as the implementation.`
@@ -143,22 +142,13 @@ id : x ? x
 `As a result, the compiler or interpreter doesn't need to guarantee type safety.`
 `Arguments passed to higher-order functions need to be written separately by direct product to evaluate or not.`
 
-typeOf : x ? "x"
-id : x ? x
-
-"map" : "f" "x" "~y" ? "f" "x" , "map" "f", "y~"
-map : f x ~y ? f x , map f, y~
-
-"fold" : "f" "x" "y" "~z" ? "fold" "f", "f" "x" "y", "z~"
-fold: f x y ~z ? fold f, f x y, z~
-
 `match_case can be described using block syntax as follows.`
 `The block becomes guard notation.`
 `This is the true identity of block-assigned operations`
 `If you assign the block itself or enclose it in parentheses for immediate generation, it's just like a regular function.`
 `When using lambda anonymously, it must be enclosed in parentheses.`
 
-[ x ?
+[x ?
 	x = 0 : 0
 	x > 0 : `more`
 	x < 0 : `less`
@@ -169,14 +159,16 @@ fold: f x y ~z ? fold f, f x y, z~
 
 [
 	x ? 
-	x = 0 & 0 &
-	x > 0 & `more` ;
-	x < 0 & `less` ;
-	`other_wise`
+		x = 0 & [_ ? 0] ;
+		x > 0 & [_ ? `more`] ;
+		x < 0 & [_ ? `less`] ;
+		[_ ? `other_wise`]
 ] 3
+
 
 `Constructor-like description.`
 `It's also possible to assign dynamic key names, in which case ~ is used to forcibly extract values assigned to variables or arguments.`
+
 
 Person : name age etc x ?
   name
@@ -191,14 +183,17 @@ john `name`
 
 john 'name = john `name`
 
+
 `Create a copy of the person instance using the spread operator and overwrite values`
 
 person : Person [] [] [] []
+
 
 mary : 
   ~person
     'name : `mary`
     'age  : 16
+
 
 charie : 
   ~person
@@ -221,6 +216,7 @@ charie :
   0 : `nop`
 ] 1
 
+
 `This is also equivalent to match_case, and with this description, if then can be reproduced`
 `If there is no otherwise description and it matches otherwise, it returns the passed value as is.`
 
@@ -234,16 +230,28 @@ Item :
   use
   effect
 
-medicalWeed    : Item `medicalWeed`, _, [[' medicalWeed], [- 1]], [[' HP], [+ 20]]
+medicalWeed :
+	Item
+		`medicalWeed`
+		[]
+		['medicalWeed], [- 1]
+		['HP], [+ 20]
 
-lightningStaff : Item `lightningStaff`, [[' Atk] [+ 8]], $, [' ThunderBolt]
+lightningStaff :
+	Item
+		`lightningStaff`
+		['Atk], [+ 8]
+		['ThunderBolt]
+		['HP], [- 40]
 
-`The so-called let ~ in is described as follows.`
+
 `In fact, it becomes the same as a monadic description.`
 
-myValue : 3
+myValue :
+ 3
   [+ 4]
   [* 2]
+
 
 `List definitions are basically comma-separated.`
 `"," in English represents "strong separation" and "direct product".`
@@ -257,18 +265,28 @@ myValue : 3
 myPairs: 1 2 3 4 5
 myPairs0: [,] 1 2 3 4 5
 myPairs1: 1, 2, 3, 4, 5
+myPairs2: 1 ? 2 ? 3 ? 4 ? 5
 
-myPairs0 = myPairs = myPairs1
+myPairs0 = myPairs = myPairs1 =  [,] myPairs2~
 
-[,] myPairs = [[1], [2], [3], [4], [5]]
+[[,],] myPairs = [1], [2], [3], [4], [5]
+[?] myPairs = 1 ? 2 ? 3 ? 4 ? 5
+[+] myPairs = 15
+
+`This is a mapping`
+
+[* 2,] myPairs = 2 4 6 8 10
+
 
 `This is a direct sum (array composition)`
 
 r: [1 2] [3 4]
 
+
 `This is a direct product (2D array)`
 
 s: [1 2],[3 4]
+
 
 `Expressions that look like dictionary types are the same as anonymous functions that perform match_case, and the type of parentheses doesn't matter, and can be defined with indentation.`
 `However, opening and closing parentheses must always be in pairs.`
@@ -290,11 +308,12 @@ myGreet: ~x ?
 
 `Therefore, access will be by ident or string, or natural or hex as an argument.`
 
-myGreet ' greet ' hello = `hello,`
+myGreet 'greet 'hello = `hello,`
 
 myPairs '0 = 1
 
 myPairs '[1 ~ 3] = 2 3 4
+
 
 `By using block scope, you can write get directly in the block scope.`
 `This block syntax, of course, has a return value at the end of the operation.`
@@ -306,6 +325,7 @@ myGreet
   'world
 = `welcome, world`
 
+
 `Value modification is possible`
 
 myGreet
@@ -313,8 +333,10 @@ myGreet
     'welcome : `welcome to our `
   'world : `metaverse!`
 
+
 `By inferring only primitive types, it is designed to solve actual type problems.`
 `All given names are definitions, and because they are also self-evident types, names are types.`
+
 
 `The ~ operator can expand only match_case that mimics dictionary types on the target scope.`
 `If it's prefix, it takes priority over other terms, if it's postfix, other terms take priority.`
@@ -326,23 +348,20 @@ myGreet
 
 y = 1
 
+
 `The @ prefix operator is import. It can also be specified from file names, and path specification is possible`
 `If match_case can be considered as a dictionary type, it can be expanded to one level up scope with the ~ operator, so imports that can be used in the file are possible with ~@.`
 
 @io
   say Hello World
 
-`Since it's not an import at the file scope, the line below returns a Say is not defined error.`
-
-say Hello World
 
 `Expand and use in file scope.`
 
-~@Funnctor
-~@Monoid
-~@io
+@io~
 
-say fold [+] map [* 4] 1 2 3 4 5
+say[1 2 3 4 5 [* 4,] [+]]
+
 
 `Any single character after \ is always one character of character type value.`
 `In the case of character concatenation, since it is decided that one character comes after \, if an ident or string comes, it is simply regarded as string concatenation.`
@@ -353,6 +372,8 @@ say fold [+] map [* 4] 1 2 3 4 5
 M: \M
 
 My: M \y\ \D\o\m\e\s\t\i\c
+My = M \y \  \D \o \m \e \s \t \i \c = `My Domestic`
+
 `Hello ` `World!` = `Hello World!`
 `Hello` \ `World!` = `Hello World!`
 \H `ello` \ `World` \! = `Hello World!`
