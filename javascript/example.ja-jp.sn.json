@@ -1,0 +1,1123 @@
+{
+  "structure": [
+    {
+      "indent": 0,
+      "content": [
+        "x: -353.15134"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "y: 4001.35364502"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "Hello: LITERAL_2"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "World: LITERAL_4"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "yep: 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "nop: 0"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "unit: none: []"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "none: []"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "unit: []"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "["
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "] LITERAL_8"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[x y ? x ^ 2 + 2 * x * y + y ^ 2]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[x y ? (x + y) ^ 2]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[+] [^ 2]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[^ 2] [+]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "x = y = z"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "1 <= x <= 9"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[+ 2] 2 = 4"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[+ 2], 2 = [+ 2], 2"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "iterate3 : 1 ? 2 ? 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "iterate3 = 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "iterate3 = 2"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "iterate3 = 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "iterate3 = []"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "iterate3 = []"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "result2 : - 1 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "add : +"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "exp : ^"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "id : x ? x"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[x ? x] 1 2 3 = 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[x ? x] 1, 2, 3 = 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[1 2 3] '0 = 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[1, 2, 3] '0 = 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[_ ~y ? y~] 1 2 3 = 2 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[_ ~y ? y~] 1, 2, 3 = 2 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[1 2 3] '1~ = 2 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[1, 2, 3] '1~ = 2 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[x ?"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "x = 0 : 0"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "x > 0 : LITERAL_82"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "x < 0 : LITERAL_85"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "] 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "["
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "x ?"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "x = 0 & [_ ? 0] ;"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "x > 0 & [_ ? LITERAL_91] ;"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "x < 0 & [_ ? LITERAL_94] ;"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "[_ ? LITERAL_97]"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "] 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "Person : name age etc x ?"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "name"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "age"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "~etc : x"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "john : Person LITERAL_100 18 LITERAL_101 LITERAL_102"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "john LITERAL_107"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "john 'name = john LITERAL_109"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "person : Person [] [] [] []"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "mary :"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "~person"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "'name : LITERAL_111"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "'age  : 16"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "charie :"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "~person"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "'name : LITERAL_114"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "'age  : 24"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "["
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "0   : LITERAL_117"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "> 0 : LITERAL_120"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "< 0 : LITERAL_123"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "] 3"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "["
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "1 : LITERAL_127"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "0 : LITERAL_130"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "] 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[> 3 : [+ 3]] 3 4 = 4"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "Item :"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "name"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "equip"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "use"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "effect"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "medicalWeed :"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "Item"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "[]"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "['medicalWeed], [- 1]"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "['HP], [+ 20]"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "lightningStaff :"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "Item"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "['Atk], [+ 8]"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "['ThunderBolt]"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "['HP], [- 40]"
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myValue :"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "3"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "[+ 4]"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "[* 2]"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myPairs: 1 2 3 4 5"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myPairs0: [,] 1 2 3 4 5"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myPairs1: 1, 2, 3, 4, 5"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myPairs2: 1 ? 2 ? 3 ? 4 ? 5"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myPairs0 = myPairs = myPairs1 = [,] ~myPairs2"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[[,],] myPairs = [1], [2], [3], [4], [5]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[?] myPairs = 1 ? 2 ? 3 ? 4 ? 5"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[+] myPairs = 15"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "[* 2,] myPairs = 2 4 6 8 10"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "r: [1 2] [3 4]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "s: [1 2],[3 4]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myGreet:"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "greet:"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "hello: LITERAL_197"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "welcome: LITERAL_199"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "indent": 1,
+          "content": [
+            "world: LITERAL_201"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myGreet: ~a ?"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "a '0 = LITERAL_203 &"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "a '1 = LITERAL_206 & LITERAL_207 ;"
+              ],
+              "children": []
+            },
+            {
+              "indent": 2,
+              "content": [
+                "a '1 = LITERAL_211 & LITERAL_212 ;"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "indent": 1,
+          "content": [
+            "a '0 = LITERAL_216 & LITERAL_217;"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "[]"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myGreet 'greet 'hello = LITERAL_221"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myPairs '0 = 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myPairs '[1 ~ 3] = 2 3 4"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myGreet"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "'greet"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "'welcome"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "indent": 1,
+          "content": [
+            "'world"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "= LITERAL_230"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "myGreet"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "'greet"
+          ],
+          "children": [
+            {
+              "indent": 2,
+              "content": [
+                "'welcome : LITERAL_232"
+              ],
+              "children": []
+            }
+          ]
+        },
+        {
+          "indent": 1,
+          "content": [
+            "'world : LITERAL_234"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "~["
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "y: 1"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "n: 0"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "y = 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "@io"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "say Hello World"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "say Hello World"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "~@Funnctor"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "~@Monoid"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "~@io"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "say[1 2 3 4 5 [* 4,] [+]]"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "M: LITERAL_245"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "My: M LITERAL_247LITERAL_248LITERAL_249LITERAL_250LITERAL_251LITERAL_252LITERAL_253LITERAL_254LITERAL_255LITERAL_256"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "My = M LITERAL_267 LITERAL_268 LITERAL_269 LITERAL_270 LITERAL_271 LITERAL_272 LITERAL_273 LITERAL_274 LITERAL_275 LITERAL_276 = LITERAL_277"
+      ],
+      "children": [
+        {
+          "indent": 1,
+          "content": [
+            "LITERAL_289 LITERAL_292 LITERAL_290LITERAL_293 LITERAL_291 = LITERAL_294"
+          ],
+          "children": []
+        },
+        {
+          "indent": 1,
+          "content": [
+            "Hello LITERAL_301My LITERAL_302LITERAL_304 LITERAL_303 = LITERAL_305"
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "indent": 0,
+      "content": [
+        "HWinEnter :"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "#myDict : name value ? ~name : value"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "#gets : name ? myDict '~name"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "0 & LITERAL_311 = 0"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "1 & LITERAL_315 = LITERAL_316"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "0 | LITERAL_320 = LITERAL_321"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "1 | LITERAL_325 = 1"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "0 ; LITERAL_329 = LITERAL_330"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "1 ; LITERAL_334 = 0"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "#LITERAL_339LITERAL_338LITERAL_340 LITERAL_341"
+      ],
+      "children": []
+    },
+    {
+      "indent": 0,
+      "content": [
+        "LITERAL_3464 + 5"
+      ],
+      "children": []
+    }
+  ]
+}

@@ -1,112 +1,70 @@
 const fs = require('fs');
 const readline = require('readline');
 
-function tokenizeLine(line) {
-  const tokens = [];
-  let current = '';
-  let inQuote = false;
-  let quoteChar = '';
-
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-
-    if ((char === '`' || char === '"') && !inQuote) {
-      if (current) tokens.push(current);
-      current = char;
-      inQuote = true;
-      quoteChar = char;
-    } else if (char === quoteChar && inQuote) {
-      current += char;
-      tokens.push(current);
-      current = '';
-      inQuote = false;
-    } else if (inQuote) {
-      current += char;
-    } else if (char === '\\' && i + 1 < line.length) {
-      tokens.push(char + line[i + 1]);
-      i++;
-    } else if (char === '[' && line[i+1] === ']') {
-      if (current) tokens.push(current);
-      tokens.push('[]');
-      i++;
-      current = '';
-    } else if (/[(){}[\]:?]/.test(char)) {
-      if (current) tokens.push(current);
-      tokens.push(char);
-      current = '';
-    } else if (char === ',') {
-      if (current) tokens.push(current);
-      tokens.push(',');
-      current = '';
-    } else if (/\s/.test(char)) {
-      if (current) tokens.push(current);
-      current = '';
-    } else {
-      current += char;
-    }
-  }
-
-  if (current) tokens.push(current);
-  return tokens;
-}
-
-function buildStructure(lines) {
-  const result = [];
-  const stack = [result];
-  let indentLevels = [0];
-
-  for (const line of lines) {
-    const indent = line.match(/^\t*/)[0].length;
-    const tokens = tokenizeLine(line.trimLeft());
-
-    while (indent < indentLevels[indentLevels.length - 1]) {
-      stack.pop();
-      indentLevels.pop();
-    }
-
-    if (indent > indentLevels[indentLevels.length - 1]) {
-      const newBlock = [];
-      stack[stack.length - 1].push(newBlock);
-      stack.push(newBlock);
-      indentLevels.push(indent);
-    }
-
-    if (tokens.length > 0) {
-      stack[stack.length - 1].push(tokens);
-    }
-  }
-
-  return result;
-}
-
-async function processFile(inputFile, outputFile) {
-  const fileStream = fs.createReadStream(inputFile);
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity
+function analyzeStructure(inputFile, outputFile) {
+  const readInterface = readline.createInterface({
+    input: fs.createReadStream(inputFile),
+    output: process.stdout,
+    console: false
   });
 
-  const lines = [];
-  for await (const line of rl) {
-    const cleanLine = line.replace(/^`.*`$/, '');  // コメント行を完全に削除
-    if (cleanLine.trim()) {
-      lines.push(cleanLine);
-    }
+  const writeStream = fs.createWriteStream(outputFile);
+  
+  let literals = [];
+  let literalIndex = 0;
+  let blockStack = [{ indent: -1, content: [], children: [] }];
+  let currentBlock = blockStack[0];
+
+  function replaceLiteral(match) {
+    literals.push(match);
+    return `LITERAL_${literalIndex++}`;
   }
 
-  const structure = buildStructure(lines);
-  
-  await fs.promises.writeFile(outputFile, JSON.stringify(structure, null, 2));
-  console.log("Preprocessing completed.");
+  function restoreLiterals(content) {
+    return content.replace(/LITERAL_(\d+)/g, (_, index) => literals[index]);
+  }
+
+  readInterface.on('line', function(line) {
+    // コメントの削除
+    if (line.trimLeft().startsWith('`')) return;
+
+    // リテラルの退避
+    let processedLine = line.replace(/\\./g, replaceLiteral)  // 文字リテラル
+                            .replace(/`[^`]*`/g, replaceLiteral)  // 文字列リテラル
+                            .replace(/-?\d+(\.\d+)?/g, replaceLiteral);  // 数値リテラル
+
+    const trimmedLine = processedLine.trimRight();
+    if (trimmedLine === '') return;  // 空行をスキップ
+
+    const indent = line.search(/\S|$/);
+    const content = trimmedLine.trim();
+
+    while (indent <= currentBlock.indent) {
+      blockStack.pop();
+      currentBlock = blockStack[blockStack.length - 1];
+    }
+
+    const newBlock = { indent, content: [content], children: [] };
+    currentBlock.children.push(newBlock);
+    blockStack.push(newBlock);
+    currentBlock = newBlock;
+  });
+
+  readInterface.on('close', function() {
+    // リテラルを復元する
+    function restoreBlockLiterals(block) {
+      block.content = block.content.map(restoreLiterals);
+      block.children = block.children.map(restoreBlockLiterals);
+      return block;
+    }
+
+    const restoredStructure = restoreBlockLiterals(blockStack[0]).children;
+
+    writeStream.write(JSON.stringify({ structure: restoredStructure }, null, 2));
+    writeStream.end();
+    console.log('Analysis complete. Results written to output file.');
+  });
 }
 
-// Usage
-const inputFile = process.argv[2];
-const outputFile = `${inputFile}.sexp`;
-
-if (!inputFile) {
-  console.error('Please specify an input file.');
-  process.exit(1);
-}
-
-processFile(inputFile, outputFile).catch(console.error);
+// 使用例
+analyzeStructure(process.argv[2], `${process.argv[2]}.json`);
