@@ -100,7 +100,13 @@ f_get = { "'" }
 f_import = { "@" }
 
 literal = { number | string | char | unit }
-number = @{ "-"? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
+number = {uint | int | float | hex | oct | bit}
+uint = { ASCII_DIGIT+ }
+int = { "-"? ~ ASCII_DIGIT+ }
+float = { "-"? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
+hex = { "0x" ~ ASCII_HEX_DIGIT+ }
+oct = { "0o" ~ ASCII_OCT_DIGIT+ }
+bit = { "0b" ~ ASCII_BIN_DIGIT+ }
 string = { "`" ~ (!("`" | "\n") ~ ANY)* ~ "`" }
 char = { "\\" ~ ANY }
 identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
