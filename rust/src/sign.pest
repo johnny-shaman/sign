@@ -21,15 +21,20 @@ flat = { apply ~ f_spread* }
 apply = { get ~ apply? }
 get = { import ~ (f_get ~ get)? }
 import = { f_import? ~ block }
-block = { f_block* ~ primary }
+block = {
+  (f_block* ~ primary)
+  | "(" ~ expression ~ ")"
+  | "[" ~ expression ~ "]"
+  | "{" ~ expression ~ "}"
+}
 primary = {
     literal
   | identifier
   | point_free
   | partial_application
-  | "(" ~ expression ~ ")"
-  | "[" ~ expression ~ "]"
-  | "{" ~ expression ~ "}"
+  | "(" ~ lambda ~ ")"
+  | "[" ~ lambda ~ "]"
+  | "{" ~ lambda ~ "}"
 }
 
 point_free = {
