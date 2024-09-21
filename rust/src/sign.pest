@@ -1,53 +1,35 @@
-WHITESPACE = { " " | "\t" | "\r" | "\n" }
-COMMENT = { "`" ~ (!"\n" ~ ANY)* ~ "\n" }
-
-program = { SOI ~ NEWLINE* ~ expression* ~ EOI }
+WHITESPACE = _{ " " | "\r" | "\n"}
+program = { SOI ~ expression* ~ EOI }
 
 expression = { export }
 
 export = { f_export? ~ assign }
 assign = { lambda ~ (f_assign ~ assign)? }
-lambda = { product+ ~ (f_lambda ~ lambda)* }
-product = { spread ~ (f_product ~ product)* }
-spread = { lift ~ (f_spread ~ lift)* }
+lambda = { product+ ~ (f_lambda ~ lambda)? }
+product = { spread ~ (f_product ~ product)? }
+spread = { lift ~ (f_spread ~ lift)? }
 lift = { f_spread* ~ or_xor }
-or_xor = { and ~ ((f_or | f_xor) ~ or_xor)* }
-and = { not ~ (f_and ~ and)* }
+or_xor = { and ~ ((f_or | f_xor) ~ or_xor)? }
+and = { not ~ (f_and ~ and)? }
 not = { f_not* ~ compare }
-compare = { add ~ (compare_op ~ compare)* }
-add = { mul ~ ((f_add | f_sub) ~ add)* }
-mul = { power ~ ((f_mul | f_div | f_mod) ~ mul)* }
-power = { factorial ~ (f_power ~ power)* }
+compare = { add ~ (compare_op ~ compare)? }
+add = { mul ~ ((f_add | f_sub) ~ add)? }
+mul = { power ~ ((f_mul | f_div | f_mod) ~ mul)? }
+power = { factorial ~ (f_power ~ power)? }
 factorial = { flat ~ f_factorial* }
 flat = { apply ~ f_spread* }
-apply = { get ~ apply* }
-get = { import ~ (f_get ~ get)* }
-import = { f_import? ~ primary }
-
+apply = { get ~ apply? }
+get = { import ~ (f_get ~ get)? }
+import = { f_import? ~ block }
+block = { f_block* ~ primary }
 primary = {
     literal
   | identifier
   | point_free
   | partial_application
-  | Block
   | "(" ~ expression ~ ")"
   | "[" ~ expression ~ "]"
   | "{" ~ expression ~ "}"
-}
-
-NewBlock = {
-  // The first line in the block
-  PEEK_ALL ~ PUSH("\t"+) ~ Block ~
-  // Subsequent lines in the block
-  (PEEK_ALL ~ Block)* ~
-  // Remove the last layer of indentation from the stack when exiting the block
-  DROP
-}
-
-BlockStart = { point_free | identifier | partial_application }
-
-Block = {
-  BlockStart ~ (NEWLINE | EOI) ~ NewBlock*
 }
 
 point_free = {
@@ -56,12 +38,12 @@ point_free = {
   | infix
   | infix_l
   | infix_r
-  | literal ~ infix
-  | literal ~ infix_l
-  | literal ~ infix_r
-  | infix ~ literal
-  | infix_l ~ literal
-  | infix_r ~ literal
+  | (literal | identifier) ~ infix
+  | (literal | identifier) ~ infix_l
+  | (literal | identifier) ~ infix_r
+  | infix ~ (literal | identifier)
+  | infix_l ~ (literal | identifier)
+  | infix_r ~ (literal | identifier)
 }
 postfix_point_free = @{ "_" ~ postfix }
 partial_application = { (identifier | point_free) ~ primary* ~ unit }
@@ -98,16 +80,18 @@ f_spread = { "~" }
 f_factorial = { "!" }
 f_get = { "'" }
 f_import = { "@" }
+f_block = { "\t" }
+
 
 literal = { number | string | char | unit }
 number = {uint | int | float | hex | oct | bit}
-uint = { ASCII_DIGIT+ }
-int = { "-"? ~ ASCII_DIGIT+ }
-float = { "-"? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
-hex = { "0x" ~ ASCII_HEX_DIGIT+ }
-oct = { "0o" ~ ASCII_OCT_DIGIT+ }
-bit = { "0b" ~ ASCII_BIN_DIGIT+ }
-string = { "`" ~ (!("`" | "\n") ~ ANY)* ~ "`" }
-char = { "\\" ~ ANY }
+uint = @{ ASCII_DIGIT+ }
+int = @{ "-"? ~ ASCII_DIGIT+ }
+float = @{ "-"? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
+hex = @{ "0x" ~ ASCII_HEX_DIGIT+ }
+oct = @{ "0o" ~ ASCII_OCT_DIGIT+ }
+bit = @{ "0b" ~ ASCII_BIN_DIGIT+ }
+string = { "`" ~ (!("`" | "\n") ~ (" " | ANY))* ~ "`" }
+char = ${ "\\" ~ ("\n" | "\r" | " " | ANY)}
 identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
 unit = { "_" | "[]" }
