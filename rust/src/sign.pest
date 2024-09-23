@@ -29,12 +29,17 @@ block = {
 }
 primary = {
     literal
-  | identifier
   | point_free
   | partial_application
   | "(" ~ lambda ~ ")"
-  | "[" ~ lambda ~ "]"
   | "{" ~ lambda ~ "}"
+  | "[" ~ lambda ~ "]"
+  | "(" ~ point_free ~ ")"
+  | "{" ~ point_free ~ "}"
+  | "[" ~ point_free ~ "]"
+  | "(" ~ partial_application ~ ")"
+  | "{" ~ partial_application ~ "}"
+  | "[" ~ partial_application ~ "]"
 }
 
 point_free = {
@@ -50,6 +55,7 @@ point_free = {
   | infix_l ~ (literal | identifier)
   | infix_r ~ (literal | identifier)
 }
+
 postfix_point_free = @{ "_" ~ postfix }
 partial_application = { (identifier | point_free) ~ primary* ~ unit }
 
@@ -87,16 +93,21 @@ f_get = { "'" }
 f_import = { "@" }
 f_block = { "\t" }
 
-
-literal = { number | string | char | unit }
-number = {uint | int | float | hex | oct | bit}
+literal = { number | string | char | unit | identifier }
+number = { hex | oct | bit | float | uint | int}
 uint = @{ ASCII_DIGIT+ }
-int = @{ "-"? ~ ASCII_DIGIT+ }
-float = @{ "-"? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
+int = @{ "-"? ~ ASCII_DIGIT+ ~ !(("." ~ ASCII_DIGIT*) | "e" | "E") }
+float = @{ 
+    "-"? ~ (
+        (ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* ~ (^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+)?) |
+        (ASCII_DIGIT+ ~ ^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+) |
+        ("." ~ ASCII_DIGIT+ ~ (^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+)?)
+    )
+}
 hex = @{ "0x" ~ ASCII_HEX_DIGIT+ }
 oct = @{ "0o" ~ ASCII_OCT_DIGIT+ }
 bit = @{ "0b" ~ ASCII_BIN_DIGIT+ }
 string = { "`" ~ (!("`" | "\n") ~ (" " | ANY))* ~ "`" }
-char = ${ "\\" ~ ("\n" | "\r" | " " | ANY)}
+char = ${ "\\" ~ (NEWLINE | " " | ANY) }
 identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
 unit = { "_" | "[]" }
