@@ -167,11 +167,11 @@ id : x ? x
 
 [
 	x ? 
-		x = 0 & [_ ? 0] ;
-		x > 0 & [_ ? `more`] ;
-		x < 0 & [_ ? `less`] ;
-		[_ ? `other_wise`]
-] 3
+		x = 0 & [? 0] ;
+		x > 0 & [? `more`] ;
+		x < 0 & [? `less`] ;
+		[? `other_wise`]
+] 3 _
 
 
 `コンストラクタのような記述。`
@@ -317,12 +317,13 @@ myGreet:
 
 `上述、myGreetは、プリプロセスで以下に置換される。`
 
-myGreet: ~a ?
-	a '0 = `greet` & 
-		a '1 = `hello` & `hello,` ;
-		a '1 = `welcome` & `welcome,` ;
-	a '0 = `world` & ` world`;
-	[]
+myGreet: _0 ?
+	_0 = `greet` & [ _1 ?
+		_1 = `hello` & [? `hello,`] |
+		_1 = `welcome` & [? `welcome,`]
+	] |
+	_0 = `world` & [? ` world`] |
+	_
 
 `よって、アクセスはidentか文字列、またはnaturalかhexを引数にすることになる。`
 
@@ -439,8 +440,3 @@ HWinEnter :
 
 0 ; `me` = `me`
 1 ; `me` = 0
-
-
-`以下の行はコンパイラのデバッグ用`
-#`It:`\	`365` `is number of date at 1 year`
-\	4 + 5

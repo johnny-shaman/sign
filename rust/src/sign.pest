@@ -21,12 +21,14 @@ flat = { apply ~ f_spread* }
 apply = { get ~ apply? }
 get = { import ~ (f_get ~ get)? }
 import = { f_import? ~ block }
+
 block = {
   (f_block* ~ primary)
   | "(" ~ expression ~ ")"
   | "[" ~ expression ~ "]"
   | "{" ~ expression ~ "}"
 }
+
 primary = {
     literal
   | point_free
@@ -97,6 +99,7 @@ literal = { number | string | char | unit | identifier }
 number = { hex | oct | bit | float | uint | int}
 uint = @{ ASCII_DIGIT+ }
 int = @{ "-"? ~ ASCII_DIGIT+ ~ !(("." ~ ASCII_DIGIT*) | "e" | "E") }
+
 float = @{ 
     "-"? ~ (
         (ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* ~ (^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+)?) |
@@ -104,6 +107,7 @@ float = @{
         ("." ~ ASCII_DIGIT+ ~ (^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+)?)
     )
 }
+
 hex = @{ "0x" ~ ASCII_HEX_DIGIT+ }
 oct = @{ "0o" ~ ASCII_OCT_DIGIT+ }
 bit = @{ "0b" ~ ASCII_BIN_DIGIT+ }
