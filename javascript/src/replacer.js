@@ -8,7 +8,7 @@ module.exports = {
 
   operator (line) {
     return line
-      .replace(/[:?|;&<=>+\-*\/%^,]+/g, ' $& ')
+      .replace(/[:?|;&<=>+\-*\/%^,']+/g, ' $& ')
       .replace(/ +/g, ' ')
       .replace(/^ /gm, '')
       .replace(/ $/gm, '')

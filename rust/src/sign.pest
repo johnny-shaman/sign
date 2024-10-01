@@ -3,8 +3,8 @@ program = { SOI ~ expression* ~ EOI }
 
 expression = { export }
 
-export = { f_export? ~ assign }
-assign = { lambda ~ (f_assign ~ assign)? }
+export = { f_export? ~ define }
+define = { lambda ~ (f_define ~ define)? }
 lambda = { product+ ~ (f_lambda ~ lambda)? }
 product = { spread ~ (f_product ~ product)? }
 spread = { lift ~ (f_spread ~ lift)? }
@@ -63,14 +63,14 @@ partial_application = { (identifier | point_free) ~ primary* ~ unit }
 
 prefix = { f_not | f_spread }
 infix_l = { f_product | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_get }
-infix_r = { f_assign | f_lambda | f_power }
+infix_r = { f_define | f_lambda | f_power }
 postfix = { f_factorial | f_spread }
 
 infix = { compare_op | f_spread}
 compare_op = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
 
 f_export = { "#" }
-f_assign = { ":" }
+f_define = { ":" }
 f_lambda = { "?" }
 f_or = { "|" }
 f_xor = { ";" }

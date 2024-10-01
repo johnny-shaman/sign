@@ -45,8 +45,7 @@ const Parser = (parseFn) => ({
   // Specific parsers
   const comment = regex(/^`.*$/gm);
   const char = regex(/^\\(.)/).map(match => ({ char: match[1] }));
-  const doubleQuoteString = regex(/`[^`\r\n]`/g).map(match => ({ string: match[1] }));
-  const backTickString = regex(/^`([^`]*)`/).map(match => ({ string: match[1] }));
+  const backTickString = regex(/`[^`\r\n]`/g).map(match => ({ string: match[1] }));
   const number = regex(/^-?\d+(\.\d+)?/).map(match => ({ number: parseFloat(match) }));
   const other = regex(/^[^`\\"]+/);
   
