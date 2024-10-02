@@ -59,7 +59,7 @@ point_free = {
 }
 
 postfix_point_free = @{ "_" ~ postfix }
-partial_application = { (identifier | point_free) ~ primary* ~ unit }
+partial_application = { (identifier | point_free) ~ primary* }
 
 prefix = { f_not | f_spread }
 infix_l = { f_product | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_get }
