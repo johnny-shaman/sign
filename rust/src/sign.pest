@@ -50,16 +50,16 @@ point_free = {
   | infix
   | infix_l
   | infix_r
-  | (literal | identifier) ~ infix
-  | (literal | identifier) ~ infix_l
-  | (literal | identifier) ~ infix_r
-  | infix ~ (literal | identifier)
-  | infix_l ~ (literal | identifier)
-  | infix_r ~ (literal | identifier)
+  | literal ~ infix
+  | literal ~ infix_l
+  | literal ~ infix_r
+  | infix ~ literal
+  | infix_l ~ literal
+  | infix_r ~ literal
 }
 
 postfix_point_free = @{ "_" ~ postfix }
-partial_application = { (identifier | point_free) ~ primary* }
+partial_application = { (identifier | point_free) ~ apply }
 
 prefix = { f_not | f_spread }
 infix_l = { f_product | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_get }
@@ -95,7 +95,7 @@ f_get = { "'" }
 f_import = { "@" }
 f_block = { "\t" }
 
-literal = { number | string | char | unit | identifier }
+literal = { number | string | char | unit | identifier}
 number = { hex | oct | bit | float | uint | int}
 uint = @{ ASCII_DIGIT+ }
 int = @{ "-"? ~ ASCII_DIGIT+ ~ !(("." ~ ASCII_DIGIT*) | "e" | "E") }
