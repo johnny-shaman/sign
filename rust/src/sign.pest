@@ -56,7 +56,6 @@ block = {
   | "{" ~ expression ~ "}"
 }
 
-
 point_free = {
     prefix
   | postfix_point_free
