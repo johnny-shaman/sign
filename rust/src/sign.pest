@@ -32,16 +32,25 @@ apply = {
     | "(" ~ partial_application ~ ")"
     | "{" ~ partial_application ~ "}"
     | "[" ~ partial_application ~ "]"
-  ) ~ coproduct
+  ) ~ coproduct?
 }
 
-literal_product = {literal ~ coproduct}
+literal_product = {literal ~ coproduct?}
 
 get = { import ~ (f_get ~ get)? }
-import = { f_import? ~ block }
+import = { f_import? ~ (block | literal) }
 
 block = {
   (f_block+ ~ expression)
+  | "(" ~ lambda ~ ")"
+  | "{" ~ lambda ~ "}"
+  | "[" ~ lambda ~ "]"
+  | "(" ~ point_free ~ ")"
+  | "{" ~ point_free ~ "}"
+  | "[" ~ point_free ~ "]"
+  | "(" ~ partial_application ~ ")"
+  | "{" ~ partial_application ~ "}"
+  | "[" ~ partial_application ~ "]"
   | "(" ~ expression ~ ")"
   | "[" ~ expression ~ "]"
   | "{" ~ expression ~ "}"
