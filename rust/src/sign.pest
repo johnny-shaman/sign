@@ -17,32 +17,36 @@ add = { mul ~ ((f_add | f_sub) ~ add)? }
 mul = { power ~ ((f_mul | f_div | f_mod) ~ mul)? }
 power = { factorial ~ (f_power ~ power)? }
 factorial = { flat ~ f_factorial* }
-flat = { apply ~ f_spread* }
-apply = { get ~ apply? }
+flat = { coproduct ~ f_spread* }
+coproduct = { get ~ (apply | literal_product)? }
+
+apply = {
+  ( point_free
+    | partial_application
+    | "(" ~ lambda ~ ")"
+    | "{" ~ lambda ~ "}"
+    | "[" ~ lambda ~ "]"
+    | "(" ~ point_free ~ ")"
+    | "{" ~ point_free ~ "}"
+    | "[" ~ point_free ~ "]"
+    | "(" ~ partial_application ~ ")"
+    | "{" ~ partial_application ~ "}"
+    | "[" ~ partial_application ~ "]"
+  ) ~ coproduct
+}
+
+literal_product = {literal ~ coproduct}
+
 get = { import ~ (f_get ~ get)? }
 import = { f_import? ~ block }
 
 block = {
-  (f_block* ~ primary)
+  (f_block+ ~ expression)
   | "(" ~ expression ~ ")"
   | "[" ~ expression ~ "]"
   | "{" ~ expression ~ "}"
 }
 
-primary = {
-    literal
-  | point_free
-  | partial_application
-  | "(" ~ lambda ~ ")"
-  | "{" ~ lambda ~ "}"
-  | "[" ~ lambda ~ "]"
-  | "(" ~ point_free ~ ")"
-  | "{" ~ point_free ~ "}"
-  | "[" ~ point_free ~ "]"
-  | "(" ~ partial_application ~ ")"
-  | "{" ~ partial_application ~ "}"
-  | "[" ~ partial_application ~ "]"
-}
 
 point_free = {
     prefix
@@ -59,7 +63,7 @@ point_free = {
 }
 
 postfix_point_free = @{ "_" ~ postfix }
-partial_application = { (identifier | point_free) ~ apply }
+partial_application = { (identifier | point_free) ~ coproduct }
 
 prefix = { f_not | f_spread }
 infix_l = { f_product | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f_mod | f_get }
