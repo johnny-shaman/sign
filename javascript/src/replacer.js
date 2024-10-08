@@ -1,9 +1,6 @@
 module.exports = {
-  removeComments (line) {
-    switch (/^`.*$/gm.test(line)) {
-      case true : return ``;
-      default : return line;
-    }
+  removeComments(line) {
+    return sourceCode.replace(/^\t*`.*$/gm, '');
   },
 
   operator (line) {

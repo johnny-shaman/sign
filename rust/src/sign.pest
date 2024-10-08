@@ -4,6 +4,7 @@ program = { SOI ~ expression* ~ EOI }
 expression = { export }
 
 export = { f_export? ~ define }
+
 define = { lambda ~ (f_define ~ define)? }
 lambda = { product+ ~ (f_lambda ~ lambda)? }
 product = { spread ~ (f_product ~ product)? }
@@ -21,18 +22,7 @@ flat = { coproduct ~ f_spread* }
 coproduct = { get ~ (apply | literal_product)? }
 
 apply = {
-  ( point_free
-    | partial_application
-    | "(" ~ lambda ~ ")"
-    | "{" ~ lambda ~ "}"
-    | "[" ~ lambda ~ "]"
-    | "(" ~ point_free ~ ")"
-    | "{" ~ point_free ~ "}"
-    | "[" ~ point_free ~ "]"
-    | "(" ~ partial_application ~ ")"
-    | "{" ~ partial_application ~ "}"
-    | "[" ~ partial_application ~ "]"
-  ) ~ coproduct?
+  closure ~ coproduct?
 }
 
 literal_product = {literal ~ coproduct?}
@@ -42,21 +32,19 @@ import = { f_import? ~ (block | literal) }
 
 block = {
   (f_block+ ~ expression)
-  |point_free
-  | partial_application  | "(" ~ lambda ~ ")"
-  | "{" ~ lambda ~ "}"
-  | "[" ~ lambda ~ "]"
-  | "(" ~ point_free ~ ")"
-  | "{" ~ point_free ~ "}"
-  | "[" ~ point_free ~ "]"
-  | "(" ~ partial_application ~ ")"
-  | "{" ~ partial_application ~ "}"
-  | "[" ~ partial_application ~ "]"
+  | closure
   | "(" ~ expression ~ ")"
   | "[" ~ expression ~ "]"
   | "{" ~ expression ~ "}"
 }
 
+closure = {
+    point_free
+  | partial_application
+  | "(" ~ (lambda | point_free | partial_application) ~ ")"
+  | "{" ~ (lambda | point_free | partial_application) ~ "}"
+  | "[" ~ (lambda | point_free | partial_application) ~ "]"
+}
 
 point_free = {
     prefix
@@ -86,13 +74,15 @@ compare_op = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
 f_export = { "#" }
 f_define = { ":" }
 f_lambda = { "?" }
+f_product = { "," }
 f_or = { "|" }
 f_xor = { ";" }
 f_and = { "&" }
+f_not = { "!" }
 f_less = { "<" }
 f_less_eq = { "<=" }
 f_eq = { "=" | "==" }
-f_neq = { "!=" }
+f_neq = { "!=" | "><" }
 f_more_eq = { ">=" }
 f_more = { ">" }
 f_add = { "+" }
@@ -101,8 +91,6 @@ f_mul = { "*" }
 f_div = { "/" }
 f_mod = { "%" }
 f_power = { "^" }
-f_product = { "," }
-f_not = { "!" }
 f_spread = { "~" }
 f_factorial = { "!" }
 f_get = { "'" }
