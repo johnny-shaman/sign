@@ -256,7 +256,7 @@ myPairs0: [,] 1 2 3 4 5
 myPairs1: 1, 2, 3, 4, 5
 myPairs2: 1 ? 2 ? 3 ? 4 ? 5
 
-myPairs0 = myPairs = myPairs1 = [,] ~myPairs2
+myPairs0 = myPairs = myPairs1 = [,] myPairs2~
 
 `Therefore, higher-order descriptions can be done naturally, which is conceptually just replacing commas with some function and folding.`
 `Therefore, folding (foldL) is just passing a list to a two-argument function, which coincides with LISP.`
