@@ -9,3 +9,7 @@
     r1 : @r0 3 2
 
 `Block exit and auto destruction at #\+
+
+`top level export is not destruct it
+
+#\+ : +
