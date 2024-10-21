@@ -54,7 +54,7 @@ use std::sync::Arc;
 #[derive(Clone)]
 enum AstNode {
     Value(Value),
-    Expression(Box<Expression>),
+    Expression(Arc<Expression>),
 }
 
 #[derive(Clone)]
@@ -84,23 +84,23 @@ enum Number {
 }
 
 enum Expression {
-    Export(Box<AstNode>),
-    Assign(String, Box<AstNode>),
-    Lambda(Vec<String>, Box<AstNode>),
+    Export(Arc<AstNode>),
+    Assign(String, Arc<AstNode>),
+    Lambda(Vec<Literal::Identifier>, Arc<AstNode>),
     Product(Vec<AstNode>),
-    Spread(Box<AstNode>),
-    Lift(Vec<Box<AstNode>>),
-    OrXor(Box<AstNode>, OrXorOp, Box<AstNode>),
-    And(Box<AstNode>, Box<AstNode>),
-    Not(Box<AstNode>),
-    Compare(Box<AstNode>, CompareOp, Box<AstNode>),
-    AddSub(Box<AstNode>, AddSubOp, Box<AstNode>),
-    MulDivMod(Box<AstNode>, MulDivModOp, Box<AstNode>),
-    Power(Box<AstNode>, Box<AstNode>),
-    Factorial(Box<AstNode>),
-    Apply(Box<AstNode>, Vec<AstNode>),
-    Flat(Box<AstNode>),
-    Get(Box<AstNode>, Box<AstNode>),
+    Spread(Arc<AstNode>),
+    Lift(Vec<Arc<AstNode>>),
+    OrXor(Arc<AstNode>, OrXorOp, Arc<AstNode>),
+    And(Arc<AstNode>, Arc<AstNode>),
+    Not(Arc<AstNode>),
+    Compare(Arc<AstNode>, CompareOp, Arc<AstNode>),
+    AddSub(Arc<AstNode>, AddSubOp, Arc<AstNode>),
+    MulDivMod(Arc<AstNode>, MulDivModOp, Arc<AstNode>),
+    Power(Arc<AstNode>, Arc<AstNode>),
+    Factorial(Arc<AstNode>),
+    Apply(Arc<AstNode>, Vec<AstNode>),
+    Flat(Arc<AstNode>),
+    Get(Arc<AstNode>, Arc<AstNode>),
     Import(String),
     Block(Vec<AstNode>),
 }
