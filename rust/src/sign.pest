@@ -97,7 +97,7 @@ f_get = { "'" }
 f_import = { "@" }
 f_block = { "\t" }
 
-literal = { number | string | char | unit | identifier}
+literal = { number | string | letter | unit | identifier}
 number = { hex | oct | bit | float | uint | int}
 uint = @{ ASCII_DIGIT+ }
 int = @{ "-"? ~ ASCII_DIGIT+ ~ !(("." ~ ASCII_DIGIT*) | "e" | "E") }
@@ -114,6 +114,6 @@ hex = @{ "0x" ~ ASCII_HEX_DIGIT+ }
 oct = @{ "0o" ~ ASCII_OCT_DIGIT+ }
 bit = @{ "0b" ~ ASCII_BIN_DIGIT+ }
 string = { "`" ~ (!("`" | "\n") ~ (" " | ANY))* ~ "`" }
-char = ${ "\\" ~ (NEWLINE | " " | ANY) }
+letter = ${ "\\" ~ (NEWLINE | " " | ANY) }
 identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
 unit = { "_" | "[]" }
