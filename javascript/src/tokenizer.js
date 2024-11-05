@@ -1,7 +1,7 @@
-const {remove, lift, compareChain, regex} = requier('./tool.js')
+const {remove, lift, normalizeCompares, regex} = requier('./tool.js')
 
 module.exports = async function processTokens(reader, root) {
-  const tokens = compareChain(
+  const tokens = normalizeCompares(
     lift(
       regex.letter,
       remove(
@@ -31,8 +31,4 @@ module.exports = async function processTokens(reader, root) {
       o => typeof o === 'string' ? lift(regex.unit) : o
     )
   );
-
-  return tokens[tokens.length - 1] === ':' || tokens[tokens.length - 1] === '?' 
-    ? { tokens, children: processTokens(reader, root) }
-    : { tokens };
 }

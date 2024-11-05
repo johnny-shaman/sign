@@ -29,52 +29,36 @@ module.exports = {
     return result;
   },
 
-  compareChain (tokens) {
-    let result = [];
-    let i = 0;
-    let hasChanges;
-  
-    do {
-        hasChanges = false;
-        i = 0;
-        result = [];
-        while (i < tokens.length) {
-          if (
-            !Array.isArray(tokens[i])
-            && (
-              tokens[i] === '<'
-              || tokens[i] === '<='
-              || tokens[i] === '>'
-              || tokens[i] === '>='
-            )
-            && i > 0
-            && i + 1 < tokens.length
-            && i + 2 < tokens.length
-            && !Array.isArray(tokens[i+2])
-            && (
-              tokens[i + 2] === '<'
-              || tokens[i + 2] === '<='
-              || tokens[i + 2] === '>'
-              || tokens[i + 2] === '>='
-            )
-          ) {
-            // 最初の比較
-            result.push(tokens[i-1]);  // 左辺
-            result.push(tokens[i]);    // 演算子
-            result.push(tokens[i+1]);  // 中央値
-            result.push('&');        // 論理積
-            result.push(tokens[i+1]);  // 中央値（再度）
-            i += 2;  // 次の比較のために進める
-            hasChanges = true;
-            continue;
-          }
-          result.push(tokens[i]);
-          i++;
-        }
-        tokens = result;  // 次のイテレーションのために結果を更新
-    } while (hasChanges);
+  normalizeCompares (tokens) {
+    const compares = ['<', '=', '>', '<=', '>=', '!=', '=='];
+    return tokens.reduce(
+      (a, n, k, me) => compares.includes(n) && me[k + 2] && compares.includes(me[k + 2])
+        ? (a.push(n, me[k + 1], `&`), a)
+        : (a.push(n), a)
+      , []
+    );
+  },
 
-    return result;
+  dictionaryStart (tokens) {
+    if (tokens[tokens.length - 1] === ':') {
+      tokens.push([`_${(tokens[0].match(/\t/g) || []).length}`], `?`);
+    }
+    return tokens;
+  },
+
+  dictionaryContent (tokens) {
+    if (
+      (tokens[0].match(/\t/g) || []).length > 0
+      && tokens[2] === ':'
+      && tokens[tokens.length - 1] !== ':'
+    ) {
+      tokens.unshift([`_${tokens[0].match(/\t/g).length - 1}`], `=`);
+    }
+    return tokens;
+  },
+
+  matchCaseContent (tokens) {
+
   },
 
   regex: {
@@ -88,4 +72,4 @@ module.exports = {
     identifier: /([a-zA-Z]|[_a-zA-Z]{2})[0-9a-zA-Z_]*/g,
     unit:       /(_|(\[\]))/g,
   }
-}
+};
