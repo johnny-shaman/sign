@@ -32,33 +32,49 @@ module.exports = {
   normalizeCompares (tokens) {
     const compares = ['<', '=', '>', '<=', '>=', '!=', '=='];
     return tokens.reduce(
-      (a, n, k, me) => compares.includes(n) && me[k + 2] && compares.includes(me[k + 2])
-        ? (a.push(n, me[k + 1], `&`), a)
-        : (a.push(n), a)
-      , []
+      (a, n, k, me) => (
+        compares.includes(n)
+        && me[k + 2]
+        && compares.includes(me[k + 2])
+          ? (a.push(n, me[k + 1], `&`), a)
+          : (a.push(n), a)
+      ),
+      []
     );
   },
 
   dictionaryStart (tokens) {
-    if (tokens[tokens.length - 1] === ':') {
-      tokens.push([`_${(tokens[0].match(/\t/g) || []).length}`], `?`);
-    }
+    tokens[tokens.length - 1] === ':'
+    && tokens.push([`_${(tokens[0].match(/\t/g) || []).length}`], `?`);
     return tokens;
   },
 
   dictionaryContent (tokens) {
-    if (
-      (tokens[0].match(/\t/g) || []).length > 0
-      && tokens[2] === ':'
-      && tokens[tokens.length - 1] !== ':'
-    ) {
-      tokens.unshift([`_${tokens[0].match(/\t/g).length - 1}`], `=`);
-    }
+    (tokens[0].match(/\t/g) || []).length > 0
+    && tokens[2] === ':'
+    && tokens[tokens.length - 1] !== ':'
+    && tokens.unshift([`_${tokens[0].match(/\t/g).length - 1}`], `=`);
     return tokens;
   },
 
   matchCaseContent (tokens) {
-
+    if(
+      (tokens[0].match(/\t/g) || []).length > 0
+      && tokens.reduce((a, n) => a || ['<', '=', '>', '<=', '>=', '!=', '=='].includes(n), false)
+      && tokens.includes(':')
+    ) {
+      let result = tokens.reduce(
+        (a, n) => (
+          n === ':'
+          ? (a.push('&', '[', ['_'], '?',), a)
+          : (a.push(n), a)
+        )
+        , []
+      );
+      result.push(']', ';');
+      return result;
+    }
+    return tokens;
   },
 
   regex: {
