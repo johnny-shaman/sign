@@ -30,12 +30,11 @@ module.exports = {
   },
 
   normalizeCompares (tokens) {
-    const compares = ['<', '=', '>', '<=', '>=', '!=', '=='];
     return tokens.reduce(
       (a, n, k, me) => (
-        compares.includes(n)
+        this.compares.includes(n)
         && me[k + 2]
-        && compares.includes(me[k + 2])
+        && this.compares.includes(me[k + 2])
           ? (a.push(n, me[k + 1], `&`), a)
           : (a.push(n), a)
       ),
@@ -60,7 +59,7 @@ module.exports = {
   matchCaseContent (tokens) {
     if(
       (tokens[0].match(/\t/g) || []).length > 0
-      && tokens.reduce((a, n) => a || ['<', '=', '>', '<=', '>=', '!=', '=='].includes(n), false)
+      && tokens.reduce((a, n) => a || this.compares.includes(n), false)
       && tokens.includes(':')
     ) {
       let result = tokens.reduce(
@@ -87,5 +86,6 @@ module.exports = {
     bit:        /0b[01]+/g,
     identifier: /([a-zA-Z]|[_a-zA-Z]{2})[0-9a-zA-Z_]*/g,
     unit:       /(_|(\[\]))/g,
-  }
+  },
+  compares : ['<', '=', '>', '<=', '>=', '!=', '==']
 };
