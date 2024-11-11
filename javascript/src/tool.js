@@ -76,7 +76,7 @@ module.exports = {
     return tokens;
   },
 
-  regex: {
+  pattern: {
     comment:    /^[`\\].*$/gm,
     letter:     /\\[\s\S]/g,
     string:     /`[^\`.]*`/g,

@@ -5,41 +5,41 @@ const {
   dictionaryStart,
   dictionaryContent,
   matchCaseContent,
-  regex
+  pattern
 } = requier('./tool.js')
 
-module.exports = async function processTokens(reader) {
-  return await matchCaseContent(
+module.exports = function processTokens(line) {
+  return matchCaseContent(
     dictionaryContent(
       dictionaryStart(
         normalizeCompares(
           lift(
-            regex.letter,
+            pattern.letter,
             remove(
-              regex.comment,
-              await reader.readLine()
+              pattern.comment,
+              line
             )
           )
           .map(
-            o => typeof o === 'string' ? lift(regex.string) : o
+            o => typeof o === 'string' ? lift(pattern.string) : o
           )
           .map(
-            o => typeof o === 'string' ? lift(regex.number) : o
+            o => typeof o === 'string' ? lift(pattern.number) : o
           )
           .map(
-            o => typeof o === 'string' ? lift(regex.hex) : o
+            o => typeof o === 'string' ? lift(pattern.hex) : o
           )
           .map(
-            o => typeof o === 'string' ? lift(regex.oct) : o
+            o => typeof o === 'string' ? lift(pattern.oct) : o
           )
           .map(
-            o => typeof o === 'string' ? lift(regex.bit) : o
+            o => typeof o === 'string' ? lift(pattern.bit) : o
           )
           .map(
-            o => typeof o === 'string' ? lift(regex.identifier) : o
+            o => typeof o === 'string' ? lift(pattern.identifier) : o
           )
           .map(
-            o => typeof o === 'string' ? lift(regex.unit) : o
+            o => typeof o === 'string' ? lift(pattern.unit) : o
           )
         )
       )

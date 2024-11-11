@@ -1,0 +1,19 @@
+#LETTER : \A ~ \Z
+
+#letter : \a ~ \z
+
+#space : \ 
+
+#tab : \	
+
+#enter : \
+
+#digit : \0 ~ \9
+
+#Alphabet : @LETTER @letter
+
+#Alphanumeric : @digit @Alphabet
+
+#LETTERS : x ~y ? ([= x |] @LETTER) & @LETTERS y~
+
+#letters : x ~y ? ([= x |] @letter) & @letters y~
