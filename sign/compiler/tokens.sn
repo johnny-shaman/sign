@@ -1,19 +1,12 @@
-#LETTER : \A ~ \Z
+#space : s ? s = \ 
 
-#letter : \a ~ \z
+#tab : s ? s = \	
 
-#space : \ 
+#enter : s ? s = \
 
-#tab : \	
+#LETTERS : x ~y ? ([= x |] [\A ~ \Z]) & @LETTERS y~
 
-#enter : \
+#letters : x ~y ? ([= x |] [\a ~ \z]) & @letters y~
 
-#digit : \0 ~ \9
+#digits : x ~y ?  ([= x |] [\0 ~ \9]) & @digits y~
 
-#Alphabet : @LETTER @letter
-
-#Alphanumeric : @digit @Alphabet
-
-#LETTERS : x ~y ? ([= x |] @LETTER) & @LETTERS y~
-
-#letters : x ~y ? ([= x |] @letter) & @letters y~
