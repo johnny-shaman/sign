@@ -82,7 +82,7 @@ f_not = { "!" }
 f_less = { "<" }
 f_less_eq = { "<=" }
 f_eq = { "=" | "==" }
-f_neq = { "!=" | "><" }
+f_neq = { "!=" | "><" | "<>"}
 f_more_eq = { ">=" }
 f_more = { ">" }
 f_add = { "+" }
@@ -116,4 +116,4 @@ bit = @{ "0b" ~ ASCII_BIN_DIGIT+ }
 string = { "`" ~ (!("`" | "\n") ~ (" " | ANY))* ~ "`" }
 letter = ${ "\\" ~ (NEWLINE | " " | ANY) }
 identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
-unit = { "_" | "[]" }
+unit = { "_" }
