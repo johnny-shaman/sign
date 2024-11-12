@@ -4,7 +4,6 @@ program = { SOI ~ expression* ~ EOI }
 expression = { export }
 
 export = { f_export? ~ define }
-
 define = { lambda ~ (f_define ~ define)? }
 lambda = { product+ ~ (f_lambda ~ lambda)? }
 product = { spread ~ (f_product ~ product)? }
