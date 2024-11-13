@@ -51,7 +51,6 @@ module.exports = {
   dictionaryContent (tokens) {
     (tokens[0].match(/\t/g) || []).length > 0
     && tokens[2] === ':'
-    && tokens[tokens.length - 1] !== ':'
     && tokens.unshift([`_${tokens[0].match(/\t/g).length - 1}`], `=`);
     return tokens;
   },
