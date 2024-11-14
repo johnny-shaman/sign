@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = my = {
   remove (regex, line) {
     return line.replace(regex, '')
   },
@@ -32,9 +32,9 @@ module.exports = {
   normalizeCompares (tokens) {
     return tokens.reduce(
       (a, n, k, me) => (
-        this.compares.includes(n)
+        my.compares.includes(n)
         && me[k + 2]
-        && this.compares.includes(me[k + 2])
+        && my.compares.includes(me[k + 2])
           ? (a.push(n, me[k + 1], `&`), a)
           : (a.push(n), a)
       ),
@@ -42,23 +42,23 @@ module.exports = {
     );
   },
 
-  dictionaryStart (tokens) {
+  hashmapStart (tokens) {
     tokens[tokens.length - 1] === ':'
-    && tokens.push([`_${(tokens[0].match(/\t/g) || []).length}`], `?`);
+    && tokens.push([`_${me.blockDepth( tokens[0] )}`], `?`);
     return tokens;
   },
 
-  dictionaryContent (tokens) {
-    (tokens[0].match(/\t/g) || []).length > 0
+  hashmapBlock (tokens) {
+    me.blockDepth(tokens[0]) > 0
     && tokens[2] === ':'
-    && tokens.unshift([`_${tokens[0].match(/\t/g).length - 1}`], `=`);
+    && tokens.unshift([`_${me.blockDepth( tokens[0] ) - 1}`], `=`);
     return tokens;
   },
 
-  matchCaseContent (tokens) {
+  caseBlock (tokens) {
     if(
       (tokens[0].match(/\t/g) || []).length > 0
-      && tokens.reduce((a, n) => a || this.compares.includes(n), false)
+      && [...me.logic, ...me.compares].includes(tokens[2])
       && tokens.includes(':')
     ) {
       let result = tokens.reduce(
@@ -75,6 +75,10 @@ module.exports = {
     return tokens;
   },
 
+  blockDepth (s) {
+    return (s.match(/\t/g) || []).length
+  },
+
   pattern: {
     comment:    /^[`\\].*$/gm,
     letter:     /\\[\s\S]/g,
@@ -83,8 +87,9 @@ module.exports = {
     hex :       /0x[0-9a-fA-F]+/g,
     oct:        /0o[0-8]+/g,
     bit:        /0b[01]+/g,
-    identifier: /([a-zA-Z]|[_a-zA-Z]{2})[0-9a-zA-Z_]*/g,
+    identifier: /([^\x00-\x2F\x3A-\x40\x5B-\x60\x7B-\x7F]|[^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]{2})[^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]*/g,
     unit:       /(_|(\[\]))/g,
   },
-  compares : ['<', '=', '>', '<=', '>=', '!=', '==']
+  compares : ['<', '=', '>', '<=', '>=', '!=', '=='],
+  logic : ['|', ';', '&', '!']
 };

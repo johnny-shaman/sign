@@ -2,16 +2,16 @@ const {
   remove,
   lift,
   normalizeCompares,
-  dictionaryStart,
-  dictionaryContent,
-  matchCaseContent,
+  hashmapStart,
+  hashmapBlock,
+  caseBlock,
   pattern
 } = requier('./tool.js')
 
 module.exports = function processTokens(line) {
-  return matchCaseContent(
-    dictionaryContent(
-      dictionaryStart(
+  return caseBlock(
+    hashmapBlock(
+      hashmapStart(
         normalizeCompares(
           lift(
             pattern.letter,
