@@ -82,7 +82,7 @@ module.exports = my = {
   pattern: {
     comment:    /^[`\\].*$/gm,
     letter:     /\\[\s\S]/g,
-    string:     /`[^\`.]*`/g,
+    string:     /`[^\\`\r\n]*`/g,
     number:     /-?[0-9]+\.?[0-9]*e?[0-9]*/g,
     hex :       /0x[0-9a-fA-F]+/g,
     oct:        /0o[0-8]+/g,
