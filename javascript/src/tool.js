@@ -18,7 +18,7 @@ module.exports = my = {
         : (
           a.push(str.slice(a.next, n.indices[0][0]), n),
           (a.next = n.indices[0][1]),
-          a        
+          a
         ),
       []
     )
@@ -81,7 +81,7 @@ module.exports = my = {
     string:     /`[^\\`\r\n]*`/gd,
     number:     /-?\d+(\.\d+)?(e-?\d+)?/gd,
     hex :       /0x[0-9a-fA-F]+/gd,
-    oct:        /0o[0-8]+/gd,
+    oct:        /0o[0-7]+/gd,
     bit:        /0b[01]+/gd,
     identifier: /([^\x00-\x2F\x3A-\x40\x5B-\x60\x7B-\x7F]|[^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]{2})[^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]*/gd,
     unit:       /_/gd,
