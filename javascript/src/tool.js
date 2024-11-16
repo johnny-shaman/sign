@@ -6,10 +6,10 @@ module.exports = my = {
   lift (regex, string) {
     const matches = string.matchAll(regex);
     if (!matches) return [string];
-    
+
     const result = [];
     let lastIndex = 0;
-    
+
     for (const match of matches) {
       const matchStart = match.index;
       // マッチ前の部分があれば追加
@@ -20,12 +20,12 @@ module.exports = my = {
       result.push([match[0]]);
       lastIndex = matchStart + match[0].length;
     }
-    
+
     // 残りの部分があれば追加
     if (lastIndex < string.length) {
       result.push(string.slice(lastIndex));
     }
-    
+
     return result;
   },
 
@@ -83,7 +83,7 @@ module.exports = my = {
     comment:    /^[`\\].*$/gm,
     letter:     /\\[\s\S]/g,
     string:     /`[^\\`\r\n]*`/g,
-    number:     /-?[0-9]+\.?[0-9]*e?[0-9]*/g,
+    number:     /-?\d+(\.\d+)?(e-?\d+)?/g,
     hex :       /0x[0-9a-fA-F]+/g,
     oct:        /0o[0-8]+/g,
     bit:        /0b[01]+/g,
