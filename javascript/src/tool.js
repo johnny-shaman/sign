@@ -3,30 +3,26 @@ module.exports = my = {
     return line.replace(regex, '')
   },
 
-  lift (regex, string) {
-    const matches = string.matchAll(regex);
-    if (!matches) return [string];
-
-    const result = [];
-    let lastIndex = 0;
-
-    for (const match of matches) {
-      const matchStart = match.index;
-      // マッチ前の部分があれば追加
-      if (matchStart > lastIndex) {
-        result.push(string.slice(lastIndex, matchStart));
-      }
-      // マッチ部分を配列として追加
-      result.push([match[0]]);
-      lastIndex = matchStart + match[0].length;
-    }
-
-    // 残りの部分があれば追加
-    if (lastIndex < string.length) {
-      result.push(string.slice(lastIndex));
-    }
-
-    return result;
+  lift (regex) {
+    return o => typeof o === "string"
+    && [...o.matchAll(regex)].length
+    ? o
+    .matchAll(regex)
+    .reduce(
+      (a, n, k) => k === 0
+        ? (
+          a.push(str.slice(0, n.indices[0][0]), n),
+          (a.next = n.indices[0][1]),
+          a
+        )
+        : (
+          a.push(str.slice(a.next, n.indices[0][0]), n),
+          (a.next = n.indices[0][1]),
+          a        
+        ),
+      []
+    )
+    : o
   },
 
   normalizeCompares (tokens) {
@@ -81,14 +77,14 @@ module.exports = my = {
 
   pattern: {
     comment:    /^[`\\].*$/gm,
-    letter:     /\\[\s\S]/g,
-    string:     /`[^\\`\r\n]*`/g,
-    number:     /-?\d+(\.\d+)?(e-?\d+)?/g,
-    hex :       /0x[0-9a-fA-F]+/g,
-    oct:        /0o[0-8]+/g,
-    bit:        /0b[01]+/g,
-    identifier: /([^\x00-\x2F\x3A-\x40\x5B-\x60\x7B-\x7F]|[^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]{2})[^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]*/g,
-    unit:       /(_|(\[\]))/g,
+    letter:     /\\[\s\S]/gd,
+    string:     /`[^\\`\r\n]*`/gd,
+    number:     /-?\d+(\.\d+)?(e-?\d+)?/gd,
+    hex :       /0x[0-9a-fA-F]+/gd,
+    oct:        /0o[0-8]+/gd,
+    bit:        /0b[01]+/gd,
+    identifier: /([^\x00-\x2F\x3A-\x40\x5B-\x60\x7B-\x7F]|[^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]{2})[^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]*/gd,
+    unit:       /_/gd,
   },
   compares : ['<', '=', '>', '<=', '>=', '!=', '=='],
   logic : ['|', ';', '&', '!']
