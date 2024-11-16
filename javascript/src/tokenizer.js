@@ -6,7 +6,7 @@ const {
   hashmapBlock,
   caseBlock,
   pattern
-} = requier('./tool.js')
+} = require('./tool.js')
 
 module.exports = function processTokens(line) {
   return caseBlock(
