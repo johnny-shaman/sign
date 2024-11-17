@@ -25,18 +25,6 @@ function hardmatch(name, reg, testcase) {
 	});
 }
 
-function match(name, reg, testcase) {
-	const PATTERN = reg;
-	Object.entries(testcase).forEach(([input, expected]) => {
-		try {
-			assert.equal(PATTERN.exec(input), expected,`${name} : ${input}`);
-		} catch(e) {
-			console.error(e);
-		}
-	});
-}
-
-
 function matchAll(name, reg, testcase) {
 	const PATTERN = reg;
 	Object.entries(testcase).forEach(([input, expected]) => {
@@ -68,49 +56,49 @@ function pattern_test() {
 
 function pattern_comment() {
 	hardmatch('pattern.comment', pattern.comment, {
-		'\\comment' :  true,
-		'\\\\comment' :  true,
-		'\\\\\\comment' :  true,
-		'`comment' :  true,
-		'\\ comment' :  true,
-		'\\\\ comment' :  true,
-		'\\\\\ comment' :  true,
-		'` comment' :  true,
-		'1 not comment' :  false,
-		'not comment' :  false,
-		'  \\ not comment' :  false,
-		'  \\\\ not comment' :  false,
-		'  \\\\\\ not comment' :  false,
-		'  ` not comment' :  false,
-		'  1 not comment' :  false,
-		'  not comment' :  false,
-		'	\\ not comment' :  false,
-		'	\\\\ not comment' :  false,
-		'	\\\\\\ not comment' :  false,
-		'	` not comment' :  false,
-		'	1 not comment' :  false,
-		'	not comment' :  false,
-		'	 not comment' :  false
+		'\\comment' : true,
+		'\\\\comment' : true,
+		'\\\\\\comment' : true,
+		'`comment' : true,
+		'\\ comment' : true,
+		'\\\\ comment' : true,
+		'\\\\\ comment' : true,
+		'` comment' : true,
+		'1 not comment' : false,
+		'not comment' : false,
+		'  \\ not comment' : false,
+		'  \\\\ not comment' : false,
+		'  \\\\\\ not comment' : false,
+		'  ` not comment' : false,
+		'  1 not comment' : false,
+		'  not comment' : false,
+		'	\\ not comment' : false,
+		'	\\\\ not comment' : false,
+		'	\\\\\\ not comment' : false,
+		'	` not comment' : false,
+		'	1 not comment' : false,
+		'	not comment' : false,
+		'	 not comment' : false
 	});
 }
 function pattern_letter() {
 	hardmatch('pattern.letter', pattern.letter, {
-		'\\a' :  true,
-		'\\z' :  true,
-		'\\A' :  true,
-		'\\Z' :  true,
-		'\\0' :  true,
-		'\\9' :  true,
-		'\\\\' :  true,
-		'\\￿' :  true,  // U+FFFF
-		'\\𐀀' :  false, // U+10000
+		'\\a' : true,
+		'\\z' : true,
+		'\\A' : true,
+		'\\Z' : true,
+		'\\0' : true,
+		'\\9' : true,
+		'\\\\' : true,
+		'\\￿' : true,  // U+FFFF
+		'\\𐀀' : false, // U+10000
 	});
 	matchAll('pattern.letter', pattern.letter, {
-		'\\a' :  [ { text: '\\a', index: 0 }],
-		'\\A' :  [ { text: '\\A', index: 0 }],
-		'\\0' :  [ { text: '\\0', index: 0 }],
-		'\\\\' :  [ { text: '\\\\', index: 0 }],
-		'\\￿' :  [{ text: '\\￿', index: 0 }],
+		'\\a' : [ { text: '\\a', index: 0 }],
+		'\\A' : [ { text: '\\A', index: 0 }],
+		'\\0' : [ { text: '\\0', index: 0 }],
+		'\\\\' : [ { text: '\\\\', index: 0 }],
+		'\\￿' : [{ text: '\\￿', index: 0 }],
 		'\\a\\b' : [{ text: '\\a', index: 0 }, {text: '\\b', index: 2}],
 		' \\a \\b' : [{ text: '\\a', index: 1 }, {text: '\\b', index: 4}],
 	});
@@ -125,10 +113,10 @@ function pattern_string() {
 		'abc`' : false,
 	});
 	matchAll('pattern.string', pattern.string, {
-		'``' :  [ { text: '``', index: 0 }],
-		'`abc`' :  [ { text: '`abc`', index: 0 }],
-		'test`abc`' :  [ { text: '`abc`', index: 4 }],
-		'test`abc`str`def`' :  [ { text: '`abc`', index: 4 }, { text: '`def`', index: 12 }],
+		'``' : [ { text: '``', index: 0 }],
+		'`abc`' : [ { text: '`abc`', index: 0 }],
+		'test`abc`' : [ { text: '`abc`', index: 4 }],
+		'test`abc`str`def`' : [ { text: '`abc`', index: 4 }, { text: '`def`', index: 12 }],
 	});
 }
 function pattern_number() {
@@ -157,29 +145,67 @@ function pattern_number() {
 }
 function pattern_hex() {
 	hardmatch('pattern.hex', pattern.hex, {
-
+		'1' : false,
+		'0' : false,
+		'0x' : false,
+		'0x1' : true,
+		'0xF' : true,
+		'0x1F' : true,
+		'0xF1' : true,
+		'0xFFFFFF' : true,
+		'0x000000' : true,
 	});
 }
 function pattern_oct() {
 	hardmatch('pattern.oct', pattern.oct, {
-
+		'0' : false,
+		'0o' : false,
+		'0o8' : false,
+		'0o1' : true,
+		'0o7' : true,
+		'0o7' : true,
+		'0o77' : true,
+		'0o777' : true,
 	});
 
 }
 function pattern_bit() {
 	hardmatch('pattern.bit', pattern.bit, {
-
+		'0' : false,
+		'0b' : false,
+		'0b2' : false,
+		'0b1' : true,
+		'0b11' : true,
+		'0b111' : true,
+		'0b1111' : true,
+		'0b11111' : true,
 	});
 }
 function pattern_identifier() {
 	hardmatch('pattern.identifier', pattern.identifier, {
-
+		'_' : false,
+		'__' : false,
+		'_a' : false,
+		'_0' : false,
+		'0' : false,
+		'9_' : false,
+		'9a' : false,
+		'01' : false,
+		'a' : true,
+		'a_' : true,
+		'aa' : true,
+		'a9' : true,
+		'あああ' : true,
+		'試験' : true,
 	});
 }
 
 function pattern_unit() {
 	hardmatch('pattern.unit', pattern.unit, {
-
+		'_' : true,
+		'__' : false,
+		'a' : false,
+		'0' : false,
 	});
 }
 //#endregion
