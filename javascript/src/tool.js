@@ -1,4 +1,4 @@
-module.exports = my = {
+const my = module.exports = {
   remove (regex, line) {
     return line.replace(regex, '')
   },
@@ -33,21 +33,21 @@ module.exports = my = {
 
   hashmapStart (tokens) {
     tokens[tokens.length - 1] === ':'
-    && tokens.push([`_${me.blockDepth( tokens[0] )}`], `?`);
+    && tokens.push([`_${my.blockDepth( tokens[0] )}`], `?`);
     return tokens;
   },
 
   hashmapBlock (tokens) {
-    me.blockDepth(tokens[0]) > 0
+    my.blockDepth(tokens[0]) > 0
     && tokens[2] === ':'
-    && tokens.unshift([`_${me.blockDepth( tokens[0] ) - 1}`], `=`);
+    && tokens.unshift([`_${my.blockDepth( tokens[0] ) - 1}`], `=`);
     return tokens;
   },
 
   caseBlock (tokens) {
     if(
       (tokens[0].match(/\t/g) || []).length > 0
-      && [...me.logic, ...me.compares].includes(tokens[2])
+      && [...my.logic, ...my.compares].includes(tokens[2])
       && tokens.includes(':')
     ) {
       let result = tokens.reduce(
