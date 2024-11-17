@@ -56,13 +56,13 @@ function pattern_test() {
 
 function pattern_comment() {
 	hardmatch('pattern.comment', pattern.comment, {
-		'\\comment' : true,
-		'\\\\comment' : true,
-		'\\\\\\comment' : true,
+		'\\comment' : false,
+		'\\\\comment' : false,
+		'\\\\\\comment' : false,
 		'`comment' : true,
-		'\\ comment' : true,
-		'\\\\ comment' : true,
-		'\\\\\ comment' : true,
+		'\\ comment' : false,
+		'\\\\ comment' : false,
+		'\\\\\ comment' : false,
 		'` comment' : true,
 		'1 not comment' : false,
 		'not comment' : false,
