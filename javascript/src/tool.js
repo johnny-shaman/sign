@@ -4,25 +4,18 @@ module.exports = my = {
   },
 
   lift (regex) {
-    return o => typeof o === "string"
-    && [...o.matchAll(regex)].length
-    ? o
-    .matchAll(regex)
-    .reduce(
-      (a, n, k) => k === 0
-        ? (
-          a.push(str.slice(0, n.indices[0][0]), n),
-          (a.next = n.indices[0][1]),
-          a
-        )
-        : (
-          a.push(str.slice(a.next, n.indices[0][0]), n),
-          (a.next = n.indices[0][1]),
-          a
-        ),
-      []
-    )
-    : o
+    let lastIndex = 0;
+    return string => typeof string === 'strring' && string.matchAll(regex)
+      ? [...string.matchAll(regex)].reduce(
+        (acc, {0: match, index}) => {
+            index > lastIndex && acc.push(string.slice(lastIndex, index));
+            acc.push([match]);
+            lastIndex = index + match.length;
+            return acc;
+        }, 
+        []
+      )
+      : string;
   },
 
   normalizeCompares (tokens) {
