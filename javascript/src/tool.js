@@ -5,7 +5,7 @@ const my = module.exports = {
 
   lift (regex) {
     let lastIndex = 0;
-    return string => typeof string === 'strring' && string.matchAll(regex)
+    return string => typeof string === 'string' && string.matchAll(regex).next().value
       ? [...string.matchAll(regex)].reduce(
         (acc, {0: match, index}) => {
             index > lastIndex && acc.push(string.slice(lastIndex, index));
@@ -31,13 +31,13 @@ const my = module.exports = {
     );
   },
 
-  hashmapStart (tokens) {
+  keymapStart (tokens) {
     tokens[tokens.length - 1] === ':'
     && tokens.push([`_${my.blockDepth( tokens[0] )}`], `?`);
     return tokens;
   },
 
-  hashmapBlock (tokens) {
+  keymapBlock (tokens) {
     my.blockDepth(tokens[0]) > 0
     && tokens[2] === ':'
     && tokens.unshift([`_${my.blockDepth( tokens[0] ) - 1}`], `=`);

@@ -2,16 +2,16 @@ const {
   remove,
   lift,
   normalizeCompares,
-  hashmapStart,
-  hashmapBlock,
+  keymapStart,
+  keymapBlock,
   caseBlock,
   pattern
 } = require('./tool.js')
 
 module.exports = function processTokens(line) {
   return caseBlock(
-    hashmapBlock(
-      hashmapStart(
+    keymapBlock(
+      keymapStart(
         normalizeCompares(
           lift( pattern.string )( remove( pattern.comment, line ) )
           .map(lift( pattern.letter ))

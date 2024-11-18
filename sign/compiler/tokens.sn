@@ -4,9 +4,21 @@
 
 #enter : s ? s = \
 
-#LETTERS : x ~y ? ([= x |] [\A ~ \Z]) & @LETTERS y~
+#LETTERS : [
+	a x ~y ?
+		x = _ : a
+		x != _ : a & @LETTERS ([= x,] [|] [\A ~ \Z]) y~
+] true
 
-#letters : x ~y ? ([= x |] [\a ~ \z]) & @letters y~
+#letters : [
+	a x ~y ?
+		x = _ : a
+		x != _ : a & @letters ([= x,] [|] [\a ~ \z]) y~
+] true
 
-#digits : x ~y ?  ([= x |] [\0 ~ \9]) & @digits y~
+#digits : [
+	a x ~y ?
+		x = _ : a
+		x != _ : a & @digits ([= x,] [|] [0 ~ 9]) y~
+] true
 
