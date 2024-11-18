@@ -1,11 +1,6 @@
-const { processFile } = require('./preprocessor');
+const { processFile } = require('./preprocessor.js');
 
 const inputFile = process.argv[2];
-const outputFile = `${inputFile}.sexp`;
-
-if (!inputFile) {
-  console.error('Please specify an input file.');
-  process.exit(1);
-}
+const outputFile = `${process.argv[2]}.snir`
 
 processFile(inputFile, outputFile).catch(console.error);
