@@ -3,15 +3,20 @@ const readline = require('readline');
 const tokenize = require('./tokenizer.js');
 
 module.exports = async function (inputFile, outputFile) {
+
+  const inStream = fs.createReadStream(inputFile);
+  const outStream = fs.createWriteStream(outputFile);
   const reader = readline.createInterface({
-    input: fs.createReadStream(inputFile),
-    output: fs.createWriteStream(outputFile),
+    input: inStream,
+    // output: outStream,
   });
 
   for await (let line of reader) {
-    reader.write(tokenize(line))
+    let tokens = tokenize(line);
+    tokens.length === 1 && tokens[0] == ''
+        ? undefined
+        : outStream.write(JSON.stringify(tokens) + '\n');
   }
-
 }
 
 // 使用例
