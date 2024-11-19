@@ -17,12 +17,12 @@ module.exports = function processTokens(line) {
             tokens = [
               pattern.string,
               pattern.letter,
+              pattern.identifier,
+              pattern.unit,
               pattern.hex,
               pattern.oct,
               pattern.bit,
-              pattern.number,
-              pattern.identifier,
-              pattern.unit,
+              pattern.number
             ].reduce(
               (t, p) => lift(p)(t),
               remove( pattern.comment, line )
