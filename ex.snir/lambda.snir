@@ -1,0 +1,16 @@
+`Simple Lambda
+[? [x] [* x 2]]
+
+`argument list
+[? [x y] [^ [+ x y] 2]]
+
+`spread
+[? [x [~ y]] [_~ y]]
+
+`match_case
+[? [x] [| [& [> x 0] [? [_] [x]]] [& [< x 0] [? [_] [* -1 x]]] [& [= x 0] [? [y] [| [& [!= y _] [? [_] [y]]] `What do you want to do?`]]] _ ]]
+
+`つまり、expression : [operator expression expression]
+`というexpressionの再起的適用で中間表現を生成できる。
+`ただし、後置演算子だけは前置演算に直すために、演算子の前に_を追加することでポイントフリー化出来ることを利用する。
+`これを元にASTを作るのも良いと思う。
