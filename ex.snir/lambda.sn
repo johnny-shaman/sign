@@ -17,3 +17,11 @@
 			`What do you want to do?`
 		_
 ]
+
+`KeyMap
+
+a:
+	a1:0
+	b1:
+		a2:2	
+	c1: 3
