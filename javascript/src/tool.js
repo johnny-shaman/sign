@@ -71,6 +71,7 @@ const my = module.exports = {
   pattern: {
     comment:    /^[`\\].*$/gm,
     letter:     /\\[\s\S]/gd,
+    postfix:    /\(S+)([!~]){1}/gd, //replace用
     string:     /`[^\\`\r\n]*`/gd,
     number:     /-?\d+(\.\d+)?(e-?\d+)?/gd,
     hex :       /0x[0-9a-fA-F]+/gd,

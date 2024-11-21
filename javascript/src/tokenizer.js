@@ -9,6 +9,8 @@ const {
 } = require('./tool.js')
 
 module.exports = function processTokens(line) {
+  let tokens = remove( pattern.comment, line ).replace(pattern.postfix, `_$2 $1`);
+
   return caseBlock(
     keymapBlock(
       keymapStart(
@@ -25,7 +27,7 @@ module.exports = function processTokens(line) {
               pattern.number
             ].reduce(
               (t, p) => lift(p)(t),
-              remove( pattern.comment, line )
+              tokens
             ),
 
             typeof tokens === 'string' ? [tokens] : tokens
