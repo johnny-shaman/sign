@@ -70,15 +70,15 @@ const my = module.exports = {
 
   pattern: {
     comment:    /^[`\\].*$/gm,
-    letter:     /\\[\s\S]/gd,
-    postfix:    /\(S+)([!~]){1}/gd, //replace用
+    letter:     /\\[\s\S]/gvd,
+    postfix:    /(\S+)([!~]){1}/gd, //replace用
     string:     /`[^\\`\r\n]*`/gd,
     number:     /-?\d+(\.\d+)?(e-?\d+)?/gd,
     hex :       /0x[0-9a-fA-F]+/gd,
     oct:        /0o[0-7]+/gd,
     bit:        /0b[01]+/gd,
     identifier: /[^\x00-\x40\x5B-\x60\x7B-\x7F][^\x00-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7F]*/gd,
-    unit:       /_/gd,
+    unit:       /[\s](_)[\s]/gd,
   },
   compares : ['<', '=', '>', '<=', '>=', '!=', '=='],
   logic : ['|', ';', '&', '!']
