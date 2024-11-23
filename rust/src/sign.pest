@@ -3,8 +3,8 @@ program = { SOI ~ expression* ~ EOI }
 
 expression = { export }
 
-export = { f_export? ~ define }
-define = { lambda ~ (f_define ~ define)? }
+define = { export ~ (f_define ~ define)? }
+export = { f_export? ~ lambda }
 lambda = { product+ ~ (f_lambda ~ lambda)? }
 product = { spread ~ (f_product ~ product)? }
 spread = { lift ~ (f_spread ~ lift)? }
@@ -68,8 +68,8 @@ postfix = { f_factorial | f_spread }
 infix = { compare_op | f_spread}
 compare_op = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
 
-f_export = { "#" }
 f_define = { ":" }
+f_export = { "#" }
 f_lambda = { "?" }
 f_product = { "," }
 f_or = { "|" }
