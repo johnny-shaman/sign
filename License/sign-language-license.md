@@ -112,6 +112,8 @@ IN NO EVENT SHALL THE SIGN DEVELOPMENT TEAM BE LIABLE FOR ANY CLAIM, DAMAGES OR 
 
 This License shall be governed by and construed in accordance with the laws of Japan.
 
+[compiler-license](./sign-compiler-licenses.md)
+
 ---
 
 # Sign言語ライセンス
@@ -210,3 +212,5 @@ SIGN開発チームは、契約行為、不法行為、またはその他の事�
 ## 7. 準拠法
 
 本ライセンスは日本法に準拠し、日本法に従って解釈されるものとします。
+
+[compiler-license](./sign-compiler-licenses.md)

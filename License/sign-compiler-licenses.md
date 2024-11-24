@@ -75,6 +75,8 @@ The Sign Compiler may be used under the following conditions:
    - All risks assumed by the modifier
    - No support provided by Sign Development Team
 
+[Modification-Policy](./sign-modification-policy.md)
+
 ---
 
 # Signコンパイラライセンス
@@ -154,4 +156,4 @@ Signコンパイラは以下の条件で使用できます：
    - すべてのリスクは改変者が負う
    - Sign開発チームによるサポートなし
 
-[続く - 改変方針]
+[Modification-Policy](./sign-modification-policy.md)
