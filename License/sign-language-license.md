@@ -25,7 +25,7 @@ In this License, the following terms shall have the meanings defined below:
 - "Sign Compiler" means the official compiler and development tools for the Sign programming language.
 - "Program" means any software written in the Sign programming language.
 - "User" means any individual or legal entity using Sign.
-- "SignCertified" means the official certification program for products developed using Sign.
+- "Sign Certified" means the official certification program for products developed using Sign.
 
 ## 2. Grant of License
 
@@ -44,9 +44,9 @@ The Sign Development Team hereby grants you the following rights:
    - May be licensed under any terms chosen by the creator
    - May be used for any purpose, including commercial use
 
-2. SignCertified Products:
+2. Sign Certified Products:
    - Must maintain compliance with Sign language specifications
-   - May use the SignCertified logo under separate agreement
+   - May use the Sign Certified logo under separate agreement
    - Receive official support for Sign language features
 
 ## 3. Support and Warranty
@@ -70,9 +70,9 @@ The Sign Development Team commits to:
    - Technical consulting
    - Priority support
    - Custom feature development
-   - SignCertified program participation
+   - Sign Certified program participation
 
-### 3.3 SignCertified Program
+### 3.3 Sign Certified Program
 
 1. Certification Requirements:
    - Compliance with Sign specifications
@@ -94,7 +94,7 @@ The Sign Development Team commits to:
    - Use the Sign trademark without permission
    - Misrepresent official support status
 
-2. SignCertified Requirements:
+2. Sign Certified Requirements:
    - Regular compliance verification
    - Quality maintenance
    - Prompt security update implementation
@@ -102,11 +102,11 @@ The Sign Development Team commits to:
 
 ## 5. Disclaimer
 
-THE SIGN PROGRAMMING LANGUAGE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+THE Sign PROGRAMMING LANGUAGE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 ## 6. Liability
 
-IN NO EVENT SHALL THE SIGN DEVELOPMENT TEAM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SIGN PROGRAMMING LANGUAGE OR THE USE OR OTHER DEALINGS IN THE SIGN PROGRAMMING LANGUAGE.
+IN NO EVENT SHALL THE Sign DEVELOPMENT TEAM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE Sign PROGRAMMING LANGUAGE OR THE USE OR OTHER DEALINGS IN THE Sign PROGRAMMING LANGUAGE.
 
 ## 7. Governing Law
 
@@ -120,19 +120,19 @@ This License shall be governed by and construed in accordance with the laws of J
 
 ## 1. 定義
 
-本ライセンスにおいて、以下の用語は次の意味を持ちます：
+本ライセンスにおいて、以下の用語は次の意味を持ちます。
 
 - 「Sign」とは、Signプログラミング言語の仕様、標準ライブラリ、および関連するすべての文書を指します。
 - 「Signコンパイラ」とは、Sign言語の公式コンパイラおよび開発ツールを指します。
 - 「プログラム」とは、Sign言語で書かれたすべてのソフトウェアを指します。
 - 「利用者」とは、Signを使用する個人または法人を指します。
-- 「SignCertified」とは、Signを使用して開発された製品の公式認証プログラムを指します。
+- 「Sign Certified」とは、Signを使用して開発された製品の公式認証プログラムを指します。
 
 ## 2. ライセンスの付与
 
 ### 2.1 基本的な権利
 
-Sign開発チームは、以下の権利を付与します：
+Sign開発チームは、以下の権利を付与します。
 1. Signプログラミング言語を使用してプログラムを作成する権利
 2. Signで作成したプログラムを配布する権利
 3. Signで作成したプログラムを修正および拡張する権利
@@ -140,21 +140,21 @@ Sign開発チームは、以下の権利を付与します：
 
 ### 2.2 所有権と権利
 
-1. Signで作成されたプログラム：
+1. Signで作成されたプログラム
    - 著作権はプログラムの作成者に帰属
    - 作成者が選択した任意のライセンスで提供可能
    - 商用利用を含むあらゆる目的での使用が可能
 
-2. SignCertified製品：
+2. Sign Certified製品
    - Sign言語仕様への準拠を維持する必要あり
-   - 別途契約のもとでSignCertifiedロゴを使用可能
+   - 別途契約のもとでSign Certifiedロゴを使用可能
    - Sign言語機能に関する公式サポートを受けられる
 
 ## 3. サポートと保証
 
 ### 3.1 言語仕様のサポート
 
-Sign開発チームは以下を約束します：
+Sign開発チームは以下を約束します。
 1. Sign言語仕様の維持
 2. 定期的な更新と改善の提供
 3. 可能な限りの後方互換性の維持
@@ -171,9 +171,9 @@ Sign開発チームは以下を約束します：
    - 技術コンサルティング
    - 優先サポート
    - カスタム機能開発
-   - SignCertifiedプログラムへの参加
+   - Sign Certifiedプログラムへの参加
 
-### 3.3 SignCertifiedプログラム
+### 3.3 Sign Certifiedプログラム
 
 1. 認証要件：
    - Sign仕様への準拠
@@ -195,7 +195,7 @@ Sign開発チームは以下を約束します：
    - 許可のないSign商標の使用
    - 公式サポートステータスの不実表示
 
-2. SignCertified要件：
+2. Sign Certified要件：
    - 定期的なコンプライアンス検証
    - 品質の維持
    - セキュリティアップデートの迅速な実装
@@ -203,11 +203,11 @@ Sign開発チームは以下を約束します：
 
 ## 5. 保証の否認
 
-SIGNプログラミング言語は「現状のまま」で提供され、商品性、特定目的への適合性、および権利非侵害性を含む、明示または黙示を問わず、いかなる種類の保証も提供されません。
+Signプログラミング言語は「現状のまま」で提供され、商品性、特定目的への適合性、および権利非侵害性を含む、明示または黙示を問わず、いかなる種類の保証も提供されません。
 
 ## 6. 責任の制限
 
-SIGN開発チームは、契約行為、不法行為、またはその他の事由を問わず、SIGNプログラミング言語またはその使用もしくは取り扱いに起因または関連して生じる一切の請求、損害、またはその他の責任について、責任を負わないものとします。
+Sign開発チームは、契約行為、不法行為、またはその他の事由を問わず、Signプログラミング言語またはその使用もしくは取り扱いに起因または関連して生じる一切の請求、損害、またはその他の責任について、責任を負わないものとします。
 
 ## 7. 準拠法
 

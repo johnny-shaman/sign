@@ -48,7 +48,6 @@ The Sign Compiler may be used under the following conditions:
 
 2. Modified Compiler:
    - Programs built with modified compilers must clearly indicate this fact
-   - Must document the specific modifications used
    - Sign Development Team provides no warranty for such programs
 
 ## 4. Distribution
@@ -113,7 +112,6 @@ Signコンパイラは以下の条件で使用できます：
 1. すべての利用者の義務：
    - コンパイラの完全性を維持すること
    - 重大なバグとセキュリティ問題を報告すること
-   - セキュリティ機能を無効化または改変しないこと
 
 2. 商用利用者の義務：
    - コンパイラの使用を文書化すること
@@ -129,7 +127,6 @@ Signコンパイラは以下の条件で使用できます：
 
 2. 改変されたコンパイラ：
    - 改変されたコンパイラでビルドされたプログラムはその旨を明示する必要あり
-   - 使用された改変内容を文書化する必要あり
    - Sign開発チームはそのようなプログラムに対して保証を提供しない
 
 ## 4. 配布

@@ -24,7 +24,7 @@ This policy governs all modifications to the Sign Compiler and related tools. It
    - Fully supported by Sign Development Team
    - Covered by the Sign Compiler License
    - May use Sign name and branding
-   - Eligible for SignCertified certification
+   - Eligible for Sign Certified certification
 
 3. Contribution Requirements:
    - Must pass all test suites
@@ -123,21 +123,21 @@ This policy governs all modifications to the Sign Compiler and related tools. It
 
 ### 2.1 公式改変
 
-1. プロセス要件：
+1. プロセス要件
    - GitHubの公式Signコンパイラリポジトリをフォーク
    - 改変の実装
    - 公式リポジトリへのPull Request提出
    - コードレビュープロセスの完了
    - Sign開発チームからの明示的な承認取得
 
-2. 公式改変の特徴：
+2. 公式改変の特徴
    - 公式Signリリースの一部となる
    - Sign開発チームによる完全なサポート
    - Signコンパイラライセンスの対象
    - Sign名称とブランディングの使用可能
-   - SignCertified認証の対象
+   - Sign Certified認証の対象
 
-3. コントリビューション要件：
+3. コントリビューション要件
    - すべてのテストスイートに合格すること
    - 後方互換性を維持すること（明示的に承認された場合を除く）
    - Signコーディング標準に従うこと
@@ -146,20 +146,20 @@ This policy governs all modifications to the Sign Compiler and related tools. It
 
 ### 2.2 非公式改変
 
-1. 厳格な制限：
+1. 厳格な制限
    - 改変を行うコミュニティ内でのみ使用可能
    - コミュニティ外への再配布は禁止
    - 公開配布や共有は禁止
    - 商用利用は禁止
    - 本番環境での使用は禁止
 
-2. 要件：
+2. 要件
    - 「非公式Sign改変版」として明確に表示すること
    - すべての変更の内部文書を維持すること
    - 互換性の問題を追跡すること
    - セキュリティ基準を維持すること
 
-3. ビルドされたプログラムの例外：
+3. ビルドされたプログラムの例外
    - 非公式改変版コンパイラでビルドされたプログラムは配布制限の対象外
    - 改変されたコンパイラの使用を明確に示すこと
    - 使用された具体的な改変内容を文書化すること
@@ -186,13 +186,13 @@ This policy governs all modifications to the Sign Compiler and related tools. It
 
 ### 3.2 コミュニティ開発
 
-1. 内部開発：
+1. 内部開発
    - セキュアな開発プラクティスに従うこと
    - 改変記録を維持すること
    - 既知の問題を文書化すること
    - アップストリームの変更を追跡すること
 
-2. コミュニティの責任：
+2. コミュニティの責任
    - セキュリティの維持
    - 改変の追跡
    - 影響の文書化
@@ -200,21 +200,20 @@ This policy governs all modifications to the Sign Compiler and related tools. It
 
 ## 4. コンプライアンスと執行
 
-1. モニタリング：
+1. モニタリング
    - 定期的なコンプライアンスチェック
    - セキュリティ監査
    - 使用状況の監視
    - 配布の追跡
 
-2. 執行措置：
+2. 執行措置
    - 警告通知
    - アクセス権の取り消し
    - 違反に対する法的措置
    - 必要な場合の公開通知
 
-3. 不服申立プロセス：
+3. 不服申立プロセス
    - 書面での申立提出
    - Sign開発チームによる審査
    - 最終決定
    - 決定の文書化
-
