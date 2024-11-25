@@ -89,5 +89,3 @@ Terms not defined in this license carry the same meanings as defined in the Sign
 ## 6. Governing Law
 
 This License shall be governed by and construed in accordance with the laws of Japan.
-
-[続いて日本語版を作成してもよろしいでしょうか？]

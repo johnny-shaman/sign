@@ -72,5 +72,3 @@ You are permitted to:
 ## 5. Governing Law
 
 This License shall be governed by and construed in accordance with the laws of Japan.
-
-[続いて日本語版を作成してもよろしいでしょうか？]
