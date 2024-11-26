@@ -89,8 +89,9 @@ class Lexer {
 		while (this.position < this.input.length) {
 			const char = this.peek();
 
-			if (char === ' ' || char === '\t') {
-				this.column === 1
+			//if (char === ' ' || char === '\t') {
+			if (char === '\t') {
+					this.column === 1
 					? this.handleIndentation()
 					: this.advance();
 				continue;
