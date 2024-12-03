@@ -6,6 +6,14 @@ use std::collections::HashMap;
 #[grammar = "sign.pest"]
 pub struct SignParser;
 
+enum Expression {
+
+}
+
+enum Op {
+
+}
+
 lazy_static! {
     static ref PRATT_PARSER: PrattParser<Rule> = {
         use Rule::*;
@@ -66,3 +74,4 @@ fn eval(expression: Pairs<Rule>) -> f64 {
         })
         .parse(expression)
 }
+
