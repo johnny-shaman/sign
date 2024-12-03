@@ -1,41 +1,52 @@
-#sp  : s ? s = \ 
-#tab : s ? s = \	
-#rt  : s ? s = \
+#sp  : c ? c = \ 
+#tab : c ? c = \	
+#rt  : c ? c = \
 
-#letter : s ? [= s |] [\a ~ \z]
-#LETTER : s ? [= s |] [\A ~ \Z]
-#Letter : s ? @LETTER s | @letter s
-#digit  : s ? [= s |] [\0 ~ \9]
+#letter : c ? [= c |] [\a ~ \z]
+#LETTER : c ? [= c |] [\A ~ \Z]
+#Letter : c ? @LETTER c | @letter c
+#digit  : c ? [= c |] [\0 ~ \9]
 
-#AlphaNum : s ? @Letter s | @digit s
-
+#AlphaNum  : c ? @Letter c | @digit c
+#Alpha_Num : c ? c = \_ | @AlphaNum c
 
 #LETTERS : [
-	a x ~xs ?
-		xs 0  = _ : a & @LETTER x
-		xs 0 != _ : @LETTERS [a & @LETTER x] xs~
+	a c ~s ?
+		s 0  = _ : a & @LETTER c
+		@LETTERS [a & @LETTER c] s~
 ] 1
 
 #letters : [
-	a x ~xs ?
-		xs 0  = _ : a & @letter x
-		xs 0 != _ : @letters [a & @letter x] xs~
+	a c ~s ?
+		s 0  = _ : a & @letter c
+		@letters [a & @letter c] s~
 ] 1
 
 #Letters : [
-	a x ~xs ?
-		xs 0  = _ : a & @Letter x
-		xs 0 != _ : @Letters [a & @Letter x] xs~
+	a c ~s ?
+		s 0  = _ : a & @Letter c
+		@Letters [a & @Letter c] s~
 ] 1
 
 #digits : [
-	a x ~xs ?
-		xs 0  = _ : a & @digit x
-		xs 0 != _ : @digits [a & @digit x] xs~
+	a c ~s ?
+		s 0  = _ : a & @digit c
+		@digits [a & @digit c] s~
 ] 1
 
-#Ident : [
-	a x ~xs ?
-		xs 0  = _ : a & @AlphaNum x
-		xs 0 != _ : @Ident [a & @AlphaNum x] xs~
+#AlphaNums : [
+	a c ~s ?
+		s 0  = _ : a & @AlphaNum c
+		@AlphaNums [a & @AlphaNum c] s~
 ] 1
+
+#Alpha_Nums : [
+	a c ~s ?
+		s 0  = _ : a & @Alpha_Num c
+		@Alpha_Nums [a & @Alpha_Num c] s~
+] 1
+
+
+#Identifier : c ~s ?
+	s 0 = _ : @Letter c
+	[@Letter c | c = \_] & @Alpha_Nums s~
