@@ -8,7 +8,7 @@ export = { f_export? ~ lambda }
 lambda = { product+ ~ (f_lambda ~ lambda)? }
 product = { spread ~ (f_product ~ product)? }
 spread = { lift ~ (f_spread ~ lift)? }
-lift = { f_spread* ~ or_xor }
+lift = { f_spread? ~ or_xor }
 or_xor = { and ~ ((f_or | f_xor) ~ or_xor)? }
 and = { not ~ (f_and ~ and)? }
 not = { f_not* ~ compare }
@@ -17,7 +17,7 @@ add = { mul ~ ((f_add | f_sub) ~ add)? }
 mul = { power ~ ((f_mul | f_div | f_mod) ~ mul)? }
 power = { factorial ~ (f_power ~ power)? }
 factorial = { flat ~ f_factorial* }
-flat = { coproduct ~ f_spread* }
+flat = { coproduct ~ f_spread? }
 coproduct = { get ~ (apply | literal_product)? }
 
 apply = { closure ~ coproduct? }

@@ -1,73 +1,41 @@
-#sp  : c ? c = \ 
-#tab : c ? c = \	
+rtn : \
+
+#sp  : c ? c = \ & c
+#tab : c ? c = \	& c
 #rt  : c ? c = \
+ & c
+#nrt : c ? c != \
+ & c
 
-#letter : c ? [= c |] [\a ~ \z]
-#LETTER : c ? [= c |] [\A ~ \Z]
-#Letter : c ? @LETTER c | @letter c
-#digit  : c ? [= c |] [\0 ~ \9]
-#hexa   : c ? [= c |] [\A ~ \F] | [= c |] [\a ~ \f] | @digit c
-#octa   : c ? [= c |] [\0 ~ \7]
-#binaly : c ? [= c |] [\0 \1]
+#letter : c ? [[= c |] [\a ~ \z]] & c
+#LETTER : c ? [[= c |] [\A ~ \Z]] & c
+#Letter : c ? [[= c |] [[\A ~ \Z] [\a ~ \z]]] & c
+#nzero  : c ? [[= c |] [\1 ~ \9]] & c
+#digit  : c ? [[= c |] [\0 ~ \9]] & c
+#hexa   : c ? [[= c |] [[\A ~ \F] [\a ~ \f] [\0 ~ \9]]] & c 
+#octa   : c ? [[= c |] [\0 ~ \7]] & c
+#binaly : c ? [[= c |] [\0 \1]] & c
 
-#AlphaNum  : c ? @Letter c | @digit c
-#Alpha_Num : c ? c = \_ | @AlphaNum c
+#AlphaNum  : c ? [[= c |] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z]]] & c
+#Alpha_Num : c ? [[= c |] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z] \_]] & c
 
-#LETTERS : [
-	b c ~s ?
-		c = _ : b
-		@LETTERS [b & @LETTER c] s~
-] 1
+#LETTERS : c ~s ? @LETTER c @LETTERS s~ = c s & c s
+#letters : c ~s ? @letter c @letters s~ = c s & c s
+#Letters : c ~s ? @Letter c @Letters s~ = c s & c s
+#digits : c ~s ? @digit c @digits s~ = c s & c s
 
-#letters : [
-	b c ~s ?
-		c = _ : b
-		@letters [b & @letter c] s~
-] 1
+#AlphaNums : c ~s ? @AlphaNum c @AlphaNums s~ = c s & c s
+#Alpha_Nums : c ~s ? @Alpha_Num c @Alpha_Nums s~ = c s & c s
 
-#Letters : [
-	b c ~s ?
-		c = _ : b
-		@Letters [b & @Letter c] s~
-] 1
+#Identifier : c ~s ? @Letter c @Alpha_Nums s~ = c s & c s
 
-#digits : [
-	b c ~s ?
-		c = _ : b
-		@digits [b & @digit c] s~
-] 1
+#hex : t u ~cs ? t = \0 & u = \x & t u [f : c ~s ? @hexa c f s~] cs~ = t u cs & t u cs
+#oct : t u ~cs ? t = \0 & u = \o & t u [f : c ~s ? @octa c f s~] cs~ = t u cs & t u cs
+#bit : t u ~cs ? t = \0 & u = \b & t u [f : c ~s ? @octa c f s~] cs~ = t u cs & t u cs
 
-#AlphaNums : [
-	b c ~s ?
-		c = _ : b
-		@AlphaNums [b & @AlphaNum c] s~
-] 1
+#chr : o s ? o = \\ & o s
 
-#Alpha_Nums : [
-	b c ~s ?
-		c = _ : b
-		@Alpha_Nums [a & @Alpha_Num c] s~
-] 1
+#string : p ~cs ? p = \` & [f : c ~s ? p [c = \` & c | c != rtn & c] f s~ ] cs~ = p cs & p cs
 
-#Identifier : c d ~s ?
-	d = _ : @Letter c
-	[@Letter c | c = \_] & @Alpha_Nums d s
-
-#hex : [
-	b t u c ~s ?
-		c = _ : b
-		t = \0 & u = \x & @hex [b & @hexa c] t u s~
-] 1
-
-#oct : [
-	b t u c ~s ?
-		c = _ : b
-		t = \0 & u = \o & @oct [b & @octa c] t u s~
-] 1
-
-#bit : [
-	b t u c ~s ?
-		h = _ : b
-		t = \0 & u = \b & @bit [b & @binaly c] t u s~
-] 1
-
+#uint : c ~s ? @nzero c @digits s~ = c s & c s
+#int
