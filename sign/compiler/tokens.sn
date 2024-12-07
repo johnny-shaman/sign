@@ -38,4 +38,3 @@ rtn : \
 #string : p ~cs ? p = \` & [f : c ~s ? p [c = \` & c | c != rtn & c] f s~ ] cs~ = p cs & p cs
 
 #uint : c ~s ? @nzero c @digits s~ = c s & c s
-#int
