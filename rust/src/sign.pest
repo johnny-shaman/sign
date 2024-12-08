@@ -20,9 +20,9 @@ factorial = { flat ~ f_factorial* }
 flat = { coproduct ~ f_spread? }
 coproduct = { get ~ (apply | literal_product)? }
 
-apply = { closure ~ coproduct? }
+apply = { closure ~ (apply | literal_product)? }
 
-literal_product = { literal ~ coproduct? }
+literal_product = { literal ~ (apply | literal_product)? }
 
 get = { import ~ (f_get ~ get)? }
 import = { f_import? ~ (block | literal) }
