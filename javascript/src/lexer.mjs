@@ -9,6 +9,7 @@ const TokenTypes = {
 	SPREAD: 'SPREAD',        // ~
 	GET: 'GET',              // '
 	PRODUCT: 'PRODUCT',      // ,
+	WS: 'WS',                // a white space
 
 	// Operators
 	PLUS: 'PLUS',           // +
@@ -89,14 +90,14 @@ class Lexer {
 		while (this.position < this.input.length) {
 			const char = this.peek();
 
-			//if (char === ' ' || char === '\t') {
 			if (char === '\t') {
-					this.column === 1
+				this.column === 1
 					? this.handleIndentation()
 					: this.advance();
 				continue;
 			}
-			if (this.column === 1 && (char !== ' ' && char !== '\t')) {
+
+			if (this.column === 1 && char !== '\t') {
 				this.handleIndentation();
 			}
 
@@ -111,7 +112,6 @@ class Lexer {
 				this.skipComment();
 				continue;
 			}
-
 
 			// Handle numbers
 			if (this.isDigit(char) || (char === '-' && this.isDigit(this.peek(1)))) {
@@ -180,8 +180,8 @@ class Lexer {
 
 	handleIndentation() {
 		let indent = 0;
-		while (this.peek() === ' ' || this.peek() === '\t') {
-			indent += this.peek() === ' ' ? 1 : TABSIZE;
+		while (this.peek() === '\t') {
+			indent += TABSIZE;
 			this.advance();
 		}
 
@@ -233,8 +233,10 @@ class Lexer {
 			']': TokenTypes.RBRACKET,
 			',': TokenTypes.PRODUCT,
 			"'": TokenTypes.GET,
+			' ': TokenTypes.WS,
 			'_': TokenTypes.UNIT
 		};
+
 		const combinedMap = {
 			'=': TokenTypes.EQUAL,
 			'==': TokenTypes.EQUAL,
@@ -265,7 +267,9 @@ class Lexer {
 		} else {
 			this.advance();
 		}
-		const type = symbolMap[symbol] || combinedMap[symbol] || symbol;
+		const type = symbolMap[symbol]
+			|| combinedMap[symbol]
+			|| symbol;
 		this.tokens.push(new Token(type, symbol, this.line, this.column));
 	}
 
@@ -368,7 +372,7 @@ class Lexer {
 	}
 
 	isSymbol(char) {
-		return '!@#$%^&\'*()+-=[]{}|;:,.<>?/~_'.includes(char);
+		return '!@#$%^&\'*()+-=[]{}|;:,.<>?/~_ '.includes(char);
 	}
 
 	handleHexNumber() {
