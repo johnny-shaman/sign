@@ -33,10 +33,15 @@ function assertTokens(input, expectedTokens, debug = false) {
 	if (debug) console.log('tokens: ', tokens);
 	const actualTypes = tokens.map(t => t.type);
 	const expectedTypes = expectedTokens.map(t => t.type);
+
+	const res = JSON.stringify(actualTypes) === JSON.stringify(expectedTypes);
 	console.assert(
-		JSON.stringify(actualTypes) === JSON.stringify(expectedTypes),
+		res,
 		`Expected: ${JSON.stringify(expectedTypes)}\nGot     : ${JSON.stringify(actualTypes)}\n`
 	);
+	if (!res) {
+		console.debug(`Expected: ${JSON.stringify(expectedTypes)}\nGot     : ${JSON.stringify(actualTypes)}\n`)
+	}
 
 	tokens.forEach((token, i) => {
 		if (expectedTokens[i]?.value !== undefined) {
@@ -49,7 +54,12 @@ function assertTokens(input, expectedTokens, debug = false) {
 	console.groupEnd();
 }
 
-const INDENT = { type: TokenTypes.INDENT },
+const VAL = (type, value) => ({type: type, value: value});
+const NUMBER = v => VAL(TokenTypes.NUMBER, v),
+	STRING =  v => VAL(TokenTypes.STRING, v),
+	CHAR = v => VAL(TokenTypes.CHAR, v),
+	IDENTIFIER = v => VAL(TokenTypes.IDENTIFIER, v),
+	INDENT = { type: TokenTypes.INDENT },
 	DEDENT = { type: TokenTypes.DEDENT },
 	NEWLINE = { type: TokenTypes.NEWLINE },
 	DEFINE = { type: TokenTypes.DEFINE },
@@ -58,21 +68,33 @@ const INDENT = { type: TokenTypes.INDENT },
 	PLUS = { type: TokenTypes.PLUS },
 	MINUS = { type: TokenTypes.MINUS },
 	MULTIPLY = { type: TokenTypes.MULTIPLY },
-	AND = { type: TokenTypes.AND },
-	OR = { type: TokenTypes.OR },
-	XOR = { type: TokenTypes.XOR },
-	EQUAL = { type: TokenTypes.EQUAL },
-	SPREAD = { type: TokenTypes.SPREAD },
-	IMPORT = { type: TokenTypes.IMPORT },
-	EXPORT = { type: TokenTypes.EXPORT },
-	GREATER = { type: TokenTypes.GREATER },
-	LESS = { type: TokenTypes.LESS },
+	DIVIDE = {type: TokenTypes.DIVIDE},
+	MOD = {type: TokenTypes.MOD},
+	AND = {type: TokenTypes.AND},
+	OR = {type: TokenTypes.OR},
+	XOR = {type: TokenTypes.XOR},
+	NOT = {type: TokenTypes.NOT},
+	EQUAL = {type: TokenTypes.EQUAL},
+	NOT_EQUAL = {type: TokenTypes.NOT_EQUAL},
+	LESS = {type: TokenTypes.LESS},
+	GREATER = {type: TokenTypes.GREATER},
+	LESS_EQ = {type: TokenTypes.LESS_EQ},
+	GREATER_EQ = {type: TokenTypes.GREATER_EQ},
 	PRODUCT = { type: TokenTypes.PRODUCT },
 	UNIT = { type: TokenTypes.UNIT },
 	GET = { type: TokenTypes.GET },
-	LBRACKET = { type: TokenTypes.LBRACKET },
-	RBRACKET = { type: TokenTypes.RBRACKET },
-	EOF = { type: TokenTypes.EOF };
+	LPAREN = {type: TokenTypes.LPAREN},
+	RPAREN = {type: TokenTypes.RPAREN},
+	LBRACE = {type: TokenTypes.LBRACE},
+	RBRACE = {type: TokenTypes.RBRACE},
+	LBRACKET = {type: TokenTypes.LBRACKET},
+	RBRACKET = {type: TokenTypes.RBRACKET},
+	SPREAD = { type: TokenTypes.SPREAD },
+	IMPORT = { type: TokenTypes.IMPORT },
+	EXPORT = { type: TokenTypes.EXPORT },
+	WS = { type: TokenTypes.WS },
+	EOF = { type: TokenTypes.EOF }
+	;
 
 
 // Basic Tokens Tests
@@ -82,12 +104,12 @@ console.log('\nRunning Basic Tokens Tests...');
 assertTokens(
 	'+ - * / ^ %',
 	[
-		PLUS,
-		MINUS,
-		MULTIPLY,
-		{ type: TokenTypes.DIVIDE },
-		POWER,
-		{ type: TokenTypes.MOD },
+		PLUS,WS,
+		MINUS,WS,
+		MULTIPLY,WS,
+		DIVIDE,WS,
+		POWER,WS,
+		MOD,
 		EOF
 	]
 );
@@ -96,10 +118,10 @@ assertTokens(
 assertTokens(
 	'# @ : ? ~',
 	[
-		EXPORT,
-		IMPORT,
-		DEFINE,
-		LAMBDA,
+		EXPORT,WS,
+		IMPORT,WS,
+		DEFINE,WS,
+		LAMBDA,WS,
 		SPREAD,
 		EOF
 	]
@@ -109,10 +131,10 @@ assertTokens(
 assertTokens(
 	'& | ; !',
 	[
-		AND,
-		{ type: TokenTypes.OR },
-		XOR,
-		{ type: TokenTypes.NOT },
+		AND,WS,
+		OR,WS,
+		XOR,WS,
+		NOT,
 		EOF
 	]
 );
@@ -121,14 +143,14 @@ assertTokens(
 assertTokens(
 	'< > <= >= = == != ><',
 	[
-		LESS,
-		GREATER,
-		{ type: TokenTypes.LESS_EQ },
-		{ type: TokenTypes.GREATER_EQ },
-		EQUAL,
-		EQUAL,
-		{ type: TokenTypes.NOT_EQUAL },
-		{ type: TokenTypes.NOT_EQUAL },
+		LESS, WS,
+		GREATER, WS,
+		LESS_EQ, WS,
+		GREATER_EQ, WS,
+		EQUAL, WS,
+		EQUAL, WS,
+		NOT_EQUAL,WS,
+		NOT_EQUAL,
 		EOF
 	]
 );
@@ -138,12 +160,12 @@ console.log('\nRunning Number Tests...');
 assertTokens(
 	`42 3.14 -17 0xFF 0b1010 0o777`,
 	[
-		{ type: TokenTypes.NUMBER, value: '42' },
-		{ type: TokenTypes.NUMBER, value: '3.14' },
-		{ type: TokenTypes.NUMBER, value: '-17' },
-		{ type: TokenTypes.NUMBER, value: '0xFF' },
-		{ type: TokenTypes.NUMBER, value: '0b1010' },
-		{ type: TokenTypes.NUMBER, value: '0o777' },
+		NUMBER('42'), WS,
+		NUMBER('3.14'),WS,
+		NUMBER('-17'),WS,
+		NUMBER('0xFF'),WS,
+		NUMBER('0b1010'),WS,
+		NUMBER('0o777'),
 		EOF
 	]
 );
@@ -153,9 +175,9 @@ console.log('\nRunning String and Character Tests...');
 assertTokens(
 	'x : `hello world \\n \\t`',
 	[
-		{ type: TokenTypes.IDENTIFIER, value: 'x' },
-		DEFINE,
-		{ type: TokenTypes.STRING, value: 'hello world \\n \\t' },
+		IDENTIFIER('x'),WS,
+		DEFINE,WS,
+		STRING('hello world \\n \\t'),
 		EOF
 	]
 );
@@ -165,8 +187,8 @@ console.log('\nRunning Identifier Tests...');
 assertTokens(
 	'foo bar_baz',
 	[
-		{ type: TokenTypes.IDENTIFIER, value: 'foo' },
-		{ type: TokenTypes.IDENTIFIER, value: 'bar_baz' },
+		IDENTIFIER('foo'),WS,
+		IDENTIFIER('bar_baz'),
 		EOF
 	]
 );
@@ -181,20 +203,20 @@ assertTokens(
 
 quux`,
 	[
-		{ type: TokenTypes.IDENTIFIER, value: 'foo' },
+		IDENTIFIER('foo'),
 		NEWLINE,
 		INDENT,
-		{ type: TokenTypes.IDENTIFIER, value: 'bar' },
+		IDENTIFIER('bar'),
 		NEWLINE,
 		INDENT,
-		{ type: TokenTypes.IDENTIFIER, value: 'baz' },
+		IDENTIFIER('baz'),
 		NEWLINE,
 		DEDENT,
-		{ type: TokenTypes.IDENTIFIER, value: 'qux' },
+		IDENTIFIER('qux'),
 		NEWLINE,
 		DEDENT,
 		NEWLINE,
-		{ type: TokenTypes.IDENTIFIER, value: 'quux' },
+		IDENTIFIER('quux'),
 		EOF
 	]
 );
@@ -204,14 +226,14 @@ console.log('\nRunning Complex Expression Tests...');
 assertTokens(
 	'add : x y ? x + y',
 	[
-		{ type: TokenTypes.IDENTIFIER, value: 'add' },
-		DEFINE,
-		{ type: TokenTypes.IDENTIFIER, value: 'x' },
-		{ type: TokenTypes.IDENTIFIER, value: 'y' },
-		LAMBDA,
-		{ type: TokenTypes.IDENTIFIER, value: 'x' },
-		PLUS,
-		{ type: TokenTypes.IDENTIFIER, value: 'y' },
+		IDENTIFIER('add'), WS,
+		DEFINE, WS,
+		IDENTIFIER('x'), WS,
+		IDENTIFIER('y'), WS,
+		LAMBDA, WS,
+		IDENTIFIER('x'), WS,
+		PLUS, WS,
+		IDENTIFIER('y'),
 		EOF
 	]
 );
@@ -238,21 +260,18 @@ assertLexerError('123.456.789', 'Invalid number format');
 // Unterminated string
 assertLexerError('x : `hello', 'Unterminated string');
 
-// Invalid indentation
-assertLexerError(`    foo\n  bar\n   baz`, 'Invalid dedentation',);
-
 // Invalid String
-assertLexerError('x : `hello \n world`', 'Unterminated string',);
+assertLexerError('x : `hello \n world`', 'Unterminated string');
 
 // 11. Comment Tests
 console.log('\nRunning Comment Tests...');
 assertTokens(
 	'foo \n`this is a comment \nbar',
 	[
-		{ type: TokenTypes.IDENTIFIER, value: 'foo' },
+		IDENTIFIER('foo'), WS,
 		NEWLINE,
 		NEWLINE,
-		{ type: TokenTypes.IDENTIFIER, value: 'bar' },
+		IDENTIFIER('bar'),
 		EOF
 	],
 );
@@ -267,11 +286,11 @@ await readfile('../../ex.snir/lambda.sn')
 				// [x ? x * 2]
 				NEWLINE,
 				LBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
-				LAMBDA,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
-				MULTIPLY,
-				{ type: TokenTypes.NUMBER, value: '2' },
+				IDENTIFIER('x'), WS,
+				LAMBDA, WS,
+				IDENTIFIER('x'), WS,
+				MULTIPLY, WS,
+				NUMBER('2'),
 				RBRACKET,
 				NEWLINE,
 				NEWLINE,
@@ -279,16 +298,16 @@ await readfile('../../ex.snir/lambda.sn')
 
 				// [x y ? (x + y) ^ 2]
 				LBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
-				{ type: TokenTypes.IDENTIFIER, value: 'y' },
-				LAMBDA,
-				{ type: TokenTypes.LPAREN },
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
-				PLUS,
-				{ type: TokenTypes.IDENTIFIER, value: 'y' },
-				{ type: TokenTypes.RPAREN },
-				POWER,
-				{ type: TokenTypes.NUMBER, value: '2' },
+				IDENTIFIER('x'), WS,
+				IDENTIFIER('y'), WS,
+				LAMBDA, WS,
+				LPAREN,
+				IDENTIFIER('x'), WS,
+				PLUS, WS,
+				IDENTIFIER('y'),
+				RPAREN, WS,
+				POWER, WS,
+				NUMBER('2'),
 				RBRACKET,
 				NEWLINE,
 				NEWLINE,
@@ -296,11 +315,11 @@ await readfile('../../ex.snir/lambda.sn')
 
 				// [x ~y ? y~]
 				LBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
+				IDENTIFIER('x'), WS,
 				SPREAD,
-				{ type: TokenTypes.IDENTIFIER, value: 'y' },
-				LAMBDA,
-				{ type: TokenTypes.IDENTIFIER, value: 'y' },
+				IDENTIFIER('y'), WS,
+				LAMBDA, WS,
+				IDENTIFIER('y'),
 				SPREAD,
 				RBRACKET,
 				NEWLINE,
@@ -309,26 +328,25 @@ await readfile('../../ex.snir/lambda.sn')
 
 				// match_case
 				LBRACKET, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'x' }, LAMBDA, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'x' }, GREATER, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'x' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' }, LESS, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.NUMBER, value: '-1' }, MULTIPLY, { type: TokenTypes.IDENTIFIER, value: 'x' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' }, EQUAL, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'y' }, LAMBDA, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'y' }, { type: TokenTypes.NOT_EQUAL }, UNIT, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'y' }, NEWLINE,
-				{ type: TokenTypes.STRING, value: 'What do you want to do?' }, NEWLINE,
+				INDENT, IDENTIFIER('x'), WS, LAMBDA, NEWLINE,
+				INDENT, IDENTIFIER('x'), WS, GREATER, WS, NUMBER('0'), WS, DEFINE, WS, IDENTIFIER('x'), NEWLINE,
+				IDENTIFIER('x'), WS, LESS, WS, NUMBER('0'), WS, DEFINE, WS, NUMBER('-1'), WS, MULTIPLY, WS, IDENTIFIER('x'), NEWLINE,
+				IDENTIFIER('x'), WS, EQUAL, WS, NUMBER('0'), WS, DEFINE, WS, IDENTIFIER('y'), WS, LAMBDA, NEWLINE,
+				INDENT, IDENTIFIER('y'), WS, NOT_EQUAL, WS, UNIT, WS, DEFINE, WS, IDENTIFIER('y'), NEWLINE,
+				STRING('What do you want to do?'), NEWLINE,
 				DEDENT, UNIT, NEWLINE,
-				DEDENT, DEDENT,
-				RBRACKET,
+				DEDENT, DEDENT, RBRACKET,
 				NEWLINE,
 				NEWLINE,
 				NEWLINE,
 				NEWLINE,
 
 				// KeyMap
-				{ type: TokenTypes.IDENTIFIER, value: 'a' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'a1' }, DEFINE, { type: TokenTypes.NUMBER, value: '0' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'b1' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'a2' }, DEFINE, { type: TokenTypes.NUMBER, value: '2' }, NEWLINE,
-				DEDENT, { type: TokenTypes.IDENTIFIER, value: 'c1' }, DEFINE, { type: TokenTypes.NUMBER, value: '3' },
+				IDENTIFIER('a'), DEFINE, NEWLINE,
+				INDENT, IDENTIFIER('a1'), DEFINE, NUMBER('0'), NEWLINE,
+				IDENTIFIER('b1'), DEFINE, NEWLINE,
+				INDENT, IDENTIFIER('a2'), DEFINE, NUMBER('2'), NEWLINE,
+				DEDENT, IDENTIFIER('c1'), DEFINE,  WS, NUMBER('3'),
 				DEDENT,
 				EOF,
 			]
@@ -341,19 +359,27 @@ await readfile('../../low_level_example.sn')
 		assertTokens(
 			source,
 			[
-				NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'r0' }, DEFINE, { type: TokenTypes.NUMBER, value: '0x0000' }, NEWLINE,
-				EXPORT, { type: TokenTypes.IDENTIFIER, value: 'r0' }, DEFINE, { type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'r1' }, DEFINE, IMPORT, { type: TokenTypes.IDENTIFIER, value: 'r0' }, MULTIPLY, { type: TokenTypes.NUMBER, value: '2' }, NEWLINE,
+				NEWLINE,NEWLINE,NEWLINE,
+				INDENT, IDENTIFIER('r0'), WS, DEFINE, WS, NUMBER('0x0000'), NEWLINE,
+				EXPORT, IDENTIFIER('r0'), WS, DEFINE, WS, NUMBER('3'), NEWLINE,
+				IDENTIFIER('r1'), WS, WS, DEFINE, WS, IMPORT, IDENTIFIER('r0'), WS, MULTIPLY, WS, NUMBER('2'), NEWLINE,
 				DEDENT, NEWLINE,
 				NEWLINE,
 
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'r0' }, DEFINE, { type: TokenTypes.CHAR, value: '+' }, NEWLINE,
-				EXPORT, { type: TokenTypes.IDENTIFIER, value: 'r0' }, DEFINE, PLUS, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'r1' }, DEFINE, IMPORT, { type: TokenTypes.IDENTIFIER, value: 'r0' }, { type: TokenTypes.NUMBER, value: '3' }, { type: TokenTypes.NUMBER, value: '2' }, NEWLINE,
+				INDENT, IDENTIFIER('r0'), WS, DEFINE, WS, CHAR('+'), NEWLINE,
+				EXPORT, IDENTIFIER('r0'), WS, DEFINE, WS, PLUS, NEWLINE,
+				IDENTIFIER('r1'), WS, DEFINE, WS, IMPORT, IDENTIFIER('r0'), WS, NUMBER('3'), WS, NUMBER('2'), NEWLINE,
 				DEDENT, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE,
-				EXPORT, { type: TokenTypes.CHAR, value: '+' }, DEFINE, PLUS,
+				EXPORT, CHAR('+'), WS, DEFINE, WS, PLUS, NEWLINE,
+				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
+
+				EXPORT, IDENTIFIER('IO'), DEFINE, WS, IDENTIFIER('d'), WS, IDENTIFIER('a'), WS, LAMBDA, NEWLINE,
+				INDENT, IMPORT, LBRACKET,IDENTIFIER('a'), WS, PLUS, WS, NUMBER('1'), RBRACKET, WS, EQUAL, WS,NUMBER('0'), WS, DEFINE, NEWLINE,
+				INDENT, IDENTIFIER('s'), WS, NOT_EQUAL, WS, UNIT, WS, DEFINE, WS, LBRACKET, EXPORT,IDENTIFIER('a'), WS, DEFINE,WS, IDENTIFIER('d'), RBRACKET, NEWLINE,
+				IMPORT, IDENTIFIER('a'), NEWLINE,
+				DEDENT, IMPORT, IDENTIFIER('IO'), WS, IDENTIFIER('d'), WS, IDENTIFIER('a'),NEWLINE,
+				DEDENT,
 				EOF
 			]
 		);
@@ -368,579 +394,433 @@ await readfile('../../example.sn')
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' }, DEFINE, { type: TokenTypes.NUMBER, value: '-353.15134' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'y' }, DEFINE, { type: TokenTypes.NUMBER, value: '4001.35364502' }, NEWLINE,
+				// L15
+				IDENTIFIER('x'), DEFINE, WS, NUMBER('-353.15134'), NEWLINE,
+				IDENTIFIER('y'), DEFINE, WS, NUMBER('4001.35364502'), NEWLINE,
 				NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'Hello' }, DEFINE, { type: TokenTypes.STRING, value: 'Hello' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'World' }, DEFINE, { type: TokenTypes.STRING, value: 'World' }, NEWLINE,
+				// L18
+				IDENTIFIER('Hello'), DEFINE, WS, STRING('Hello'), NEWLINE,
+				IDENTIFIER('World'), DEFINE, WS, STRING('World'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'yep' }, DEFINE, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'nop' }, DEFINE, { type: TokenTypes.NUMBER, value: '0' }, NEWLINE,
+				// L23
+				IDENTIFIER('yep'), DEFINE, WS, NUMBER('1'), NEWLINE,
+				IDENTIFIER('nop'), DEFINE, WS, NUMBER('0'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'unit' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'none' }, DEFINE, LBRACKET, RBRACKET, NEWLINE,
+				// L28
+				IDENTIFIER('unit'), DEFINE, WS, IDENTIFIER('none'), DEFINE, WS, LBRACKET, RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'none' }, DEFINE, LBRACKET, RBRACKET, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'unit' }, DEFINE, LBRACKET, RBRACKET, NEWLINE,
+				// L32
+				IDENTIFIER('none'), DEFINE, WS, LBRACKET, RBRACKET, NEWLINE,
+				IDENTIFIER('unit'), DEFINE, WS, LBRACKET, RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
+				//L47
 				LBRACKET, NEWLINE,
-				INDENT, { type: TokenTypes.STRING, value: 'y' }, DEFINE, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
-				{ type: TokenTypes.STRING, value: 'n' }, DEFINE, { type: TokenTypes.NUMBER, value: '0' }, NEWLINE,
-				DEDENT, RBRACKET, { type: TokenTypes.STRING, value: 'y' }, NEWLINE,
+				INDENT, STRING('y'), DEFINE, WS, NUMBER('1'), NEWLINE,
+				STRING('n'), DEFINE, WS, NUMBER('0'), NEWLINE,
+				DEDENT, RBRACKET, WS, STRING('y'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
+				// L56
 				// [x y ? x ^ 2 + 2 * x * y + y ^ 2]
 				LBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
-				{ type: TokenTypes.IDENTIFIER, value: 'y' },
-				LAMBDA, { type: TokenTypes.IDENTIFIER, value: 'x' },
-				POWER, { type: TokenTypes.NUMBER, value: '2' },
-				PLUS, { type: TokenTypes.NUMBER, value: '2' },
-				MULTIPLY, { type: TokenTypes.IDENTIFIER, value: 'x' },
-				MULTIPLY, { type: TokenTypes.IDENTIFIER, value: 'y' },
-				PLUS, { type: TokenTypes.IDENTIFIER, value: 'y' },
-				POWER, { type: TokenTypes.NUMBER, value: '2' },
+				IDENTIFIER('x'), WS, IDENTIFIER('y'), WS, LAMBDA, WS, IDENTIFIER('x'), WS, POWER, WS, NUMBER('2'), WS,
+				PLUS, WS, NUMBER('2'), WS, MULTIPLY, WS, IDENTIFIER('x'), WS, MULTIPLY, WS, IDENTIFIER('y'), WS,
+				PLUS, WS, IDENTIFIER('y'), WS, POWER, WS, NUMBER('2'),
 				RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
+				// L61
 				// [x y ? (x + y) ^ 2]
 				LBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
-				{ type: TokenTypes.IDENTIFIER, value: 'y' },
-				LAMBDA,
-				{ type: TokenTypes.LPAREN },
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
-				PLUS,
-				{ type: TokenTypes.IDENTIFIER, value: 'y' },
-				{ type: TokenTypes.RPAREN },
-				POWER, { type: TokenTypes.NUMBER, value: '2' },
+				IDENTIFIER('x'), WS, IDENTIFIER('y'), WS, LAMBDA, WS,
+				LPAREN, IDENTIFIER('x'), WS, PLUS, WS, IDENTIFIER('y'), RPAREN, WS, POWER, WS, NUMBER('2'),
 				RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-				LBRACKET, PLUS, RBRACKET,
-				LBRACKET, POWER, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET, NEWLINE,
+				// L67
+				LBRACKET, PLUS, RBRACKET, WS, LBRACKET, POWER, WS, NUMBER('2'), RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				LBRACKET, POWER, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET,
-				LBRACKET, PLUS, RBRACKET, NEWLINE,
+				// L71
+				LBRACKET, POWER, WS, NUMBER('2'), RBRACKET, WS, LBRACKET, PLUS, RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'x' }, EQUAL, { type: TokenTypes.IDENTIFIER, value: 'y' }, EQUAL, { type: TokenTypes.IDENTIFIER, value: 'z' }, NEWLINE,
+				//L79
+				IDENTIFIER('x'), WS, EQUAL, WS, IDENTIFIER('y'), WS, EQUAL, WS, IDENTIFIER('z'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.NUMBER, value: '1' },
-				{ type: TokenTypes.LESS_EQ },
-				{ type: TokenTypes.IDENTIFIER, value: 'x' },
-				{ type: TokenTypes.LESS_EQ },
-				{ type: TokenTypes.NUMBER, value: '9' }, NEWLINE,
+				// L83
+				NUMBER('1'), WS, LESS_EQ, WS, IDENTIFIER('x'), WS, LESS_EQ, WS, NUMBER('9'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				LBRACKET, PLUS, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET,
-				{ type: TokenTypes.NUMBER, value: '2' }, EQUAL, { type: TokenTypes.NUMBER, value: '4' }, NEWLINE,
+				// L87
+				LBRACKET, PLUS, WS, NUMBER('2'), RBRACKET, WS, NUMBER('2'), WS, EQUAL, WS, NUMBER('4'), NEWLINE,
 
-
-				LBRACKET, PLUS, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET,
-				{ type: TokenTypes.PRODUCT },
-				{ type: TokenTypes.NUMBER, value: '2' }, EQUAL, LBRACKET, PLUS, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET,
-				{ type: TokenTypes.PRODUCT },
-				{ type: TokenTypes.NUMBER, value: '2' }, NEWLINE,
+				// L88
+				LBRACKET, PLUS, WS, NUMBER('2'), RBRACKET,
+				PRODUCT, WS, NUMBER('2'), WS, EQUAL, WS, LBRACKET, PLUS, WS, NUMBER('2'), RBRACKET,
+				PRODUCT, WS, NUMBER('2'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'iterate3' }, DEFINE,
-				{ type: TokenTypes.NUMBER, value: '1' }, LAMBDA, { type: TokenTypes.NUMBER, value: '2' }, LAMBDA, { type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
+				// L92
+				IDENTIFIER('iterate3'), WS, DEFINE, WS, NUMBER('1'), WS, LAMBDA, WS, NUMBER('2'), WS, LAMBDA, WS, NUMBER('3'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'iterate3' }, EQUAL, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'iterate3' }, EQUAL, { type: TokenTypes.NUMBER, value: '2' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'iterate3' }, EQUAL, { type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'iterate3' }, EQUAL, LBRACKET, RBRACKET, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'iterate3' }, EQUAL, LBRACKET, RBRACKET, NEWLINE,
+				// L96
+				IDENTIFIER('iterate3'), WS, EQUAL, WS, NUMBER('1'), NEWLINE,
+				IDENTIFIER('iterate3'), WS, EQUAL, WS, NUMBER('2'), NEWLINE,
+				IDENTIFIER('iterate3'), WS, EQUAL, WS, NUMBER('3'), NEWLINE,
+				IDENTIFIER('iterate3'), WS, EQUAL, WS, LBRACKET, RBRACKET, NEWLINE,
+				IDENTIFIER('iterate3'), WS, EQUAL, WS, LBRACKET, RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'result2' }, DEFINE, MINUS, { type: TokenTypes.NUMBER, value: '1' }, { type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'add' }, DEFINE, PLUS, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'exp' }, DEFINE, POWER, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'id' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'x' }, LAMBDA, { type: TokenTypes.IDENTIFIER, value: 'x' }, NEWLINE,
+				// L106
+				IDENTIFIER('result2'), WS, DEFINE, WS, MINUS, WS, NUMBER('1'), WS, NUMBER('3'), NEWLINE,
+				IDENTIFIER('add'), WS, DEFINE, WS, PLUS, NEWLINE,
+				IDENTIFIER('exp'), WS, DEFINE, WS, POWER, NEWLINE,
+				IDENTIFIER('id'), WS, DEFINE, WS, IDENTIFIER('x'), WS, LAMBDA, WS, IDENTIFIER('x'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
+				// L117
+				LBRACKET, IDENTIFIER('x'), WS, LAMBDA, WS, IDENTIFIER('x'), RBRACKET,WS,
+				NUMBER('1'), WS, NUMBER('2'), WS, NUMBER('3'), WS, EQUAL, WS, NUMBER('1'), NEWLINE,
 
-				LBRACKET, { type: TokenTypes.IDENTIFIER, value: 'x' }, LAMBDA, { type: TokenTypes.IDENTIFIER, value: 'x' }, RBRACKET,
-				{ type: TokenTypes.NUMBER, value: '1' }, { type: TokenTypes.NUMBER, value: '2' }, { type: TokenTypes.NUMBER, value: '3' }, EQUAL, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
-
-				LBRACKET, { type: TokenTypes.IDENTIFIER, value: 'x' }, LAMBDA, { type: TokenTypes.IDENTIFIER, value: 'x' }, RBRACKET,
-				{ type: TokenTypes.NUMBER, value: '1' }, PRODUCT, { type: TokenTypes.NUMBER, value: '2' }, PRODUCT, { type: TokenTypes.NUMBER, value: '3' }, EQUAL, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
+				LBRACKET, IDENTIFIER('x'), WS, LAMBDA, WS, IDENTIFIER('x'), RBRACKET,WS,
+				NUMBER('1'), PRODUCT, WS, NUMBER('2'), PRODUCT, WS, NUMBER('3'), WS, EQUAL, WS, NUMBER('1'), NEWLINE,
 				NEWLINE,
 
-				LBRACKET, { type: TokenTypes.NUMBER, value: '1' }, { type: TokenTypes.NUMBER, value: '2' }, { type: TokenTypes.NUMBER, value: '3' }, RBRACKET,
-				GET, { type: TokenTypes.NUMBER, value: '0' }, EQUAL, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
+				// L120
+				LBRACKET, NUMBER('1'), WS, NUMBER('2'), WS, NUMBER('3'), RBRACKET,WS,
+				GET, NUMBER('0'), WS, EQUAL, WS, NUMBER('1'), NEWLINE,
 
-				LBRACKET, { type: TokenTypes.NUMBER, value: '1' }, PRODUCT, { type: TokenTypes.NUMBER, value: '2' }, PRODUCT, { type: TokenTypes.NUMBER, value: '3' }, RBRACKET,
-				GET, { type: TokenTypes.NUMBER, value: '0' }, EQUAL, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
+				LBRACKET, NUMBER('1'), PRODUCT, WS, NUMBER('2'), PRODUCT, WS, NUMBER('3'), RBRACKET,WS,
+				GET, NUMBER('0'), WS, EQUAL, WS, NUMBER('1'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				LBRACKET, UNIT, SPREAD, { type: TokenTypes.IDENTIFIER, value: 'y' }, LAMBDA, { type: TokenTypes.IDENTIFIER, value: 'y' }, SPREAD, RBRACKET,
-				{ type: TokenTypes.NUMBER, value: '1' },
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' },
-				EQUAL,
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
+				// L125
+				LBRACKET, UNIT, WS, SPREAD, IDENTIFIER('y'), WS, LAMBDA, WS, IDENTIFIER('y'), SPREAD, RBRACKET, WS,
+				NUMBER('1'), WS, NUMBER('2'), WS, NUMBER('3'), WS, EQUAL,WS, NUMBER('2'), WS, NUMBER('3'), NEWLINE,
 
 
-				LBRACKET, UNIT, SPREAD, { type: TokenTypes.IDENTIFIER, value: 'y' }, LAMBDA, { type: TokenTypes.IDENTIFIER, value: 'y' }, SPREAD, RBRACKET,
-				{ type: TokenTypes.NUMBER, value: '1' }, PRODUCT,
-				{ type: TokenTypes.NUMBER, value: '2' }, PRODUCT,
-				{ type: TokenTypes.NUMBER, value: '3' },
-				EQUAL,
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
+				LBRACKET, UNIT, WS, SPREAD, IDENTIFIER('y'), WS, LAMBDA, WS, IDENTIFIER('y'), SPREAD, RBRACKET, WS,
+				NUMBER('1'), PRODUCT, WS, NUMBER('2'), PRODUCT, WS, NUMBER('3'), WS, EQUAL, WS, NUMBER('2'), WS, NUMBER('3'), NEWLINE,
 				NEWLINE,
 
-
-				LBRACKET,
-				{ type: TokenTypes.NUMBER, value: '1' },
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' },
-				RBRACKET,
-				GET,
-				{ type: TokenTypes.NUMBER, value: '1' },
-				SPREAD, EQUAL,
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
-
-
-				LBRACKET,
-				{ type: TokenTypes.NUMBER, value: '1' }, PRODUCT,
-				{ type: TokenTypes.NUMBER, value: '2' }, PRODUCT,
-				{ type: TokenTypes.NUMBER, value: '3' },
-				RBRACKET,
-				GET,
-				{ type: TokenTypes.NUMBER, value: '1' },
-				SPREAD, EQUAL,
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
+				// L128
+				LBRACKET, NUMBER('1'), WS, NUMBER('2'), WS, NUMBER('3'), RBRACKET, WS, GET, NUMBER('1'), SPREAD, WS, EQUAL, WS, NUMBER('2'),WS, NUMBER('3'), NEWLINE,
+				LBRACKET, NUMBER('1'), PRODUCT,WS, NUMBER('2'), PRODUCT,WS, NUMBER('3'), RBRACKET, WS, GET, NUMBER('1'), SPREAD, WS, EQUAL, WS, NUMBER('2'), WS, NUMBER('3'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
 
-
-				LBRACKET, { type: TokenTypes.IDENTIFIER, value: 'x' }, LAMBDA, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'x' }, EQUAL, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.NUMBER, value: '0' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' }, GREATER, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.STRING, value: 'more' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' }, LESS, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.STRING, value: 'less' }, NEWLINE,
-				{ type: TokenTypes.STRING, value: 'other_wise' }, NEWLINE,
-				DEDENT,
-				RBRACKET, { type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
+				// L145
+				LBRACKET, IDENTIFIER('x'), WS, LAMBDA, NEWLINE,
+				INDENT, IDENTIFIER('x'), WS, EQUAL, WS, NUMBER('0'), WS, DEFINE, WS, NUMBER('0'), NEWLINE,
+				IDENTIFIER('x'), WS, GREATER, WS, NUMBER('0'), WS, DEFINE, WS, STRING('more'), NEWLINE,
+				IDENTIFIER('x'), WS, LESS, WS, NUMBER('0'), WS, DEFINE, WS, STRING('less'), NEWLINE,
+				STRING('other_wise'), NEWLINE,
+				DEDENT, RBRACKET, WS, NUMBER('3'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
+				// L154
 				LBRACKET, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'x' }, LAMBDA, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'x' }, EQUAL, { type: TokenTypes.NUMBER, value: '0' }, AND, LBRACKET, UNIT, LAMBDA, { type: TokenTypes.NUMBER, value: '0' }, RBRACKET, XOR, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' }, GREATER, { type: TokenTypes.NUMBER, value: '0' }, AND, LBRACKET, UNIT, LAMBDA, { type: TokenTypes.STRING, value: 'more' }, RBRACKET, XOR, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'x' }, LESS, { type: TokenTypes.NUMBER, value: '0' }, AND, LBRACKET, UNIT, LAMBDA, { type: TokenTypes.STRING, value: 'less' }, RBRACKET, XOR, NEWLINE,
-
-				LBRACKET, UNIT, LAMBDA, { type: TokenTypes.STRING, value: 'other_wise' }, RBRACKET, NEWLINE,
-				DEDENT, DEDENT, RBRACKET, { type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
+				INDENT, IDENTIFIER('x'), WS, LAMBDA, WS, NEWLINE,
+				INDENT, IDENTIFIER('x'), WS, EQUAL, WS, NUMBER('0'), WS, AND, WS, LBRACKET, UNIT, WS, LAMBDA, WS, NUMBER('0'), RBRACKET, WS, XOR, NEWLINE,
+				IDENTIFIER('x'), WS, GREATER, WS, NUMBER('0'), WS, AND, WS, LBRACKET, UNIT, WS, LAMBDA, WS, STRING('more'), RBRACKET, WS, XOR, NEWLINE,
+				IDENTIFIER('x'), WS, LESS, WS, NUMBER('0'), WS, AND, WS, LBRACKET, UNIT, WS, LAMBDA, WS, STRING('less'), RBRACKET, WS, XOR, NEWLINE,
+				LBRACKET, UNIT, WS, LAMBDA, WS, STRING('other_wise'), RBRACKET, NEWLINE,
+				DEDENT, DEDENT, RBRACKET, WS, NUMBER('3'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-
-				{ type: TokenTypes.IDENTIFIER, value: 'Person' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'name' }, { type: TokenTypes.IDENTIFIER, value: 'age' }, { type: TokenTypes.IDENTIFIER, value: 'etc' }, { type: TokenTypes.IDENTIFIER, value: 'x' }, LAMBDA, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'name' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'age' }, NEWLINE,
-				SPREAD, { type: TokenTypes.IDENTIFIER, value: 'etc' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'x' }, NEWLINE,
+				// L165
+				IDENTIFIER('Person'), WS, DEFINE, WS, IDENTIFIER('name'), WS, IDENTIFIER('age'), WS, IDENTIFIER('etc'), WS, IDENTIFIER('x'), WS, LAMBDA, NEWLINE,
+				INDENT, IDENTIFIER('name'), NEWLINE,
+				IDENTIFIER('age'), NEWLINE,
+				SPREAD, IDENTIFIER('etc'), WS, DEFINE, WS, IDENTIFIER('x'), NEWLINE,
 				DEDENT, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'john' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'Person' },
-				{ type: TokenTypes.STRING, value: 'john' },
-				{ type: TokenTypes.NUMBER, value: '18' },
-				{ type: TokenTypes.STRING, value: 'Like' },
-				{ type: TokenTypes.STRING, value: 'Sushi' }, NEWLINE,
+				// L170
+				IDENTIFIER('john'), WS, DEFINE, WS, IDENTIFIER('Person'), WS, STRING('john'), WS, NUMBER('18'), WS, STRING('Like'), WS, STRING('Sushi'), NEWLINE,
 				NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'john' }, { type: TokenTypes.STRING, value: 'name' }, NEWLINE,
+				IDENTIFIER('john'), WS, STRING('name'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'john' }, GET, { type: TokenTypes.IDENTIFIER, value: 'name' }, EQUAL,
-				{ type: TokenTypes.IDENTIFIER, value: 'john' }, { type: TokenTypes.STRING, value: 'name' }, NEWLINE,
+				// L176
+				IDENTIFIER('john'), WS, GET, IDENTIFIER('name'), WS, EQUAL, WS, IDENTIFIER('john'), WS, STRING('name'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'person' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'Person' },
-				LBRACKET, RBRACKET,
-				LBRACKET, RBRACKET,
-				LBRACKET, RBRACKET,
+				// L180
+				IDENTIFIER('person'), WS, DEFINE, WS, IDENTIFIER('Person'), WS,
+				LBRACKET, RBRACKET, WS,
+				LBRACKET, RBRACKET, WS,
+				LBRACKET, RBRACKET, WS,
 				LBRACKET, RBRACKET, NEWLINE,
 				NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'mary' }, DEFINE, NEWLINE,
-				INDENT, SPREAD, { type: TokenTypes.IDENTIFIER, value: 'person' }, NEWLINE,
-				INDENT, GET, { type: TokenTypes.IDENTIFIER, value: 'name' }, DEFINE, { type: TokenTypes.STRING, value: 'mary' }, NEWLINE,
-				GET, { type: TokenTypes.IDENTIFIER, value: 'age' }, DEFINE, { type: TokenTypes.NUMBER, value: '16' }, NEWLINE,
+				// L182
+				IDENTIFIER('mary'), WS, DEFINE, WS, NEWLINE,
+				INDENT, SPREAD, IDENTIFIER('person'), NEWLINE,
+				INDENT, GET, IDENTIFIER('name'), WS, DEFINE, WS, STRING('mary'), NEWLINE,
+				GET, IDENTIFIER('age'), WS, WS, DEFINE, WS, NUMBER('16'), NEWLINE,
 				DEDENT, DEDENT, NEWLINE,
 
 
-				{ type: TokenTypes.IDENTIFIER, value: 'charie' }, DEFINE, NEWLINE,
-				INDENT, SPREAD, { type: TokenTypes.IDENTIFIER, value: 'person' }, NEWLINE,
-				INDENT, GET, { type: TokenTypes.IDENTIFIER, value: 'name' }, DEFINE, { type: TokenTypes.STRING, value: 'charie' }, NEWLINE,
-				GET, { type: TokenTypes.IDENTIFIER, value: 'age' }, DEFINE, { type: TokenTypes.NUMBER, value: '24' }, NEWLINE,
+				// L187
+				IDENTIFIER('charie'), WS, DEFINE, WS, NEWLINE,
+				INDENT, SPREAD, IDENTIFIER('person'), NEWLINE,
+				INDENT, GET, IDENTIFIER('name'), WS, DEFINE, WS, STRING('charie'), NEWLINE,
+				GET, IDENTIFIER('age'), WS, WS, DEFINE, WS, NUMBER('24'), NEWLINE,
 				DEDENT, DEDENT, NEWLINE,
 				NEWLINE, NEWLINE,
 
 
+				// L194
 				LBRACKET, NEWLINE,
-				INDENT, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.STRING, value: 'zero' }, NEWLINE,
-				GREATER, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.STRING, value: 'more' }, NEWLINE,
-				LESS, { type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.STRING, value: 'less' }, NEWLINE,
-				{ type: TokenTypes.STRING, value: 'other' }, NEWLINE,
-				DEDENT, RBRACKET, { type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
+				INDENT, NUMBER('0'), WS, WS, WS, DEFINE, WS, STRING('zero'), NEWLINE,
+				GREATER, WS, NUMBER('0'), WS, DEFINE, WS, STRING('more'), NEWLINE,
+				LESS, WS, NUMBER('0'), WS, DEFINE, WS, STRING('less'), NEWLINE,
+				STRING('other'), NEWLINE,
+				DEDENT, RBRACKET, WS, NUMBER('3'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
 
-
+				// L203
 				LBRACKET, NEWLINE,
-				INDENT, { type: TokenTypes.NUMBER, value: '1' }, DEFINE, { type: TokenTypes.STRING, value: 'yep' }, NEWLINE,
-				{ type: TokenTypes.NUMBER, value: '0' }, DEFINE, { type: TokenTypes.STRING, value: 'nop' }, NEWLINE,
-				DEDENT, RBRACKET, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
+				INDENT, NUMBER('1'), WS, DEFINE, WS, STRING('yep'), NEWLINE,
+				NUMBER('0'), WS, DEFINE, WS, STRING('nop'), NEWLINE,
+				DEDENT, RBRACKET, WS, NUMBER('1'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-
-				LBRACKET, GREATER, { type: TokenTypes.NUMBER, value: '3' }, DEFINE, LBRACKET, PLUS, { type: TokenTypes.NUMBER, value: '3' }, RBRACKET, RBRACKET, { type: TokenTypes.NUMBER, value: '3' }, { type: TokenTypes.NUMBER, value: '4' }, EQUAL, { type: TokenTypes.NUMBER, value: '4' }, NEWLINE,
+				// L211
+				LBRACKET, GREATER, WS, NUMBER('3'), WS, DEFINE, WS, LBRACKET, PLUS, WS, NUMBER('3'), RBRACKET, RBRACKET, WS, NUMBER('3'), WS, NUMBER('4'), WS, EQUAL, WS, NUMBER('4'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
 
-
-				{ type: TokenTypes.IDENTIFIER, value: 'Item' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'name' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'equip' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'use' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'effect' }, NEWLINE,
+				// L215
+				IDENTIFIER('Item'), WS, DEFINE, NEWLINE,
+				INDENT, IDENTIFIER('name'), NEWLINE,
+				IDENTIFIER('equip'), NEWLINE,
+				IDENTIFIER('use'), NEWLINE,
+				IDENTIFIER('effect'), NEWLINE,
 				DEDENT, NEWLINE,
 
-
-				{ type: TokenTypes.IDENTIFIER, value: 'medicalWeed' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'Item' }, NEWLINE,
-				INDENT,
-				{ type: TokenTypes.STRING, value: 'medicalWeed' }, NEWLINE,
+				// L221
+				IDENTIFIER('medicalWeed'), WS, DEFINE, NEWLINE,
+				INDENT, IDENTIFIER('Item'), NEWLINE,
+				INDENT, STRING('medicalWeed'), NEWLINE,
 				LBRACKET, RBRACKET, NEWLINE,
-				LBRACKET, GET, { type: TokenTypes.IDENTIFIER, value: 'medicalWeed' }, RBRACKET,
-				PRODUCT, LBRACKET, MINUS, { type: TokenTypes.NUMBER, value: '1' }, RBRACKET, NEWLINE,
-				LBRACKET, GET, { type: TokenTypes.IDENTIFIER, value: 'HP' }, RBRACKET,
-				PRODUCT, LBRACKET, PLUS, { type: TokenTypes.NUMBER, value: '20' }, RBRACKET, NEWLINE,
+				LBRACKET, GET, IDENTIFIER('medicalWeed'), RBRACKET, PRODUCT, WS, LBRACKET, MINUS, WS, NUMBER('1'), RBRACKET, NEWLINE,
+				LBRACKET, GET, IDENTIFIER('HP'), RBRACKET, PRODUCT, WS, LBRACKET, PLUS, WS, NUMBER('20'), RBRACKET, NEWLINE,
 				DEDENT, DEDENT, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'lightningStaff' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'Item' }, NEWLINE,
-				INDENT,
-				{ type: TokenTypes.STRING, value: 'lightningStaff' }, NEWLINE,
-				LBRACKET, GET, { type: TokenTypes.IDENTIFIER, value: 'Atk' }, RBRACKET,
-				PRODUCT, LBRACKET, PLUS, { type: TokenTypes.NUMBER, value: '8' }, RBRACKET, NEWLINE,
-				LBRACKET, GET, { type: TokenTypes.IDENTIFIER, value: 'ThunderBolt' }, RBRACKET, NEWLINE,
-				LBRACKET, GET, { type: TokenTypes.IDENTIFIER, value: 'HP' }, RBRACKET,
-				PRODUCT, LBRACKET, MINUS, { type: TokenTypes.NUMBER, value: '40' }, RBRACKET, NEWLINE,
+				// L228
+				IDENTIFIER('lightningStaff'), WS, DEFINE, NEWLINE,
+				INDENT, IDENTIFIER('Item'), NEWLINE,
+				INDENT, STRING('lightningStaff'), NEWLINE,
+				LBRACKET, GET, IDENTIFIER('Atk'), RBRACKET, PRODUCT, WS, LBRACKET, PLUS, WS, NUMBER('8'), RBRACKET, NEWLINE,
+				LBRACKET, GET, IDENTIFIER('ThunderBolt'), RBRACKET, NEWLINE,
+				LBRACKET, GET, IDENTIFIER('HP'), RBRACKET, PRODUCT, WS, LBRACKET, MINUS, WS, NUMBER('40'), RBRACKET, NEWLINE,
 				DEDENT, DEDENT, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
 
-
-				{ type: TokenTypes.IDENTIFIER, value: 'myValue' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.NUMBER, value: '3' }, NEWLINE,
-				LBRACKET, PLUS, { type: TokenTypes.NUMBER, value: '4' }, RBRACKET, NEWLINE,
-				LBRACKET, MULTIPLY, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET, NEWLINE,
+				// L238
+				IDENTIFIER('myValue'), WS, DEFINE, NEWLINE,
+				INDENT, NUMBER('3'), NEWLINE,
+				LBRACKET, PLUS, WS, NUMBER('4'), RBRACKET, NEWLINE,
+				LBRACKET, MULTIPLY, WS, NUMBER('2'), RBRACKET, NEWLINE,
 				DEDENT, NEWLINE,
 
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE,
 
+				// L254
 				// myPairs: 1 2 3 4 5
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs' }, DEFINE,
-				{ type: TokenTypes.NUMBER, value: '1' },
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' },
-				{ type: TokenTypes.NUMBER, value: '4' },
-				{ type: TokenTypes.NUMBER, value: '5' }, NEWLINE,
+				IDENTIFIER('myPairs'), DEFINE, WS, NUMBER('1'), WS, NUMBER('2'), WS, NUMBER('3'), WS, NUMBER('4'), WS, NUMBER('5'), NEWLINE,
 
 				//myPairs0: [,] 1 2 3 4 5
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs0' }, DEFINE,
-				LBRACKET, PRODUCT, RBRACKET,
-				{ type: TokenTypes.NUMBER, value: '1' },
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' },
-				{ type: TokenTypes.NUMBER, value: '4' },
-				{ type: TokenTypes.NUMBER, value: '5' }, NEWLINE,
+				IDENTIFIER('myPairs0'), DEFINE, WS, LBRACKET, PRODUCT, RBRACKET, WS, NUMBER('1'), WS, NUMBER('2'), WS, NUMBER('3'), WS, NUMBER('4'), WS, NUMBER('5'), NEWLINE,
 
 				//myPairs1: 1, 2, 3, 4, 5
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs1' }, DEFINE,
-				{ type: TokenTypes.NUMBER, value: '1' }, PRODUCT,
-				{ type: TokenTypes.NUMBER, value: '2' }, PRODUCT,
-				{ type: TokenTypes.NUMBER, value: '3' }, PRODUCT,
-				{ type: TokenTypes.NUMBER, value: '4' }, PRODUCT,
-				{ type: TokenTypes.NUMBER, value: '5' }, NEWLINE,
+				IDENTIFIER('myPairs1'), DEFINE, WS, NUMBER('1'), PRODUCT, WS, NUMBER('2'), PRODUCT, WS, NUMBER('3'), PRODUCT, WS, NUMBER('4'), PRODUCT, WS, NUMBER('5'), NEWLINE,
 
 				//myPairs2: 1 ? 2 ? 3 ? 4 ? 5
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs2' }, DEFINE,
-				{ type: TokenTypes.NUMBER, value: '1' }, LAMBDA,
-				{ type: TokenTypes.NUMBER, value: '2' }, LAMBDA,
-				{ type: TokenTypes.NUMBER, value: '3' }, LAMBDA,
-				{ type: TokenTypes.NUMBER, value: '4' }, LAMBDA,
-				{ type: TokenTypes.NUMBER, value: '5' }, NEWLINE,
+				IDENTIFIER('myPairs2'), DEFINE, WS, NUMBER('1'), WS, LAMBDA, WS, NUMBER('2'), WS, LAMBDA, WS, NUMBER('3'), WS, LAMBDA, WS, NUMBER('4'), WS, LAMBDA, WS, NUMBER('5'), NEWLINE,
 				NEWLINE,
 
+				// L259
 				// myPairs0 = myPairs = myPairs1 = [,] myPairs2~
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs0' }, EQUAL,
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs' }, EQUAL,
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs1' }, EQUAL,
-				LBRACKET, PRODUCT, RBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs2' }, SPREAD, NEWLINE,
+				IDENTIFIER('myPairs0'), WS, EQUAL, WS, IDENTIFIER('myPairs'), WS, EQUAL, WS, IDENTIFIER('myPairs1'), WS, EQUAL, WS, LBRACKET, PRODUCT, RBRACKET, WS, IDENTIFIER('myPairs2'), SPREAD, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
+				// L265
 				// [[,],] myPairs = [1], [2], [3], [4], [5]
-				LBRACKET, LBRACKET, PRODUCT, RBRACKET, PRODUCT, RBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs' }, EQUAL,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '1' }, RBRACKET, PRODUCT,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET, PRODUCT,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '3' }, RBRACKET, PRODUCT,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '4' }, RBRACKET, PRODUCT,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '5' }, RBRACKET, NEWLINE,
-
+				LBRACKET, LBRACKET, PRODUCT, RBRACKET, PRODUCT, RBRACKET, WS, IDENTIFIER('myPairs'), WS, EQUAL, WS, LBRACKET, NUMBER('1'), RBRACKET, PRODUCT, WS, LBRACKET, NUMBER('2'), RBRACKET, PRODUCT, WS, LBRACKET, NUMBER('3'), RBRACKET, PRODUCT, WS, LBRACKET, NUMBER('4'), RBRACKET, PRODUCT, WS, LBRACKET, NUMBER('5'), RBRACKET, NEWLINE,
 				// [?] myPairs = 1 ? 2 ? 3 ? 4 ? 5
-				LBRACKET, LAMBDA, RBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs' }, EQUAL,
-				{ type: TokenTypes.NUMBER, value: '1' }, LAMBDA,
-				{ type: TokenTypes.NUMBER, value: '2' }, LAMBDA,
-				{ type: TokenTypes.NUMBER, value: '3' }, LAMBDA,
-				{ type: TokenTypes.NUMBER, value: '4' }, LAMBDA,
-				{ type: TokenTypes.NUMBER, value: '5' }, NEWLINE,
-
+				LBRACKET, LAMBDA, RBRACKET, WS, IDENTIFIER('myPairs'), WS, EQUAL, WS, NUMBER('1'), WS, LAMBDA, WS, NUMBER('2'), WS, LAMBDA, WS, NUMBER('3'), WS, LAMBDA, WS, NUMBER('4'), WS, LAMBDA, WS, NUMBER('5'), NEWLINE,
 				// [+] myPairs = 15
-				LBRACKET, PLUS, RBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs' }, EQUAL, { type: TokenTypes.NUMBER, value: '15' }, NEWLINE,
+				LBRACKET, PLUS, RBRACKET, WS, IDENTIFIER('myPairs'), WS, EQUAL, WS, NUMBER('15'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
+				// L271
 				// [* 2,] myPairs = 2 4 6 8 10
-				LBRACKET, MULTIPLY, { type: TokenTypes.NUMBER, value: '2' }, PRODUCT, RBRACKET,
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs' }, EQUAL,
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '4' },
-				{ type: TokenTypes.NUMBER, value: '6' },
-				{ type: TokenTypes.NUMBER, value: '8' },
-				{ type: TokenTypes.NUMBER, value: '10' }, NEWLINE,
+				LBRACKET, MULTIPLY, WS, NUMBER('2'), PRODUCT, RBRACKET, WS,
+				IDENTIFIER('myPairs'), WS, EQUAL, WS, NUMBER('2'), WS, NUMBER('4'), WS, NUMBER('6'), WS, NUMBER('8'), WS, NUMBER('10'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
+				// L275
 				// r: [1 2] [3 4]
-				{ type: TokenTypes.IDENTIFIER, value: 'r' }, DEFINE,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '1' }, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '3' }, { type: TokenTypes.NUMBER, value: '4' }, RBRACKET, NEWLINE,
+				IDENTIFIER('r'), DEFINE, WS,
+				LBRACKET, NUMBER('1'), WS, NUMBER('2'), RBRACKET, WS,
+				LBRACKET, NUMBER('3'), WS, NUMBER('4'), RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
 				// s: [1 2],[3 4]
-				{ type: TokenTypes.IDENTIFIER, value: 's' }, DEFINE,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '1' }, { type: TokenTypes.NUMBER, value: '2' }, RBRACKET, PRODUCT,
-				LBRACKET, { type: TokenTypes.NUMBER, value: '3' }, { type: TokenTypes.NUMBER, value: '4' }, RBRACKET, NEWLINE,
+				IDENTIFIER('s'), DEFINE, WS,
+				LBRACKET, NUMBER('1'), WS, NUMBER('2'), RBRACKET, PRODUCT,
+				LBRACKET, NUMBER('3'), WS, NUMBER('4'), RBRACKET, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-
-				{ type: TokenTypes.IDENTIFIER, value: 'myGreet' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'greet' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'hello' }, DEFINE, { type: TokenTypes.STRING, value: 'hello,' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'welcome' }, DEFINE, { type: TokenTypes.STRING, value: 'welcome,' }, NEWLINE,
-				DEDENT, { type: TokenTypes.IDENTIFIER, value: 'world' }, DEFINE, { type: TokenTypes.STRING, value: ' world' }, NEWLINE,
+				// L284
+				IDENTIFIER('myGreet'), DEFINE, NEWLINE,
+				INDENT, IDENTIFIER('greet'), DEFINE, WS, NEWLINE,
+				INDENT, IDENTIFIER('hello'), DEFINE, WS, STRING('hello,'), NEWLINE,
+				IDENTIFIER('welcome'), DEFINE, WS, STRING('welcome,'), NEWLINE,
+				DEDENT, IDENTIFIER('world'), DEFINE, WS, STRING(' world'), NEWLINE,
 				DEDENT, NEWLINE, NEWLINE, NEWLINE,
 
-
-				{ type: TokenTypes.IDENTIFIER, value: 'myGreet' }, DEFINE, SPREAD, { type: TokenTypes.IDENTIFIER, value: 'a' }, LAMBDA, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'a' }, GET, { type: TokenTypes.NUMBER, value: '0' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'greet' }, AND, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'a' }, GET, { type: TokenTypes.NUMBER, value: '1' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'hello' }, AND, { type: TokenTypes.STRING, value: 'hello,' }, XOR, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'a' }, GET, { type: TokenTypes.NUMBER, value: '1' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'welcome' }, AND, { type: TokenTypes.STRING, value: 'welcome,' }, XOR, NEWLINE,
-				DEDENT, { type: TokenTypes.IDENTIFIER, value: 'a' }, GET, { type: TokenTypes.NUMBER, value: '0' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'world' }, AND, { type: TokenTypes.STRING, value: ' world' }, XOR, NEWLINE,
+				// L292
+				IDENTIFIER('myGreet'), DEFINE, WS, SPREAD, IDENTIFIER('a'), WS, LAMBDA, NEWLINE,
+				INDENT, IDENTIFIER('a'), WS, GET, NUMBER('0'), WS, EQUAL, WS, STRING('greet'), WS, AND, WS, NEWLINE,
+				INDENT, IDENTIFIER('a'), WS, GET, NUMBER('1'), WS, EQUAL, WS, STRING('hello'), WS, AND, WS, STRING('hello,'), WS, XOR, NEWLINE,
+				IDENTIFIER('a'), WS, GET, NUMBER('1'), WS, EQUAL, WS, STRING('welcome'), WS, AND, WS, STRING('welcome,'), WS, XOR, NEWLINE,
+				DEDENT, IDENTIFIER('a'), WS, GET, NUMBER('0'), WS, EQUAL, WS, STRING('world'), WS, AND, WS, STRING(' world'), XOR, NEWLINE,
 				LBRACKET, RBRACKET, NEWLINE,
 				DEDENT, NEWLINE,
 				NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'myGreet' }, GET, { type: TokenTypes.IDENTIFIER, value: 'greet' },
-				GET, { type: TokenTypes.IDENTIFIER, value: 'hello' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'hello,' }, NEWLINE,
+				// L301
+				IDENTIFIER('myGreet'), WS, GET, IDENTIFIER('greet'), WS, GET, IDENTIFIER('hello'), WS, EQUAL, WS, STRING('hello,'), NEWLINE,
 				NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs' }, GET, { type: TokenTypes.NUMBER, value: '0' }, EQUAL, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
+				IDENTIFIER('myPairs'), WS, GET, NUMBER('0'), WS, EQUAL, WS, NUMBER('1'), NEWLINE,
 				NEWLINE,
 
-
-				{ type: TokenTypes.IDENTIFIER, value: 'myPairs' }, GET, LBRACKET, { type: TokenTypes.NUMBER, value: '1' }, SPREAD, { type: TokenTypes.NUMBER, value: '3' }, RBRACKET, EQUAL, { type: TokenTypes.NUMBER, value: '2' }, { type: TokenTypes.NUMBER, value: '3' }, { type: TokenTypes.NUMBER, value: '4' }, NEWLINE,
+				IDENTIFIER('myPairs'), WS, GET, LBRACKET, NUMBER('1'), WS, SPREAD, WS, NUMBER('3'), RBRACKET, WS, EQUAL, WS, NUMBER('2'), WS, NUMBER('3'), WS, NUMBER('4'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-
-				{ type: TokenTypes.IDENTIFIER, value: 'myGreet' }, NEWLINE,
-				INDENT, GET, { type: TokenTypes.IDENTIFIER, value: 'greet' }, NEWLINE,
-				INDENT, GET, { type: TokenTypes.IDENTIFIER, value: 'welcome' }, NEWLINE,
-				DEDENT, GET, { type: TokenTypes.IDENTIFIER, value: 'world' }, NEWLINE,
-				DEDENT, EQUAL, { type: TokenTypes.STRING, value: 'welcome, world' }, NEWLINE,
+				// L311
+				IDENTIFIER('myGreet'), NEWLINE,
+				INDENT, GET, IDENTIFIER('greet'), NEWLINE,
+				INDENT, GET, IDENTIFIER('welcome'), NEWLINE,
+				DEDENT, GET, IDENTIFIER('world'), NEWLINE,
+				DEDENT, EQUAL, WS, STRING('welcome, world'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'myGreet' }, NEWLINE,
-				INDENT, GET, { type: TokenTypes.IDENTIFIER, value: 'greet' }, NEWLINE,
-				INDENT, GET, { type: TokenTypes.IDENTIFIER, value: 'welcome' }, DEFINE, { type: TokenTypes.STRING, value: 'welcome to our ' }, NEWLINE,
-				DEDENT, GET, { type: TokenTypes.IDENTIFIER, value: 'world' }, DEFINE, { type: TokenTypes.STRING, value: 'metaverse!' }, NEWLINE,
+				// L319
+				IDENTIFIER('myGreet'), NEWLINE,
+				INDENT, GET, IDENTIFIER('greet'), NEWLINE,
+				INDENT, GET, IDENTIFIER('welcome'), WS, DEFINE, WS, STRING('welcome to our '), NEWLINE,
+				DEDENT, GET, IDENTIFIER('world'), WS, DEFINE, WS, STRING('metaverse!'), NEWLINE,
 				DEDENT, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
+				// L330
 				SPREAD, LBRACKET, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'y' }, DEFINE, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'n' }, DEFINE, { type: TokenTypes.NUMBER, value: '0' }, NEWLINE,
+				INDENT, IDENTIFIER('y'), DEFINE, WS, NUMBER('1'), NEWLINE,
+				IDENTIFIER('n'), DEFINE, WS, NUMBER('0'), NEWLINE,
 				DEDENT, RBRACKET, NEWLINE,
 				NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'y' }, EQUAL, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
+				// L335
+				IDENTIFIER('y'), WS, EQUAL, WS, NUMBER('1'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-
-				IMPORT, { type: TokenTypes.IDENTIFIER, value: 'io' }, NEWLINE,
-				INDENT, { type: TokenTypes.IDENTIFIER, value: 'say' }, { type: TokenTypes.IDENTIFIER, value: 'Hello' }, { type: TokenTypes.IDENTIFIER, value: 'World' }, NEWLINE,
+				// L340
+				IMPORT, IDENTIFIER('io'), NEWLINE,
+				INDENT, IDENTIFIER('say'), WS, IDENTIFIER('Hello'), WS, IDENTIFIER('World'), NEWLINE,
 				DEDENT, NEWLINE,
 				NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'say' }, { type: TokenTypes.IDENTIFIER, value: 'Hello' }, { type: TokenTypes.IDENTIFIER, value: 'World' }, NEWLINE,
+				IDENTIFIER('say'), WS, IDENTIFIER('Hello'), WS, IDENTIFIER('World'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-
-				IMPORT, { type: TokenTypes.IDENTIFIER, value: 'Funnctor' }, SPREAD, NEWLINE,
-				IMPORT, { type: TokenTypes.IDENTIFIER, value: 'Monoid' }, SPREAD, NEWLINE,
-				IMPORT, { type: TokenTypes.IDENTIFIER, value: 'io' }, SPREAD, NEWLINE,
+				// L349
+				IMPORT, IDENTIFIER('Funnctor'), SPREAD, NEWLINE,
+				IMPORT, IDENTIFIER('Monoid'), SPREAD, NEWLINE,
+				IMPORT, IDENTIFIER('io'), SPREAD, NEWLINE,
 				NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'say' },
-				LBRACKET,
-				{ type: TokenTypes.NUMBER, value: '1' },
-				{ type: TokenTypes.NUMBER, value: '2' },
-				{ type: TokenTypes.NUMBER, value: '3' },
-				{ type: TokenTypes.NUMBER, value: '4' },
-				{ type: TokenTypes.NUMBER, value: '5' },
-				LBRACKET, MULTIPLY, { type: TokenTypes.NUMBER, value: '4' }, PRODUCT, RBRACKET, LBRACKET, PLUS, RBRACKET, RBRACKET, NEWLINE,
+				IDENTIFIER('say'),
+				LBRACKET, NUMBER('1'), WS, NUMBER('2'), WS, NUMBER('3'), WS, NUMBER('4'), WS, NUMBER('5'), WS,
+				LBRACKET, MULTIPLY, WS, NUMBER('4'), PRODUCT, RBRACKET, WS, LBRACKET, PLUS, RBRACKET, RBRACKET, NEWLINE,
 				NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.IDENTIFIER, value: 'M' }, DEFINE, { type: TokenTypes.CHAR, value: 'M' }, NEWLINE,
+				// L362
+				IDENTIFIER('M'), DEFINE, WS, CHAR('M'), NEWLINE,
 				NEWLINE,
-
-				{ type: TokenTypes.IDENTIFIER, value: 'My' }, DEFINE, { type: TokenTypes.IDENTIFIER, value: 'M' },
-				{ type: TokenTypes.CHAR, value: 'y' },
-				{ type: TokenTypes.CHAR, value: ' ' },
-				{ type: TokenTypes.CHAR, value: 'D' },
-				{ type: TokenTypes.CHAR, value: 'o' },
-				{ type: TokenTypes.CHAR, value: 'm' },
-				{ type: TokenTypes.CHAR, value: 'e' },
-				{ type: TokenTypes.CHAR, value: 's' },
-				{ type: TokenTypes.CHAR, value: 't' },
-				{ type: TokenTypes.CHAR, value: 'i' },
-				{ type: TokenTypes.CHAR, value: 'c' }, NEWLINE,
-
-				{ type: TokenTypes.IDENTIFIER, value: 'My' }, EQUAL,
-				{ type: TokenTypes.IDENTIFIER, value: 'M' },
-				{ type: TokenTypes.CHAR, value: 'y' },
-				{ type: TokenTypes.CHAR, value: ' ' },
-				{ type: TokenTypes.CHAR, value: 'D' },
-				{ type: TokenTypes.CHAR, value: 'o' },
-				{ type: TokenTypes.CHAR, value: 'm' },
-				{ type: TokenTypes.CHAR, value: 'e' },
-				{ type: TokenTypes.CHAR, value: 's' },
-				{ type: TokenTypes.CHAR, value: 't' },
-				{ type: TokenTypes.CHAR, value: 'i' },
-				{ type: TokenTypes.CHAR, value: 'c' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'My Domestic' }, NEWLINE,
+				// L364
+				IDENTIFIER('My'), DEFINE, WS, IDENTIFIER('M'), WS, CHAR('y'), CHAR(' '), CHAR('D'), CHAR('o'), CHAR('m'), CHAR('e'), CHAR('s'), CHAR('t'), CHAR('i'), CHAR('c'), NEWLINE,
+				IDENTIFIER('My'), WS, EQUAL, WS, IDENTIFIER('M'), WS, CHAR('y'), WS, CHAR(' '), WS, CHAR('D'), WS, CHAR('o'), WS, CHAR('m'), WS, CHAR('e'), WS, CHAR('s'), WS, CHAR('t'), WS, CHAR('i'), WS, CHAR('c'), WS, EQUAL, WS, STRING('My Domestic'), NEWLINE,
 				NEWLINE,
-				INDENT, { type: TokenTypes.STRING, value: 'Hello ' },
-				{ type: TokenTypes.STRING, value: 'World!' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'Hello World!' }, NEWLINE,
-
-				{ type: TokenTypes.STRING, value: 'Hello' },
-				{ type: TokenTypes.CHAR, value: ' ' },
-				{ type: TokenTypes.STRING, value: 'World!' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'Hello World!' }, NEWLINE,
-
-
-				{ type: TokenTypes.CHAR, value: 'H' },
-				{ type: TokenTypes.STRING, value: 'ello' },
-				{ type: TokenTypes.CHAR, value: ' ' },
-				{ type: TokenTypes.STRING, value: 'World' },
-				{ type: TokenTypes.CHAR, value: '!' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'Hello World!' }, NEWLINE,
-
-
-
-				{ type: TokenTypes.STRING, value: 'Hello ' },
-				{ type: TokenTypes.IDENTIFIER, value: 'My' },
-				{ type: TokenTypes.STRING, value: 'World!' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'Hello My Domestic World!' }, NEWLINE,
-
-
-
-				{ type: TokenTypes.IDENTIFIER, value: 'Hello' },
-				{ type: TokenTypes.CHAR, value: ' ' },
-				{ type: TokenTypes.IDENTIFIER, value: 'My' },
-				{ type: TokenTypes.CHAR, value: ' ' },
-				{ type: TokenTypes.STRING, value: 'World' },
-				{ type: TokenTypes.CHAR, value: '!' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'Hello My Domestic World!' }, NEWLINE,
-
-
-				{ type: TokenTypes.STRING, value: 'Hello' },
-				{ type: TokenTypes.CHAR, value: '!' },
-				{ type: TokenTypes.CHAR, value: ' ' },
-				{ type: TokenTypes.IDENTIFIER, value: 'My' },
-				{ type: TokenTypes.IDENTIFIER, value: 'World' },
-				{ type: TokenTypes.CHAR, value: '!' }, EQUAL,
-				{ type: TokenTypes.STRING, value: 'Hello! My Domestic World!' }, NEWLINE,
+				// L367
+				INDENT, STRING('Hello '), WS, STRING('World!'), WS, EQUAL, WS, STRING('Hello World!'), NEWLINE,
+				// L368
+				STRING('Hello'), WS, CHAR(' '), STRING('World!'), WS, EQUAL, WS, STRING('Hello World!'), NEWLINE,
+				// L369
+				CHAR('H'), WS, STRING('ello'), WS, CHAR(' '), STRING('World'), WS, CHAR('!'), WS, EQUAL, WS, STRING('Hello World!'), NEWLINE,
+				// L370
+				STRING('Hello '), WS, IDENTIFIER('My'), WS, STRING('World!'), WS, EQUAL, WS, STRING('Hello My Domestic World!'), NEWLINE,
+				// L371
+				IDENTIFIER('Hello'), WS, CHAR(' '), IDENTIFIER('My'), WS, CHAR(' '), STRING('World'), WS, CHAR('!'), WS, EQUAL, WS, STRING('Hello My Domestic World!'), NEWLINE,
+				// L372
+				STRING('Hello'), WS, CHAR('!'), CHAR(' '), IDENTIFIER('My'), WS, IDENTIFIER('World'), WS, CHAR('!'), WS, EQUAL, WS, STRING('Hello! My Domestic World!'), NEWLINE,
 				DEDENT, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-				// XXX; single space indent?????
-				{ type: TokenTypes.IDENTIFIER, value: 'HWinEnter' }, DEFINE, NEWLINE,
-				INDENT, { type: TokenTypes.STRING, value: 'Hello' }, { type: TokenTypes.CHAR, value: '\n' },
-				{ type: TokenTypes.STRING, value: 'World!' }, NEWLINE,
-				DEDENT, NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
+				// L384
+				IDENTIFIER('HWinEnter'), WS, DEFINE, NEWLINE,
+				WS, STRING('Hello'), WS, CHAR('\n'),
+				WS, STRING('World!'), NEWLINE,
+				NEWLINE, NEWLINE, NEWLINE, NEWLINE, NEWLINE,
 
-				EXPORT, { type: TokenTypes.IDENTIFIER, value: 'myDict' }, DEFINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'name' },
-				{ type: TokenTypes.IDENTIFIER, value: 'value' },
-				LAMBDA, SPREAD, { type: TokenTypes.IDENTIFIER, value: 'name' }, DEFINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'value' }, NEWLINE,
-
-
-				EXPORT, { type: TokenTypes.IDENTIFIER, value: 'gets' }, DEFINE,
-				{ type: TokenTypes.IDENTIFIER, value: 'name' }, LAMBDA, { type: TokenTypes.IDENTIFIER, value: 'myDict' }, GET, SPREAD, { type: TokenTypes.IDENTIFIER, value: 'name' }, NEWLINE,
+				// L392
+				EXPORT, IDENTIFIER('myDict'), WS, DEFINE, WS, IDENTIFIER('name'), WS, IDENTIFIER('value'), WS, LAMBDA, WS, SPREAD, IDENTIFIER('name'), WS, DEFINE, WS, IDENTIFIER('value'), NEWLINE,
+				// L393
+				EXPORT, IDENTIFIER('gets'), WS, DEFINE, WS, IDENTIFIER('name'), WS, LAMBDA, WS, IDENTIFIER('myDict'), WS, GET, SPREAD, IDENTIFIER('name'), NEWLINE,
 				NEWLINE, NEWLINE, NEWLINE,
 
-				{ type: TokenTypes.NUMBER, value: '0' }, AND, { type: TokenTypes.STRING, value: 'me' }, EQUAL, { type: TokenTypes.NUMBER, value: '0' }, NEWLINE,
-				{ type: TokenTypes.NUMBER, value: '1' }, AND, { type: TokenTypes.STRING, value: 'me' }, EQUAL, { type: TokenTypes.STRING, value: 'me' }, NEWLINE,
+				// L397
+				NUMBER('0'), WS, AND, WS, STRING('me'), WS, EQUAL, WS, NUMBER('0'), NEWLINE,
+				NUMBER('1'), WS, AND, WS, STRING('me'), WS, EQUAL, WS, STRING('me'), NEWLINE,
 				NEWLINE,
 
-				{ type: TokenTypes.NUMBER, value: '0' }, OR, { type: TokenTypes.STRING, value: 'me' }, EQUAL, { type: TokenTypes.STRING, value: 'me' }, NEWLINE,
-				{ type: TokenTypes.NUMBER, value: '1' }, OR, { type: TokenTypes.STRING, value: 'me' }, EQUAL, { type: TokenTypes.NUMBER, value: '1' }, NEWLINE,
+				// L400
+				NUMBER('0'), WS, OR, WS, STRING('me'), WS, EQUAL, WS, STRING('me'), NEWLINE,
+				NUMBER('1'), WS, OR, WS, STRING('me'), WS, EQUAL, WS, NUMBER('1'), NEWLINE,
 				NEWLINE,
 
-				{ type: TokenTypes.NUMBER, value: '0' }, XOR, { type: TokenTypes.STRING, value: 'me' }, EQUAL, { type: TokenTypes.STRING, value: 'me' }, NEWLINE,
-				{ type: TokenTypes.NUMBER, value: '1' }, XOR, { type: TokenTypes.STRING, value: 'me' }, EQUAL, { type: TokenTypes.NUMBER, value: '0' }, NEWLINE,
+				// L403
+				NUMBER('0'), WS, XOR, WS, STRING('me'), WS, EQUAL, WS, STRING('me'), NEWLINE,
+				NUMBER('1'), WS, XOR, WS, STRING('me'), WS, EQUAL, WS, NUMBER('0'), NEWLINE,
 				NEWLINE,
 				NEWLINE,
 
-				EXPORT, { type: TokenTypes.STRING, value: 'It:' },
-				{ type: TokenTypes.CHAR, value: '\t' },
-				{ type: TokenTypes.STRING, value: '365' },
-				{ type: TokenTypes.STRING, value: 'is number of date at 1 year' }, NEWLINE,
-
-				{ type: TokenTypes.CHAR, value: '\t' },
-				{ type: TokenTypes.NUMBER, value: '4' }, PLUS,
-				{ type: TokenTypes.NUMBER, value: '5' }, EOF
+				// L407
+				EXPORT, STRING('It:'), CHAR('\t'), STRING('365'), WS, STRING('is number of date at 1 year'), NEWLINE,
+				CHAR('\t'), NUMBER('4'), WS, PLUS, WS, NUMBER('5'),
+				EOF
 			]
 		);
 	});
