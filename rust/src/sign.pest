@@ -1,10 +1,13 @@
 WHITESPACE = _{ " " | "\r" | "\n"}
 program = { SOI ~ expression* ~ EOI }
 
-expression = { export }
+expression = { define }
 
 define = { export ~ (f_define ~ define)? }
-export = { f_export? ~ lambda }
+export = { f_export? ~ coproduct }
+coproduct = { lambda ~ (apply | literal_product)? }
+  apply = { closure ~ (apply | literal_product)? }
+  literal_product = { literal ~ (apply | literal_product)? }
 lambda = { product+ ~ (f_lambda ~ lambda)? }
 product = { spread ~ (f_product ~ product)? }
 spread = { lift ~ (f_spread ~ lift)? }
@@ -17,13 +20,7 @@ add = { mul ~ ((f_add | f_sub) ~ add)? }
 mul = { power ~ ((f_mul | f_div | f_mod) ~ mul)? }
 power = { factorial ~ (f_power ~ power)? }
 factorial = { flat ~ f_factorial* }
-flat = { coproduct ~ f_spread? }
-coproduct = { get ~ (apply | literal_product)? }
-
-apply = { closure ~ (apply | literal_product)? }
-
-literal_product = { literal ~ (apply | literal_product)? }
-
+flat = { get ~ f_spread? }
 get = { import ~ (f_get ~ get)? }
 import = { f_import? ~ (block | literal) }
 
@@ -65,7 +62,7 @@ infix_l = { f_product | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f
 infix_r = { f_define | f_lambda | f_power }
 postfix = { f_factorial | f_spread }
 
-infix = { compare_op | f_spread}
+infix = { compare_op | f_spread }
 compare_op = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
 
 f_define = { ":" }
