@@ -1,7 +1,7 @@
 WHITESPACE = _{ " " | "\r" | "\n"}
 program = { SOI ~ expression* ~ EOI }
 
-expression = { export }
+expression = { define }
 
 define = { export ~ (f_define ~ define)? }
 export = { f_export? ~ lambda }
@@ -65,7 +65,7 @@ infix_l = { f_product | f_or | f_xor | f_and | f_add | f_sub | f_mul | f_div | f
 infix_r = { f_define | f_lambda | f_power }
 postfix = { f_factorial | f_spread }
 
-infix = { compare_op | f_spread}
+infix = { compare_op | f_spread }
 compare_op = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
 
 f_define = { ":" }
