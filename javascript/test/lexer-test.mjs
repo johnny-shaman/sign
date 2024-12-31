@@ -268,7 +268,7 @@ console.log('\nRunning Comment Tests...');
 assertTokens(
 	'foo \n`this is a comment \nbar',
 	[
-		IDENTIFIER('foo'), WS,
+		IDENTIFIER('foo'),
 		NEWLINE,
 		NEWLINE,
 		IDENTIFIER('bar'),
@@ -362,7 +362,7 @@ await readfile('../../low_level_example.sn')
 				NEWLINE,NEWLINE,NEWLINE,
 				INDENT, IDENTIFIER('r0'), WS, DEFINE, WS, NUMBER('0x0000'), NEWLINE,
 				EXPORT, IDENTIFIER('r0'), WS, DEFINE, WS, NUMBER('3'), NEWLINE,
-				IDENTIFIER('r1'), WS, WS, DEFINE, WS, IMPORT, IDENTIFIER('r0'), WS, MULTIPLY, WS, NUMBER('2'), NEWLINE,
+				IDENTIFIER('r1'), WS, DEFINE, WS, IMPORT, IDENTIFIER('r0'), WS, MULTIPLY, WS, NUMBER('2'), NEWLINE,
 				DEDENT, NEWLINE,
 				NEWLINE,
 
@@ -531,7 +531,7 @@ await readfile('../../example.sn')
 
 				// L154
 				LBRACKET, NEWLINE,
-				INDENT, IDENTIFIER('x'), WS, LAMBDA, WS, NEWLINE,
+				INDENT, IDENTIFIER('x'), WS, LAMBDA, NEWLINE,
 				INDENT, IDENTIFIER('x'), WS, EQUAL, WS, NUMBER('0'), WS, AND, WS, LBRACKET, UNIT, WS, LAMBDA, WS, NUMBER('0'), RBRACKET, WS, XOR, NEWLINE,
 				IDENTIFIER('x'), WS, GREATER, WS, NUMBER('0'), WS, AND, WS, LBRACKET, UNIT, WS, LAMBDA, WS, STRING('more'), RBRACKET, WS, XOR, NEWLINE,
 				IDENTIFIER('x'), WS, LESS, WS, NUMBER('0'), WS, AND, WS, LBRACKET, UNIT, WS, LAMBDA, WS, STRING('less'), RBRACKET, WS, XOR, NEWLINE,
@@ -566,25 +566,25 @@ await readfile('../../example.sn')
 				NEWLINE,
 
 				// L182
-				IDENTIFIER('mary'), WS, DEFINE, WS, NEWLINE,
+				IDENTIFIER('mary'), WS, DEFINE, NEWLINE,
 				INDENT, SPREAD, IDENTIFIER('person'), NEWLINE,
 				INDENT, GET, IDENTIFIER('name'), WS, DEFINE, WS, STRING('mary'), NEWLINE,
-				GET, IDENTIFIER('age'), WS, WS, DEFINE, WS, NUMBER('16'), NEWLINE,
+				GET, IDENTIFIER('age'), WS, DEFINE, WS, NUMBER('16'), NEWLINE,
 				DEDENT, DEDENT, NEWLINE,
 
 
 				// L187
-				IDENTIFIER('charie'), WS, DEFINE, WS, NEWLINE,
+				IDENTIFIER('charie'), WS, DEFINE, NEWLINE,
 				INDENT, SPREAD, IDENTIFIER('person'), NEWLINE,
 				INDENT, GET, IDENTIFIER('name'), WS, DEFINE, WS, STRING('charie'), NEWLINE,
-				GET, IDENTIFIER('age'), WS, WS, DEFINE, WS, NUMBER('24'), NEWLINE,
+				GET, IDENTIFIER('age'), WS, DEFINE, WS, NUMBER('24'), NEWLINE,
 				DEDENT, DEDENT, NEWLINE,
 				NEWLINE, NEWLINE,
 
 
 				// L194
 				LBRACKET, NEWLINE,
-				INDENT, NUMBER('0'), WS, WS, WS, DEFINE, WS, STRING('zero'), NEWLINE,
+				INDENT, NUMBER('0'), WS, DEFINE, WS, STRING('zero'), NEWLINE,
 				GREATER, WS, NUMBER('0'), WS, DEFINE, WS, STRING('more'), NEWLINE,
 				LESS, WS, NUMBER('0'), WS, DEFINE, WS, STRING('less'), NEWLINE,
 				STRING('other'), NEWLINE,
@@ -692,7 +692,7 @@ await readfile('../../example.sn')
 
 				// L284
 				IDENTIFIER('myGreet'), DEFINE, NEWLINE,
-				INDENT, IDENTIFIER('greet'), DEFINE, WS, NEWLINE,
+				INDENT, IDENTIFIER('greet'), DEFINE, NEWLINE,
 				INDENT, IDENTIFIER('hello'), DEFINE, WS, STRING('hello,'), NEWLINE,
 				IDENTIFIER('welcome'), DEFINE, WS, STRING('welcome,'), NEWLINE,
 				DEDENT, IDENTIFIER('world'), DEFINE, WS, STRING(' world'), NEWLINE,
@@ -700,7 +700,7 @@ await readfile('../../example.sn')
 
 				// L292
 				IDENTIFIER('myGreet'), DEFINE, WS, SPREAD, IDENTIFIER('a'), WS, LAMBDA, NEWLINE,
-				INDENT, IDENTIFIER('a'), WS, GET, NUMBER('0'), WS, EQUAL, WS, STRING('greet'), WS, AND, WS, NEWLINE,
+				INDENT, IDENTIFIER('a'), WS, GET, NUMBER('0'), WS, EQUAL, WS, STRING('greet'), WS, AND, NEWLINE,
 				INDENT, IDENTIFIER('a'), WS, GET, NUMBER('1'), WS, EQUAL, WS, STRING('hello'), WS, AND, WS, STRING('hello,'), WS, XOR, NEWLINE,
 				IDENTIFIER('a'), WS, GET, NUMBER('1'), WS, EQUAL, WS, STRING('welcome'), WS, AND, WS, STRING('welcome,'), WS, XOR, NEWLINE,
 				DEDENT, IDENTIFIER('a'), WS, GET, NUMBER('0'), WS, EQUAL, WS, STRING('world'), WS, AND, WS, STRING(' world'), XOR, NEWLINE,

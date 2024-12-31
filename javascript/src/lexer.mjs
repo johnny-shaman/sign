@@ -103,6 +103,10 @@ class Lexer {
 
 			// Handle whitespace and indentation
 			if (char === '\n') {
+				// trim whitespace
+				if (this.tokens.length > 0 && this.tokens[this.tokens.length - 1].type === TokenTypes.WS) {
+					this.tokens.pop();
+				}
 				this.handleNewline();
 				continue;
 			}
@@ -209,6 +213,21 @@ class Lexer {
 	}
 
 	handleSymbol() {
+
+		// Handle whitespace
+		if (this.peek() === ' ') {
+			let spaces = ' ';
+			this.advance();
+
+			while (this.peek() === ' ') {
+				spaces += ' ';
+				this.advance();
+			}
+
+			this.tokens.push(new Token(TokenTypes.WS, spaces, this.line, this.column - spaces.length));
+			return;
+		}
+
 		const symbolMap = {
 			'#': TokenTypes.EXPORT,
 			'@': TokenTypes.IMPORT,
