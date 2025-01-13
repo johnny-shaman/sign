@@ -471,7 +471,7 @@ hello sign = `Hello Sign!`
 
    * （例１　名前をつけて定義する場合）
      ```javascript
-     exp2fn : x y ? (x \+ y) ^ 2
+     exp2fn : x y ? (x + y) ^ 2
      ```
 
    * （例２　名前なしの場合はカッコで囲む必要がある。）
