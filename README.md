@@ -8,6 +8,10 @@
   [language example](./example.sn)
   [日本語はこちら](./example.ja-jp.sn)
 
+## reference
+  [en](./reference/Sign_reference_en_us.md)
+  [日本語はこちら](./reference/Sign_reference_ja-jp.md)
+
 ## License
   [Language-License](./License/sign-language-license.md)
   [日本語はこちら](./License/sign-language-license-ja.md)

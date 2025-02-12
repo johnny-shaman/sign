@@ -350,7 +350,7 @@ say Hello World
 @Monoid~
 @io~
 
-say[1 2 3 4 5 [* 4,] [+]]
+say [ [* 4,] [+] [1 ~ 5] ]
 
 `Any single character after \ is always one character value of character type.`
 `In the case of character concatenation, since it's decided that \ is followed by one character, if ident or string comes, it's simply regarded as string concatenation.`

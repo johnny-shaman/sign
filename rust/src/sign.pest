@@ -5,9 +5,11 @@ expression = { define }
 
 define = { export ~ (f_define ~ define)? }
 export = { f_export? ~ coproduct }
-coproduct = { lambda ~ (apply | literal_product)? }
-  apply = { closure ~ (apply | literal_product)? }
-  literal_product = { literal ~ (apply | literal_product)? }
+
+coproduct = { lambda ~ (apply | literal_product)* }
+  apply = { closure ~ (apply | literal_product)* }
+  literal_product = { literal ~ (apply | literal_product)* }
+
 lambda = { product+ ~ (f_lambda ~ lambda)? }
 product = { spread ~ (f_product ~ product)? }
 spread = { lift ~ (f_spread ~ lift)? }

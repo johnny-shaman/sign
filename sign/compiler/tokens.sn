@@ -7,27 +7,27 @@ rtn : \
 #nrt : c ? c != \
  & c
 
-#letter : c ? [= c |] [\a ~ \z]
-#LETTER : c ? [= c |] [\A ~ \Z]
-#Letter : c ? [= c |] [[\A ~ \Z] [\a ~ \z]]
-#nzero  : c ? [= c |] [\1 ~ \9]
-#digit  : c ? [= c |] [\0 ~ \9]
-#hexa   : c ? [= c |] [[\0 ~ \9] [\A ~ \F] [\a ~ \f]]
-#octa   : c ? [= c |] [\0 ~ \7]
-#binaly : c ? [= c |] [\0 \1]
+#letter : c ? [= c |] [\a ~ \z] & c
+#LETTER : c ? [= c |] [\A ~ \Z] & c
+#Letter : c ? [= c |] [[\A ~ \Z] [\a ~ \z]] & c
+#nzero  : c ? [= c |] [\1 ~ \9] & c
+#digit  : c ? [= c |] [\0 ~ \9] & c
+#hexa   : c ? [= c |] [[\0 ~ \9] [\A ~ \F] [\a ~ \f]] & c
+#octa   : c ? [= c |] [\0 ~ \7] & c
+#binaly : c ? [= c |] [\0 \1] & c
 
-#AlphaNum  : c ? [= c |] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z]]
-#Alpha_Num : c ? [= c |] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z] \_]
+#AlphaNum  : c ? [= c |] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z]] & c
+#Alpha_Num : c ? [= c |] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z] \_] & c
 
-#LETTERS : c ~s ? @LETTER c @LETTERS s~
-#letters : c ~s ? @letter c @letters s~
-#Letters : c ~s ? @Letter c @Letters s~
-#digits : c ~s ? @digit c @digits s~
+#LETTERS : c ~s ? @LETTER c, @LETTERS s~
+#letters : c ~s ? @letter c, @letters s~
+#Letters : c ~s ? @Letter c, @Letters s~
+#digits : c ~s ? @digit c, @digits s~
 
-#AlphaNums : c ~s ? @AlphaNum c @AlphaNums s~
-#Alpha_Nums : c ~s ? @Alpha_Num c @Alpha_Nums s~
+#AlphaNums : c ~s ? @AlphaNum c, @AlphaNums s~
+#Alpha_Nums : c ~s ? @Alpha_Num c, @Alpha_Nums s~
 
-#Identifier : c ~s ? @Letter c @Alpha_Nums s~
+#Identifier : c ~s ? @Letter c, @Alpha_Nums s~
 
 #hex : t u ~cs ? t = \0 & u = \x & t u [f : c ~s ? @hexa c f s~] cs~
 #oct : t u ~cs ? t = \0 & u = \o & t u [f : c ~s ? @octa c f s~] cs~

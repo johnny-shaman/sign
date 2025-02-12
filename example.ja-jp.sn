@@ -381,11 +381,11 @@ say Hello World
 
 `ファイルスコープへ展開して使う。`
 
-~@Funnctor
-~@Monoid
-~@io
+@Funnctor~
+@Monoid~
+@io~
 
-say[1 2 3 4 5 [* 4,] [+]]
+say ( [* 4,] [+] [1 ~ 5] )
 
 
 `\の後の任意の１文字は、必ず文字型の値１文字分とする。`
