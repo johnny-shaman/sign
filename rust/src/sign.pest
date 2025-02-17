@@ -91,7 +91,7 @@ f_get = { "'" }
 f_import = { "@" }
 f_block = { "\t" }
 
-literal = { number | string | letter | unit | identifier}
+literal = { number | string | letter | unit | identifier }
 number = {float | int | uint | hex | oct | bit }
 uint = @{ ASCII_DIGIT+ }
 int = @{ "-"? ~ ASCII_DIGIT+ ~ !(("." ~ ASCII_DIGIT*) | "e" | "E") }
