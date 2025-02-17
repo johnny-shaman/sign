@@ -1,15 +1,13 @@
 WHITESPACE = _{ " " | "\r" | "\n"}
 program = { SOI ~ expression* ~ EOI }
 
-expression = { define }
+expression = { export }
 
-define = { export ~ (f_define ~ define)? }
-export = { f_export? ~ coproduct }
-
+export = { f_export? ~ define }
+define = { coproduct ~ (f_define ~ define)? }
 coproduct = { lambda ~ (apply | literal_product)* }
   apply = { closure ~ (apply | literal_product)* }
   literal_product = { literal ~ (apply | literal_product)* }
-
 lambda = { product+ ~ (f_lambda ~ lambda)? }
 product = { spread ~ (f_product ~ product)? }
 spread = { lift ~ (f_spread ~ lift)? }
