@@ -65,8 +65,8 @@ postfix = { f_factorial | f_spread }
 infix = { compare_op | f_spread }
 compare_op = { f_less | f_less_eq | f_eq | f_neq | f_more_eq | f_more }
 
-f_define = { ":" }
 f_export = { "#" }
+f_define = { ":" }
 f_lambda = { "?" }
 f_product = { "," }
 f_or = { "|" }

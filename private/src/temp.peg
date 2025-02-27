@@ -1,0 +1,10 @@
+Scalars = Scalar:Scalar*
+Scalar = _* (Bin / Oct / Hex / Number / Tag / Letter) _*
+
+Number = number:$("-"? [0-9]+ "."? [0-9]* ) {return {number};}
+Hex = hex:$("0x"([0-9] / [A-F] / [a-f])+) {return {hex};}
+Oct = oct:$("0o"[0-7]+) {return {oct};}
+Bin = bin:$("0b"("0" / "1")+) {return {oct};}
+Tag = identifier:$(("_" / [A-Z] / [a-z]) ("_" / [A-Z] / [a-z] / [0-9])*) {return {identifier};}
+Letter = "\\" letter:. {return {letter}}
+_ = [ \n\r]
