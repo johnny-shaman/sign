@@ -1,4 +1,4 @@
-Expression = ($("(" / "{" / "[" / tab)* $_* $((prefix+ Expression) / Infix / (literal postfix*) / Pointless / PointlessMap) $_* $(")" / "}" / "]")* )*
+Expression = e:(("(" / "{" / "[" / tab)* _* ((prefix+ Expression) / Infix / (literal postfix*) / Pointless / PointlessMap) _* (")" / "}" / "]")* EOL*)* {return e.flat(Infinity).join("")}
 
 Infix = l:literal _* c:infix _* r:Expression {return `${l} ${c} ${r}`}
 
@@ -13,7 +13,7 @@ PointlessMap = l:Pointless _* r:pair {return `${l} ${r}`}
 
 literal = $(_* ( string / letter / bin / oct / hex / number / unit / tag / ($("(" / "{" / "[" / tab) _* Expression _* $(")" / "}" / "]")) _*))
 
-number = $("-"? [0-9]+ "."? [0-9]* )
+number = ("-"? [0-9]+ "."? [0-9]* )
 hex = $("0x"([0-9] / [A-F] / [a-f])+)
 oct = $("0o"[0-7]+)
 bin = $("0b"("0" / "1")+)
