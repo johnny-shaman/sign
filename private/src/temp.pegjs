@@ -1,24 +1,32 @@
+{
+  let tagList = {}
+}
 
+literal = $(_* ( letter / bin / oct / hex / number / unit) _*)
 
-literal = _* literal:( letter / bin / oct / hex / number / unit) _* {return {literal}}
+number = $("-"? [0-9]+ "."? [0-9]* )
+hex = $("0x"([0-9] / [A-F] / [a-f])+)
+oct = $("0o"[0-7]+)
+bin = $("0b"("0" / "1")+)
+tag = $(("_" / [A-Z] / [a-z]) ("_" / [A-Z] / [a-z] / [0-9])*)
+letter = $("\\" .)
+unit = $"_"
 
-number = number:$("-"? [0-9]+ "."? [0-9]* ) {return {number};}
-hex = hex:$("0x"([0-9] / [A-F] / [a-f])+) {return {hex};}
-oct = oct:$("0o"[0-7]+) {return {oct};}
-bin = bin:$("0b"("0" / "1")+) {return {oct};}
-tag = identifier:$(("_" / [A-Z] / [a-z]) ("_" / [A-Z] / [a-z] / [0-9])*) {return {identifier};}
-letter = "\\" letter:. {return {letter}}
-unit = "_"
+Pointless
+  = $((infix_ / infixL / infixR) _* literal)
+  / $(literal _* (infix_ / infixL / infixR))
+  / $(prefix)
+  / $("_" postfix)
 
 prefix = export / import / not / spread
-infixR = define / func / pair / pow
+infixR = define / lambda / pair / pow
 infixL = or / xor / and / add / sub / mul / div / mod / get
-infix = lt / le / eq / ne / me / mt / spread
+infix_ = lt / le / eq / ne / me / mt
 postfix = spread / factrial
 
 export = "#"
 define = ":"
-func = "?"
+lambda = "?"
 pair = ","
 or = "|"
 xor = ";"
@@ -40,6 +48,6 @@ factrial = "!"
 spread = "~"
 get = "'"
 import = "@"
-block = "\t"
+tab = "\t"
 
 _ = " "
