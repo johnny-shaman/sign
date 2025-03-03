@@ -1,62 +1,33 @@
-Expression = e:Export{return e.flat(Infinity).join("");}
-Export = export? (Dictionary / Define)
-Dictionary = (BlockStart key _* be _*) DorC
-DorC = (Dictionary / Coproduct)
-Define = (tag _* be _*)* Coproduct
-Coproduct = Lambda (Apply / Cons)*
-Cons = atom (_+ Coproduct)?
-Apply = (Closure / tag) (_+  Coproduct)?
-Lambda = Inline? / Match? / LogicOr
-Inline = Arguments _* lambda _* Lambda?
-Match = Arguments _* lambda _* IndentBlock+
-LogicOr = LogicAnd _* logicOr? _* LogicOr?
-LogicAnd = LogicNot _* and? _* LogicAnd?
-LogicNot = not* Compares
-Compares = Additive _* compare? _* Compares?
-Additive = Multiple _* additive? _* Additive?
-Multiple = Expornential _* multiple? _* Multiple?
-Expornential = Factrial _* pow? _* Expornential?
-Factrial = Get factrial*
-Get = literal _* get? _* Get?
+start = e:Expression* {return e.flat(Infinity).join(" ")}
 
-Arguments = $((tag _+)* Rest / unit )
-Rest = $(spread? tag)
-
-atom = $(_* (string / letter / bin / oct / hex / number / unit / tag) _*)
-
-literal = $(_* ( atom / Closure / Block) _*)
-
-Closure
-  = $("(" _* Lambda _* ")")
-  / $("{" _* Lambda _* "}")
-  / $("[" _* Lambda _* "]")
-  / $("(" _* Pointless _* ")")
-  / $("{" _* Pointless _* "}")
-  / $("[" _* Pointless _* "]")
-  / $("(" _* PointlessMap _* ")")
-  / $("{" _* PointlessMap _* "}")
-  / $("[" _* PointlessMap _* "]")
-
-Pointless
-  = $(infix _* atom)
-  / $(atom _* infix)
-  / $(prefix)
-  / $("_" postfix)
-  / $infix
-
-PointlessMap = $(Pointless _* pair)
+Expression
+  = l:prefix r:Expression { return `${l}${r}`}
+  / l:literal _* c:infix _* r:Expression {return `${l} ${c} ${r}`;}
+  / l:literal r:postfix { return `${l}${r}`}
+  / l:literal _* r:literal? { return `${l}${r? r : ""}`}
+  / EOL
 
 Block
-  = $("(" _* Expression _* ")")
-  / $("{" _* Expression _* "}")
-  / $("[" _* Expression _* "]")
+  = l:"(" _* c:(Pointless? / Expression?) _* r:")" {return `${l} ${c} ${r}`}
+  / l:"{" _* c:(Pointless? / Expression?) _* r:"}" {return `${l} ${c} ${r}`}
+  / l:"[" _* c:(Pointless? / Expression?) _* r:"]" {return `${l} ${c} ${r}`}
   / IndentBlock
 
 IndentBlock = BlockStart Expression
-
 BlockStart = $(EOL tab+)
 
-number = ("-"? [0-9]+ "."? [0-9]* )
+literal = atom / Block
+
+Pointless
+  = l:$infix _* c:Expression? _* r:$pair? {return `${l} ${c} ${r}`}
+  / l:$atom? _* c:$infix _* r:$pair? {return `${l} ${c} ${r}`}
+  / $prefix
+  / $"_" $postfix
+  / $infix
+
+atom = $(string / letter / bin / oct / hex / number / tag / unit)
+
+number = $("-"? [0-9]+ "."? [0-9]* )
 hex = $("0x"([0-9] / [A-F] / [a-f])+)
 oct = $("0o"[0-7]+)
 bin = $("0b"("0" / "1")+)
@@ -66,12 +37,8 @@ string = $("`" [^\n`]* "`")
 unit = $"_"
 key = $(string / letter / tag)
 
-infix = $(infixL / infix_ / infixR)
-
 prefix = $(export / import / not / spread)
-infixL = $(or / xor / and / add / sub / mul / div / mod / get)
-infix_ = $(compare / spread)
-infixR = $(be / lambda / pair / pow )
+infix = $(or / xor / and / add / sub / mul / div / mod / get / compare / spread / be / lambda / pair / pow)?
 compare = $(lt / le / eq / ne / me / mt )
 postfix = $(spread / factrial)
 
