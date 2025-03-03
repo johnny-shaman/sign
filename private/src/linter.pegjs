@@ -1,29 +1,26 @@
-start = e:Expression* {return e.flat(Infinity).join(" ")}
-
+Start = e:Expression* {return e.join()}
 Expression
-  = l:prefix r:Expression { return `${l}${r}`}
-  / l:literal _* c:infix _* r:Expression {return `${l} ${c} ${r}`;}
-  / l:literal r:postfix { return `${l}${r}`}
-  / l:literal _* r:literal? { return `${l}${r? r : ""}`}
+  = l:prefix r:Expression { return `${l}${r}`;}
+  / l:literal _* c:infix _* r:Expression {return `${l}${c ? ` ${c} ` : " "}${r}`;}
+  / l:literal r:postfix* { return `${l}${r}`;}
+  / l:literal
   / EOL
 
 Block
-  = l:"(" _* c:(Pointless? / Expression?) _* r:")" {return `${l} ${c} ${r}`}
-  / l:"{" _* c:(Pointless? / Expression?) _* r:"}" {return `${l} ${c} ${r}`}
-  / l:"[" _* c:(Pointless? / Expression?) _* r:"]" {return `${l} ${c} ${r}`}
+  = l:"(" _* c:(Pointless? / Expression?) _* r:")" {return `${l}${c}${r}`;}
+  / l:"{" _* c:(Pointless? / Expression?) _* r:"}" {return `${l}${c}${r}`;}
+  / l:"[" _* c:(Pointless? / Expression?) _* r:"]" {return `${l}${c}${r}`;}
   / IndentBlock
 
-IndentBlock = BlockStart Expression
+IndentBlock = l:BlockStart r:Expression  { return `${l}${r}`;}
 BlockStart = $(EOL tab+)
 
 literal = atom / Block
 
 Pointless
-  = l:$infix _* c:Expression? _* r:$pair? {return `${l} ${c} ${r}`}
-  / l:$atom? _* c:$infix _* r:$pair? {return `${l} ${c} ${r}`}
-  / $prefix
-  / $"_" $postfix
-  / $infix
+  = l:$infix _* c:Expression* _* r:$pair* {return `${l} ${c}${r}`}
+  / $prefix+
+  / $("_" postfix)+
 
 atom = $(string / letter / bin / oct / hex / number / tag / unit)
 
@@ -38,7 +35,7 @@ unit = $"_"
 key = $(string / letter / tag)
 
 prefix = $(export / import / not / spread)
-infix = $(or / xor / and / add / sub / mul / div / mod / get / compare / spread / be / lambda / pair / pow)?
+infix = $(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / compare / spread / pow)?
 compare = $(lt / le / eq / ne / me / mt )
 postfix = $(spread / factrial)
 
