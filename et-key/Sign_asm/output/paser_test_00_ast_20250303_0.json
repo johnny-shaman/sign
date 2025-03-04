@@ -1,0 +1,3416 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "Hello"
+      },
+      "value": {
+        "type": "String",
+        "value": "Hello"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "World"
+      },
+      "value": {
+        "type": "String",
+        "value": "World"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "yep"
+      },
+      "value": {
+        "type": "Number",
+        "value": "1"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "nop"
+      },
+      "value": {
+        "type": "Number",
+        "value": "0"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "unit"
+      },
+      "value": {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "value": "none"
+        },
+        "value": {
+          "type": "EmptyList",
+          "value": "[]"
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "none"
+      },
+      "value": {
+        "type": "EmptyList",
+        "value": "[]"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "unit"
+      },
+      "value": {
+        "type": "EmptyList",
+        "value": "[]"
+      }
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "String",
+            "value": "y"
+          },
+          "value": {
+            "type": "Number",
+            "value": "1"
+          }
+        },
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "String",
+            "value": "n"
+          },
+          "value": {
+            "type": "Number",
+            "value": "0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "String",
+        "value": "y"
+      }
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Identifier",
+        "value": "x"
+      },
+      "arguments": [
+        {
+          "type": "Lambda",
+          "parameters": [
+            {
+              "type": "Identifier",
+              "value": "y"
+            }
+          ],
+          "body": {
+            "type": "BinaryOperation",
+            "operator": "+",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "+",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "^",
+                "left": {
+                  "type": "Identifier",
+                  "value": "x"
+                },
+                "right": {
+                  "type": "Number",
+                  "value": "2"
+                }
+              },
+              "right": {
+                "type": "BinaryOperation",
+                "operator": "*",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "*",
+                  "left": {
+                    "type": "Number",
+                    "value": "2"
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "value": "x"
+                  }
+                },
+                "right": {
+                  "type": "Identifier",
+                  "value": "y"
+                }
+              }
+            },
+            "right": {
+              "type": "BinaryOperation",
+              "operator": "^",
+              "left": {
+                "type": "Identifier",
+                "value": "y"
+              },
+              "right": {
+                "type": "Number",
+                "value": "2"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Identifier",
+        "value": "x"
+      },
+      "arguments": [
+        {
+          "type": "Lambda",
+          "parameters": [
+            {
+              "type": "Identifier",
+              "value": "y"
+            }
+          ],
+          "body": {
+            "type": "BinaryOperation",
+            "operator": "^",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "+",
+              "left": {
+                "type": "Identifier",
+                "value": "x"
+              },
+              "right": {
+                "type": "Identifier",
+                "value": "y"
+              }
+            },
+            "right": {
+              "type": "Number",
+              "value": "2"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "PointFreeOperator",
+        "operator": "+",
+        "position": "infix"
+      },
+      "arguments": [
+        {
+          "type": "Number",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Number",
+        "value": "2"
+      },
+      "right": {
+        "type": "PointFreeOperator",
+        "operator": "+",
+        "position": "infix"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "Identifier",
+          "value": "x"
+        },
+        "right": {
+          "type": "Identifier",
+          "value": "y"
+        }
+      },
+      "right": {
+        "type": "Identifier",
+        "value": "z"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "<=",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "<=",
+        "left": {
+          "type": "Number",
+          "value": "1"
+        },
+        "right": {
+          "type": "Identifier",
+          "value": "x"
+        }
+      },
+      "right": {
+        "type": "Number",
+        "value": "9"
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Number",
+        "value": "2"
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "Number",
+          "value": "2"
+        },
+        "right": {
+          "type": "Number",
+          "value": "4"
+        }
+      }
+    },
+    {
+      "type": "Product",
+      "elements": [
+        {
+          "type": "Number",
+          "value": "2"
+        },
+        {
+          "type": "BinaryOperation",
+          "operator": "=",
+          "left": {
+            "type": "Number",
+            "value": "2"
+          },
+          "right": {
+            "type": "Number",
+            "value": "2"
+          }
+        },
+        {
+          "type": "Number",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "iterate3"
+      },
+      "value": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "_param_1",
+            "originalValue": {
+              "type": "Number",
+              "value": "1"
+            }
+          }
+        ],
+        "body": {
+          "type": "Number",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Number",
+        "value": "3"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "Identifier",
+        "value": "iterate3"
+      },
+      "right": {
+        "type": "Number",
+        "value": "1"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "Identifier",
+        "value": "iterate3"
+      },
+      "right": {
+        "type": "Number",
+        "value": "2"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "Identifier",
+        "value": "iterate3"
+      },
+      "right": {
+        "type": "Number",
+        "value": "3"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "Identifier",
+        "value": "iterate3"
+      },
+      "right": {
+        "type": "EmptyList",
+        "value": "[]"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "Identifier",
+        "value": "iterate3"
+      },
+      "right": {
+        "type": "EmptyList",
+        "value": "[]"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "result2"
+      },
+      "value": {
+        "type": "Application",
+        "function": {
+          "type": "Operator",
+          "value": "-",
+          "tokenType": "f_sub"
+        },
+        "arguments": [
+          {
+            "type": "Number",
+            "value": "1"
+          },
+          {
+            "type": "Number",
+            "value": "3"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "add"
+      },
+      "value": {
+        "type": "Operator",
+        "value": "+",
+        "tokenType": "f_add"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "exp"
+      },
+      "value": {
+        "type": "Operator",
+        "value": "^",
+        "tokenType": "f_power"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "id"
+      },
+      "value": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "x"
+          }
+        ],
+        "body": {
+          "type": "Identifier",
+          "value": "x"
+        }
+      }
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "x"
+          }
+        ],
+        "body": {
+          "type": "Identifier",
+          "value": "x"
+        }
+      },
+      "arguments": [
+        {
+          "type": "Number",
+          "value": "1"
+        },
+        {
+          "type": "Number",
+          "value": "2"
+        },
+        {
+          "type": "BinaryOperation",
+          "operator": "=",
+          "left": {
+            "type": "Number",
+            "value": "3"
+          },
+          "right": {
+            "type": "Number",
+            "value": "1"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "x"
+          }
+        ],
+        "body": {
+          "type": "Identifier",
+          "value": "x"
+        }
+      },
+      "arguments": [
+        {
+          "type": "Product",
+          "elements": [
+            {
+              "type": "Number",
+              "value": "1"
+            },
+            {
+              "type": "Number",
+              "value": "2"
+            },
+            {
+              "type": "BinaryOperation",
+              "operator": "=",
+              "left": {
+                "type": "Number",
+                "value": "3"
+              },
+              "right": {
+                "type": "Number",
+                "value": "1"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "PropertyAccess",
+        "object": {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "Number",
+              "value": "1"
+            },
+            "right": {
+              "type": "Number",
+              "value": "2"
+            }
+          },
+          "right": {
+            "type": "Number",
+            "value": "3"
+          }
+        },
+        "property": {
+          "type": "Number",
+          "value": "0"
+        }
+      },
+      "right": {
+        "type": "Number",
+        "value": "1"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "PropertyAccess",
+        "object": {
+          "type": "Product",
+          "elements": [
+            {
+              "type": "Number",
+              "value": "1"
+            },
+            {
+              "type": "Number",
+              "value": "2"
+            },
+            {
+              "type": "Number",
+              "value": "3"
+            }
+          ]
+        },
+        "property": {
+          "type": "Number",
+          "value": "0"
+        }
+      },
+      "right": {
+        "type": "Number",
+        "value": "1"
+      }
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "RangeParameter",
+            "start": {
+              "type": "Unit",
+              "value": "_"
+            },
+            "end": {
+              "type": "Identifier",
+              "value": "y"
+            }
+          }
+        ],
+        "body": {
+          "type": "RangeOperation",
+          "operator": "~",
+          "left": {
+            "type": "Identifier",
+            "value": "y"
+          },
+          "right": {
+            "type": "Unit",
+            "value": "_"
+          }
+        }
+      },
+      "arguments": [
+        {
+          "type": "Number",
+          "value": "1"
+        },
+        {
+          "type": "Number",
+          "value": "2"
+        },
+        {
+          "type": "BinaryOperation",
+          "operator": "=",
+          "left": {
+            "type": "Number",
+            "value": "3"
+          },
+          "right": {
+            "type": "Number",
+            "value": "2"
+          }
+        },
+        {
+          "type": "Number",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "RangeParameter",
+            "start": {
+              "type": "Unit",
+              "value": "_"
+            },
+            "end": {
+              "type": "Identifier",
+              "value": "y"
+            }
+          }
+        ],
+        "body": {
+          "type": "RangeOperation",
+          "operator": "~",
+          "left": {
+            "type": "Identifier",
+            "value": "y"
+          },
+          "right": {
+            "type": "Unit",
+            "value": "_"
+          }
+        }
+      },
+      "arguments": [
+        {
+          "type": "Product",
+          "elements": [
+            {
+              "type": "Number",
+              "value": "1"
+            },
+            {
+              "type": "Number",
+              "value": "2"
+            },
+            {
+              "type": "BinaryOperation",
+              "operator": "=",
+              "left": {
+                "type": "Number",
+                "value": "3"
+              },
+              "right": {
+                "type": "Number",
+                "value": "2"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Number",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Coproduct",
+        "left": {
+          "type": "RangeOperation",
+          "operator": "~",
+          "left": {
+            "type": "PropertyAccess",
+            "object": {
+              "type": "Coproduct",
+              "left": {
+                "type": "Coproduct",
+                "left": {
+                  "type": "Number",
+                  "value": "1"
+                },
+                "right": {
+                  "type": "Number",
+                  "value": "2"
+                }
+              },
+              "right": {
+                "type": "Number",
+                "value": "3"
+              }
+            },
+            "property": {
+              "type": "Number",
+              "value": "1"
+            }
+          },
+          "right": {
+            "type": "Operator",
+            "value": "=",
+            "tokenType": "f_eq"
+          }
+        },
+        "right": {
+          "type": "Number",
+          "value": "2"
+        }
+      },
+      "right": {
+        "type": "Number",
+        "value": "3"
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Coproduct",
+        "left": {
+          "type": "RangeOperation",
+          "operator": "~",
+          "left": {
+            "type": "PropertyAccess",
+            "object": {
+              "type": "Product",
+              "elements": [
+                {
+                  "type": "Number",
+                  "value": "1"
+                },
+                {
+                  "type": "Number",
+                  "value": "2"
+                },
+                {
+                  "type": "Number",
+                  "value": "3"
+                }
+              ]
+            },
+            "property": {
+              "type": "Number",
+              "value": "1"
+            }
+          },
+          "right": {
+            "type": "Operator",
+            "value": "=",
+            "tokenType": "f_eq"
+          }
+        },
+        "right": {
+          "type": "Number",
+          "value": "2"
+        }
+      },
+      "right": {
+        "type": "Number",
+        "value": "3"
+      }
+    },
+    {
+      "type": "ConditionalLambda",
+      "parameters": [
+        {
+          "type": "Identifier",
+          "value": "x"
+        }
+      ],
+      "branches": [
+        {
+          "condition": {
+            "type": "BinaryOperation",
+            "operator": "=",
+            "left": {
+              "type": "Identifier",
+              "value": "x"
+            },
+            "right": {
+              "type": "Number",
+              "value": "0"
+            }
+          },
+          "result": {
+            "type": "Number",
+            "value": "0"
+          }
+        },
+        {
+          "condition": {
+            "type": "BinaryOperation",
+            "operator": ">",
+            "left": {
+              "type": "Identifier",
+              "value": "x"
+            },
+            "right": {
+              "type": "Number",
+              "value": "0"
+            }
+          },
+          "result": {
+            "type": "String",
+            "value": "more"
+          }
+        },
+        {
+          "condition": {
+            "type": "BinaryOperation",
+            "operator": "<",
+            "left": {
+              "type": "Identifier",
+              "value": "x"
+            },
+            "right": {
+              "type": "Number",
+              "value": "0"
+            }
+          },
+          "result": {
+            "type": "String",
+            "value": "less"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Number",
+        "value": "3"
+      }
+    },
+    {
+      "type": "Lambda",
+      "parameters": [
+        {
+          "type": "Identifier",
+          "value": "x"
+        }
+      ],
+      "body": {
+        "type": "Coproduct",
+        "left": {
+          "type": "BinaryOperation",
+          "operator": ";",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "&",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "=",
+              "left": {
+                "type": "Identifier",
+                "value": "x"
+              },
+              "right": {
+                "type": "Number",
+                "value": "0"
+              }
+            },
+            "right": {
+              "type": "Lambda",
+              "parameters": [
+                {
+                  "type": "Identifier",
+                  "value": "_"
+                }
+              ],
+              "body": {
+                "type": "Number",
+                "value": "0"
+              }
+            }
+          },
+          "right": {
+            "type": "Unit",
+            "value": "_"
+          }
+        },
+        "right": {
+          "type": "Coproduct",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": ";",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "&",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": ">",
+                "left": {
+                  "type": "Identifier",
+                  "value": "x"
+                },
+                "right": {
+                  "type": "Number",
+                  "value": "0"
+                }
+              },
+              "right": {
+                "type": "Lambda",
+                "parameters": [
+                  {
+                    "type": "Identifier",
+                    "value": "_"
+                  }
+                ],
+                "body": {
+                  "type": "String",
+                  "value": "more"
+                }
+              }
+            },
+            "right": {
+              "type": "Unit",
+              "value": "_"
+            }
+          },
+          "right": {
+            "type": "Coproduct",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": ";",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "&",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "<",
+                  "left": {
+                    "type": "Identifier",
+                    "value": "x"
+                  },
+                  "right": {
+                    "type": "Number",
+                    "value": "0"
+                  }
+                },
+                "right": {
+                  "type": "Lambda",
+                  "parameters": [
+                    {
+                      "type": "Identifier",
+                      "value": "_"
+                    }
+                  ],
+                  "body": {
+                    "type": "String",
+                    "value": "less"
+                  }
+                }
+              },
+              "right": {
+                "type": "Unit",
+                "value": "_"
+              }
+            },
+            "right": {
+              "type": "Lambda",
+              "parameters": [
+                {
+                  "type": "Identifier",
+                  "value": "_"
+                }
+              ],
+              "body": {
+                "type": "String",
+                "value": "other_wise"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Number",
+        "value": "3"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "Person"
+      },
+      "value": {
+        "type": "Application",
+        "function": {
+          "type": "Identifier",
+          "value": "name"
+        },
+        "arguments": [
+          {
+            "type": "Identifier",
+            "value": "age"
+          },
+          {
+            "type": "Identifier",
+            "value": "etc"
+          },
+          {
+            "type": "ConditionalLambda",
+            "parameters": [
+              {
+                "type": "Identifier",
+                "value": "x"
+              }
+            ],
+            "branches": [
+              {
+                "condition": {
+                  "type": "SpreadOperation",
+                  "operator": "~",
+                  "position": "prefix",
+                  "expression": {
+                    "type": "Identifier",
+                    "value": "etc"
+                  }
+                },
+                "result": {
+                  "type": "Identifier",
+                  "value": "x"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "john"
+      },
+      "value": {
+        "type": "Application",
+        "function": {
+          "type": "Identifier",
+          "value": "Person"
+        },
+        "arguments": [
+          {
+            "type": "String",
+            "value": "john"
+          },
+          {
+            "type": "Number",
+            "value": "18"
+          },
+          {
+            "type": "String",
+            "value": "Like"
+          },
+          {
+            "type": "String",
+            "value": "Sushi"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Identifier",
+        "value": "john"
+      },
+      "arguments": [
+        {
+          "type": "String",
+          "value": "name"
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "PropertyAccess",
+          "object": {
+            "type": "Identifier",
+            "value": "john"
+          },
+          "property": {
+            "type": "Identifier",
+            "value": "name"
+          }
+        },
+        "right": {
+          "type": "Identifier",
+          "value": "john"
+        }
+      },
+      "right": {
+        "type": "String",
+        "value": "name"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "person"
+      },
+      "value": {
+        "type": "Application",
+        "function": {
+          "type": "Identifier",
+          "value": "Person"
+        },
+        "arguments": [
+          {
+            "type": "EmptyList",
+            "value": "[]"
+          },
+          {
+            "type": "EmptyList",
+            "value": "[]"
+          },
+          {
+            "type": "EmptyList",
+            "value": "[]"
+          },
+          {
+            "type": "EmptyList",
+            "value": "[]"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "mary"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Unit",
+          "value": "_"
+        },
+        "right": {
+          "type": "SpreadOperation",
+          "operator": "~",
+          "position": "prefix",
+          "expression": {
+            "type": "Identifier",
+            "value": "person"
+          }
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Application",
+            "function": {
+              "type": "Operator",
+              "value": "'",
+              "tokenType": "f_get"
+            },
+            "arguments": [
+              {
+                "type": "Identifier",
+                "value": "name"
+              }
+            ]
+          },
+          "value": {
+            "type": "String",
+            "value": "mary"
+          }
+        },
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Application",
+            "function": {
+              "type": "Operator",
+              "value": "'",
+              "tokenType": "f_get"
+            },
+            "arguments": [
+              {
+                "type": "Identifier",
+                "value": "age"
+              }
+            ]
+          },
+          "value": {
+            "type": "Number",
+            "value": "16"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "charie"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Unit",
+          "value": "_"
+        },
+        "right": {
+          "type": "SpreadOperation",
+          "operator": "~",
+          "position": "prefix",
+          "expression": {
+            "type": "Identifier",
+            "value": "person"
+          }
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Application",
+            "function": {
+              "type": "Operator",
+              "value": "'",
+              "tokenType": "f_get"
+            },
+            "arguments": [
+              {
+                "type": "Identifier",
+                "value": "name"
+              }
+            ]
+          },
+          "value": {
+            "type": "String",
+            "value": "charie"
+          }
+        },
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Application",
+            "function": {
+              "type": "Operator",
+              "value": "'",
+              "tokenType": "f_get"
+            },
+            "arguments": [
+              {
+                "type": "Identifier",
+                "value": "age"
+              }
+            ]
+          },
+          "value": {
+            "type": "Number",
+            "value": "24"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Number",
+            "value": "0"
+          },
+          "value": {
+            "type": "String",
+            "value": "zero"
+          }
+        },
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Application",
+            "function": {
+              "type": "Operator",
+              "value": ">",
+              "tokenType": "f_more"
+            },
+            "arguments": [
+              {
+                "type": "Number",
+                "value": "0"
+              }
+            ]
+          },
+          "value": {
+            "type": "String",
+            "value": "more"
+          }
+        },
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Application",
+            "function": {
+              "type": "Operator",
+              "value": "<",
+              "tokenType": "f_less"
+            },
+            "arguments": [
+              {
+                "type": "Number",
+                "value": "0"
+              }
+            ]
+          },
+          "value": {
+            "type": "String",
+            "value": "less"
+          }
+        },
+        {
+          "type": "String",
+          "value": "other"
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Number",
+        "value": "3"
+      }
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Number",
+            "value": "1"
+          },
+          "value": {
+            "type": "String",
+            "value": "yep"
+          }
+        },
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Number",
+            "value": "0"
+          },
+          "value": {
+            "type": "String",
+            "value": "nop"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Number",
+        "value": "1"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Coproduct",
+        "left": null,
+        "right": {
+          "type": "Number",
+          "value": "3"
+        }
+      },
+      "value": {
+        "type": "Number",
+        "value": "3"
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Unit",
+          "value": "_"
+        },
+        "right": {
+          "type": "Number",
+          "value": "3"
+        }
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "Number",
+          "value": "4"
+        },
+        "right": {
+          "type": "Number",
+          "value": "4"
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "Item"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Unit",
+          "value": "_"
+        },
+        "right": {
+          "type": "Block",
+          "body": [
+            {
+              "type": "Identifier",
+              "value": "name"
+            },
+            {
+              "type": "Identifier",
+              "value": "equip"
+            },
+            {
+              "type": "Identifier",
+              "value": "use"
+            },
+            {
+              "type": "Identifier",
+              "value": "effect"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "medicalWeed"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Unit",
+          "value": "_"
+        },
+        "right": {
+          "type": "Identifier",
+          "value": "Item"
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "String",
+          "value": "medicalWeed"
+        },
+        {
+          "type": "EmptyList",
+          "value": "[]"
+        },
+        {
+          "type": "Product",
+          "elements": [
+            {
+              "type": "PropertyAccessPointFree",
+              "property": {
+                "type": "Identifier",
+                "value": "medicalWeed"
+              }
+            },
+            {
+              "type": "Number",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "type": "Product",
+          "elements": [
+            {
+              "type": "PropertyAccessPointFree",
+              "property": {
+                "type": "Identifier",
+                "value": "HP"
+              }
+            },
+            {
+              "type": "Number",
+              "value": "20"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "lightningStaff"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Unit",
+          "value": "_"
+        },
+        "right": {
+          "type": "Identifier",
+          "value": "Item"
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "String",
+          "value": "lightningStaff"
+        },
+        {
+          "type": "Product",
+          "elements": [
+            {
+              "type": "PropertyAccessPointFree",
+              "property": {
+                "type": "Identifier",
+                "value": "Atk"
+              }
+            },
+            {
+              "type": "Number",
+              "value": "8"
+            }
+          ]
+        },
+        {
+          "type": "PropertyAccessPointFree",
+          "property": {
+            "type": "Identifier",
+            "value": "ThunderBolt"
+          }
+        },
+        {
+          "type": "Product",
+          "elements": [
+            {
+              "type": "PropertyAccessPointFree",
+              "property": {
+                "type": "Identifier",
+                "value": "HP"
+              }
+            },
+            {
+              "type": "Number",
+              "value": "40"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "myValue"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Unit",
+          "value": "_"
+        },
+        "right": {
+          "type": "Block",
+          "body": [
+            {
+              "type": "Number",
+              "value": "3"
+            },
+            {
+              "type": "Number",
+              "value": "4"
+            },
+            {
+              "type": "Number",
+              "value": "2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "myPairs"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "Coproduct",
+              "left": {
+                "type": "Number",
+                "value": "1"
+              },
+              "right": {
+                "type": "Number",
+                "value": "2"
+              }
+            },
+            "right": {
+              "type": "Number",
+              "value": "3"
+            }
+          },
+          "right": {
+            "type": "Number",
+            "value": "4"
+          }
+        },
+        "right": {
+          "type": "Number",
+          "value": "5"
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "myPairs0"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "Coproduct",
+              "left": {
+                "type": "Coproduct",
+                "left": {
+                  "type": "Unit",
+                  "value": "_"
+                },
+                "right": {
+                  "type": "Number",
+                  "value": "1"
+                }
+              },
+              "right": {
+                "type": "Number",
+                "value": "2"
+              }
+            },
+            "right": {
+              "type": "Number",
+              "value": "3"
+            }
+          },
+          "right": {
+            "type": "Number",
+            "value": "4"
+          }
+        },
+        "right": {
+          "type": "Number",
+          "value": "5"
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "myPairs1"
+      },
+      "value": {
+        "type": "Product",
+        "elements": [
+          {
+            "type": "Number",
+            "value": "1"
+          },
+          {
+            "type": "Number",
+            "value": "2"
+          },
+          {
+            "type": "Number",
+            "value": "3"
+          },
+          {
+            "type": "Number",
+            "value": "4"
+          },
+          {
+            "type": "Number",
+            "value": "5"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "myPairs2"
+      },
+      "value": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "_param_1",
+            "originalValue": {
+              "type": "Number",
+              "value": "1"
+            }
+          }
+        ],
+        "body": {
+          "type": "Number",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "_param_3",
+            "originalValue": {
+              "type": "Number",
+              "value": "3"
+            }
+          }
+        ],
+        "body": {
+          "type": "Number",
+          "value": "4"
+        }
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Number",
+        "value": "5"
+      }
+    },
+    {
+      "type": "RangeOperation",
+      "operator": "~",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "BinaryOperation",
+          "operator": "=",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "=",
+            "left": {
+              "type": "Identifier",
+              "value": "myPairs0"
+            },
+            "right": {
+              "type": "Identifier",
+              "value": "myPairs"
+            }
+          },
+          "right": {
+            "type": "Identifier",
+            "value": "myPairs1"
+          }
+        },
+        "right": {
+          "type": "Unit",
+          "value": "_"
+        }
+      },
+      "right": {
+        "type": "Identifier",
+        "value": "myPairs2"
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Product",
+        "elements": [
+          {
+            "type": "Unit",
+            "value": "_"
+          },
+          {
+            "type": "Unit",
+            "value": "_"
+          }
+        ]
+      },
+      "right": {
+        "type": "Product",
+        "elements": [
+          {
+            "type": "BinaryOperation",
+            "operator": "=",
+            "left": {
+              "type": "Identifier",
+              "value": "myPairs"
+            },
+            "right": {
+              "type": "Number",
+              "value": "1"
+            }
+          },
+          {
+            "type": "Number",
+            "value": "2"
+          },
+          {
+            "type": "Number",
+            "value": "3"
+          },
+          {
+            "type": "Number",
+            "value": "4"
+          },
+          {
+            "type": "Number",
+            "value": "5"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "_"
+          }
+        ],
+        "body": {
+          "type": "Number",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "_param_3",
+            "originalValue": {
+              "type": "Number",
+              "value": "3"
+            }
+          }
+        ],
+        "body": {
+          "type": "Number",
+          "value": "4"
+        }
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "Number",
+        "value": "5"
+      }
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "PointFreeOperator",
+        "operator": "+",
+        "position": "infix"
+      },
+      "arguments": [
+        {
+          "type": "BinaryOperation",
+          "operator": "=",
+          "left": {
+            "type": "Identifier",
+            "value": "myPairs"
+          },
+          "right": {
+            "type": "Number",
+            "value": "15"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "Coproduct",
+              "left": {
+                "type": "Coproduct",
+                "left": null,
+                "right": {
+                  "type": "Product",
+                  "elements": [
+                    {
+                      "type": "Number",
+                      "value": "2"
+                    },
+                    {
+                      "type": "Unit",
+                      "value": "_"
+                    }
+                  ]
+                }
+              },
+              "right": {
+                "type": "BinaryOperation",
+                "operator": "=",
+                "left": {
+                  "type": "Identifier",
+                  "value": "myPairs"
+                },
+                "right": {
+                  "type": "Number",
+                  "value": "2"
+                }
+              }
+            },
+            "right": {
+              "type": "Number",
+              "value": "4"
+            }
+          },
+          "right": {
+            "type": "Number",
+            "value": "6"
+          }
+        },
+        "right": {
+          "type": "Number",
+          "value": "8"
+        }
+      },
+      "right": {
+        "type": "Number",
+        "value": "10"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "r"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Coproduct",
+          "left": {
+            "type": "Number",
+            "value": "1"
+          },
+          "right": {
+            "type": "Number",
+            "value": "2"
+          }
+        },
+        "right": {
+          "type": "Coproduct",
+          "left": {
+            "type": "Number",
+            "value": "3"
+          },
+          "right": {
+            "type": "Number",
+            "value": "4"
+          }
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "s"
+      },
+      "value": {
+        "type": "Product",
+        "elements": [
+          {
+            "type": "Coproduct",
+            "left": {
+              "type": "Number",
+              "value": "1"
+            },
+            "right": {
+              "type": "Number",
+              "value": "2"
+            }
+          },
+          {
+            "type": "Coproduct",
+            "left": {
+              "type": "Number",
+              "value": "3"
+            },
+            "right": {
+              "type": "Number",
+              "value": "4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "myGreet"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Unit",
+          "value": "_"
+        },
+        "right": {
+          "type": "Block",
+          "body": [
+            {
+              "type": "Definition",
+              "identifier": {
+                "type": "Identifier",
+                "value": "greet"
+              },
+              "value": {
+                "type": "Coproduct",
+                "left": {
+                  "type": "Unit",
+                  "value": "_"
+                },
+                "right": {
+                  "type": "Block",
+                  "body": [
+                    {
+                      "type": "Definition",
+                      "identifier": {
+                        "type": "Identifier",
+                        "value": "hello"
+                      },
+                      "value": {
+                        "type": "String",
+                        "value": "hello,"
+                      }
+                    },
+                    {
+                      "type": "Definition",
+                      "identifier": {
+                        "type": "Identifier",
+                        "value": "welcome"
+                      },
+                      "value": {
+                        "type": "String",
+                        "value": "welcome,"
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "Definition",
+              "identifier": {
+                "type": "Identifier",
+                "value": "world"
+              },
+              "value": {
+                "type": "String",
+                "value": " world"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "myGreet"
+      },
+      "value": {
+        "type": "Lambda",
+        "parameters": [
+          {
+            "type": "Identifier",
+            "value": "_0"
+          }
+        ],
+        "body": {
+          "type": "Block",
+          "body": [
+            {
+              "type": "BinaryOperation",
+              "operator": "&",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "=",
+                "left": {
+                  "type": "Identifier",
+                  "value": "_0"
+                },
+                "right": {
+                  "type": "String",
+                  "value": "greet"
+                }
+              },
+              "right": {
+                "type": "Lambda",
+                "parameters": [
+                  {
+                    "type": "Identifier",
+                    "value": "_1"
+                  }
+                ],
+                "body": {
+                  "type": "Coproduct",
+                  "left": {
+                    "type": "BinaryOperation",
+                    "operator": "|",
+                    "left": {
+                      "type": "BinaryOperation",
+                      "operator": "&",
+                      "left": {
+                        "type": "BinaryOperation",
+                        "operator": "=",
+                        "left": {
+                          "type": "Identifier",
+                          "value": "_1"
+                        },
+                        "right": {
+                          "type": "String",
+                          "value": "hello"
+                        }
+                      },
+                      "right": {
+                        "type": "Coproduct",
+                        "left": {
+                          "type": "Unit",
+                          "value": "_"
+                        },
+                        "right": {
+                          "type": "String",
+                          "value": "hello,"
+                        }
+                      }
+                    },
+                    "right": {
+                      "type": "Unit",
+                      "value": "_"
+                    }
+                  },
+                  "right": {
+                    "type": "BinaryOperation",
+                    "operator": "&",
+                    "left": {
+                      "type": "BinaryOperation",
+                      "operator": "=",
+                      "left": {
+                        "type": "Identifier",
+                        "value": "_1"
+                      },
+                      "right": {
+                        "type": "String",
+                        "value": "welcome"
+                      }
+                    },
+                    "right": {
+                      "type": "Coproduct",
+                      "left": {
+                        "type": "Unit",
+                        "value": "_"
+                      },
+                      "right": {
+                        "type": "String",
+                        "value": "welcome,"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Coproduct",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "|",
+                "left": {
+                  "type": "Unit",
+                  "value": "_"
+                },
+                "right": {
+                  "type": "Unit",
+                  "value": "_"
+                }
+              },
+              "right": {
+                "type": "Coproduct",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "|",
+                  "left": {
+                    "type": "BinaryOperation",
+                    "operator": "&",
+                    "left": {
+                      "type": "BinaryOperation",
+                      "operator": "=",
+                      "left": {
+                        "type": "Identifier",
+                        "value": "_0"
+                      },
+                      "right": {
+                        "type": "String",
+                        "value": "world"
+                      }
+                    },
+                    "right": {
+                      "type": "Coproduct",
+                      "left": {
+                        "type": "Unit",
+                        "value": "_"
+                      },
+                      "right": {
+                        "type": "String",
+                        "value": " world"
+                      }
+                    }
+                  },
+                  "right": {
+                    "type": "Unit",
+                    "value": "_"
+                  }
+                },
+                "right": {
+                  "type": "Unit",
+                  "value": "_"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "PropertyAccess",
+        "object": {
+          "type": "PropertyAccess",
+          "object": {
+            "type": "Identifier",
+            "value": "myGreet"
+          },
+          "property": {
+            "type": "Identifier",
+            "value": "greet"
+          }
+        },
+        "property": {
+          "type": "Identifier",
+          "value": "hello"
+        }
+      },
+      "right": {
+        "type": "String",
+        "value": "hello,"
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "PropertyAccess",
+        "object": {
+          "type": "Identifier",
+          "value": "myPairs"
+        },
+        "property": {
+          "type": "Number",
+          "value": "0"
+        }
+      },
+      "right": {
+        "type": "Number",
+        "value": "1"
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Coproduct",
+        "left": {
+          "type": "BinaryOperation",
+          "operator": "=",
+          "left": {
+            "type": "PropertyAccess",
+            "object": {
+              "type": "Identifier",
+              "value": "myPairs"
+            },
+            "property": {
+              "type": "RangeOperation",
+              "operator": "~",
+              "left": {
+                "type": "Number",
+                "value": "1"
+              },
+              "right": {
+                "type": "Number",
+                "value": "3"
+              }
+            }
+          },
+          "right": {
+            "type": "Number",
+            "value": "2"
+          }
+        },
+        "right": {
+          "type": "Number",
+          "value": "3"
+        }
+      },
+      "right": {
+        "type": "Number",
+        "value": "4"
+      }
+    },
+    {
+      "type": "Identifier",
+      "value": "myGreet"
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Operator",
+        "value": "'",
+        "tokenType": "f_get"
+      },
+      "arguments": [
+        {
+          "type": "Identifier",
+          "value": "greet"
+        }
+      ]
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Operator",
+        "value": "'",
+        "tokenType": "f_get"
+      },
+      "arguments": [
+        {
+          "type": "Identifier",
+          "value": "welcome"
+        }
+      ]
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Operator",
+        "value": "'",
+        "tokenType": "f_get"
+      },
+      "arguments": [
+        {
+          "type": "Identifier",
+          "value": "world"
+        }
+      ]
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Operator",
+        "value": "=",
+        "tokenType": "f_eq"
+      },
+      "arguments": [
+        {
+          "type": "String",
+          "value": "welcome, world"
+        }
+      ]
+    },
+    {
+      "type": "Identifier",
+      "value": "myGreet"
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Operator",
+        "value": "'",
+        "tokenType": "f_get"
+      },
+      "arguments": [
+        {
+          "type": "Identifier",
+          "value": "greet"
+        }
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Application",
+        "function": {
+          "type": "Operator",
+          "value": "'",
+          "tokenType": "f_get"
+        },
+        "arguments": [
+          {
+            "type": "Identifier",
+            "value": "welcome"
+          }
+        ]
+      },
+      "value": {
+        "type": "String",
+        "value": "welcome to our "
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Application",
+        "function": {
+          "type": "Operator",
+          "value": "'",
+          "tokenType": "f_get"
+        },
+        "arguments": [
+          {
+            "type": "Identifier",
+            "value": "world"
+          }
+        ]
+      },
+      "value": {
+        "type": "String",
+        "value": "metaverse!"
+      }
+    },
+    {
+      "type": "SpreadOperation",
+      "operator": "~",
+      "position": "prefix",
+      "expression": null
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Identifier",
+            "value": "y"
+          },
+          "value": {
+            "type": "Number",
+            "value": "1"
+          }
+        },
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "Identifier",
+            "value": "n"
+          },
+          "value": {
+            "type": "Number",
+            "value": "0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Unit",
+      "value": "_"
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "=",
+      "left": {
+        "type": "Identifier",
+        "value": "y"
+      },
+      "right": {
+        "type": "Number",
+        "value": "1"
+      }
+    },
+    {
+      "type": "Import",
+      "source": {
+        "type": "Identifier",
+        "value": "io"
+      }
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Identifier",
+        "value": "say"
+      },
+      "arguments": [
+        {
+          "type": "Identifier",
+          "value": "Hello"
+        },
+        {
+          "type": "Identifier",
+          "value": "World"
+        }
+      ]
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Identifier",
+        "value": "say"
+      },
+      "arguments": [
+        {
+          "type": "Identifier",
+          "value": "Hello"
+        },
+        {
+          "type": "Identifier",
+          "value": "World"
+        }
+      ]
+    },
+    {
+      "type": "SpreadImport",
+      "source": {
+        "type": "Identifier",
+        "value": "Funnctor"
+      }
+    },
+    {
+      "type": "SpreadImport",
+      "source": {
+        "type": "Identifier",
+        "value": "Monoid"
+      }
+    },
+    {
+      "type": "SpreadImport",
+      "source": {
+        "type": "Identifier",
+        "value": "io"
+      }
+    },
+    {
+      "type": "Application",
+      "function": {
+        "type": "Identifier",
+        "value": "say"
+      },
+      "arguments": [
+        {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "Coproduct",
+              "left": null,
+              "right": {
+                "type": "Product",
+                "elements": [
+                  {
+                    "type": "Number",
+                    "value": "4"
+                  },
+                  {
+                    "type": "Unit",
+                    "value": "_"
+                  }
+                ]
+              }
+            },
+            "right": {
+              "type": "PointFreeOperator",
+              "operator": "+",
+              "position": "infix"
+            }
+          },
+          "right": {
+            "type": "RangeOperation",
+            "operator": "~",
+            "left": {
+              "type": "Number",
+              "value": "1"
+            },
+            "right": {
+              "type": "Number",
+              "value": "5"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "M"
+      },
+      "value": {
+        "type": "Character",
+        "value": "M"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "My"
+      },
+      "value": {
+        "type": "Application",
+        "function": {
+          "type": "Identifier",
+          "value": "M"
+        },
+        "arguments": [
+          {
+            "type": "Character",
+            "value": "y"
+          },
+          {
+            "type": "Character",
+            "value": " "
+          },
+          {
+            "type": "Character",
+            "value": "D"
+          },
+          {
+            "type": "Character",
+            "value": "o"
+          },
+          {
+            "type": "Character",
+            "value": "m"
+          },
+          {
+            "type": "Character",
+            "value": "e"
+          },
+          {
+            "type": "Character",
+            "value": "s"
+          },
+          {
+            "type": "Character",
+            "value": "t"
+          },
+          {
+            "type": "Character",
+            "value": "i"
+          },
+          {
+            "type": "Character",
+            "value": "c"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "Coproduct",
+              "left": {
+                "type": "Coproduct",
+                "left": {
+                  "type": "Coproduct",
+                  "left": {
+                    "type": "Coproduct",
+                    "left": {
+                      "type": "Coproduct",
+                      "left": {
+                        "type": "Coproduct",
+                        "left": {
+                          "type": "BinaryOperation",
+                          "operator": "=",
+                          "left": {
+                            "type": "Identifier",
+                            "value": "My"
+                          },
+                          "right": {
+                            "type": "Identifier",
+                            "value": "M"
+                          }
+                        },
+                        "right": {
+                          "type": "Character",
+                          "value": "y"
+                        }
+                      },
+                      "right": {
+                        "type": "Character",
+                        "value": " "
+                      }
+                    },
+                    "right": {
+                      "type": "Character",
+                      "value": "D"
+                    }
+                  },
+                  "right": {
+                    "type": "Character",
+                    "value": "o"
+                  }
+                },
+                "right": {
+                  "type": "Character",
+                  "value": "m"
+                }
+              },
+              "right": {
+                "type": "Character",
+                "value": "e"
+              }
+            },
+            "right": {
+              "type": "Character",
+              "value": "s"
+            }
+          },
+          "right": {
+            "type": "Character",
+            "value": "t"
+          }
+        },
+        "right": {
+          "type": "Character",
+          "value": "i"
+        }
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "Character",
+          "value": "c"
+        },
+        "right": {
+          "type": "String",
+          "value": "My Domestic"
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "Coproduct",
+          "left": {
+            "type": "String",
+            "value": "Hello "
+          },
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "=",
+            "left": {
+              "type": "String",
+              "value": "World!"
+            },
+            "right": {
+              "type": "String",
+              "value": "Hello World!"
+            }
+          }
+        },
+        {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "String",
+              "value": "Hello"
+            },
+            "right": {
+              "type": "Character",
+              "value": " "
+            }
+          },
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "=",
+            "left": {
+              "type": "String",
+              "value": "World!"
+            },
+            "right": {
+              "type": "String",
+              "value": "Hello World!"
+            }
+          }
+        },
+        {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "Coproduct",
+              "left": {
+                "type": "Coproduct",
+                "left": {
+                  "type": "Character",
+                  "value": "H"
+                },
+                "right": {
+                  "type": "String",
+                  "value": "ello"
+                }
+              },
+              "right": {
+                "type": "Character",
+                "value": " "
+              }
+            },
+            "right": {
+              "type": "String",
+              "value": "World"
+            }
+          },
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "=",
+            "left": {
+              "type": "Character",
+              "value": "!"
+            },
+            "right": {
+              "type": "String",
+              "value": "Hello World!"
+            }
+          }
+        },
+        {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "String",
+              "value": "Hello "
+            },
+            "right": {
+              "type": "Identifier",
+              "value": "My"
+            }
+          },
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "=",
+            "left": {
+              "type": "String",
+              "value": "World!"
+            },
+            "right": {
+              "type": "String",
+              "value": "Hello My Domestic World!"
+            }
+          }
+        },
+        {
+          "type": "Application",
+          "function": {
+            "type": "Identifier",
+            "value": "Hello"
+          },
+          "arguments": [
+            {
+              "type": "Character",
+              "value": " "
+            },
+            {
+              "type": "Identifier",
+              "value": "My"
+            },
+            {
+              "type": "Character",
+              "value": " "
+            },
+            {
+              "type": "String",
+              "value": "World"
+            },
+            {
+              "type": "BinaryOperation",
+              "operator": "=",
+              "left": {
+                "type": "Character",
+                "value": "!"
+              },
+              "right": {
+                "type": "String",
+                "value": "Hello My Domestic World!"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Coproduct",
+          "left": {
+            "type": "Coproduct",
+            "left": {
+              "type": "Coproduct",
+              "left": {
+                "type": "Coproduct",
+                "left": {
+                  "type": "Coproduct",
+                  "left": {
+                    "type": "String",
+                    "value": "Hello"
+                  },
+                  "right": {
+                    "type": "Character",
+                    "value": "!"
+                  }
+                },
+                "right": {
+                  "type": "Character",
+                  "value": " "
+                }
+              },
+              "right": {
+                "type": "Identifier",
+                "value": "My"
+              }
+            },
+            "right": {
+              "type": "Identifier",
+              "value": "World"
+            }
+          },
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "=",
+            "left": {
+              "type": "Character",
+              "value": "!"
+            },
+            "right": {
+              "type": "String",
+              "value": "Hello! My Domestic World!"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "value": "HWinEnter"
+      },
+      "value": {
+        "type": "Coproduct",
+        "left": {
+          "type": "Coproduct",
+          "left": {
+            "type": "Unit",
+            "value": "_"
+          },
+          "right": {
+            "type": "String",
+            "value": "Hello"
+          }
+        },
+        "right": {
+          "type": "Character",
+          "value": "\r"
+        }
+      }
+    },
+    {
+      "type": "String",
+      "value": "World!"
+    },
+    {
+      "type": "Export",
+      "value": {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "value": "myDict"
+        },
+        "value": {
+          "type": "Definition",
+          "identifier": {
+            "type": "Application",
+            "function": {
+              "type": "Identifier",
+              "value": "name"
+            },
+            "arguments": [
+              {
+                "type": "Lambda",
+                "parameters": [
+                  {
+                    "type": "Identifier",
+                    "value": "value"
+                  }
+                ],
+                "body": {
+                  "type": "SpreadOperation",
+                  "operator": "~",
+                  "position": "prefix",
+                  "expression": {
+                    "type": "Identifier",
+                    "value": "name"
+                  }
+                }
+              }
+            ]
+          },
+          "value": {
+            "type": "Identifier",
+            "value": "value"
+          }
+        }
+      }
+    },
+    {
+      "type": "Export",
+      "value": {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "value": "gets"
+        },
+        "value": {
+          "type": "Lambda",
+          "parameters": [
+            {
+              "type": "Identifier",
+              "value": "name"
+            }
+          ],
+          "body": {
+            "type": "PropertyAccess",
+            "object": {
+              "type": "Identifier",
+              "value": "myDict"
+            },
+            "property": {
+              "type": "SpreadProperty",
+              "value": {
+                "type": "Identifier",
+                "value": "name"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "&",
+      "left": {
+        "type": "Number",
+        "value": "0"
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "String",
+          "value": "me"
+        },
+        "right": {
+          "type": "Number",
+          "value": "0"
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "&",
+      "left": {
+        "type": "Number",
+        "value": "1"
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "String",
+          "value": "me"
+        },
+        "right": {
+          "type": "String",
+          "value": "me"
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "|",
+      "left": {
+        "type": "Number",
+        "value": "0"
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "String",
+          "value": "me"
+        },
+        "right": {
+          "type": "String",
+          "value": "me"
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "|",
+      "left": {
+        "type": "Number",
+        "value": "1"
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "String",
+          "value": "me"
+        },
+        "right": {
+          "type": "Number",
+          "value": "1"
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": ";",
+      "left": {
+        "type": "Number",
+        "value": "0"
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "String",
+          "value": "me"
+        },
+        "right": {
+          "type": "String",
+          "value": "me"
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": ";",
+      "left": {
+        "type": "Number",
+        "value": "1"
+      },
+      "right": {
+        "type": "BinaryOperation",
+        "operator": "=",
+        "left": {
+          "type": "String",
+          "value": "me"
+        },
+        "right": {
+          "type": "Number",
+          "value": "0"
+        }
+      }
+    }
+  ],
+  "warnings": [
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "無効な定義左辺: String を識別子として扱います",
+    "無効な定義左辺: String を識別子として扱います",
+    "214行目: 式の後に改行がありません",
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "無効な定義左辺: SpreadOperation を識別子として扱います",
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "無効な定義左辺: Number を識別子として扱います",
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "無効な定義左辺: Number を識別子として扱います",
+    "無効な定義左辺: Number を識別子として扱います",
+    "665行目: 式の後に改行がありません",
+    "845行目: 式の後に改行がありません",
+    "849行目: 式の後に改行がありません",
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "未知のパラメータタイプ BinaryOperation をデフォルトパラメータに置き換えます",
+    "907行目: 式の後に改行がありません",
+    "911行目: 式の後に改行がありません",
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "閉じ括弧 ] が見つかりません、自動補完します"
+  ],
+  "errors": []
+}

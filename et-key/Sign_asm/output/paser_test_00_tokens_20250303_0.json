@@ -1,0 +1,5598 @@
+[
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "Hello"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "Hello"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "World"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "World"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "yep"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "nop"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "unit"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "none"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "none"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "unit"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "y"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "n"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "string",
+    "value": "y"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_power",
+    "value": "^"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_mul",
+    "value": "*"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_mul",
+    "value": "*"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_power",
+    "value": "^"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "("
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": ")"
+  },
+  {
+    "type": "f_power",
+    "value": "^"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_power",
+    "value": "^"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_power",
+    "value": "^"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "identifier",
+    "value": "z"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_less_eq",
+    "value": "<="
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_less_eq",
+    "value": "<="
+  },
+  {
+    "type": "number",
+    "value": "9"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "iterate3"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "iterate3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "iterate3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "iterate3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "iterate3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "iterate3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "result2"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "f_sub",
+    "value": "-"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "add"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "exp"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "f_power",
+    "value": "^"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "id"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "unit",
+    "value": "_"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "unit",
+    "value": "_"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_more",
+    "value": ">"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "more"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_less",
+    "value": "<"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "less"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "other_wise"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "unit",
+    "value": "_"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_xor",
+    "value": ";"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_more",
+    "value": ">"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "unit",
+    "value": "_"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "string",
+    "value": "more"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_xor",
+    "value": ";"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_less",
+    "value": "<"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "unit",
+    "value": "_"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "string",
+    "value": "less"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_xor",
+    "value": ";"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "unit",
+    "value": "_"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "string",
+    "value": "other_wise"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "Person"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "identifier",
+    "value": "age"
+  },
+  {
+    "type": "identifier",
+    "value": "etc"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "age"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "identifier",
+    "value": "etc"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "x"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "john"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "Person"
+  },
+  {
+    "type": "string",
+    "value": "john"
+  },
+  {
+    "type": "number",
+    "value": "18"
+  },
+  {
+    "type": "string",
+    "value": "Like"
+  },
+  {
+    "type": "string",
+    "value": "Sushi"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "john"
+  },
+  {
+    "type": "string",
+    "value": "name"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "john"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "identifier",
+    "value": "john"
+  },
+  {
+    "type": "string",
+    "value": "name"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "person"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "Person"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "mary"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "identifier",
+    "value": "person"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "mary"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "age"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "16"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "charie"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "identifier",
+    "value": "person"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "charie"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "age"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "24"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "zero"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_more",
+    "value": ">"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "more"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_less",
+    "value": "<"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "less"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "other"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "yep"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "nop"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_more",
+    "value": ">"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "Item"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "equip"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "use"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "effect"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "medicalWeed"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "Item"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "medicalWeed"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "medicalWeed"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_sub",
+    "value": "-"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "HP"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "number",
+    "value": "20"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "lightningStaff"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "Item"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "lightningStaff"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "Atk"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "number",
+    "value": "8"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "ThunderBolt"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "HP"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_sub",
+    "value": "-"
+  },
+  {
+    "type": "number",
+    "value": "40"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myValue"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_mul",
+    "value": "*"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs0"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs1"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs2"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs0"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs1"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs2"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "15"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_mul",
+    "value": "*"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "number",
+    "value": "6"
+  },
+  {
+    "type": "number",
+    "value": "8"
+  },
+  {
+    "type": "number",
+    "value": "10"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "r"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "s"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myGreet"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "greet"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "hello"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "hello,"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "welcome"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "welcome,"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "world"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": " world"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myGreet"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "_0"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "_0"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "greet"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "identifier",
+    "value": "_1"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "_1"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "hello"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "string",
+    "value": "hello,"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_or",
+    "value": "|"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "_1"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "welcome"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "string",
+    "value": "welcome,"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_or",
+    "value": "|"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "_0"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "world"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "string",
+    "value": " world"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_or",
+    "value": "|"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "unit",
+    "value": "_"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myGreet"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "greet"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "hello"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "hello,"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myPairs"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "2"
+  },
+  {
+    "type": "number",
+    "value": "3"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myGreet"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "greet"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "welcome"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "world"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "welcome, world"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "myGreet"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "greet"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "welcome"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "welcome to our "
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "identifier",
+    "value": "world"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "string",
+    "value": "metaverse!"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "n"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "y"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_import",
+    "value": "@"
+  },
+  {
+    "type": "identifier",
+    "value": "io"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "say"
+  },
+  {
+    "type": "identifier",
+    "value": "Hello"
+  },
+  {
+    "type": "identifier",
+    "value": "World"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "say"
+  },
+  {
+    "type": "identifier",
+    "value": "Hello"
+  },
+  {
+    "type": "identifier",
+    "value": "World"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_import",
+    "value": "@"
+  },
+  {
+    "type": "identifier",
+    "value": "Funnctor"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_import",
+    "value": "@"
+  },
+  {
+    "type": "identifier",
+    "value": "Monoid"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_import",
+    "value": "@"
+  },
+  {
+    "type": "identifier",
+    "value": "io"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "say"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "("
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_mul",
+    "value": "*"
+  },
+  {
+    "type": "number",
+    "value": "4"
+  },
+  {
+    "type": "f_product",
+    "value": ","
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "f_add",
+    "value": "+"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "number",
+    "value": "5"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": ")"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "M"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "letter",
+    "value": "M"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "My"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "M"
+  },
+  {
+    "type": "letter",
+    "value": "y"
+  },
+  {
+    "type": "letter",
+    "value": " "
+  },
+  {
+    "type": "letter",
+    "value": "D"
+  },
+  {
+    "type": "letter",
+    "value": "o"
+  },
+  {
+    "type": "letter",
+    "value": "m"
+  },
+  {
+    "type": "letter",
+    "value": "e"
+  },
+  {
+    "type": "letter",
+    "value": "s"
+  },
+  {
+    "type": "letter",
+    "value": "t"
+  },
+  {
+    "type": "letter",
+    "value": "i"
+  },
+  {
+    "type": "letter",
+    "value": "c"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "My"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "identifier",
+    "value": "M"
+  },
+  {
+    "type": "letter",
+    "value": "y"
+  },
+  {
+    "type": "letter",
+    "value": " "
+  },
+  {
+    "type": "letter",
+    "value": "D"
+  },
+  {
+    "type": "letter",
+    "value": "o"
+  },
+  {
+    "type": "letter",
+    "value": "m"
+  },
+  {
+    "type": "letter",
+    "value": "e"
+  },
+  {
+    "type": "letter",
+    "value": "s"
+  },
+  {
+    "type": "letter",
+    "value": "t"
+  },
+  {
+    "type": "letter",
+    "value": "i"
+  },
+  {
+    "type": "letter",
+    "value": "c"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "My Domestic"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "Hello "
+  },
+  {
+    "type": "string",
+    "value": "World!"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "Hello World!"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "Hello"
+  },
+  {
+    "type": "letter",
+    "value": " "
+  },
+  {
+    "type": "string",
+    "value": "World!"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "Hello World!"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "letter",
+    "value": "H"
+  },
+  {
+    "type": "string",
+    "value": "ello"
+  },
+  {
+    "type": "letter",
+    "value": " "
+  },
+  {
+    "type": "string",
+    "value": "World"
+  },
+  {
+    "type": "letter",
+    "value": "!"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "Hello World!"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "Hello "
+  },
+  {
+    "type": "identifier",
+    "value": "My"
+  },
+  {
+    "type": "string",
+    "value": "World!"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "Hello My Domestic World!"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "identifier",
+    "value": "Hello"
+  },
+  {
+    "type": "letter",
+    "value": " "
+  },
+  {
+    "type": "identifier",
+    "value": "My"
+  },
+  {
+    "type": "letter",
+    "value": " "
+  },
+  {
+    "type": "string",
+    "value": "World"
+  },
+  {
+    "type": "letter",
+    "value": "!"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "Hello My Domestic World!"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "Hello"
+  },
+  {
+    "type": "letter",
+    "value": "!"
+  },
+  {
+    "type": "letter",
+    "value": " "
+  },
+  {
+    "type": "identifier",
+    "value": "My"
+  },
+  {
+    "type": "identifier",
+    "value": "World"
+  },
+  {
+    "type": "letter",
+    "value": "!"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "Hello! My Domestic World!"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "identifier",
+    "value": "HWinEnter"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "string",
+    "value": "Hello"
+  },
+  {
+    "type": "letter",
+    "value": "\r"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "string",
+    "value": "World!"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_export",
+    "value": "#"
+  },
+  {
+    "type": "identifier",
+    "value": "myDict"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "identifier",
+    "value": "value"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "value"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_export",
+    "value": "#"
+  },
+  {
+    "type": "identifier",
+    "value": "gets"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "f_lambda",
+    "value": "?"
+  },
+  {
+    "type": "identifier",
+    "value": "myDict"
+  },
+  {
+    "type": "f_get",
+    "value": "'"
+  },
+  {
+    "type": "f_spread",
+    "value": "~"
+  },
+  {
+    "type": "identifier",
+    "value": "name"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_and",
+    "value": "&"
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_or",
+    "value": "|"
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_or",
+    "value": "|"
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "f_xor",
+    "value": ";"
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "f_xor",
+    "value": ";"
+  },
+  {
+    "type": "string",
+    "value": "me"
+  },
+  {
+    "type": "f_eq",
+    "value": "="
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EOF",
+    "value": null
+  }
+]
