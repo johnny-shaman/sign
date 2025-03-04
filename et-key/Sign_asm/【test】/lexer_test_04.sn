@@ -1,0 +1,13 @@
+fib : n ?
+	n <= 1 : n
+	_ : fib (n - 1) + fib (n - 2)
+
+sum : [+]
+
+map : f ~xs ?
+	xs = _ : _
+	[x ~rest ? f x, map f rest~] xs~
+
+`テスト実行
+fib 10
+map [\x ? x * 2] [1 ~ 5]
