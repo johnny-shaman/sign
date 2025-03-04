@@ -1,0 +1,49 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Block",
+      "body": [
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "String",
+            "value": "y"
+          },
+          "value": {
+            "type": "Number",
+            "value": "1"
+          }
+        },
+        {
+          "type": "Definition",
+          "identifier": {
+            "type": "String",
+            "value": "n"
+          },
+          "value": {
+            "type": "Number",
+            "value": "0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Coproduct",
+      "left": {
+        "type": "Unit",
+        "value": "_"
+      },
+      "right": {
+        "type": "String",
+        "value": "y"
+      }
+    }
+  ],
+  "warnings": [
+    "閉じ括弧 ] が見つかりません、自動補完します",
+    "無効な定義左辺: String を識別子として扱います",
+    "無効な定義左辺: String を識別子として扱います"
+  ],
+  "errors": []
+}

@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "デバッグ実行: signCompiler",
+        "skipFiles": ["<node_internals>/**"],
+        "program": "${workspaceFolder}/signCompiler.js",
+        "args": ["./【test】/lexer_test_02.sn"], // 解析するファイルのパス
+        "env": {
+          "DEBUG": "true"
+        }
+      }
+    ]
+  }

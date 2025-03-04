@@ -1,0 +1,90 @@
+[
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_START",
+    "value": "["
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "y"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "1"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "f_block",
+    "value": "\t"
+  },
+  {
+    "type": "string",
+    "value": "n"
+  },
+  {
+    "type": "f_define",
+    "value": ":"
+  },
+  {
+    "type": "number",
+    "value": "0"
+  },
+  {
+    "type": "EVAL",
+    "value": "\n"
+  },
+  {
+    "type": "BLOCK_END",
+    "value": "]"
+  },
+  {
+    "type": "string",
+    "value": "y"
+  },
+  {
+    "type": "EOF",
+    "value": null
+  }
+]
