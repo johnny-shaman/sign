@@ -1,6 +1,6 @@
 Start = e:Expression* {return e.join("")}
 Expression
-  = l:literal* _* c:(infix / spread) _* r:Expression* {return `${l.join("")}${c}${r.join("")}`;}
+  = l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.join("")}`;}
   / l:literal r:postfix* { return `${l}${r.join("")}`;}
   / l:prefix+ r:Expression { return `${l.join("")}${r}`;}
   / _+ {return ` `;}
@@ -13,7 +13,7 @@ Block
   / l:"(" _* c:(Expression*) _* r:")" EOL {return `${l}${c.join("")}${r}`;}
   / l:"{" _* c:(Expression*) _* r:"}" EOL {return `${l}${c.join("")}${r}`;}
   / l:"[" _* c:(Expression*) _* r:"]" EOL {return `${l}${c.join("")}${r}`;}
-  / l:"(" _* c:(Expression*) _* r:")" {return `${l}${c.join("")}${r} ` ;}
+  / l:"(" _* c:(Expression*) _* r:")" {return `${l}${c.join("")}${r} `;}
   / l:"{" _* c:(Expression*) _* r:"}" {return `${l}${c.join("")}${r} `;}
   / l:"[" _* c:(Expression*) _* r:"]" {return `${l}${c.join("")}${r} `;}
   / IndentBlock
