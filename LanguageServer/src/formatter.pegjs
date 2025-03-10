@@ -1,22 +1,27 @@
-Start = e:Expression* {return e.join("")}
+Start = e:Expression* {return e.join("").replace(/ [\n]/g, "\n");}
+
 Expression
   = l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.join("")}`;}
-  / l:literal r:postfix* { return `${l}${r.join("")}`;}
+  / l:literal+ r:postfix* { return `${l.join(" ")}${r.join("")}`;}
   / l:prefix+ r:Expression { return `${l.join("")}${r}`;}
   / _+ {return ` `;}
-  / EOL
+  / $EOL
 
 Block
-  = l:"(" _* c:(Expression*) _* r:")" i:infix {return `${l}${c.join("")}${r}${i}`;}
-  / l:"{" _* c:(Expression*) _* r:"}" i:infix {return `${l}${c.join("")}${r}${i}`;}
-  / l:"[" _* c:(Expression*) _* r:"]" i:infix {return `${l}${c.join("")}${r}${i}`;}
-  / l:"(" _* c:(Expression*) _* r:")" EOL {return `${l}${c.join("")}${r}`;}
-  / l:"{" _* c:(Expression*) _* r:"}" EOL {return `${l}${c.join("")}${r}`;}
-  / l:"[" _* c:(Expression*) _* r:"]" EOL {return `${l}${c.join("")}${r}`;}
-  / l:"(" _* c:(Expression*) _* r:")" {return `${l}${c.join("")}${r} `;}
-  / l:"{" _* c:(Expression*) _* r:"}" {return `${l}${c.join("")}${r} `;}
-  / l:"[" _* c:(Expression*) _* r:"]" {return `${l}${c.join("")}${r} `;}
+  = l:"(" _* c:(BlockExpression*) _* r:")"  _* i:$infix? _* e:Expression* {return `${l}${c.join("")}${r}${i ? ` ${i} ` : ` `}${e.flat(Infinity).join("")}`;}
+  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* i:$infix? _* e:Expression* {return `${l}${c.join("")}${r}${i ? ` ${i} ` : ` `}${e.flat(Infinity).join("")}`;}
+  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* i:$infix? _* e:Expression* {return `${l}${c.join("")}${r}${i ? ` ${i} ` : ` `}${e.flat(Infinity).join("")}`;}
+  / l:"(" _* c:(BlockExpression*) _* r:")"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
+  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
+  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
   / IndentBlock
+
+BlockExpression
+  = l:literal* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
+  / l:literal r:postfix* { return `${l}${r.join("")}`;}
+  / l:prefix+ r:BlockExpression { return `${l.join("")}${r}`;}
+  / _+ {return ` `;}
+  / EOL
 
 IndentBlock = l:BlockStart r:Expression+  { return `${l}${r.join("")}`;}
 BlockStart = $(EOL tab+)
@@ -24,6 +29,7 @@ BlockStart = $(EOL tab+)
 literal = atom / Block
 
 atom = $(string / letter / bin / oct / hex / number / tag / unit)
+
 
 
 number = $("-"? [0-9]+ "."? [0-9]* )
@@ -37,6 +43,7 @@ unit = $"_"
 key = $(string / letter / tag)
 
 prefix = $(export / import / not / spread)
+blockInfix = s:$(infix / spread) {return ` ${s} `}
 infix = s:(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / compare / pow) {return ` ${s} `}
 compare = $(lt / le / eq / ne / me / mt )
 postfix = $(spread / factrial)
