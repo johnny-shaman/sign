@@ -1,4 +1,4 @@
-Start = e:Expression* {return e.join("").replace(/ [\n]/g, "\n");}
+Start = e:Expression* {return e.join("").replace(/ +[\n]/g, "\n");}
 
 Expression
   = l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.join("")}`;}
