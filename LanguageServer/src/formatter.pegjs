@@ -4,6 +4,7 @@ Expression
   = l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.join("")}`;}
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:Expression { return `${l.join("")}${r}`;}
+  / $comment
   / _+ {return ` `;}
   / EOL
 
@@ -36,7 +37,7 @@ oct = $("0o"[0-7]+)
 bin = $("0b"("0" / "1")+)
 tag = $((([A-Z] / [a-z]) / (("_" / [A-Z] / [a-z]) ("_" / [A-Z] / [a-z] / [0-9]))) ("_" / [A-Z] / [a-z] / [0-9])*)
 letter = ("\\" .)
-comment = $("`" [^\n`]* "\n")
+comment = $("`" [^\n`]*) 
 string = $("`" [^\n`]* "`")
 unit = $"_"
 key = $(string / letter / tag)
@@ -76,7 +77,5 @@ spread = $"~"
 get = $"'"
 import = $"@"
 tab = $"\t"
-
-EOL = $("\n" / "\r")
-
+EOL = $("\n" / "\r" "\n"?)
 _ = $" "
