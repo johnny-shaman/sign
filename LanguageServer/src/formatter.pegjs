@@ -37,8 +37,8 @@ oct = $("0o"[0-7]+)
 bin = $("0b"("0" / "1")+)
 tag = $((([A-Z] / [a-z]) / (("_" / [A-Z] / [a-z]) ("_" / [A-Z] / [a-z] / [0-9]))) ("_" / [A-Z] / [a-z] / [0-9])*)
 letter = ("\\" .)
-comment = $("`" [^\n`]*) 
-string = $("`" [^\n`]* "`")
+comment = $("`" [^\n\r`]*)
+string = $("`" [^\n\r`]* "`")
 unit = $"_"
 key = $(string / letter / tag)
 
