@@ -8,8 +8,6 @@ Expression
   / _+ {return ` `;}
   / EOL
 
-Literals = l:literal* {return `${l.join(" ")}`}
-
 Block
   = l:"(" _* c:(BlockExpression*) _* r:")"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
   / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}

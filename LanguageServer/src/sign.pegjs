@@ -1,131 +1,94 @@
-{
-    let indentLevel = 0; // 期待されるインデントレベル
-    let currentIndent = 0; // 現在の行のインデントレベル
-}
-  
-  // プログラム全体
-  program =
-  	comment { return null; } // コメントは無視
-    / exprs:expr+ { return exprs; }
-  
-  // ブロック
-  block = "\t"* r:expr+ { return {type:"block", r}; }
-  
-  // 式（優先順位の最上位）
-  expr = export { return expr}
+Start = e:Expression* {return e.join("");}
 
-  // エクスポート
-  export
-  	= "#" r:expr {return {type:"export", r}}
-    / define
-  
-  // 定義演算子（右結合）
-  define
-    = l:KEY ":" r:define { return { type: "define", l, r }; }
-    / logicOr
-  
-  // 論理OR
-  logicOr
-    = l:logicAnd "|" r:logicOr { return {type: "or", l, r}; }
-    / l:logicAnd ";" r:logicOr { return {type: "xor", l, r}; }
-    / logicAnd
-  
-  // 論理AND
-  logicAnd
-    = l:logicNot "&" r:logicAnd { return {type: "and", l, r}; }
-    / logicNot
+Expression
+  = Export
+  / Coproduct
 
-  logicNot
-    = "!" logicNot { return {type: "not", l, r}; }
-    / compare
+Export = l:export? r:Define
+Define = l:tag c:be? r:Expression*
+Coproduct = Apply / LiteralProduct
 
-  // 比較演算子
-  compare
-    = l:arithmetic "<" r:compare { return {type:"lt", l, r}; }
-    / l:arithmetic "<=" r:compare { return {type:"le", l, r}; }
-    / l:arithmetic "=" r:compare { return {type:"eq", l, r}; }
-    / l:arithmetic "==" r:compare { return {type:"eq", l, r}; }
-    / l:arithmetic "!=" r:compare { return {type:"ne", l, r}; }
-    / l:arithmetic "><" r:compare { return {type:"ne", l, r}; }
-    / l:arithmetic ">=" r:compare { return {type:"me", l, r}; }
-    / l:arithmetic ">" r:compare { return {type:"mt", l, r}; }
-    / arithmetic
-  
-  // 加減算
-  arithmetic
-    = l:term "+" r:arithmetic { return {type:"add", l, r}; }
-    / l:term "-" r:arithmetic { return {type:"sub", l, r}; }
-    / term
-  
-  // 乗除算
-  term
-    = l:factor "*" r:arithmetic { return {type: "mul", l, r}; }
-    / l:factor "/" r:arithmetic { return {type: "div", l, r}; }
-    / l:factor "%" r:arithmetic { return {type: "mod", l, r}; }
+Apply = .
+LiteralProduct = .
 
-  // べき乗（右結合）
-  factor
-    = l:primary ("^" r:factor)? { return $2 ? { type: "BinaryOp", operator: "^", l, r: $2[1] } : l; }
-  
-  // 単項演算子と基本要素
-  primary
-    = "!" expr:primary { return { type: "UnaryOp", operator: "!", expr }; }
-    / "~" expr:primary { return { type: "UnaryOp", operator: "~", expr }; }
-    / atom
-  
-  // 基本要素
-  atom
-    = number:NUMBER { return { type: "Number", value: number }; }
-    / string:STRING { return { type: "String", value: string }; }
-    / char:LETTER { return { type: "Character", value: char }; }
-    / id:KEY { return { type: "Identifier", name: id }; }
-    / "(" exprs:expr+ ")" { return exprs; }
+/*
+  = l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.flat(Infinity).join("")}`;}
+  / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
+  / l:prefix+ r:Expression { return `${l.join("")}${r}`;}
+  / $comment
+  / _+ {return ` `;}
+  / EOL
+*/
 
-  // ラムダ式
-  lambda
-    = params:params "?" body:expr { return { type: "Lambda", params, body }; }
-  
-  // リスト
-  list
-    = elements:(atom ("," expr)* { return [$1, ...$2.map(e => e[1])] })? { return { type: "List", elements: elements || [] }; }
-  
-  // 辞書型
-  dict
-    = "{" pairs:(pair ("," pair)* { return [$1, ...$2.map(p => p[1])] })? "}" { return { type: "Dict", pairs: pairs || [] }; }
-  
-  // 辞書型のキー:値ペア
-  pair
-    = key:STRING ":" value:expr { return { key, value }; }
-  
-  // ラムダのパラメータリスト
-  params
-    = ids:(KEY ("," KEY)* { return [$1, ...$2.map(id => id[1])] }) { return ids; }
-  
-  // トークン定義
-  NUMBER
-    = HEX / OCT / BIN / FLOAT / INT
-  
-  INT = sign:"-"? digits:[0-9]+ { return parseInt((sign || "") + digits.join(""), 10); }
-  FLOAT = sign:"-"? digits:[0-9]+ "." frac:[0-9]+ { return parseFloat((sign || "") + digits.join("") + "." + frac.join("")); }
-  HEX = "0x" digits:[0-9A-Fa-f]+ { return parseInt(digits.join(""), 16); }
-  OCT = "0o" digits:[0-7]+ { return parseInt(digits.join(""), 8); }
-  BIN = "0b" digits:[0-1]+ { return parseInt(digits.join(""), 2); }
-  
-  STRING = "`" chars:[^`\n]* "`" { return chars.join(""); }
-  LETTER = . { return text(); }
-  KEY = [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
+Block
+  = l:"(" _* c:(BlockExpression*) _* r:")"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
+  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
+  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
+  / l:"(" _* c:(BlockExpression*) _* r:")"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
+  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
+  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
+  / l:"(" _* c:(BlockExpression*) _* r:")"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
+  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
+  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
+  / IndentBlock
 
-  // コメント
-  comment = "`" [^\n]* EOL
+BlockExpression
+  = l:literal* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
+  / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
+  / l:prefix+ r:BlockExpression { return `${l.join("")}${r}`;}
+  / _+ {return ` `;}
 
-  // インデント管理
-  indent = "\t"+ &{ currentIndent = text().length / 2; return currentIndent > indentLevel; } { indentLevel = currentIndent; return true; }
-  dedent = EOL &{ currentIndent = 0; return true; }
-  sameIndent = "/t" &{ return text().length / 2 === indentLevel; }
-  
-  // 空白と改行
-  _ = " "*
-  EOL = "\n"
-  
-  
-  
+IndentBlock = l:BlockStart r:Expression+  { return `${l}${r.join("")}`;}
+BlockStart = $(EOL tab+)
+
+literal = atom / Block
+atom = $(string / letter / bin / oct / hex / number / tag / unit)
+
+number = $("-"? [0-9]+ "."? [0-9]* )
+hex = $("0x"([0-9] / [A-F] / [a-f])+)
+oct = $("0o"[0-7]+)
+bin = $("0b"("0" / "1")+)
+tag = $((([A-Z] / [a-z]) / (("_" / [A-Z] / [a-z]) ("_" / [A-Z] / [a-z] / [0-9]))) ("_" / [A-Z] / [a-z] / [0-9])*)
+letter = ("\\" .)
+comment = $("`" [^\n\r`]*)
+string = $("`" [^\n\r`]* "`")
+unit = $"_"
+key = $(string / letter / tag)
+
+prefix = $(export / import / not / spread)
+blockInfix = s:$(infix / spread) {return ` ${s} `}
+infix = s:(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / compare / pow) {return ` ${s} `}
+compare = $(lt / le / eq / ne / me / mt )
+postfix = $(spread / factrial)
+
+logicOr = $(or / xor)
+additive = $(add / sub)
+multiple = $(mul / div / mod)
+
+export = $"#"
+be = $":"
+lambda = $"?"
+pair = $","
+or = $"|"
+xor = $";"
+and = $"&"
+not = $"!"
+lt = $"<"
+le = $"<="
+eq = $("=" / "==")
+ne = $("!=" / "><")
+me = $">="
+mt = $">"
+add = $"+"
+sub = $"-"
+mul = $"*"
+div = $"/"
+mod = $"%"
+pow = $"^"
+factrial = $"!"
+spread = $"~"
+get = $"'"
+import = $"@"
+tab = $"\t"
+EOL = $("\n" / "\r" "\n"?)
+_ = $" "
