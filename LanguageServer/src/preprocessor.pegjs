@@ -1,7 +1,8 @@
 Start = e:Expression* {return e.join("");}
 
 Expression
-  = l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.flat(Infinity).join("")}`;}
+  = l:literal* _* c0:compare _* c1:literal _* c2:compare _* r:Expression* {return `${l.join("")}${c0}${c1}${c2}${r.join("")}`;}
+  / l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.join("")}`;}
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:Expression { return `${l.join("")}${r}`;}
   / $comment
@@ -17,13 +18,14 @@ Block
   / l:"(" _* c:(BlockExpression*) _* r:")"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
   / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
   / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
-  / l:"(" _* c:(BlockExpression*) _* r:")"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
-  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
-  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
+  / l:"(" _* c:(BlockExpression*) _* r:")"  _* e:Expression* {return `${l}${c.join("")}${r} ${e.flat(Infinity).join("")}`;}
+  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:Expression* {return `${l}${c.join("")}${r} ${e.flat(Infinity).join("")}`;}
+  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:Expression* {return `${l}${c.join("")}${r} ${e.flat(Infinity).join("")}`;}
   / IndentBlock
 
 BlockExpression
-  = l:literal* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
+  = l:literal* _* c0:compare _* c1:literal _* c2:compare _* r:BlockExpression {return `${l.join("")}${c}${r.join("")}`;}
+  / l:literal* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:BlockExpression { return `${l.join("")}${r}`;}
   / _+ {return ` `;}
@@ -47,8 +49,8 @@ key = $(string / letter / tag)
 
 prefix = $(export / import / not / spread)
 blockInfix = s:$(infix / spread) {return ` ${s} `}
-infix = s:(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / compare / pow) {return ` ${s} `}
-compare = $(lt / le / eq / ne / me / mt )
+infix = s:$(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / compare / pow) {return ` ${s} `}
+compare = s:$(lt / le / eq / ne / me / mt ) {return ` ${s} `}
 postfix = $(spread / factrial)
 
 logicOr = $(or / xor)
