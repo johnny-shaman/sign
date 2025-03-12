@@ -1,0 +1,27 @@
+`これはSign言語のサンプルコードです。`
+
+`基本的な変数と演算`
+x: 10
+y: 5
+
+`基本的な算術演算`
+sum: x + y
+diff: x - y
+product: x * y
+quotient: x / y
+
+`関数定義`
+add: a b ? a + b
+square: n ? n ^ 2
+greet: name ? `Hello, ` name `!`
+
+`関数適用`
+result1: add 7 3
+result2: square 4
+result3: greet `World`
+
+`エクスポート`
+#sum
+#product
+#result1
+#result3
