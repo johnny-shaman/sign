@@ -1,24 +1,20 @@
 Start = e:Expression* {return e.join("");}
 
 Expression
-  = CompareChain
-  / Infix
+  = Infix
+  / CompareChain
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:Expression { return `${l.join("")}${r}`;}
   / $comment
   / _+ {return ` `;}
   / EOL
 
-
-//Infixのほうが親
 CompareChain
-  = chain:(l:Infix* _* c:compare _* {return [l,c]})+ _* i:Infix* {
+  = l:Infix* _* chain:(c:compare _* i:Expression {return [c, i]})+ {
       console.log(chain);
-      console.log(`i:${i}`);
-      return `${chain.flat(Infinity).join("")}${i}`
+      return `${l.flat(Infinity).join("")}${chain.flat(Infinity).join("")}`
     }
 
-//CompareChainを子に入れる
 Infix = l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.flat(Infinity).join("")}`;}
 
 Block
@@ -34,17 +30,20 @@ Block
   / IndentBlock
 
 BlockExpression
-  = CompareChain
-  / l:literal* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
+  = BlockInfix
+  / CompareChain
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:BlockExpression { return `${l.join("")}${r}`;}
   / _+ {return ` `;}
 
+BlockInfix = l:CompareChain* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
 IndentBlock = l:BlockStart r:Expression+  { return `${l}${r.join("")}`;}
 BlockStart = s:$(EOL tab+)
 
 literal = atom / Block
-atom = $(string / letter / bin / oct / hex / number / tag / unit)
+
+atom = $(string / letter / bin / oct / hex / abs / number / tag / unit)
+abs = l:"|" c:Expression+ r:"|" {return `${l}${c.flat(Infinity).join()}${r}`}
 
 number = $("-"? [0-9]+ "."? [0-9]* )
 hex = $("0x"([0-9] / [A-F] / [a-f])+)
