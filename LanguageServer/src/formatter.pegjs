@@ -10,19 +10,13 @@ Expression
   / EOL
 
 Block
-  = l:"(" _* c:(BlockExpression*) _* r:")"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
-  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
-  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
-  / l:"(" _* c:(BlockExpression*) _* r:")"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
-  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
-  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
-  / l:"(" _* c:(BlockExpression*) _* r:")"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
-  / l:"{" _* c:(BlockExpression*) _* r:"}"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
-  / l:"[" _* c:(BlockExpression*) _* r:"]"  _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
+  = l:("(" / "{" / "[") _* c:(BlockExpression*) _* r:("]" / "}" / ")") _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
+  / l:("(" / "{" / "[") _* c:(BlockExpression*) _* r:("]" / "}" / ")") _* e:Block {return `${l}${c.join("")}${r} ${e}`;}
+  / l:("(" / "{" / "[") _* c:(BlockExpression*) _* r:("]" / "}" / ")") _* e:Expression* {return `${l}${c.join("")}${r}${e.flat(Infinity).join("")}`;}
   / IndentBlock
 
 BlockExpression
-  = l:literal* _+ c:or _+ r:Expression* {return `${l.join("")} ${c} ${r.flat(Infinity).join("")}`;}
+  = l:literal* _+ c:or _+ r:BlockExpression* {return `${l.join("")} ${c} ${r.flat(Infinity).join("")}`;}
   / l:literal* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:BlockExpression { return `${l.join("")}${r}`;}
@@ -50,7 +44,7 @@ key = $(string / letter / tag)
 
 prefix = $(export / import / not / spread)
 blockInfix = s:$(infix / spread) {return ` ${s} `}
-infix = s:(be / lambda / pair / xor / and / add / sub / mul / div / mod / get / compare / pow) {return ` ${s} `}
+infix = s:(be / lambda / pair / xor / and / compare / add / sub / mul / div / mod / get / pow) {return ` ${s} `}
 compare = $(lt / le / eq / ne / me / mt )
 postfix = $(spread / factrial)
 

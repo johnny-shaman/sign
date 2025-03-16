@@ -1,21 +1,17 @@
 Start = e:Expression* {return e.join("");}
 
 Expression
-  = Infix
-  / CompareChain
+  = CompareChain
+  / Infix
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:Expression { return `${l.join("")}${r}`;}
   / $comment
   / _+ {return ` `;}
   / EOL
 
-CompareChain
-  = l:Infix* _* chain:(c:compare _* i:Expression {return [c, i]})+ {
-      console.log(chain);
-      return `${l.flat(Infinity).join("")}${chain.flat(Infinity).join("")}`
-    }
-
-Infix = l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.flat(Infinity).join("")}`;}
+Infix
+  = l:literal* _+ c:or _+ r:Expression* {return `${l.join("")} ${c} ${r.flat(Infinity).join("")}`;}
+  / l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.flat(Infinity).join("")}`;}
 
 Block
   = l:"(" _* c:(BlockExpression*) _* r:")"  _* e:EOL {return `${l}${c.join("")}${r}${e}`;}
@@ -30,20 +26,30 @@ Block
   / IndentBlock
 
 BlockExpression
-  = BlockInfix
-  / CompareChain
+  = CompareChain
+  / BlockInfix
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:BlockExpression { return `${l.join("")}${r}`;}
   / _+ {return ` `;}
 
-BlockInfix = l:CompareChain* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
 IndentBlock = l:BlockStart r:Expression+  { return `${l}${r.join("")}`;}
-BlockStart = s:$(EOL tab+)
+BlockStart = $(EOL tab+)
 
-literal = atom / Block
+BlockInfix
+  = l:literal* _+ c:or _+ r:BlockExpression* {return `${l.join("")} ${c} ${r.flat(Infinity).join("")}`;}
+  / l:literal* _* c:blockInfix _* r:BlockExpression* {return `${l.join("")}${c}${r.join("")}`;}
 
-atom = $(string / letter / bin / oct / hex / abs / number / tag / unit)
-abs = l:"|" c:Expression+ r:"|" {return `${l}${c.flat(Infinity).join()}${r}`}
+CompareChain
+  = l:Infix* _* chain:(c:compare _* i:Expression {return [c, i]})+ {
+      console.log(chain);
+      return `${l.flat(Infinity).join("")}${chain.flat(Infinity).join("")}`
+    }
+
+literal = atom / abs / Block
+
+abs = l:"|" c:Expression+ r:"|" {return `${l}${c.flat(Infinity).join("")}${r}`}
+
+atom = $(string / letter / bin / oct / hex / number / tag / unit)
 
 number = $("-"? [0-9]+ "."? [0-9]* )
 hex = $("0x"([0-9] / [A-F] / [a-f])+)
@@ -57,9 +63,9 @@ unit = $"_"
 key = $(string / letter / tag)
 
 prefix = $(export / import / not / spread)
-blockInfix = s:$(infix / spread) {return ` ${s} `;}
-infix = s:(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / pow) {return ` ${s} `;}
-compare = s:$(lt / le / eq / ne / me / mt ) {return ` ${s} `;}
+blockInfix = s:$(infix / spread) {return ` ${s} `}
+infix = s:(be / lambda / pair / xor / and / add / sub / mul / div / mod / get / pow) {return ` ${s} `}
+compare = $(lt / le / eq / ne / me / mt )
 postfix = $(spread / factrial)
 
 logicOr = $(or / xor)
@@ -93,3 +99,4 @@ import = $"@"
 tab = $"\t"
 EOL = $("\n" / "\r" "\n"?)
 _ = $" "
+
