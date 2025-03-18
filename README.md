@@ -9,7 +9,7 @@
   [日本語はこちら](./example.ja-jp.sn)
 
 ## reference
-  [language reference](./reference/Sign_reference_en_us.md)
+  [language reference](./reference/Sign_reference_en-us.md)
   [日本語はこちら](./reference/Sign_reference_ja-jp.md)
 
 ## License
