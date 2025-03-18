@@ -1,12 +1,11 @@
 export default parser = {
   async expression (c, s) {
-    f[c](s)
+    f[c](await s);
   }
 }
 
 const f = {
   " " (s) {
-    
   },
   "/r/n" (s) {
     return f["/n"](s);
@@ -18,9 +17,9 @@ const f = {
 
   },
   "/t" (s) {
-    return {
-      block : parser.expression(s)
-    }
+    return `{
+      "block" : ${parser.expression(s)}
+    }`
   },
   "@" (s) {
 
