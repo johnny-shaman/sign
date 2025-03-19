@@ -250,6 +250,7 @@ Operators are categorized into the following types, and are explained in order o
     * `!=`	(not equal infix operator)
 
 * Arithmetic operation domain
+  * Absolution
   * Addition and subtraction
     * `+`	(addition infix operator)
     * `-`	(subtraction infix operator)
@@ -586,9 +587,22 @@ more becomes true if the left is larger.
 not equal becomes true if the left and right are not equal.
 not equal can also compare lists and strings.
 
-## `+`	(addition infix operator) []({#+-addition-infix-operator})
+## Absolution []({#absolution})
 
 From here, I will explain arithmetic operators.
+In Sign, absolute values are represented by expressions enclosed in `|`,
+and they have operational rules as absolute value blocks.
+The distinction from the OR operator is made when there are spaces on both sides of the symbol,
+in which case it is treated as an OR operator.
+
+(Example)
+```
+||x + y| - 5|
+```
+
+
+## `+`	(addition infix operator) []({#+-addition-infix-operator})
+
 Addition...in other words, an operator that performs general addition.
 
 ## `-`	(subtraction infix operator) []({#--subtraction-infix-operator})
