@@ -1,0 +1,95 @@
+` sample.sn - Sign言語パーサーテスト用サンプルコード
+
+` 基本的な変数定義
+x : 10
+y : 20
+z : x + y
+
+` 文字列と文字リテラル
+hello : `Hello`
+world : `World`
+greeting : hello \  world \! 
+
+` 数値リテラル - 様々な形式
+dec : 123.45
+hex : 0x1A2B
+bin : 0b1010
+
+` 基本的な算術演算
+sum : x + y
+product : x * y
+power : x ^ 2
+factorial : 5!
+
+` 複合演算子
+is_valid : x >= 0 & y <= 100
+range : [1 ~ 10]
+
+` ブロック構造（括弧）
+group_calc : (x + y) * (z - 5)
+
+` ブロック構造（インデント）
+person :
+	name : `John`
+	age : 30
+	contact :
+		email : `john@example.com`
+		phone : `555-1234`
+
+` ラムダ式（関数定義）
+add : a b ? a + b
+multiply : a b ? a * b
+power_fn : base exp ? base ^ exp
+
+` インデントによるラムダ本体
+calc : a b ?
+	sum : a + b
+	diff : a - b
+	prod : a * b
+	sum + diff + prod
+
+` 関数適用
+result1 : add 5 10
+result2 : multiply 4 8
+
+` 特殊構文テスト
+list1 : 1 2 3 4 5
+list2 : 1, 2, 3, 4, 5
+combined : list1 list2
+
+` 前置演算子
+neg : !true
+spread : ~combined
+
+` 後置演算子
+factorials : 3! 4! 5!
+
+` ポイントフリースタイル
+map_double : [* 2,] list1
+reduce_sum : [+] list2
+
+` 文脈依存演算子のテスト
+range_list : 1 ~ 5
+rest_args : a ~args ? a args~
+
+` コンディショナル
+abs : x ?
+	x >= 0 : x
+	x < 0 : -x
+
+` コメント行と各種リテラルの混合
+types :
+	int : 42        ` 整数
+	float : 3.14    ` 浮動小数点
+	str : `テスト`   ` 文字列
+	char : \$       ` 文字
+	hex : 0xFF      ` 16進数
+
+` 複雑なネスト構造
+complex :
+	data : [
+		[1, 2, 3],
+		[4, 5, 6],
+		[7, 8, 9]
+	]
+	transform : [x y ? x * y + 1]
