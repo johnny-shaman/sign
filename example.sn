@@ -74,11 +74,11 @@ unit: []
 
 `There are shorthands for comparison operations.`
 
-`[x = y] & [y = z]`
+`[[x = y & y] = z]`
 
 x = y = z
 
-`[1 <= x] & [x <= 9]`
+`[[1 <= x & x] <= 9]`
 
 1 <= x <= 9
 
