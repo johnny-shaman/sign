@@ -13,11 +13,12 @@
  *   --out: 結果をファイルに保存 (入力ファイル名.json)
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250321_0
+ * ver_20250322_0
  */
 
 // Node.js標準モジュール
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 
 // プロジェクトモジュール
@@ -27,7 +28,7 @@ const { buildExpressionTree } = require('./builder');
 /**
  * メイン処理関数
  */
-function main() {
+async function main() {
   // コマンドライン引数の解析
   const args = process.argv.slice(2);
   if (args.length === 0) {
@@ -42,7 +43,7 @@ function main() {
   try {
     // ファイルの読み込み
     console.log(`ファイル '${inputFile}' を読み込んでいます...`);
-    const sourceCode = fs.readFileSync(inputFile, 'utf8');
+    const sourceCode = await fsPromises.readFile(inputFile, 'utf8');
 
     // 字句解析
     console.log('字句解析中...');
@@ -73,7 +74,7 @@ function main() {
     if (saveToFile) {
       // ファイルに保存
       const outputFile = `${inputFile}.json`;
-      fs.writeFileSync(outputFile, jsonResult, 'utf8');
+      await fsPromises.writeFile(outputFile, jsonResult, 'utf8');
       console.log(`結果を '${outputFile}' に保存しました`);
     } else {
       // 標準出力に表示
@@ -92,4 +93,7 @@ function main() {
 }
 
 // プログラム実行
-main();
+main().catch(err => {
+  console.error('予期せぬエラーが発生しました:', err);
+  process.exit(1);
+});
