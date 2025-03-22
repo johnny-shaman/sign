@@ -10,7 +10,7 @@
  * - ブロック構造の構築
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250322_1
+ * ver_20250322_2
  */
 
 /**
@@ -65,9 +65,13 @@ function buildExpressionTree(tokens) {
     currentIndex: 0,           // 現在処理中のトークンインデックス
     stringBuffer: '',          // 文字列処理バッファ
     indentLevel: 0,            // インデントレベル（タブの数）
+    previousIndentLevel: 0,    // 前回のインデントレベル（タブ減少検出用）
     currentStatement: [],      // 現在処理中の文のトークン
     inStatement: false,        // 文の処理中フラグ
-    isLineStart: true          // 行頭判定フラグ
+    isLineStart: true,         // 行頭判定フラグ
+    blockStack: [],            // ブロック開始の種類を追跡するスタック
+    operatorBuffer: null,      // 演算子バッファ
+    pendingBlocks: 0           // 処理待ちのブロック数
   };
 
   // すべてのトークンを処理
@@ -82,8 +86,9 @@ function buildExpressionTree(tokens) {
     finalizeStatement(context);
   }
 
-  // 最終的なルートスコープをクリーンアップして返す
-  return cleanupExpressionTree(context.scopeStack[0]);
+  // 最終的なルートスコープをクリーンアップして平坦化
+  const cleanedTree = cleanupExpressionTree(context.scopeStack[0]);
+  return flattenTree(cleanedTree);
 }
 
 /**
@@ -105,6 +110,50 @@ function cleanupExpressionTree(tree) {
   });
 
   return cleanedTree;
+}
+
+/**
+ * 式木を平坦化する（望ましい出力形式に変換）
+ * @param {Array} tree - クリーンアップされた式木
+ * @returns {Array} 平坦化された式木
+ */
+function flattenTree(tree) {
+  return tree.map(node => {
+    if (!Array.isArray(node)) return node;
+
+    // ステートメントを平坦化
+    return flattenStatement(node);
+  });
+}
+
+/**
+ * ステートメント（文）を平坦化する
+ * @param {Array} statement - ステートメント
+ * @returns {Array} 平坦化されたステートメント
+ */
+function flattenStatement(statement) {
+  // すでに平坦な場合はそのまま返す
+  if (!statement.some(item => Array.isArray(item))) {
+    return statement;
+  }
+
+  // 平坦化した結果を格納する配列
+  const result = [];
+
+  // 再帰的に平坦化
+  extractTokens(statement, result);
+
+  return result;
+}
+
+/**
+ * ネストされた配列から再帰的にトークンを抽出
+ */
+function extractTokens(node, result) {
+  for (const item of node) {
+    if (Array.isArray(item)) extractTokens(item, result);
+    else result.push(item);
+  }
 }
 
 /**
@@ -207,7 +256,7 @@ function hasSignificantContent(statement) {
  * @param {Object} context - 処理コンテキスト
  */
 function finalizeStatement(context) {
-  const optimizedTokens = optimizeTokens(context.currentStatement);
+  let optimizedTokens = optimizeTokens(context.currentStatement);
   // 最適化後も空になった場合はスキップ
   if (optimizedTokens.length === 0) {
     context.currentStatement = [];
@@ -215,7 +264,18 @@ function finalizeStatement(context) {
     return;
   }
 
-  // 有意な内容の配列を追加
+  // インデントレベルが減少した場合、ブロックの終了処理
+  if (context.previousIndentLevel > context.indentLevel) {
+    const levelDiff = context.previousIndentLevel - context.indentLevel;
+    // インデントが減った分だけスコープをポップ
+    for (let i = 0; i < levelDiff; i++) {
+      if (context.scopeStack.length > 1) { // ルートスコープは残す
+        popScope(context);
+      }
+    }
+  }
+
+  // 最適化したトークン配列を追加
   currentScope(context).push(optimizedTokens);
   // 文の状態をリセット
   context.currentStatement = [];
@@ -228,7 +288,9 @@ function finalizeStatement(context) {
  * @returns {string[]} 最適化されたトークン配列
  */
 function optimizeTokens(tokens) {
-  // すべての空白トークンを完全に除去する
+  // 空白と改行を除去
+  // Sign言語では空白は演算子の役割を持つが、初期実装では単純化のため除去
+  // 将来的には空白演算子の処理を追加する予定
   return tokens.filter(token => token !== ' ' && token !== '\n');
 }
 
@@ -291,8 +353,14 @@ function processToken(token, tokens, context) {
 function processNormalMode(token, tokens, context) {
   // 改行の処理
   if (token === '\n') {
-    // 現在の文を確定
-    if (context.inStatement &&
+    // 現在の文を確定するが、ラムダ式内のインデントブロック開始の場合は別処理
+    const isLambdaBlockStart =
+      currentMode(context) === MODE.LAMBDA &&
+      context.currentIndex + 1 < tokens.length &&
+      tokens[context.currentIndex + 1] === '\t';
+
+    // 通常の改行処理
+    if (!isLambdaBlockStart && context.inStatement &&
       context.currentStatement.length > 0 &&
       hasSignificantContent(context.currentStatement)) {
       finalizeStatement(context);
@@ -304,6 +372,7 @@ function processNormalMode(token, tokens, context) {
 
     // 次の行は行頭と判定
     context.isLineStart = true;
+    context.previousIndentLevel = context.indentLevel;
     // インデントレベルをリセット
     context.indentLevel = 0;
     return;
@@ -312,6 +381,7 @@ function processNormalMode(token, tokens, context) {
   // 空白トークンはスキップ
   // Sign言語では空白が演算子として機能する場合があるが、初期実装では単純化のため無視
   if (token === ' ') {
+    context.isLineStart = false;  // 空白でも行頭判定は更新
     return;
   }
 
@@ -331,8 +401,12 @@ function processNormalMode(token, tokens, context) {
   // タブの処理
   if (token === '\t') {
     context.indentLevel++;
-    // タブが出現したら新しいブロックを作成
-    if (context.indentLevel === 1) {
+    // 前回のインデントレベルより大きい場合、新しいブロックを作成
+    if (context.indentLevel > context.previousIndentLevel) {
+      // インデントによるブロック開始を追跡
+      context.blockStack.push('indent');
+      pushScope(context);
+      context.pendingBlocks++;
       pushScope(context);
     }
     return;
@@ -354,35 +428,43 @@ function processNormalMode(token, tokens, context) {
   // 文字リテラルの処理
   if (token.startsWith('\\')) {
     addTokenToStatement(token, context);
+    context.isLineStart = false;
     return;
   }
 
+  context.isLineStart = false;  // 意味のあるトークンが来たら行頭ではなくなる
+
   // ブロック開始の処理
   if (BLOCK_START.includes(token)) {
+    // ブロックの種類をスタックに記録
+    context.blockStack.push(token);
     pushMode(MODE.BLOCK, context);
     pushScope(context);
+    context.pendingBlocks++;
+    addTokenToStatement(token, context);
     return;
   }
 
   // ラムダ演算子の処理
   if (token === '?') {
     pushMode(MODE.LAMBDA, context);
+    // ラムダ演算子をステートメントに追加
     addTokenToStatement(token, context);
     return;
   }
 
   // 前置演算子の処理
   if (PREFIX_OPERATORS.includes(token)) {
-    pushMode(MODE.PREFIX, context);
+    // 前置演算子をそのままステートメントに追加
     addTokenToStatement(token, context);
+    pushMode(MODE.PREFIX, context);
     return;
   }
 
   // 後置演算子の処理（前のトークンを見て判断）
   if (POSTFIX_OPERATORS.includes(token) && context.currentIndex > 0) {
     const prevToken = tokens[context.currentIndex - 1];
-    // 数値や識別子の後に来る場合は後置演算子
-    if (!/[+\-*\/=<>!&|;,~'^#@\[\]\{\}\(\)]/.test(prevToken)) {
+    if (!/^[+\-*\/=<>!&|;,~'^#@\[\]\{\}\(\)]$/.test(prevToken)) {
       pushMode(MODE.POSTFIX, context);
       addTokenToStatement(token, context);
       return;
@@ -424,9 +506,20 @@ function processStringMode(token, context) {
  * @param {Object} context - 処理コンテキスト
  */
 function processBlockMode(token, tokens, context) {
-  // ブロック終了の処理
-  if (BLOCK_END.includes(token)) {
+  // 対応するブロック終了トークンを判定
+  const isMatchingEnd = (start, end) => {
+    return (start === '[' && end === ']') ||
+      (start === '{' && end === '}') ||
+      (start === '(' && end === ')');
+  };
+
+  // ブロック開始トークンに対応する終了トークンかチェック
+  const lastBlockStart = context.blockStack[context.blockStack.length - 1];
+  if (BLOCK_END.includes(token) &&
+    (lastBlockStart === 'indent' || isMatchingEnd(lastBlockStart, token))) {
     popMode(context);
+    context.blockStack.pop();
+    context.pendingBlocks--;
     popScope(context);
     return;
   }
@@ -475,8 +568,17 @@ function processPostfixMode(token, context) {
  * @param {Object} context - 処理コンテキスト
  */
 function processLambdaMode(token, tokens, context) {
-  // ラムダ式内部のトークン処理
+  // ラムダ式内の改行とインデントの特殊処理
   if (token === '\n') {
+    // 改行後にインデントがあるかチェック
+    const hasIndent = context.currentIndex + 1 < tokens.length &&
+      tokens[context.currentIndex + 1] === '\t';
+
+    if (hasIndent) {
+      // インデントがある場合は改行を保持
+      addTokenToStatement(token, context);
+      return;
+    }
     // 改行後にインデントがあればラムダ本体のブロック開始
     if (context.currentIndex + 1 < tokens.length && tokens[context.currentIndex + 1] === '\t') {
       addTokenToCurrentScope(token, context);
