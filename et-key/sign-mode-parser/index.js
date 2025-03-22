@@ -13,7 +13,7 @@
  *   --out: 結果をファイルに保存 (入力ファイル名.json)
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250322_0
+ * ver_20250322_1
  */
 
 // Node.js標準モジュール
@@ -48,7 +48,7 @@ async function main() {
     // 字句解析
     console.log('字句解析中...');
     const tokens = tokenize(sourceCode);
-    
+
     // デバッグ出力（オプション）
     console.log(`トークン数: ${tokens.length}`);
     if (tokens.length < 100) {  // トークン数が多い場合は省略
@@ -64,13 +64,15 @@ async function main() {
     // 結果の整形
     const result = {
       sourceFile: inputFile,
+      parserVersion: "0.2.0",  // バージョン情報を追加
+      parseDate: new Date().toISOString(),
       tokenCount: tokens.length,
       expressionTree: expressionTree
     };
 
     // 結果の出力
     const jsonResult = JSON.stringify(result, null, 2);
-    
+
     if (saveToFile) {
       // ファイルに保存
       const outputFile = `${inputFile}.json`;
@@ -84,7 +86,7 @@ async function main() {
     }
 
     console.log('処理が完了しました');
-    
+
   } catch (error) {
     // エラー処理
     console.error('エラーが発生しました:', error.message);
