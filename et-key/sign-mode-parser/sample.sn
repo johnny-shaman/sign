@@ -8,7 +8,7 @@ z : x + y
 ` 文字列と文字リテラル
 hello : `Hello`
 world : `World`
-greeting : hello \  world \! 
+greeting : hello \  world \!
 
 ` 数値リテラル - 様々な形式
 dec : 123.45
@@ -41,12 +41,26 @@ add : a b ? a + b
 multiply : a b ? a * b
 power_fn : base exp ? base ^ exp
 
+` インデントによるラムダ本体は、match_caseかモナド的な手続き計算のみ。
+` 現状の仕様では手続き計算の特別構文化にインデントを用いなくていいので、match_caseを使って下さい。
+` つまり、Signでは、愚直な言語的構成を行わなくてもプログラミングは出来るという思想があるので、同様の意味のコードは以下
+
+`calc : x y ?
+`	sum: x + y
+`	diff: x - y
+`	product: x * y
+`	sum + diff + product
+
+calc : x y ? (x + y) + (x - y) + (x * y)
+
 ` インデントによるラムダ本体
-calc : a b ?
-	sum : a + b
-	diff : a - b
-	prod : a * b
-	sum + diff + prod
+matchTest : x y ?
+	x < y : x
+	x = y : y
+	x + y
+
+` ポイントフリーな関数を含むラムダ式（これが意味解析できる重要性は、コンパイラの生成に絶対必要！）
+digit : x ? [ = x | ] [\0 ~ \9]
 
 ` 関数適用
 result1 : add 5 10
@@ -59,14 +73,14 @@ combined : list1 list2
 
 ` 前置演算子
 neg : !true
-spread : ~combined
+spread : ~combined        ` 二重配列になることに注意！
 
 ` 後置演算子
 factorials : 3! 4! 5!
 
 ` ポイントフリースタイル
-map_double : [* 2,] list1
-reduce_sum : [+] list2
+mapped_double : [* 2,] list1
+reduced_sum : [+] list2
 
 ` 文脈依存演算子のテスト
 range_list : 1 ~ 5
@@ -87,9 +101,8 @@ types :
 
 ` 複雑なネスト構造
 complex :
-	data : [
-		[1, 2, 3],
-		[4, 5, 6],
-		[7, 8, 9]
-	]
-	transform : [x y ? x * y + 1]
+	data :
+		1 2 3,
+		4 5 6,
+		7 8 9
+	transform : x y ? x * y + 1
