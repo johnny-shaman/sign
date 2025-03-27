@@ -1,0 +1,142 @@
+{
+  "sourceFile": "sample_test.sn",
+  "blockCount": 34,
+  "blocks": [
+    {
+      "blockId": 1,
+      "content": "[x : 10]"
+    },
+    {
+      "blockId": 2,
+      "content": "[y : 20]"
+    },
+    {
+      "blockId": 3,
+      "content": "[z : x + y]"
+    },
+    {
+      "blockId": 4,
+      "content": "[hello : `Hello`]"
+    },
+    {
+      "blockId": 5,
+      "content": "[world : `World`]"
+    },
+    {
+      "blockId": 6,
+      "content": "[greeting : hello \\  world \\!]"
+    },
+    {
+      "blockId": 7,
+      "content": "[sum : x + y]"
+    },
+    {
+      "blockId": 8,
+      "content": "[product : x * y]"
+    },
+    {
+      "blockId": 9,
+      "content": "[power : x ^ 2]"
+    },
+    {
+      "blockId": 10,
+      "content": "[factorial : 5!]"
+    },
+    {
+      "blockId": 11,
+      "content": "[is_valid : x >= 0 & y <= 100]"
+    },
+    {
+      "blockId": 12,
+      "content": "[range : [1 ~ 10]]"
+    },
+    {
+      "blockId": 13,
+      "content": "[group_calc : (x + y) * (z - 5)]"
+    },
+    {
+      "blockId": 14,
+      "content": "[person :\n\tname : `John`\n\tage : 30\n\tcontact :\n\t\temail : `john@example.com`\n\t\tphone : `555-1234`]"
+    },
+    {
+      "blockId": 15,
+      "content": "[add : a b ? a + b]"
+    },
+    {
+      "blockId": 16,
+      "content": "[multiply : a b ? a * b]"
+    },
+    {
+      "blockId": 17,
+      "content": "[power_fn : base exp ? base ^ exp]"
+    },
+    {
+      "blockId": 18,
+      "content": "[calc : x y ? (x + y) + (x - y) + (x * y)]"
+    },
+    {
+      "blockId": 19,
+      "content": "[matchTest : x y ?\n\tx < y : x\n\tx = y : y\n\tx + y]"
+    },
+    {
+      "blockId": 20,
+      "content": "[digit : x ? [ = x | ] [\\0 ~ \\9]]"
+    },
+    {
+      "blockId": 21,
+      "content": "[result1 : add 5 10]"
+    },
+    {
+      "blockId": 22,
+      "content": "[result2 : multiply 4 8]"
+    },
+    {
+      "blockId": 23,
+      "content": "[list1 : 1 2 3 4 5]"
+    },
+    {
+      "blockId": 24,
+      "content": "[list2 : 1, 2, 3, 4, 5]"
+    },
+    {
+      "blockId": 25,
+      "content": "[combined : list1 list2]"
+    },
+    {
+      "blockId": 26,
+      "content": "[neg : !true]"
+    },
+    {
+      "blockId": 27,
+      "content": "[spread : ~combined]"
+    },
+    {
+      "blockId": 28,
+      "content": "[factorials : 3! 4! 5!]"
+    },
+    {
+      "blockId": 29,
+      "content": "[mapped_double : [* 2,] list1]"
+    },
+    {
+      "blockId": 30,
+      "content": "[reduced_sum : [+] list2]"
+    },
+    {
+      "blockId": 31,
+      "content": "[range_list : 1 ~ 5]"
+    },
+    {
+      "blockId": 32,
+      "content": "[rest_args : a ~args ? a args~]"
+    },
+    {
+      "blockId": 33,
+      "content": "[abs : x ?\n\tx >= 0 : x\n\tx < 0 : -x]"
+    },
+    {
+      "blockId": 34,
+      "content": "[complex :\n\tdata :\n\t\t1 2 3,\n\t\t4 5 6,\n\t\t7 8 9\n\ttransform : x y ? x * y + 1]"
+    }
+  ]
+}

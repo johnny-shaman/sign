@@ -10,7 +10,7 @@
  * - ブロック構造の構築
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250322_2
+ * ver_20250324_0
  */
 
 /**
@@ -66,6 +66,7 @@ function buildExpressionTree(tokens) {
     stringBuffer: '',          // 文字列処理バッファ
     indentLevel: 0,            // インデントレベル（タブの数）
     previousIndentLevel: 0,    // 前回のインデントレベル（タブ減少検出用）
+    indentLevelStack: [0],     // インデントレベルの履歴スタック
     currentStatement: [],      // 現在処理中の文のトークン
     inStatement: false,        // 文の処理中フラグ
     isLineStart: true,         // 行頭判定フラグ
@@ -264,14 +265,22 @@ function finalizeStatement(context) {
     return;
   }
 
-  // インデントレベルが減少した場合、ブロックの終了処理
-  if (context.previousIndentLevel > context.indentLevel) {
-    const levelDiff = context.previousIndentLevel - context.indentLevel;
-    // インデントが減った分だけスコープをポップ
-    for (let i = 0; i < levelDiff; i++) {
-      if (context.scopeStack.length > 1) { // ルートスコープは残す
-        popScope(context);
-      }
+  // インデントレベルの変化を検出
+  const currentIndent = context.indentLevel;
+
+  // インデントレベルがスタックの最後より小さい場合、ブロック終了
+  while (context.indentLevelStack.length > 1 &&
+    currentIndent < context.indentLevelStack[context.indentLevelStack.length - 1]) {
+    // インデントスタックから1つポップ
+    context.indentLevelStack.pop();
+    // ブロックスタックからindetエントリを探してポップ
+    const blockIndex = context.blockStack.lastIndexOf('indent');
+    if (blockIndex >= 0) {
+      context.blockStack.splice(blockIndex, 1);
+    }
+    // スコープをポップ
+    if (context.scopeStack.length > 1) {
+      popScope(context);
     }
   }
 
@@ -401,12 +410,10 @@ function processNormalMode(token, tokens, context) {
   // タブの処理
   if (token === '\t') {
     context.indentLevel++;
-    // 前回のインデントレベルより大きい場合、新しいブロックを作成
-    if (context.indentLevel > context.previousIndentLevel) {
-      // インデントによるブロック開始を追跡
+    // インデントレベルがスタックの最後の値より大きい場合、新しいブロックを開始
+    if (context.indentLevel > context.indentLevelStack[context.indentLevelStack.length - 1]) {
+      context.indentLevelStack.push(context.indentLevel);
       context.blockStack.push('indent');
-      pushScope(context);
-      context.pendingBlocks++;
       pushScope(context);
     }
     return;
