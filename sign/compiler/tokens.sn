@@ -42,4 +42,4 @@
 #uint : c ~cs ? nzero c , digits cs~
 #int : c ~cs ? [c = \- | c = nzero] , digits cs~
 
-#float : c ~cs ? [c = \- | nzero c] & [[= \. | ] cs | digits cs~] & [c cs~]
+#float : c ~cs ? [c = \- | nzero c] & [[= \. | ] cs | digits cs~] & c cs
