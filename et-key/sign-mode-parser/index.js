@@ -12,7 +12,7 @@
  *   node index.js <入力ファイル> [--out]
  *   --out: 結果をファイルに保存 (入力ファイル名.json)
  * CreateBy: Claude3.7Sonnet
- * ver_20250327_0
+ * ver_20250404_0
  */
 
 // Node.js標準モジュール
@@ -22,7 +22,8 @@ const path = require('path');
 // プロジェクトモジュール
 const { normalizeSourceCode } = require('./preprocessor');
 const { extractAndProcessBlocks } = require('./block-extractor');
-const { Lexer, TokenType } = require('./lexer');
+const { tokenizeBlock } = require('./tokenizer');
+const { insertParentheses } = require('./parenthesis-inserter');
 //const { wrapExpression } = require('./expression-wrapper'); // 後で実装予定
 
 /**
@@ -52,17 +53,6 @@ async function writeFile(filePath, content) {
   } catch (error) {
     throw new Error(`ファイルの書き込みに失敗しました: ${error.message}`);
   }
-}
-
-/**
- * コードブロックをトークン化する
- * 
- * @param {string} block - 処理対象のコードブロック
- * @returns {Array} トークンの配列
- */
-function tokenizeBlock(block) {
-  const lexer = new Lexer(block);
-  return lexer.tokenize();
 }
 
 /**
@@ -106,50 +96,38 @@ async function main() {
     const codeBlocks = extractAndProcessBlocks(normalizedCode);
     console.log(`${codeBlocks.length}個のコードブロックを抽出しました`);
 
-    // --------★デバッグ用ここから★--------
-    // コードブロックをファイルに出力
-    const blocksOutputFile = `${inputFile}.debug_blocks.json`;
-    console.log(`コードブロックを${blocksOutputFile}に保存しています...`);
-    const blocksJson = JSON.stringify({
-      sourceFile: inputFile,
-      blockCount: codeBlocks.length,
-      blocks: codeBlocks.map((block, index) => ({
-        blockId: index + 1,
-        content: block
-      }))
-    }, null, 2);
-    await writeFile(blocksOutputFile, blocksJson);
-    // --------★デバッグ用ここまで★--------
-
-    // ステップ3: トークン分割
-    console.log('ステップ3: トークン分割');
-    const tokenizedBlocks = [];
-
-    for (let i = 0; i < codeBlocks.length; i++) {
-      console.log(`ブロック${i + 1}をトークン化しています...`);
-      const tokens = tokenizeBlock(codeBlocks[i]);
-      tokenizedBlocks.push({
-        originalBlock: codeBlocks[i],
-        tokens: tokens
-      });
-    }
-
-    // ステップ4: 式木構造の生成（カッコ付け）
-    // この部分は将来的にexpression-wrapper.jsの実装が完了したら有効にする
-    console.log('ステップ4: 式木構造の生成');
-    /*
-    const expressionTrees = [];
+    // ステップ3: 文字列分割とカッコ挿入
+    console.log('ステップ3: トークン化とカッコ挿入');
+    const processedBlocks = [];
     
-    for (let i = 0; i < tokenizedBlocks.length; i++) {
-      console.log(`ブロック${i+1}の式木を生成しています...`);
-      const tree = wrapExpression(tokenizedBlocks[i].tokens);
-      expressionTrees.push({
-        originalBlock: tokenizedBlocks[i].originalBlock,
-        tokens: tokenizedBlocks[i].tokens,
-        expressionTree: tree
+    for (let i = 0; i < codeBlocks.length; i++) {
+      console.log(`ブロック${i + 1}を処理しています...`);
+
+      // トークナイザーを使用
+      const tokens = tokenizeBlock(codeBlocks[i]);
+      
+      // カッコを挿入
+      const withParentheses = insertParentheses(tokens);
+      
+      processedBlocks.push({
+        originalBlock: codeBlocks[i],
+        tokens: tokens,
+        withParentheses: withParentheses
       });
     }
-    */
+
+    // --------★デバッグ用ここから★--------
+    // カッコ挿入後のテキストファイル出力
+    const parenthesizedOutputFile = `${inputFile}.debug_parenthesized.txt`;
+    console.log(`カッコ挿入結果を${parenthesizedOutputFile}に保存しています...`);
+    const parenthesizedText = processedBlocks.map((block, index) =>
+      `# BlockID: ${index + 1}\n` +
+      `# Original: ${block.originalBlock}\n` +
+      `# tokens: \`\"${block.tokens.join('","')}\"\`\n` +
+      `# withParentheses: \`\"${block.withParentheses.join('","')}\"\`\n\n`
+    ).join('');
+    await writeFile(parenthesizedOutputFile, parenthesizedText);
+    // --------★デバッグ用ここまで★--------
 
     // 結果の生成
     const result = {
@@ -157,11 +135,12 @@ async function main() {
       processorVersion: "0.1.0",
       processDate: new Date().toISOString(),
       blockCount: codeBlocks.length,
-      blocks: tokenizedBlocks.map((block, index) => ({
+      blocks: processedBlocks.map((block, index) => ({
         blockId: index + 1,
         originalText: block.originalBlock,
         tokenCount: block.tokens.length,
-        tokens: block.tokens // トークンが多すぎる場合はコメントアウトを検討
+        tokens: block.tokens, // トークンが多すぎる場合はコメントアウトを検討
+        withParentheses: block.withParentheses
       }))
       // expressionTrees: expressionTrees // 将来的に追加
     };
