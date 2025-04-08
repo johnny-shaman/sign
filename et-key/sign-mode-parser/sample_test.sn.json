@@ -1,34 +1,28 @@
 {
   "sourceFile": "sample_test.sn",
   "processorVersion": "0.1.0",
-  "processDate": "2025-03-27T15:29:56.019Z",
-  "blockCount": 34,
+  "processDate": "2025-04-05T14:12:23.375Z",
+  "blockCount": 35,
   "blocks": [
     {
       "blockId": 1,
       "originalText": "[x : 10]",
       "tokenCount": 5,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "number",
-          "value": "10"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "x",
+        ":",
+        "10",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "x",
+        ":",
+        "10",
+        ")",
+        "]"
       ]
     },
     {
@@ -36,26 +30,20 @@
       "originalText": "[y : 20]",
       "tokenCount": 5,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "number",
-          "value": "20"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "y",
+        ":",
+        "20",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "y",
+        ":",
+        "20",
+        ")",
+        "]"
       ]
     },
     {
@@ -63,34 +51,25 @@
       "originalText": "[z : x + y]",
       "tokenCount": 7,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "z"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "z",
+        ":",
+        "x",
+        "+",
+        "y",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "z",
+        ":",
+        "(",
+        "x",
+        "+",
+        "y",
+        ")",
+        "]"
       ]
     },
     {
@@ -98,26 +77,20 @@
       "originalText": "[hello : `Hello`]",
       "tokenCount": 5,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "hello"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "string",
-          "value": "Hello"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "hello",
+        ":",
+        "`Hello`",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "hello",
+        ":",
+        "`Hello`",
+        ")",
+        "]"
       ]
     },
     {
@@ -125,26 +98,20 @@
       "originalText": "[world : `World`]",
       "tokenCount": 5,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "world"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "string",
-          "value": "World"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "world",
+        ":",
+        "`World`",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "world",
+        ":",
+        "`World`",
+        ")",
+        "]"
       ]
     },
     {
@@ -152,38 +119,26 @@
       "originalText": "[greeting : hello \\  world \\!]",
       "tokenCount": 8,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "greeting"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "hello"
-        },
-        {
-          "type": "letter",
-          "value": " "
-        },
-        {
-          "type": "identifier",
-          "value": "world"
-        },
-        {
-          "type": "letter",
-          "value": "!"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "greeting",
+        ":",
+        "hello",
+        "\\ ",
+        "world",
+        "\\!",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "greeting",
+        "(",
+        ":",
+        "hello",
+        "\\ ",
+        "world",
+        "\\!",
+        ")",
+        "]"
       ]
     },
     {
@@ -191,34 +146,25 @@
       "originalText": "[sum : x + y]",
       "tokenCount": 7,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "sum"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "sum",
+        ":",
+        "x",
+        "+",
+        "y",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "sum",
+        ":",
+        "(",
+        "x",
+        "+",
+        "y",
+        ")",
+        "]"
       ]
     },
     {
@@ -226,34 +172,25 @@
       "originalText": "[product : x * y]",
       "tokenCount": 7,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "product"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_mul",
-          "value": "*"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "product",
+        ":",
+        "x",
+        "*",
+        "y",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "product",
+        ":",
+        "(",
+        "x",
+        "*",
+        "y",
+        ")",
+        "]"
       ]
     },
     {
@@ -261,65 +198,50 @@
       "originalText": "[power : x ^ 2]",
       "tokenCount": 7,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "power"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_power",
-          "value": "^"
-        },
-        {
-          "type": "number",
-          "value": "2"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "power",
+        ":",
+        "x",
+        "^",
+        "2",
+        "]"
+      ],
+      "withParentheses": [
+        "(",
+        "[",
+        "(",
+        "power",
+        ":",
+        "(",
+        "x",
+        ")",
+        "^",
+        "(",
+        "2",
+        ")",
+        "]",
+        ")"
       ]
     },
     {
       "blockId": 10,
       "originalText": "[factorial : 5!]",
-      "tokenCount": 6,
+      "tokenCount": 5,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "factorial"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "number",
-          "value": "5"
-        },
-        {
-          "type": "f_not",
-          "value": "!"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "factorial",
+        ":",
+        "5!",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "factorial",
+        ":",
+        ")",
+        "5!",
+        "]"
       ]
     },
     {
@@ -327,50 +249,35 @@
       "originalText": "[is_valid : x >= 0 & y <= 100]",
       "tokenCount": 11,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "is_valid"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_more_eq",
-          "value": ">="
-        },
-        {
-          "type": "number",
-          "value": "0"
-        },
-        {
-          "type": "f_and",
-          "value": "&"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "f_less_eq",
-          "value": "<="
-        },
-        {
-          "type": "number",
-          "value": "100"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "is_valid",
+        ":",
+        "x",
+        ">=",
+        "0",
+        "&",
+        "y",
+        "<=",
+        "100",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "is_valid",
+        ":",
+        "(",
+        "x",
+        ">=",
+        "0",
+        ")",
+        "&",
+        "(",
+        "y",
+        "<=",
+        "100",
+        ")",
+        "]"
       ]
     },
     {
@@ -378,42 +285,26 @@
       "originalText": "[range : [1 ~ 10]]",
       "tokenCount": 9,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "range"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "number",
-          "value": "1"
-        },
-        {
-          "type": "f_spread",
-          "value": "~"
-        },
-        {
-          "type": "number",
-          "value": "10"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "range",
+        ":",
+        "[",
+        "1",
+        "~",
+        "10",
+        "]",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "range",
+        ":",
+        "[",
+        "1",
+        "~",
+        "10",
+        "]",
+        "]"
       ]
     },
     {
@@ -421,193 +312,114 @@
       "originalText": "[group_calc : (x + y) * (z - 5)]",
       "tokenCount": 15,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "group_calc"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "("
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": ")"
-        },
-        {
-          "type": "f_mul",
-          "value": "*"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "("
-        },
-        {
-          "type": "identifier",
-          "value": "z"
-        },
-        {
-          "type": "f_sub",
-          "value": "-"
-        },
-        {
-          "type": "number",
-          "value": "5"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": ")"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "group_calc",
+        ":",
+        "(",
+        "x",
+        "+",
+        "y",
+        ")",
+        "*",
+        "(",
+        "z",
+        "-",
+        "5",
+        ")",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "group_calc",
+        "(",
+        ":",
+        "[",
+        "(",
+        "x",
+        "+",
+        "(",
+        "y",
+        ")",
+        "]",
+        "*",
+        "(",
+        "(",
+        "z",
+        "-",
+        "5",
+        ")",
+        ")",
+        "]"
       ]
     },
     {
       "blockId": 14,
       "originalText": "[person :\n\tname : `John`\n\tage : 30\n\tcontact :\n\t\temail : `john@example.com`\n\t\tphone : `555-1234`]",
-      "tokenCount": 30,
+      "tokenCount": 23,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "person"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "name"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "string",
-          "value": "John"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "age"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "number",
-          "value": "30"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "contact"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "email"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "string",
-          "value": "john@example.com"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "phone"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "string",
-          "value": "555-1234"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "person",
+        ":",
+        "\n\t",
+        "name",
+        ":",
+        "`John`",
+        "\n\t",
+        "age",
+        ":",
+        "30",
+        "\n\t",
+        "contact",
+        ":",
+        "\n\t\t",
+        "email",
+        ":",
+        "`john@example.com`",
+        "\n\t\t",
+        "phone",
+        ":",
+        "`555-1234`",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "person",
+        ":",
+        "[",
+        "[",
+        "(",
+        "name",
+        ":",
+        "(",
+        "`John`",
+        ",",
+        "(",
+        "age",
+        ":",
+        "(",
+        "30",
+        ",",
+        "(",
+        "contact",
+        ":",
+        "[",
+        "[",
+        "(",
+        "email",
+        ":",
+        "(",
+        "`john@example.com`",
+        ",",
+        "(",
+        "phone",
+        ":",
+        "`555-1234`",
+        ")",
+        "]",
+        "]",
+        "]",
+        "]"
       ]
     },
     {
@@ -615,46 +427,31 @@
       "originalText": "[add : a b ? a + b]",
       "tokenCount": 10,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "add"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "a"
-        },
-        {
-          "type": "identifier",
-          "value": "b"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "identifier",
-          "value": "a"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "identifier",
-          "value": "b"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "add",
+        ":",
+        "a",
+        "b",
+        "?",
+        "a",
+        "+",
+        "b",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "add",
+        "(",
+        ":",
+        "a",
+        "b",
+        "?",
+        "(",
+        "a",
+        "+",
+        "b",
+        ")",
+        "]"
       ]
     },
     {
@@ -662,46 +459,31 @@
       "originalText": "[multiply : a b ? a * b]",
       "tokenCount": 10,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "multiply"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "a"
-        },
-        {
-          "type": "identifier",
-          "value": "b"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "identifier",
-          "value": "a"
-        },
-        {
-          "type": "f_mul",
-          "value": "*"
-        },
-        {
-          "type": "identifier",
-          "value": "b"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "multiply",
+        ":",
+        "a",
+        "b",
+        "?",
+        "a",
+        "*",
+        "b",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "multiply",
+        "(",
+        ":",
+        "a",
+        "b",
+        "?",
+        "(",
+        "a",
+        "*",
+        "b",
+        ")",
+        "]"
       ]
     },
     {
@@ -709,46 +491,35 @@
       "originalText": "[power_fn : base exp ? base ^ exp]",
       "tokenCount": 10,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "power_fn"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "base"
-        },
-        {
-          "type": "identifier",
-          "value": "exp"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "identifier",
-          "value": "base"
-        },
-        {
-          "type": "f_power",
-          "value": "^"
-        },
-        {
-          "type": "identifier",
-          "value": "exp"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "power_fn",
+        ":",
+        "base",
+        "exp",
+        "?",
+        "base",
+        "^",
+        "exp",
+        "]"
+      ],
+      "withParentheses": [
+        "(",
+        "[",
+        "power_fn",
+        "(",
+        ":",
+        "base",
+        "exp",
+        "?",
+        "(",
+        "base",
+        ")",
+        "^",
+        "(",
+        "exp",
+        ")",
+        "]",
+        ")"
       ]
     },
     {
@@ -756,213 +527,132 @@
       "originalText": "[calc : x y ? (x + y) + (x - y) + (x * y)]",
       "tokenCount": 24,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "calc"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "("
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": ")"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "("
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_sub",
-          "value": "-"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": ")"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "("
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_mul",
-          "value": "*"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": ")"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "calc",
+        ":",
+        "x",
+        "y",
+        "?",
+        "(",
+        "x",
+        "+",
+        "y",
+        ")",
+        "+",
+        "(",
+        "x",
+        "-",
+        "y",
+        ")",
+        "+",
+        "(",
+        "x",
+        "*",
+        "y",
+        ")",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "calc",
+        "(",
+        ":",
+        "x",
+        "y",
+        "?",
+        "(",
+        "(",
+        "x",
+        "+",
+        "y",
+        ")",
+        ")",
+        "+",
+        "(",
+        "(",
+        "x",
+        "-",
+        "y",
+        ")",
+        ")",
+        "+",
+        "(",
+        "(",
+        "x",
+        "*",
+        "y",
+        ")",
+        ")",
+        "]"
       ]
     },
     {
       "blockId": 19,
       "originalText": "[matchTest : x y ?\n\tx < y : x\n\tx = y : y\n\tx + y]",
-      "tokenCount": 26,
+      "tokenCount": 23,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "matchTest"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_less",
-          "value": "<"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_eq",
-          "value": "="
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "matchTest",
+        ":",
+        "x",
+        "y",
+        "?",
+        "\n\t",
+        "x",
+        "<",
+        "y",
+        ":",
+        "x",
+        "\n\t",
+        "x",
+        "=",
+        "y",
+        ":",
+        "y",
+        "\n\t",
+        "x",
+        "+",
+        "y",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "matchTest",
+        "(",
+        ":",
+        "x",
+        "y",
+        "?",
+        "(",
+        "[",
+        "(",
+        "x",
+        "<",
+        "(",
+        "y",
+        ":",
+        "(",
+        "x",
+        ")",
+        ",",
+        "(",
+        "x",
+        "=",
+        "(",
+        "y",
+        ":",
+        "(",
+        "y",
+        ")",
+        ",",
+        "(",
+        "x",
+        "+",
+        "y",
+        ")",
+        "]",
+        ")",
+        "]"
       ]
     },
     {
@@ -970,70 +660,40 @@
       "originalText": "[digit : x ? [ = x | ] [\\0 ~ \\9]]",
       "tokenCount": 16,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "digit"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "f_eq",
-          "value": "="
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_or",
-          "value": "|"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "letter",
-          "value": "0"
-        },
-        {
-          "type": "f_spread",
-          "value": "~"
-        },
-        {
-          "type": "letter",
-          "value": "9"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "digit",
+        ":",
+        "x",
+        "?",
+        "[",
+        "=",
+        "x",
+        "|",
+        "]",
+        "[",
+        "\\0",
+        "~",
+        "\\9",
+        "]",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "digit",
+        ":",
+        "x",
+        "?",
+        "[",
+        "=",
+        "x",
+        "|",
+        "]",
+        "[",
+        "\\0",
+        "~",
+        "\\9",
+        "]",
+        "]"
       ]
     },
     {
@@ -1041,34 +701,24 @@
       "originalText": "[result1 : add 5 10]",
       "tokenCount": 7,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "result1"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "add"
-        },
-        {
-          "type": "number",
-          "value": "5"
-        },
-        {
-          "type": "number",
-          "value": "10"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "result1",
+        ":",
+        "add",
+        "5",
+        "10",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "result1",
+        "(",
+        ":",
+        "add",
+        "5",
+        "10",
+        ")",
+        "]"
       ]
     },
     {
@@ -1076,34 +726,24 @@
       "originalText": "[result2 : multiply 4 8]",
       "tokenCount": 7,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "result2"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "multiply"
-        },
-        {
-          "type": "number",
-          "value": "4"
-        },
-        {
-          "type": "number",
-          "value": "8"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "result2",
+        ":",
+        "multiply",
+        "4",
+        "8",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "result2",
+        "(",
+        ":",
+        "multiply",
+        "4",
+        "8",
+        ")",
+        "]"
       ]
     },
     {
@@ -1111,42 +751,28 @@
       "originalText": "[list1 : 1 2 3 4 5]",
       "tokenCount": 9,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "list1"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "number",
-          "value": "1"
-        },
-        {
-          "type": "number",
-          "value": "2"
-        },
-        {
-          "type": "number",
-          "value": "3"
-        },
-        {
-          "type": "number",
-          "value": "4"
-        },
-        {
-          "type": "number",
-          "value": "5"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "list1",
+        ":",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "list1",
+        "(",
+        ":",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        ")",
+        "]"
       ]
     },
     {
@@ -1154,58 +780,47 @@
       "originalText": "[list2 : 1, 2, 3, 4, 5]",
       "tokenCount": 13,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "list2"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "number",
-          "value": "1"
-        },
-        {
-          "type": "f_product",
-          "value": ","
-        },
-        {
-          "type": "number",
-          "value": "2"
-        },
-        {
-          "type": "f_product",
-          "value": ","
-        },
-        {
-          "type": "number",
-          "value": "3"
-        },
-        {
-          "type": "f_product",
-          "value": ","
-        },
-        {
-          "type": "number",
-          "value": "4"
-        },
-        {
-          "type": "f_product",
-          "value": ","
-        },
-        {
-          "type": "number",
-          "value": "5"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "list2",
+        ":",
+        "1",
+        ",",
+        "2",
+        ",",
+        "3",
+        ",",
+        "4",
+        ",",
+        "5",
+        "]"
+      ],
+      "withParentheses": [
+        "(",
+        "[",
+        "(",
+        "list2",
+        ":",
+        "(",
+        "1",
+        ")",
+        ",",
+        "(",
+        "2",
+        ")",
+        ",",
+        "(",
+        "3",
+        ")",
+        ",",
+        "(",
+        "4",
+        ")",
+        ",",
+        "(",
+        "5",
+        ")",
+        "]",
+        ")"
       ]
     },
     {
@@ -1213,139 +828,89 @@
       "originalText": "[combined : list1 list2]",
       "tokenCount": 6,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "combined"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "list1"
-        },
-        {
-          "type": "identifier",
-          "value": "list2"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "combined",
+        ":",
+        "list1",
+        "list2",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "combined",
+        "(",
+        ":",
+        "list1",
+        "list2",
+        ")",
+        "]"
       ]
     },
     {
       "blockId": 26,
       "originalText": "[neg : !true]",
-      "tokenCount": 6,
+      "tokenCount": 5,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "neg"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "f_not",
-          "value": "!"
-        },
-        {
-          "type": "identifier",
-          "value": "true"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "neg",
+        ":",
+        "!true",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "neg",
+        ":",
+        ")",
+        "!true",
+        "]"
       ]
     },
     {
       "blockId": 27,
       "originalText": "[spread : ~combined]",
-      "tokenCount": 6,
+      "tokenCount": 5,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "spread"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "f_spread",
-          "value": "~"
-        },
-        {
-          "type": "identifier",
-          "value": "combined"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "spread",
+        ":",
+        "~combined",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "spread",
+        ":",
+        ")",
+        "~combined",
+        "]"
       ]
     },
     {
       "blockId": 28,
       "originalText": "[factorials : 3! 4! 5!]",
-      "tokenCount": 10,
+      "tokenCount": 7,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "factorials"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "number",
-          "value": "3"
-        },
-        {
-          "type": "f_not",
-          "value": "!"
-        },
-        {
-          "type": "number",
-          "value": "4"
-        },
-        {
-          "type": "f_not",
-          "value": "!"
-        },
-        {
-          "type": "number",
-          "value": "5"
-        },
-        {
-          "type": "f_not",
-          "value": "!"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "factorials",
+        ":",
+        "3!",
+        "4!",
+        "5!",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "factorials",
+        ":",
+        ")",
+        "3!",
+        "4!",
+        "5!",
+        "]"
       ]
     },
     {
@@ -1353,46 +918,32 @@
       "originalText": "[mapped_double : [* 2,] list1]",
       "tokenCount": 10,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "mapped_double"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "f_mul",
-          "value": "*"
-        },
-        {
-          "type": "number",
-          "value": "2"
-        },
-        {
-          "type": "f_product",
-          "value": ","
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        },
-        {
-          "type": "identifier",
-          "value": "list1"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "mapped_double",
+        ":",
+        "[",
+        "*",
+        "2",
+        ",",
+        "]",
+        "list1",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "mapped_double",
+        "(",
+        ":",
+        "[",
+        "[",
+        "*",
+        "2",
+        ",",
+        "]",
+        "]",
+        "list1",
+        ")",
+        "]"
       ]
     },
     {
@@ -1400,38 +951,28 @@
       "originalText": "[reduced_sum : [+] list2]",
       "tokenCount": 8,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "reduced_sum"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        },
-        {
-          "type": "identifier",
-          "value": "list2"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "reduced_sum",
+        ":",
+        "[",
+        "+",
+        "]",
+        "list2",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "reduced_sum",
+        ":",
+        "[",
+        "[",
+        "+",
+        "]",
+        "]",
+        "list2",
+        ")",
+        "]"
       ]
     },
     {
@@ -1439,343 +980,255 @@
       "originalText": "[range_list : 1 ~ 5]",
       "tokenCount": 7,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "range_list"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "number",
-          "value": "1"
-        },
-        {
-          "type": "f_spread",
-          "value": "~"
-        },
-        {
-          "type": "number",
-          "value": "5"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "range_list",
+        ":",
+        "1",
+        "~",
+        "5",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "range_list",
+        ":",
+        "1",
+        "~",
+        "5",
+        "]"
       ]
     },
     {
       "blockId": 32,
       "originalText": "[rest_args : a ~args ? a args~]",
-      "tokenCount": 11,
+      "tokenCount": 9,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "rest_args"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "a"
-        },
-        {
-          "type": "f_spread",
-          "value": "~"
-        },
-        {
-          "type": "identifier",
-          "value": "args"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "identifier",
-          "value": "a"
-        },
-        {
-          "type": "identifier",
-          "value": "args"
-        },
-        {
-          "type": "f_spread",
-          "value": "~"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "rest_args",
+        ":",
+        "a",
+        "~args",
+        "?",
+        "a",
+        "args~",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "rest_args",
+        "(",
+        ":",
+        "a",
+        "~args",
+        "?",
+        "a",
+        ")",
+        "args~",
+        "]"
       ]
     },
     {
       "blockId": 33,
       "originalText": "[abs : x ?\n\tx >= 0 : x\n\tx < 0 : -x]",
-      "tokenCount": 21,
+      "tokenCount": 18,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "abs"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_more_eq",
-          "value": ">="
-        },
-        {
-          "type": "number",
-          "value": "0"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_less",
-          "value": "<"
-        },
-        {
-          "type": "number",
-          "value": "0"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "f_sub",
-          "value": "-"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "abs",
+        ":",
+        "x",
+        "?",
+        "\n\t",
+        "x",
+        ">=",
+        "0",
+        ":",
+        "x",
+        "\n\t",
+        "x",
+        "<",
+        "0",
+        ":",
+        "-x",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "abs",
+        ":",
+        "(",
+        "x",
+        "?",
+        "(",
+        "[",
+        "(",
+        "x",
+        ">=",
+        "[",
+        "0",
+        "]",
+        ":",
+        "(",
+        "x",
+        ")",
+        ",",
+        "(",
+        "x",
+        "<",
+        "[",
+        "0",
+        "]",
+        ":",
+        ")",
+        "-x",
+        "]",
+        ")",
+        "]"
       ]
     },
     {
       "blockId": 34,
-      "originalText": "[complex :\n\tdata :\n\t\t1 2 3,\n\t\t4 5 6,\n\t\t7 8 9\n\ttransform : x y ? x * y + 1]",
-      "tokenCount": 40,
+      "originalText": "[complex : this :\n\tdata :\n\t\t1 2 3,\n\t\t4 5 6,\n\t\t7 8 9\n\ttransform : x y ? this ' data ' x * this ' data ' y + 1]",
+      "tokenCount": 42,
       "tokens": [
-        {
-          "type": "BLOCK_START",
-          "value": "["
-        },
-        {
-          "type": "identifier",
-          "value": "complex"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "data"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "number",
-          "value": "1"
-        },
-        {
-          "type": "number",
-          "value": "2"
-        },
-        {
-          "type": "number",
-          "value": "3"
-        },
-        {
-          "type": "f_product",
-          "value": ","
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "number",
-          "value": "4"
-        },
-        {
-          "type": "number",
-          "value": "5"
-        },
-        {
-          "type": "number",
-          "value": "6"
-        },
-        {
-          "type": "f_product",
-          "value": ","
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "number",
-          "value": "7"
-        },
-        {
-          "type": "number",
-          "value": "8"
-        },
-        {
-          "type": "number",
-          "value": "9"
-        },
-        {
-          "type": "EVAL",
-          "value": "\n"
-        },
-        {
-          "type": "f_block",
-          "value": "\t"
-        },
-        {
-          "type": "identifier",
-          "value": "transform"
-        },
-        {
-          "type": "f_define",
-          "value": ":"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "f_lambda",
-          "value": "?"
-        },
-        {
-          "type": "identifier",
-          "value": "x"
-        },
-        {
-          "type": "f_mul",
-          "value": "*"
-        },
-        {
-          "type": "identifier",
-          "value": "y"
-        },
-        {
-          "type": "f_add",
-          "value": "+"
-        },
-        {
-          "type": "number",
-          "value": "1"
-        },
-        {
-          "type": "BLOCK_END",
-          "value": "]"
-        }
+        "[",
+        "complex",
+        ":",
+        "this",
+        ":",
+        "\n\t",
+        "data",
+        ":",
+        "\n\t\t",
+        "1",
+        "2",
+        "3",
+        ",",
+        "\n\t\t",
+        "4",
+        "5",
+        "6",
+        ",",
+        "\n\t\t",
+        "7",
+        "8",
+        "9",
+        "\n\t",
+        "transform",
+        ":",
+        "x",
+        "y",
+        "?",
+        "this",
+        "'",
+        "data",
+        "'",
+        "x",
+        "*",
+        "this",
+        "'",
+        "data",
+        "'",
+        "y",
+        "+",
+        "1",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "complex",
+        "(",
+        ":",
+        "this",
+        "(",
+        ":",
+        "[",
+        "[",
+        "data",
+        "(",
+        ":",
+        "[",
+        "[",
+        "1",
+        "2",
+        "3",
+        "(",
+        ",",
+        "4",
+        "5",
+        "6",
+        "(",
+        ",",
+        "7",
+        "8",
+        "9",
+        ")",
+        "]",
+        "]",
+        "transform",
+        "(",
+        ":",
+        "x",
+        "y",
+        "?",
+        "(",
+        "this",
+        "'",
+        "data",
+        ")",
+        "'",
+        "x",
+        ")",
+        "*",
+        "(",
+        "this",
+        "'",
+        "data",
+        ")",
+        "'",
+        "y",
+        ")",
+        "+",
+        "1",
+        ")",
+        "]",
+        "]"
+      ]
+    },
+    {
+      "blockId": 35,
+      "originalText": "[complex ' data ' 0 ' 1 = 2]",
+      "tokenCount": 11,
+      "tokens": [
+        "[",
+        "complex",
+        "'",
+        "data",
+        "'",
+        "0",
+        "'",
+        "1",
+        "=",
+        "2",
+        "]"
+      ],
+      "withParentheses": [
+        "[",
+        "(",
+        "complex",
+        "'",
+        "data",
+        ")",
+        "'",
+        "0",
+        ")",
+        "'",
+        "1",
+        ")",
+        "=",
+        "2",
+        ")",
+        "]"
       ]
     }
   ]
