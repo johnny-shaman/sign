@@ -1,0 +1,335 @@
+# Sign言語セルフコンパイラ - メインモジュール
+
+# コンパイラの状態
+compiler_state :
+	environment : _    # グローバル環境（変数と関数のマップ）
+	tokens : _         # 字句解析結果
+	ast : _            # 構文解析結果
+	code : _           # 生成コード
+	error : _          # エラーメッセージ
+
+# コンパイラの初期化
+init_compiler : ?
+	state : compiler_state
+	state ' environment : init_environment
+	state
+
+# 環境の初期化（組み込み関数と定数）
+init_environment : ?
+	env : _
+	
+	# 基本的な算術演算子
+	env ' `+` : binary_op_add
+	env ' `-` : binary_op_sub
+	env ' `*` : binary_op_mul
+	env ' `/` : binary_op_div
+	env ' `%` : binary_op_mod
+	env ' `^` : binary_op_pow
+	
+	# 比較演算子
+	env ' `<` : binary_op_lt
+	env ' `<=` : binary_op_le
+	env ' `=` : binary_op_eq
+	env ' `>=` : binary_op_ge
+	env ' `>` : binary_op_gt
+	env ' `!=` : binary_op_ne
+	
+	# 論理演算子
+	env ' `&` : binary_op_and
+	env ' `|` : binary_op_or
+	env ' `;` : binary_op_xor
+	env ' `!` : unary_op_not
+	
+	# リスト操作
+	env ' `,` : binary_op_cons
+	env ' `~` : unary_op_expand
+	
+	# Unit値
+	env ' `_` : _
+	
+	env
+
+# ソースコードのコンパイル
+compile : source ?
+	state : init_compiler
+	
+	# 1. 字句解析
+	tokenize_result : lexer source
+	
+	tokenize_result ' 0 = `Error` ?
+		state ' error : tokenize_result ' 1
+		state
+	
+	state ' tokens : tokenize_result
+	
+	# 2. 構文解析
+	parse_result : parser state ' tokens
+	
+	parse_result ' 0 = `Error` ?
+		state ' error : parse_result ' 1
+		state
+	
+	state ' ast : parse_result
+	
+	# 3. 意味解析（型チェックなど）
+	analyze_result : semantic_analyze state ' ast state ' environment
+	
+	analyze_result ' 0 = `Error` ?
+		state ' error : analyze_result ' 1
+		state
+	
+	# 4. 最適化（省略可能）
+	optimize_result : optimize state ' ast
+	
+	optimize_result ' 0 = `Error` ?
+		state ' error : optimize_result ' 1
+		state
+	
+	state ' ast : optimize_result
+	
+	# 5. コード生成
+	code_result : generate_code state ' ast
+	
+	code_result ' 0 = `Error` ?
+		state ' error : code_result ' 1
+		state
+	
+	state ' code : code_result
+	state
+
+# 意味解析
+semantic_analyze : ast env ?
+	# 意味解析の実装（型チェック、名前解決など）
+	# 簡略化のため、ここでは単純にASTを返す
+	ast
+
+# 最適化
+optimize : ast ?
+	# 最適化の実装（定数畳み込み、不要なコードの削除など）
+	# 簡略化のため、ここでは単純にASTを返す
+	ast
+
+# ファイルからのコンパイル
+compile_file : filename ?
+	source : read_file filename
+	source = _ ?
+		state : init_compiler
+		state ' error : `Error: Cannot read file `, filename
+		state
+	
+	compile source
+
+# ファイル読み込み
+read_file : filename ?
+	# 実際の実装ではファイルシステムAPIを使用する
+	# 簡略化のため、ここではダミー実装
+	`# このコードはファイルから読み込まれたと仮定\n` 
+	`fact : n ?\n`
+	`\tn <= 1 : 1\n`
+	`\tn * fact n - 1`
+
+# REPLの実装（Read-Eval-Print Loop）
+repl : ?
+	state : init_compiler
+	repl_loop state
+
+# REPLのメインループ
+repl_loop : state ?
+	# 入力プロンプト
+	print `sign> `
+	
+	# ユーザー入力を取得
+	input : read_line
+	
+	input = `exit` | input = `quit` ?
+		print `Goodbye!`
+		_
+	
+	# 入力を評価
+	result : eval_input input state
+	
+	# 結果を表示
+	print result ' 0
+	
+	# エラーがあれば表示
+	result ' 1 != _ ?
+		print `Error: `, result ' 1
+	
+	# ループを継続
+	repl_loop result ' 2
+
+# 入力の評価
+eval_input : input state ?
+	# 空の入力は無視
+	input = `` ?
+		``, _, state
+	
+	# 特殊コマンドの処理
+	input ' 0 = \: ?
+		eval_command input ' 1~ state
+	
+	# コードの評価
+	compile_result : compile input
+	
+	compile_result ' error != _ ?
+		``, compile_result ' error, state
+	
+	# コード実行
+	exec_result : execute_code compile_result ' ast state ' environment
+	
+	exec_result ' 0 = `Error` ?
+		``, exec_result ' 1, state
+	
+	# 環境を更新
+	new_state : state
+	new_state ' environment : exec_result ' 2
+	
+	# 結果を文字列に変換
+	result_str : value_to_string exec_result ' 1
+	
+	result_str, _, new_state
+
+# 特殊コマンドの評価
+eval_command : cmd state ?
+	cmd = `env` | cmd = `environment` ?
+		# 環境を表示
+		env_str : environment_to_string state ' environment
+		env_str, _, state
+	
+	cmd = `ast` ?
+		# 最後に生成されたASTを表示
+		state ' ast = _ ?
+			`No AST available`, _, state
+		
+		ast_str : ast_to_string state ' ast
+		ast_str, _, state
+	
+	cmd = `tokens` ?
+		# 最後に生成されたトークンを表示
+		state ' tokens = _ ?
+			`No tokens available`, _, state
+		
+		tokens_str : tokens_to_string state ' tokens
+		tokens_str, _, state
+	
+	cmd = `help` ?
+		# ヘルプメッセージを表示
+		help_str : 
+			`Available commands:\n`
+			`:env    - Show current environment\n`
+			`:ast    - Show last generated AST\n`
+			`:tokens - Show last generated tokens\n`
+			`:help   - Show this help message\n`
+			`:exit   - Exit the REPL`
+		help_str, _, state
+	
+	# 未知のコマンド
+	`Unknown command: `, cmd, state
+
+# コードの実行
+execute_code : ast env ?
+	# 実行環境（インタプリタ）の実装
+	# 簡略化のため、ここではダミー実装
+	`Success`, `(実行結果)`, env
+
+# 値を文字列に変換
+value_to_string : value ?
+	value = _ ? `_`
+	
+	# 数値
+	is_number value ? value
+	
+	# 文字列
+	is_string value ? `\``, value, `\``
+	
+	# リスト
+	is_list value ?
+		list_items : _
+		
+		stringify_list : items result ?
+			items = _ ? result
+			
+			item : items ' 0
+			rest : items ' 1~
+			
+			item_str : value_to_string item
+			
+			result = _ ?
+				stringify_list rest item_str
+			
+			result, `, `, stringify_list rest _
+		
+		items_str : stringify_list value _
+		items_str
+	
+	# 関数
+	is_function value ? `<function>`
+	
+	# その他
+	`<unknown value>`
+
+# 環境を文字列に変換
+environment_to_string : env ?
+	env = _ ? `{}`
+	
+	result : `{\n`
+	
+	# 各エントリを追加
+	stringify_env : keys env result ?
+		keys = _ ? result, `\n}`
+		
+		key : keys ' 0
+		rest : keys ' 1~
+		
+		value : env ' key
+		value_str : value_to_string value
+		
+		result, `  `, key, ` : `, value_str, `\n`, stringify_env rest env _
+	
+	stringify_env get_keys env result
+
+# キーの一覧を取得
+get_keys : obj ?
+	keys : _
+	
+	collect_keys : obj keys ?
+		obj = _ ? keys
+		
+		next_key : get_next_key obj
+		next_key = _ ? keys
+		
+		collect_keys remove_key obj next_key keys, next_key
+	
+	collect_keys obj _
+
+# 次のキーを取得（実装省略）
+get_next_key : obj ? `dummy_key`
+
+# キーを削除（実装省略）
+remove_key : obj key ? obj
+
+# 型チェック用ヘルパー関数
+is_number : value ? value >= 0 | value < 0
+is_string : value ? value ' 0 = \`
+is_list : value ? value ' 0 != \`
+is_function : value ? value ' type = `function`
+
+# ラインを読み込む（実際の実装ではI/O APIを使用）
+read_line : ? `dummy input`
+
+# 文字列を出力（実際の実装ではI/O APIを使用）
+print : message ? message
+
+# ASTを文字列に変換（実装省略）
+ast_to_string : ast ? `<AST representation>`
+
+# トークンを文字列に変換（実装省略）
+tokens_to_string : tokens ? `<Tokens representation>`
+
+# メイン関数
+main : args ?
+	args = _ ?
+		# 引数がない場合はREPLを起動
+		print `Sign Language Self-Compiler REPL`
+		print `Type :help for available commands or :exit to quit`
+		repl
