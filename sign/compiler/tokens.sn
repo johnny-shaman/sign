@@ -4,33 +4,42 @@
 #tab : c ? c = \	
 #rt  : c ? c = \
 
-#letter : c ? [= c |] [\a ~ \z]
-#LETTER : c ? [= c |] [\A ~ \Z]
-#Letter : c ? [= c |] [[\A ~ \Z] [\a ~ \z]]
-#nzero  : c ? [= c |] [\1 ~ \9]
-#digit  : c ? [= c |] [\0 ~ \9]
-#hexa   : c ? [= c |] [[\0 ~ \9] [\A ~ \F] [\a ~ \f]]
-#octa   : c ? [= c |] [\0 ~ \7]
-#binaly : c ? [= c |] [\0 \1]
+#tabs : c ~cs ? tab c , tabs cs~
+#Block : c ~cs ? rt c , tabs cs~
 
-#AlphaNum  : c ? [= c |] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z]]
-#Alpha_Num : c ? [= c |] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z] \_]
+#letter : c ? [ = c | ] [\a ~ \z]
+#LETTER : c ? [ = c | ] [\A ~ \Z]
+#Letter : c ? [ = c | ] [[\A ~ \Z] [\a ~ \z]]
+#nzero  : c ? [ = c | ] [\1 ~ \9]
+#digit  : c ? [ = c | ] [\0 ~ \9]
+#hexa   : c ? [ = c | ] [[\0 ~ \9] [\A ~ \F] [\a ~ \f]]
+#octa   : c ? [ = c | ] [\0 ~ \7]
+#bool : c ? [ = c | ] \0 \1
 
-#LETTERS : c ~s ? @LETTER c, @LETTERS s~
-#letters : c ~s ? @letter c, @letters s~
-#Letters : c ~s ? @Letter c, @Letters s~
-#digits : c ~s ? @digit c, @digits s~
+#AlphaNum  : c ? [ = c | ] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z]]
+#Alpha_Num : c ? [ = c | ] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z] \_]
 
-#AlphaNums : c ~s ? @AlphaNum c, @AlphaNums s~
-#Alpha_Nums : c ~s ? @Alpha_Num c, @Alpha_Nums s~
+#LETTERS : c ~s ? LETTER c , LETTERS s~
+#letters : c ~s ? letter c , letters s~
+#Letters : c ~s ? Letter c , Letters s~
+#digits : c ~s ? digit c , digits s~
+#hexas : c ~s ? hexa c , hexas s~
+#octas : c ~s ? octa c , octas s~
+#bools : c ~s ? bool c , bools s~
 
-#Identifier : c ~s ? @Letter c, @Alpha_Nums s~
+#AlphaNums : c ~s ? AlphaNum c , AlphaNums s~
+#Alpha_Nums : c ~s ? Alpha_Num c , Alpha_Nums s~
+
+#Identifier : c ~s ? Letter c , Alpha_Nums s~
 #unit : c ? c = \_
 
-#hex : t u ~cs ? t = \0 & u = \x & t u [f : c ~s ? @hexa c f s~] cs~
-#oct : t u ~cs ? t = \0 & u = \o & t u [f : c ~s ? @octa c f s~] cs~
-#bit : t u ~cs ? t = \0 & u = \b & t u [f : c ~s ? @octa c f s~] cs~
+#hex : t u ~cs ? t = \0 & u = \x & t , u , hexas cs~
+#oct : t u ~cs ? t = \0 & u = \o & t , u , octas cs~
+#bit : t u ~cs ? t = \0 & u = \b & t , u , bools cs~
 
-#string : p ~cs ? p = \` & [f : c ~s ? p [c = \` & c | c != rtn & c] f s~ ] cs~
+#string : p ~cs ? p = \` & p , cs~
 
-#uint : c ~s ? @nzero c @digits s~
+#uint : c ~cs ? nzero c , digits cs~
+#int : c ~cs ? [c = \- | c = nzero] , digits cs~
+
+#float : c ~cs ? [c = \- | nzero c] & [[= \. | ] cs | digits cs~] & c cs
