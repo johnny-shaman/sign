@@ -1,4 +1,4 @@
-(* Sign言語のEBNF - 最終版 *)
+(* Sign言語のEBNF - 修正最終版 *)
 
 (* プログラム全体の構造 *)
 Program = { Line } ;
@@ -17,7 +17,7 @@ OperatorExpression = ExportExpression ;
 
 (* エクスポート領域 *)
 ExportExpression = "#", NoSpace, Identifier, [ Space ], ":", [ Space ], Expression | DefinitionExpression ;
-(* 意味解析時に [# identifier] に変換 *)
+(* 意味解析時に [#_ identifier] に変換 - 前置演算子は後ろに_を付加 *)
 
 (* 定義・出力領域 *)
 DefinitionExpression = Identifier, [ Space ], ":", [ Space ], Expression | 
@@ -52,7 +52,7 @@ RangeExpression = Expression, [ Space ], "~", [ Space ], Expression ;
 
 (* 残り引数 *)
 RestArgExpression = "~", NoSpace, Identifier ;
-(* 意味解析時に特殊処理 *)
+(* 意味解析時に [~_ identifier] に変換 - 前置演算子は後ろに_を付加 *)
 
 (* ブロック式 - インデントブロックのための特別な処理 *)
 BlockExpression = IndentedBlock ;
@@ -74,7 +74,7 @@ LogicalAndExpression = NotExpression, { [ Space ], "&", [ Space ], NotExpression
 (* 意味解析時に [& left right] に変換 *)
 
 NotExpression = "!", NoSpace, NotExpression | ComparisonExpression ;
-(* 意味解析時に [! expr] に変換 *)
+(* 意味解析時に [!_ expr] に変換 - 前置演算子は後ろに_を付加 *)
 
 (* 比較演算領域 *)
 ComparisonExpression = ArithmeticExpression, [ [ Space ], ComparisonOperator, [ Space ], ArithmeticExpression ] ;
@@ -94,7 +94,7 @@ PowerExpression = FactorialExpression, { [ Space ], "^", [ Space ], FactorialExp
 (* 意味解析時に [^ left right] に変換 *)
 
 FactorialExpression = AccessExpression, [ NoSpace, "!" ] ;
-(* 意味解析時に [_! expr] に変換 - "_!"を前に付けることで後置演算子であることを明示 *)
+(* 意味解析時に [_! expr] に変換 - 後置演算子は前に_を付加 *)
 
 (* 解決評価領域 *)
 AccessExpression = PrimaryExpression, { 
@@ -104,13 +104,13 @@ AccessExpression = PrimaryExpression, {
                   } ;
 
 (* 入出力・インポート領域 *)
-IOExpression = "@", NoSpace, (Identifier | HexNumber) |  (* 入力前置演算子 - 意味解析時に [@ expr] に変換 *)
+IOExpression = "@", NoSpace, (Identifier | HexNumber) |  (* 入力前置演算子 - 意味解析時に [@_ expr] に変換 *)
               (Identifier | String), NoSpace, "@" ;  (* インポート後置演算子 - 意味解析時に [_@ expr] に変換 *)
 
 (* 基本式 *)
 PrimaryExpression = Atom | "$", NoSpace, Identifier | IOExpression |
                    AbsoluteValue | InlineBlock ;
-(* $ 前置演算子は意味解析時に [$ expr] に変換 *)
+(* $ 前置演算子は意味解析時に [$_ expr] に変換 *)
 
 (* 基本要素 *)
 Atom = Number | Character | String | List | Lambda | Identifier | Unit ;
@@ -163,7 +163,7 @@ BlockEnd = ")" | "]" | "}" ;  (* BlockStart と BlockEnd は対応する必要�
 
 (* 絶対値 *)
 AbsoluteValue = "|", NoSpace, Expression, NoSpace, "|" ;
-(* 意味解析時に特殊関数として変換 *)
+(* 意味解析時に [abs expr] に変換 *)
 
 (* 空白関連の定義 - タブと改行を除外 *)
 Space = " ", { " " } ;  (* スペースのみ、タブや改行は含まない *)
