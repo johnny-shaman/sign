@@ -1,31 +1,31 @@
-(* Sign Language EBNF - Final Version *)
+(* Sign言語のEBNF - 修正最終版 *)
 
-(* Overall Program Structure *)
+(* プログラム全体の構造 *)
 Program = { Line } ;
 
-(* Line Structure *)
+(* 行構造 *)
 Line = [ TabIndentation ], LineContent, NewLine | EmptyLine ;
 EmptyLine = NewLine ;
-LineContent = Expression | StringLiteral ;  (* String literals at the beginning of a line are treated as comments *)
-TabIndentation = { Tab } ;  (* Indentation with tabs - block construction operator *)
+LineContent = Expression | StringLiteral ;  (* 行頭の文字列リテラルはコメントとして扱われる *)
+TabIndentation = { Tab } ;  (* タブによるインデント - ブロック構築演算子 *)
 
-(* Expression Hierarchy - By Precedence *)
+(* 式の階層 - 優先順位順 *)
 Expression = OperatorExpression ;
 
-(* Operator Expression - All operators are ultimately interpreted as function applications *)
+(* 演算子表現 - すべての演算子は最終的に関数適用として解釈される *)
 OperatorExpression = ExportExpression ;
 
-(* Export Area *)
+(* エクスポート領域 *)
 ExportExpression = "#", NoSpace, Identifier, [ Space ], ":", [ Space ], Expression | DefinitionExpression ;
-(* During semantic analysis, converted to [#_ identifier] - prefix operators have _ appended *)
+(* 意味解析時に [#_ identifier] に変換 - 前置演算子は後ろに_を付加 *)
 
-(* Definition & Output Area *)
+(* 定義・出力領域 *)
 DefinitionExpression = Identifier, [ Space ], ":", [ Space ], Expression | 
                       (Identifier | HexNumber), [ Space ], "#", [ Space ], Expression |
                       ConstructionExpression ;
-(* During semantic analysis, converted to [: identifier] or [# identifier/hex] *)
+(* 意味解析時に [: identifier] や [# identifier/hex] に変換 *)
 
-(* Construction Area *)
+(* 構築領域 *)
 ConstructionExpression = CoproductExpression | 
                         LambdaExpression |
                         ProductExpression |
@@ -33,89 +33,89 @@ ConstructionExpression = CoproductExpression |
                         RestArgExpression |
                         LogicalExpression ;
 
-(* Coproduct - Expressions separated by spaces *)
+(* 余積 - スペースによって区切られた式 *)
 CoproductExpression = Expression, AtLeastOneSpace, Expression ;
-(* During semantic analysis, converted to [ ] (space operator) *)
+(* 意味解析時に [ ] (空白演算子)として変換 *)
 
-(* Lambda Construction *)
+(* ラムダ構築 *)
 LambdaExpression = ParameterList, [ Space ], "?", [ Space ], Expression |
                   ParameterList, [ Space ], "?", NewLine, BlockExpression ;
-(* During semantic analysis, converted to [? params expr] *)
+(* 意味解析時に [? params expr] に変換 *)
 
-(* Product - Expressions separated by commas *)
+(* 積 - カンマで区切られた式 *)
 ProductExpression = Expression, [ Space ], ",", [ Space ], Expression ;
-(* During semantic analysis, converted to [, left right] *)
+(* 意味解析時に [, left right] に変換 *)
 
-(* Range List *)
+(* 範囲リスト *)
 RangeExpression = Expression, [ Space ], "~", [ Space ], Expression ;
-(* During semantic analysis, converted to [~ left right] *)
+(* 意味解析時に [~ left right] に変換 *)
 
-(* Rest Arguments *)
+(* 残り引数 *)
 RestArgExpression = "~", NoSpace, Identifier ;
-(* During semantic analysis, converted to [~_ identifier] - prefix operators have _ appended *)
+(* 意味解析時に [~_ identifier] に変換 - 前置演算子は後ろに_を付加 *)
 
-(* Block Expression - Special handling for indented blocks *)
+(* ブロック式 - インデントブロックのための特別な処理 *)
 BlockExpression = IndentedBlock ;
 IndentedBlock = IndentedLine, { IndentedLine } ;
 IndentedLine = CurrentIndentation, Tab, Expression, NewLine ;
-CurrentIndentation = ? current indentation level ? ;  (* Managed as parser state *)
-(* During semantic analysis, expressions in block are combined as a list *)
+CurrentIndentation = ? current indentation level ? ;  (* パーサーの状態として管理 *)
+(* 意味解析時にブロック内の式をリストとして結合 *)
 
-(* Logical Area *)
+(* 論理領域 *)
 LogicalExpression = LogicalOrExpression ;
 
 LogicalOrExpression = LogicalXorExpression, { [ Space ], "|", [ Space ], LogicalXorExpression } ;
-(* During semantic analysis, converted to [| left right] *)
+(* 意味解析時に [| left right] に変換 *)
 
 LogicalXorExpression = LogicalAndExpression, { [ Space ], ";", [ Space ], LogicalAndExpression } ;
-(* During semantic analysis, converted to [; left right] *)
+(* 意味解析時に [; left right] に変換 *)
 
 LogicalAndExpression = NotExpression, { [ Space ], "&", [ Space ], NotExpression } ;
-(* During semantic analysis, converted to [& left right] *)
+(* 意味解析時に [& left right] に変換 *)
 
 NotExpression = "!", NoSpace, NotExpression | ComparisonExpression ;
-(* During semantic analysis, converted to [!_ expr] - prefix operators have _ appended *)
+(* 意味解析時に [!_ expr] に変換 - 前置演算子は後ろに_を付加 *)
 
-(* Comparison Operation Area *)
+(* 比較演算領域 *)
 ComparisonExpression = ArithmeticExpression, [ [ Space ], ComparisonOperator, [ Space ], ArithmeticExpression ] ;
 ComparisonOperator = "<" | "<=" | "=" | ">=" | ">" | "!=" ;
-(* During semantic analysis, converted to [op left right] *)
+(* 意味解析時に [op left right] に変換 *)
 
-(* Arithmetic Operation Area *)
+(* 算術演算領域 *)
 ArithmeticExpression = AddExpression ;
 
 AddExpression = MulExpression, { [ Space ], ("+" | "-"), [ Space ], MulExpression } ;
-(* During semantic analysis, converted to [+ left right] or [- left right] *)
+(* 意味解析時に [+ left right] や [- left right] に変換 *)
 
 MulExpression = PowerExpression, { [ Space ], ("*" | "/" | "%"), [ Space ], PowerExpression } ;
-(* During semantic analysis, converted to [* left right], [/ left right], or [% left right] *)
+(* 意味解析時に [* left right] や [/ left right] や [% left right] に変換 *)
 
 PowerExpression = FactorialExpression, { [ Space ], "^", [ Space ], FactorialExpression } ;
-(* During semantic analysis, converted to [^ left right] *)
+(* 意味解析時に [^ left right] に変換 *)
 
 FactorialExpression = AccessExpression, [ NoSpace, "!" ] ;
-(* During semantic analysis, converted to [_! expr] - postfix operators have _ prepended *)
+(* 意味解析時に [_! expr] に変換 - 後置演算子は前に_を付加 *)
 
-(* Resolution Evaluation Area *)
+(* 解決評価領域 *)
 AccessExpression = PrimaryExpression, { 
-                    NoSpace, "~" |  (* Expansion postfix operator - converted to [_~ expr] *)
-                    [ Space ], "'", [ Space ], AccessExpression |  (* Get infix operator - converted to [' left right] *)
-                    [ Space ], "@", [ Space ], AccessExpression  (* Get infix operator - converted to [@ left right] *)
+                    NoSpace, "~" |  (* 展開後置演算子 - 意味解析時に [_~ expr] に変換 *)
+                    [ Space ], "'", [ Space ], AccessExpression |  (* 取得中置演算子 - 意味解析時に [' left right] に変換 *)
+                    [ Space ], "@", [ Space ], AccessExpression  (* 取得中置演算子 - 意味解析時に [@ left right] に変換 *)
                   } ;
 
-(* IO & Import Area *)
-IOExpression = "@", NoSpace, (Identifier | HexNumber) |  (* Input prefix operator - converted to [@_ expr] *)
-              (Identifier | String), NoSpace, "@" ;  (* Import postfix operator - converted to [_@ expr] *)
+(* 入出力・インポート領域 *)
+IOExpression = "@", NoSpace, (Identifier | HexNumber) |  (* 入力前置演算子 - 意味解析時に [@_ expr] に変換 *)
+              (Identifier | String), NoSpace, "@" ;  (* インポート後置演算子 - 意味解析時に [_@ expr] に変換 *)
 
-(* Primary Expression *)
+(* 基本式 *)
 PrimaryExpression = Atom | "$", NoSpace, Identifier | IOExpression |
                    AbsoluteValue | InlineBlock ;
-(* $ prefix operator is converted to [$_ expr] *)
+(* $ 前置演算子は意味解析時に [$_ expr] に変換 *)
 
-(* Atoms *)
+(* 基本要素 *)
 Atom = Number | Character | String | List | Lambda | Identifier | Unit ;
 
-(* Numbers *)
+(* 数値 *)
 Number = Integer | Float | HexNumber | OctalNumber | BinaryNumber ;
 Integer = [ "-" ], Digit, { Digit } ;
 Float = [ "-" ], Digit, { Digit }, ".", Digit, { Digit } ;
@@ -128,58 +128,58 @@ HexDigit = Digit | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "
 OctalDigit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" ;
 BinaryDigit = "0" | "1" ;
 
-(* Characters *)
+(* 文字 *)
 Character = "\", AnyCharacter ;
 AnyCharacter = ? any character ? ;
 
-(* Strings *)
+(* 文字列 *)
 String = StringLiteral ;
 StringLiteral = "`", { Character - NewLine }, "`" ;
 
-(* Lists *)
+(* リスト *)
 List = [ Expression ], { ",", [ Space ], Expression } ;
-(* During semantic analysis, converted to list structure *)
+(* 意味解析時にリスト構造に変換 *)
 
-(* Lambda Expressions *)
+(* ラムダ式 *)
 Lambda = ParameterList, [ Space ], "?", [ Space ], Expression ;
-(* During semantic analysis, converted to lambda function *)
+(* 意味解析時にラムダ関数として変換 *)
 
 ParameterList = Identifier, { Space, Identifier } | 
                 "~", NoSpace, Identifier ;
-(* Parameter list processing *)
+(* パラメータリストの処理 *)
 
-(* Identifiers *)
+(* 識別子 *)
 Identifier = (Letter | "_"), { Letter | Digit | "_" } - "_" ;
 Letter = ? any letter character ? ;
 
-(* Unit *)
+(* 単位 *)
 Unit = "_" ;
 
-(* Inline Block *)
+(* インラインブロック *)
 InlineBlock = BlockStart, [ Space ], Expression, [ Space ], BlockEnd ;
 BlockStart = "(" | "[" | "{" ;
-BlockEnd = ")" | "]" | "}" ;  (* BlockStart and BlockEnd must correspond *)
-(* During semantic analysis, expressions in block are evaluated *)
+BlockEnd = ")" | "]" | "}" ;  (* BlockStart と BlockEnd は対応する必要がある *)
+(* 意味解析時にブロック内の式を評価 *)
 
-(* Absolute Value *)
+(* 絶対値 *)
 AbsoluteValue = "|", NoSpace, Expression, NoSpace, "|" ;
-(* During semantic analysis, converted to [abs expr] *)
+(* 意味解析時に [abs expr] に変換 *)
 
-(* Whitespace Definitions - Excluding tabs and newlines *)
-Space = " ", { " " } ;  (* Spaces only, no tabs or newlines *)
-AtLeastOneSpace = " ", { " " } ;  (* At least one space *)
-NoSpace = ? absence of whitespace ? ;  (* No whitespace - for prefix/postfix operators *)
+(* 空白関連の定義 - タブと改行を除外 *)
+Space = " ", { " " } ;  (* スペースのみ、タブや改行は含まない *)
+AtLeastOneSpace = " ", { " " } ;  (* 少なくとも1つのスペース *)
+NoSpace = ? absence of whitespace ? ;  (* 空白なし - 前置/後置演算子用 *)
 
-Tab = ? tab character ? ;  (* Tab is a block construction operator *)
-NewLine = ? newline character ? ;  (* Newline is an evaluation postfix operator *)
+Tab = ? tab character ? ;  (* タブはブロック構築演算子 *)
+NewLine = ? newline character ? ;  (* 改行は評価後置演算子 *)
 
-(* Type Definitions *)
+(* 型定義 *)
 TypeDefinition = "\"", Identifier, "\"", [ Space ], ":", [ Space ], TypeExpression ;
 TypeExpression = "\"", TypeIdentifier, "\"", { [ Space ], "\"", TypeIdentifier, "\"" } ;
 TypeIdentifier = "Number" | "String" | "List" | ? any type name ? ;
-(* During semantic analysis, processed as type information *)
+(* 意味解析時に型情報として処理 *)
 
-(* Dictionary Type *)
+(* 辞書型 *)
 Dictionary = Identifier, [ Space ], ":", NewLine, DictionaryEntries ;
 DictionaryEntries = IndentedLine, { IndentedLine } ;
-(* During semantic analysis, converted to dictionary/map structure *)
+(* 意味解析時に辞書/マップ構造として変換 *)
