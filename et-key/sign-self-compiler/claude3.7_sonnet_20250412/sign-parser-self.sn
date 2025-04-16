@@ -1,0 +1,613 @@
+`Sign言語のセルフコンパイラ実装
+`字句解析器（Lexer）、構文解析器（Parser）、AST生成器を純粋関数型アプローチで実装
+
+`トークンタイプの定義
+TOKEN_TYPES :
+	NUMBER : `NUMBER`
+	IDENTIFIER : `IDENTIFIER`
+	STRING : `STRING`
+	OPERATOR : `OPERATOR`
+	WHITESPACE : `WHITESPACE`
+	TAB : `TAB`
+	NEWLINE : `NEWLINE`
+	COMMENT : `COMMENT`
+	LEFT_PAREN : `LEFT_PAREN`
+	RIGHT_PAREN : `RIGHT_PAREN`
+	LEFT_BRACKET : `LEFT_BRACKET`
+	RIGHT_BRACKET : `RIGHT_BRACKET`
+	LEFT_BRACE : `LEFT_BRACE`
+	RIGHT_BRACE : `RIGHT_BRACE`
+	BACKTICK : `BACKTICK`
+	EOF : `EOF`
+
+`演算子の優先順位定義（低い順）
+PRECEDENCE :
+	EXPORT : 10        ` # (export 前置演算子)
+	DEFINE : 20        ` : (define 中置演算子)
+	OUTPUT : 30        ` # (output 中置演算子)
+	COPRODUCT : 40     ` 空白 (余積 中置演算子)
+	LAMBDA : 50        ` ? (ラムダ構築 中置演算子)
+	PRODUCT : 60       ` , (積 中置演算子)
+	RANGE : 70         ` ~ (範囲リスト構築 中置演算子)
+	LOGICAL_OR : 80    ` | (or 中置演算子)
+	LOGICAL_XOR : 90   ` ; (xor 中置演算子)
+	LOGICAL_AND : 100  ` & (and 中置演算子)
+	EQUALITY : 110     ` =, !=, <, <=, >, >= (比較演算子)
+	ADDITIVE : 120     ` +, - (加減法)
+	MULTIPLICATIVE : 130 ` *, /, % (乗除法)
+	EXPONENTIAL : 140  ` ^ (冪乗)
+	PREFIX : 150       ` 前置演算子 !, ~, $, @
+	POSTFIX : 160      ` 後置演算子 !, ~
+	MEMBER : 170       ` ', @ (get 中置演算子)
+	PRIMARY : 180      ` 最高優先度 (リテラル, 識別子, 括弧など)
+
+`演算子情報の定義（リスト構造）
+makeOperator : precedence type rightAssociative ?
+	_empty : _
+	rightAssociative = _ : [`operator`, precedence, type, _]
+	[`operator`, precedence, type, rightAssociative]
+
+makeOperatorList : items ?
+	[`operatorList`, items~]
+
+`演算子の定義
+OPERATORS :
+	`#` : makeOperator PRECEDENCE ' EXPORT `prefix` _
+	`:` : makeOperator PRECEDENCE ' DEFINE `infix` \t
+	` ` : makeOperator PRECEDENCE ' COPRODUCT `infix` _
+	`?` : makeOperator PRECEDENCE ' LAMBDA `infix` \t
+	`,` : makeOperator PRECEDENCE ' PRODUCT `infix` \t
+	`~` : makeOperatorList [
+		makeOperator PRECEDENCE ' RANGE `infix` _,
+		makeOperator PRECEDENCE ' PREFIX `prefix` _,
+		makeOperator PRECEDENCE ' POSTFIX `postfix` _
+	]
+	`;` : makeOperator PRECEDENCE ' LOGICAL_XOR `infix` _
+	`|` : makeOperator PRECEDENCE ' LOGICAL_OR `infix` _
+	`&` : makeOperator PRECEDENCE ' LOGICAL_AND `infix` _
+	`!` : makeOperatorList [
+		makeOperator PRECEDENCE ' PREFIX `prefix` _,
+		makeOperator PRECEDENCE ' POSTFIX `postfix` _
+	]
+	`<` : makeOperator PRECEDENCE ' EQUALITY `infix` _
+	`<=` : makeOperator PRECEDENCE ' EQUALITY `infix` _
+	`=` : makeOperator PRECEDENCE ' EQUALITY `infix` _
+	`>=` : makeOperator PRECEDENCE ' EQUALITY `infix` _
+	`>` : makeOperator PRECEDENCE ' EQUALITY `infix` _
+	`!=` : makeOperator PRECEDENCE ' EQUALITY `infix` _
+	`+` : makeOperator PRECEDENCE ' ADDITIVE `infix` _
+	`-` : makeOperator PRECEDENCE ' ADDITIVE `infix` _
+	`*` : makeOperator PRECEDENCE ' MULTIPLICATIVE `infix` _
+	`/` : makeOperator PRECEDENCE ' MULTIPLICATIVE `infix` _
+	`%` : makeOperator PRECEDENCE ' MULTIPLICATIVE `infix` _
+	`^` : makeOperator PRECEDENCE ' EXPONENTIAL `infix` \t
+	`$` : makeOperator PRECEDENCE ' PREFIX `prefix` _
+	`@` : makeOperatorList [
+		makeOperator PRECEDENCE ' PREFIX `prefix` _,
+		makeOperator PRECEDENCE ' MEMBER `infix` \t,
+		makeOperator PRECEDENCE ' POSTFIX `postfix` _
+	]
+	`'` : makeOperator PRECEDENCE ' MEMBER `infix` _
+
+`ユーティリティ関数
+
+`文字が数字かどうかを判定
+isDigit : ch ? 
+	ch >= \0 & ch <= \9
+
+`16進数の文字かどうかを判定
+isHexDigit : ch ? 
+	isDigit ch | 
+	ch >= \a & ch <= \f | 
+	ch >= \A & ch <= \F
+
+`8進数の文字かどうかを判定
+isOctalDigit : ch ? 
+	ch >= \0 & ch <= \7
+
+`2進数の文字かどうかを判定
+isBinaryDigit : ch ? 
+	ch = \0 | ch = \1
+
+`文字が識別子の開始文字として有効かどうかを判定
+isIdentifierStart : ch ? 
+	ch >= \a & ch <= \z | 
+	ch >= \A & ch <= \Z | 
+	ch = \_ | 
+	ch ' charCodeAt 0 > 127 `ASCII以外の文字も許可
+
+`文字が識別子の一部として有効かどうかを判定
+isIdentifierPart : ch ? 
+	isIdentifierStart ch | isDigit ch
+
+`文字が演算子かどうかを判定
+isOperator : ch ? 
+	`:#?,;|&!<>=+-*/%^$@'~` ' includes ch
+
+`トークンを生成する関数
+createToken : type value pos ? 
+	[type, value, pos]
+
+`ASTノードを生成する関数
+createNode : type ~args ? 
+	[type, args~]
+
+`字句解析器 (Lexer)
+
+`ソースコードをトークン列に変換する主要関数
+#tokenize : source ? 
+	_tokenize source 0 [] 0 \t
+
+`中置演算子用の特殊検索関数
+_findInfixOp : opList ?
+	opList ' 0 != `operatorList` : _
+	
+	first : opList ' 1
+	first ' 2 = `infix` : first
+	
+	restList : [opList ' 0]
+	i : 2
+	_addRest : idx lst ?
+		idx > opList ' length : lst
+		_addRest idx + 1 [...lst, opList ' idx]
+	
+	rest : _addRest i restList
+	
+	_findInfixOp rest
+
+`再帰的なトークナイズ処理
+_tokenize : src pos tokens indentLevel isNewLine ? 
+	`終端条件: ソースコードの終わりに達したとき
+	pos >= src ' length : [...tokens, createToken TOKEN_TYPES ' EOF `` pos]
+	
+	ch : src ' pos
+	
+	`コメント処理 (行頭のバッククォート)
+	ch = \` & isNewLine : _handleComment src pos tokens indentLevel isNewLine
+	
+	`インデント処理
+	ch = \	 & isNewLine : _handleIndent src pos tokens indentLevel isNewLine
+	
+	`改行処理
+	ch = \
+ : _tokenize src pos + 1 [...tokens, createToken TOKEN_TYPES ' NEWLINE \
+ pos] 0 \t
+	
+	`空白処理 (余積演算子または単なる区切り)
+	ch = \  : _handleWhitespace src pos tokens indentLevel isNewLine
+	
+	`数値リテラル処理
+	isDigit ch : _handleNumber src pos tokens indentLevel isNewLine
+	
+	`括弧処理
+	ch = \( | ch = \[ | ch = \{ :
+		bracketType : 
+			ch = \( ? TOKEN_TYPES ' LEFT_PAREN
+			ch = \[ ? TOKEN_TYPES ' LEFT_BRACKET
+			TOKEN_TYPES ' LEFT_BRACE
+		_tokenize src pos + 1 [...tokens, createToken bracketType ch pos] indentLevel \_
+	
+	ch = \) | ch = \] | ch = \} :
+		bracketType : 
+			ch = \) ? TOKEN_TYPES ' RIGHT_PAREN
+			ch = \] ? TOKEN_TYPES ' RIGHT_BRACKET
+			TOKEN_TYPES ' RIGHT_BRACE
+		_tokenize src pos + 1 [...tokens, createToken bracketType ch pos] indentLevel \_
+	
+	`バッククォート (文字列リテラルの開始)
+	ch = \` & !isNewLine : _handleString src pos tokens indentLevel isNewLine
+	
+	`識別子処理
+	isIdentifierStart ch : _handleIdentifier src pos tokens indentLevel isNewLine
+	
+	`演算子処理
+	isOperator ch : _handleOperator src pos tokens indentLevel isNewLine
+	
+	`その他の文字 (エラーまたは無視)
+	_tokenize src pos + 1 tokens indentLevel isNewLine
+
+`コメント処理
+_handleComment : src pos tokens indentLevel isNewLine ?
+	end : pos + 1
+	_findCommentEnd : end value ?
+		end >= src ' length : value
+		src ' end = \
+ : value
+		_findCommentEnd end + 1 end
+		
+	commentEnd : _findCommentEnd pos + 1 pos + 1
+	_tokenize src commentEnd [...tokens, createToken TOKEN_TYPES ' COMMENT src ' substring pos + 1 commentEnd pos] indentLevel isNewLine
+
+`インデント処理
+_handleIndent : src pos tokens indentLevel isNewLine ?
+	tabCount : 1
+	i : pos + 1
+	
+	_countTabs : pos count ?
+		pos >= src ' length : count
+		src ' pos != \	 : count
+		_countTabs pos + 1 count + 1
+	
+	finalCount : _countTabs i tabCount
+	_tokenize src pos + finalCount [...tokens, createToken TOKEN_TYPES ' TAB \	 ' repeat finalCount pos] finalCount \_
+
+`空白処理
+_handleWhitespace : src pos tokens indentLevel isNewLine ?
+	spaceCount : 1
+	i : pos + 1
+	
+	_countSpaces : pos count ?
+		pos >= src ' length : count
+		src ' pos != \  : count
+		_countSpaces pos + 1 count + 1
+	
+	finalCount : _countSpaces i spaceCount
+	_tokenize src pos + finalCount [...tokens, createToken TOKEN_TYPES ' WHITESPACE \  ' repeat finalCount pos] indentLevel isNewLine
+
+`数値リテラル処理
+_handleNumber : src pos tokens indentLevel isNewLine ?
+	i : pos
+	isHex : \_
+	isOctal : \_
+	isBinary : \_
+	
+	`先頭が0で始まる場合、16進数、8進数、2進数の可能性がある
+	src ' i = \0 & i + 1 < src ' length :
+		nextChar : src ' i + 1 ' toLowerCase
+		nextChar = \x : 
+			i : i + 2
+			isHex : \t
+		nextChar = \o : 
+			i : i + 2
+			isOctal : \t
+		nextChar = \b : 
+			i : i + 2
+			isBinary : \t
+		`通常の数字として処理
+		_
+	
+	`適切な数字のチェック関数を選択
+	validCheck : 
+		isHex ? isHexDigit
+		isOctal ? isOctalDigit
+		isBinary ? isBinaryDigit
+		isDigit
+	
+	_scanDigits : pos ?
+		pos >= src ' length : pos
+		!validCheck src ' pos : pos
+		_scanDigits pos + 1
+	
+	digitEnd : _scanDigits i
+	
+	`小数点があるか確認 (16進数、8進数、2進数では小数点は無視)
+	finalPos : 
+		!isHex & !isOctal & !isBinary & digitEnd < src ' length & src ' digitEnd = \. ? 
+			`小数点と小数部分の処理
+			afterPoint : digitEnd + 1
+			_scanFractionDigits : pos ?
+				pos >= src ' length : pos
+				!isDigit src ' pos : pos
+				_scanFractionDigits pos + 1
+			_scanFractionDigits afterPoint
+		digitEnd
+	
+	_tokenize src finalPos [...tokens, createToken TOKEN_TYPES ' NUMBER src ' substring pos finalPos pos] indentLevel isNewLine
+
+`文字列リテラル処理
+_handleString : src pos tokens indentLevel isNewLine ?
+	i : pos + 1
+	str : ``
+	
+	_scanString : pos accum ?
+		pos >= src ' length : [accum, pos]
+		src ' pos = \` | src ' pos = \
+ : [accum, pos]
+		
+		`バックスラッシュのエスケープ処理
+		src ' pos = \\ & pos + 1 < src ' length : 
+			_scanString pos + 2 accum + src ' pos + 1
+		
+		`通常の文字を追加
+		_scanString pos + 1 accum + src ' pos
+	
+	[stringContent, strEnd] : _scanString i str
+	
+	`文字列の終わり
+	finalPos : 
+		strEnd < src ' length & src ' strEnd = \` ? strEnd + 1
+		strEnd
+	
+	_tokenize src finalPos [...tokens, createToken TOKEN_TYPES ' STRING stringContent pos] indentLevel isNewLine
+
+`識別子処理
+_handleIdentifier : src pos tokens indentLevel isNewLine ?
+	_scanIdentifier : start ?
+		end : start
+		_findIdEnd : current ?
+			current >= src ' length : current
+			!isIdentifierPart src ' current : current
+			_findIdEnd current + 1
+		_findIdEnd start
+	
+	identEnd : _scanIdentifier pos
+	identifier : src ' substring pos identEnd
+	
+	`単位元 (_) の特別処理
+	_tokenize src identEnd [...tokens, createToken TOKEN_TYPES ' IDENTIFIER identifier pos] indentLevel isNewLine
+
+`演算子処理
+_handleOperator : src pos tokens indentLevel isNewLine ?
+	i : pos
+	op : src ' i
+	i : i + 1
+	
+	`2文字演算子の処理
+	finalOp : 
+		i < src ' length ?
+			twoCharOp : op + src ' i
+			[\<=, \>=, \!=] ' includes twoCharOp ? 
+				i : i + 1
+				twoCharOp
+			op
+		op
+	
+	_tokenize src i [...tokens, createToken TOKEN_TYPES ' OPERATOR finalOp pos] indentLevel isNewLine
+
+`構文解析器 (Parser)
+
+`トークン列からASTを構築する主要関数
+#parse : tokens ? 
+	result : _parseProgram tokens 0
+	result ' 0
+
+`プログラム全体のパース
+_parseProgram : tokens pos ?
+	statements : []
+	
+	_parseStatements : current stmts ?
+		current >= tokens ' length : [createNode `Program` stmts~], current
+		tokens ' current ' 0 = TOKEN_TYPES ' EOF : [createNode `Program` stmts~], current
+		
+		result : _parseStatement tokens current
+		statement : result ' 0
+		newPos : result ' 1
+		
+		`位置が進まない場合は無限ループを防ぐ
+		nextPos : 
+			newPos = current ? current + 1
+			newPos
+		
+		nextStmts : 
+			statement = _ ? stmts
+			[...stmts, statement]
+		
+		_parseStatements nextPos nextStmts
+	
+	_parseStatements pos statements
+
+`文の解析
+_parseStatement : tokens pos ?
+	`空行の処理
+	tokens ' pos ' 0 = TOKEN_TYPES ' NEWLINE : [_, pos + 1]
+	
+	`コメントの処理
+	tokens ' pos ' 0 = TOKEN_TYPES ' COMMENT : [createNode `Comment` tokens ' pos ' 1], pos + 1
+	
+	`インデントの処理
+	tokens ' pos ' 0 = TOKEN_TYPES ' TAB : 
+		indentLevel : tokens ' pos ' 1 ' length
+		_parseBlock tokens pos + 1 indentLevel
+	
+	`式の解析
+	_parseExpression tokens pos 0
+
+`ブロックの解析
+_parseBlock : tokens pos indentLevel ?
+	expressions : []
+	
+	_parseBlockExpressions : current exprs ?
+		current >= tokens ' length : [createNode `Block` exprs~], current
+		tokens ' current ' 0 = TOKEN_TYPES ' EOF : [createNode `Block` exprs~], current
+		
+		`インデントレベルのチェック
+		isCorrectIndent : 
+			tokens ' current ' 0 = TOKEN_TYPES ' TAB ?
+				tokens ' current ' 1 ' length >= indentLevel
+			\_
+		
+		!isCorrectIndent : [createNode `Block` exprs~], current
+		
+		result : _parseExpression tokens current 0
+		expr : result ' 0
+		newPos : result ' 1
+		
+		`位置が進まない場合は無限ループを防ぐ
+		nextPos : 
+			newPos = current ? current + 1
+			newPos
+		
+		nextExprs : 
+			expr = _ ? exprs
+			[...exprs, expr]
+		
+		`改行をスキップ
+		finalPos : 
+			nextPos < tokens ' length & tokens ' nextPos ' 0 = TOKEN_TYPES ' NEWLINE ?
+				nextPos + 1
+			nextPos
+		
+		_parseBlockExpressions finalPos nextExprs
+	
+	_parseBlockExpressions pos expressions
+
+`式の解析（優先順位考慮）
+_parseExpression : tokens pos minPrecedence ?
+	primaryResult : _parsePrimary tokens pos
+	leftExpr : primaryResult ' 0
+	currentPos : primaryResult ' 1
+	
+	`次のトークンがEOFの場合は終了
+	currentPos >= tokens ' length | tokens ' currentPos ' 0 = TOKEN_TYPES ' EOF : 
+		[leftExpr, currentPos]
+	
+	_parseOperators : current left ?
+		current >= tokens ' length : [left, current]
+		
+		token : tokens ' current
+		
+		`演算子でない場合や改行の場合は終了
+		token ' 0 != TOKEN_TYPES ' OPERATOR & token ' 0 != TOKEN_TYPES ' WHITESPACE |
+		token ' 0 = TOKEN_TYPES ' NEWLINE : 
+			[left, current]
+		
+		op : token ' 1
+		opInfo : _
+		
+		`演算子情報を取得
+		_isList : item ? item ' 0 = `operatorList`
+		_getOpType : op ? op ' 2
+		_getOpPrecedence : op ? op ' 1
+		
+		opObj : OPERATORS ' op
+		_isList opObj ?
+			`複数の演算子タイプがある場合、中置演算子を優先
+			infixOp : _findInfixOp opObj
+			opInfo : 
+				infixOp != _ ? infixOp
+				opObj ' 1
+		
+		opInfo : opObj
+		
+		`中置演算子でない場合や優先順位が低い場合は終了
+		_getOpType opInfo != `infix` | _getOpPrecedence opInfo < minPrecedence : 
+			[left, current]
+		
+		`演算子をスキップ
+		next : current + 1
+		
+		`右結合か左結合かに応じて次の項の優先順位を決定
+		_getOpRightAssoc : op ? op ' 3
+		nextMinPrecedence : 
+			_getOpRightAssoc opInfo ? _getOpPrecedence opInfo
+			_getOpPrecedence opInfo + 1
+		
+		`右辺の解析
+		rightResult : _parseExpression tokens next nextMinPrecedence
+		rightExpr : rightResult ' 0
+		newPos : rightResult ' 1
+		
+		`二項演算ノードの作成
+		_parseOperators newPos createNode `BinaryOp` op left rightExpr
+	
+	_parseOperators currentPos leftExpr
+
+`基本要素の解析
+_parsePrimary : tokens pos ?
+	pos >= tokens ' length : [_, pos]
+	
+	token : tokens ' pos
+	
+	token ' 0 = TOKEN_TYPES ' NUMBER :
+		[createNode `Number` token ' 1], pos + 1
+	
+	token ' 0 = TOKEN_TYPES ' STRING :
+		[createNode `String` token ' 1], pos + 1
+	
+	token ' 0 = TOKEN_TYPES ' IDENTIFIER :
+		[createNode `Identifier` token ' 1], pos + 1
+	
+	token ' 0 = TOKEN_TYPES ' OPERATOR :
+		`前置演算子の処理
+		op : token ' 1
+		opInfo : _
+		
+		_findPrefixOp : opList ?
+			opList ' 0 != `operatorList` : _
+			
+			first : opList ' 1
+			first ' 2 = `prefix` : first
+			
+			restList : [opList ' 0]
+			i : 2
+			_addRest : idx lst ?
+				idx > opList ' length : lst
+				_addRest idx + 1 [...lst, opList ' idx]
+			
+			rest : _addRest i restList
+			
+			_findPrefixOp rest
+		
+		opObj : OPERATORS ' op
+		opObj ' 0 = `operatorList` ?
+			opInfo : _findPrefixOp opObj
+		
+		opObj ' 0 = `operator` & opObj ' 2 = `prefix` ?
+			opInfo : opObj
+		
+		opInfo != _ ?
+			exprResult : _parseExpression tokens pos + 1 opInfo ' 1
+			expr : exprResult ' 0
+			newPos : exprResult ' 1
+			[createNode `PrefixOp` op expr], newPos
+		[_, pos + 1]
+	
+	token ' 0 = TOKEN_TYPES ' LEFT_PAREN | token ' 0 = TOKEN_TYPES ' LEFT_BRACKET | token ' 0 = TOKEN_TYPES ' LEFT_BRACE :
+		`括弧内の式を解析
+		exprResult : _parseExpression tokens pos + 1 0
+		expr : exprResult ' 0
+		newPos : exprResult ' 1
+		
+		`閉じ括弧を確認
+		closingType : 
+			token ' 0 = TOKEN_TYPES ' LEFT_PAREN ? TOKEN_TYPES ' RIGHT_PAREN
+			token ' 0 = TOKEN_TYPES ' LEFT_BRACKET ? TOKEN_TYPES ' RIGHT_BRACKET
+			TOKEN_TYPES ' RIGHT_BRACE
+		
+		newPos < tokens ' length & tokens ' newPos ' 0 = closingType ?
+			[createNode `Group` expr], newPos + 1
+		
+		`閉じ括弧がない場合はエラー
+		[createNode `Error` `Missing closing bracket`], newPos
+	
+	`該当しない場合はスキップして次へ
+	[_, pos + 1]
+
+`リストの解析
+_parseList : tokens pos ?
+	elements : []
+	
+	_parseListElements : current elems ?
+		current >= tokens ' length : [createNode `List` elems~], current
+		tokens ' current ' 0 = TOKEN_TYPES ' EOF : [createNode `List` elems~], current
+		
+		`カンマまたは空白でリスト要素を区切る
+		elementResult : _parseExpression tokens current PRECEDENCE ' PRODUCT
+		element : elementResult ' 0
+		newPos : elementResult ' 1
+		
+		nextElems : 
+			element = _ ? elems
+			[...elems, element]
+		
+		`カンマがあれば次の要素へ
+		hasComma : 
+			newPos < tokens ' length & 
+			tokens ' newPos ' 0 = TOKEN_TYPES ' OPERATOR & 
+			tokens ' newPos ' 1 = `,`
+		
+		hasComma ?
+			_parseListElements newPos + 1 nextElems
+		
+		`カンマがなければリスト終了
+		[createNode `List` nextElems~], newPos
+	
+	_parseListElements pos elements
+
+`エクスポート
+#export :
+	tokenize : tokenize
+	parse : parse
+	TOKEN_TYPES : TOKEN_TYPES
+	PRECEDENCE : PRECEDENCE
+	OPERATORS : OPERATORS
