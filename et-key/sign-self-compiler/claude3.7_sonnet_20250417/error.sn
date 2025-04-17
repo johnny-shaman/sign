@@ -1,0 +1,77 @@
+`Sign言語セルフコンパイラ - エラー処理モジュール
+`このファイルはエラー報告と処理のための機能を実装する
+
+`モジュールインポート
+utils@
+
+`エラーの種類
+ERROR_LEXICAL : 'Lexical Error'
+ERROR_SYNTAX : 'Syntax Error'
+ERROR_SEMANTIC : 'Semantic Error'
+ERROR_IO : 'I/O Error'
+ERROR_UNKNOWN : 'Unknown Error'
+
+`エラー情報を作成
+newError : type message position ?
+    error : _
+    error ' type : type
+    error ' message : message
+    error ' position : position
+    error
+
+`エラーを報告
+reportError : message details ?
+    `エラーメッセージをログに出力
+    details = _ ?
+        log 'Error: ' + message :
+        log 'Error: ' + message + ' ' + details
+    
+    `詳細情報があればそれも出力
+    details ' position != _ ?
+        log 'At line ' + details ' position ' line + ', column ' + details ' position ' col :
+        _
+    
+    `エラー情報を返す
+    error : _
+    error ' message : message
+    error ' details : details
+    error
+
+`字句解析エラーを報告
+reportLexicalError : message position ?
+    error : newError ERROR_LEXICAL message position
+    reportError ERROR_LEXICAL error
+
+`構文解析エラーを報告
+reportSyntaxError : message position ?
+    error : newError ERROR_SYNTAX message position
+    reportError ERROR_SYNTAX error
+
+`意味解析エラーを報告
+reportSemanticError : message position ?
+    error : newError ERROR_SEMANTIC message position
+    reportError ERROR_SEMANTIC error
+
+`I/Oエラーを報告
+reportIOError : message ?
+    error : newError ERROR_IO message _
+    reportError ERROR_IO error
+
+`未知のエラーを報告
+reportUnknownError : message ?
+    error : newError ERROR_UNKNOWN message _
+    reportError ERROR_UNKNOWN error
+
+`エクスポート関数
+#ERROR_LEXICAL : ERROR_LEXICAL
+#ERROR_SYNTAX : ERROR_SYNTAX
+#ERROR_SEMANTIC : ERROR_SEMANTIC
+#ERROR_IO : ERROR_IO
+#ERROR_UNKNOWN : ERROR_UNKNOWN
+#newError : newError
+#reportError : reportError
+#reportLexicalError : reportLexicalError
+#reportSyntaxError : reportSyntaxError
+#reportSemanticError : reportSemanticError
+#reportIOError : reportIOError
+#reportUnknownError : reportUnknownError

@@ -1,0 +1,259 @@
+`Sign言語セルフコンパイラ - AST定義モジュール
+`このファイルは抽象構文木(AST)の定義と操作関数を実装する
+
+`モジュールインポート
+utils@
+
+`ASTノードの種類
+NODE_LITERAL : 1  `リテラル（数値、文字列、文字）
+NODE_IDENT : 2    `識別子
+NODE_UNIT : 3     `Unit (_)
+NODE_BLOCK : 4    `ブロック（複数の式を含む）
+NODE_OP : 5       `演算（演算子と左右のオペランド）
+NODE_FUNC : 6     `関数（パラメータとボディ）
+NODE_LIST : 7     `リスト
+NODE_DICT : 8     `辞書型
+
+`ASTノードを作成
+newNode : type data ?
+    node : _
+    node ' type : type
+    node ' data : data
+    node
+
+`リテラルノードを作成
+newLiteralNode : value ?
+    node : newNode NODE_LITERAL _
+    node ' data : value
+    node
+
+`識別子ノードを作成
+newIdentNode : name ?
+    node : newNode NODE_IDENT _
+    node ' data : name
+    node
+
+`Unitノードを作成
+newUnitNode : ?
+    node : newNode NODE_UNIT _
+    node
+
+`ブロックノードを作成
+newBlockNode : statements ?
+    node : newNode NODE_BLOCK _
+    node ' data : statements
+    node
+
+`演算ノードを作成
+newOpNode : op left right ?
+    node : newNode NODE_OP _
+    opData : _
+    opData ' op : op
+    opData ' left : left
+    opData ' right : right
+    node ' data : opData
+    node
+
+`関数ノードを作成
+newFuncNode : params body ?
+    node : newNode NODE_FUNC _
+    funcData : _
+    funcData ' params : params
+    funcData ' body : body
+    node ' data : funcData
+    node
+
+`リストノードを作成
+newListNode : elements ?
+    node : newNode NODE_LIST _
+    node ' data : elements
+    node
+
+`辞書ノードを作成
+newDictNode : entries ?
+    node : newNode NODE_DICT _
+    node ' data : entries
+    node
+
+`辞書エントリを作成
+newDictEntry : key value ?
+    entry : _
+    entry ' key : key
+    entry ' value : value
+    entry
+
+`ノードのタイプをチェック
+isNodeType : node type ?
+    node ' type = type
+
+`ノードを文字列に変換（デバッグ用）
+nodeToString : node ?
+    node = _ ? 'null' :
+    
+    type : nodeTypeToString node ' type
+    
+    `リテラルノードの場合
+    node ' type = NODE_LITERAL ?
+        'LITERAL(' + node ' data + ')' :
+    
+    `識別子ノードの場合
+    node ' type = NODE_IDENT ?
+        'IDENT(' + node ' data + ')' :
+    
+    `Unitノードの場合
+    node ' type = NODE_UNIT ?
+        'UNIT(_)' :
+    
+    `ブロックノードの場合
+    node ' type = NODE_BLOCK ?
+        blockStr : 'BLOCK[\n'
+        statements : node ' data
+        i : 0
+        
+        i < statements ' length ?
+            stmt : statements ' i
+            stmtStr : nodeToString stmt
+            blockStr : blockStr + '  ' + stmtStr + '\n'
+            i : i + 1
+            blockStr + ']' :
+        
+        'BLOCK[]' :
+    
+    `演算ノードの場合
+    node ' type = NODE_OP ?
+        op : node ' data ' op
+        left : nodeToString node ' data ' left
+        right : nodeToString node ' data ' right
+        'OP(' + op + ', ' + left + ', ' + right + ')' :
+    
+    `関数ノードの場合
+    node ' type = NODE_FUNC ?
+        params : nodeToString node ' data ' params
+        body : nodeToString node ' data ' body
+        'FUNC(' + params + ' ? ' + body + ')' :
+    
+    `リストノードの場合
+    node ' type = NODE_LIST ?
+        listStr : 'LIST['
+        elements : node ' data
+        i : 0
+        
+        i < elements ' length ?
+            elem : elements ' i
+            elemStr : nodeToString elem
+            listStr : listStr + (i > 0 ? ', ' : '') + elemStr
+            i : i + 1
+            listStr + ']' :
+        
+        'LIST[]' :
+    
+    `辞書ノードの場合
+    node ' type = NODE_DICT ?
+        dictStr : 'DICT{\n'
+        entries : node ' data
+        i : 0
+        
+        i < entries ' length ?
+            entry : entries ' i
+            keyStr : nodeToString entry ' key
+            valueStr : nodeToString entry ' value
+            dictStr : dictStr + '  ' + keyStr + ': ' + valueStr + '\n'
+            i : i + 1
+            dictStr + '}' :
+        
+        'DICT{}' :
+    
+    `未知のノード型の場合
+    'UNKNOWN(' + type + ')'
+
+`ノードタイプを文字列に変換
+nodeTypeToString : type ?
+    type = NODE_LITERAL ? 'LITERAL' :
+    type = NODE_IDENT ? 'IDENT' :
+    type = NODE_UNIT ? 'UNIT' :
+    type = NODE_BLOCK ? 'BLOCK' :
+    type = NODE_OP ? 'OP' :
+    type = NODE_FUNC ? 'FUNC' :
+    type = NODE_LIST ? 'LIST' :
+    type = NODE_DICT ? 'DICT' :
+    'UNKNOWN'
+
+`AST走査関数
+traverseNode : node callback ?
+    `ノードが存在しない場合は何もしない
+    node = _ ? _ :
+    
+    `現在のノードに対してコールバックを実行
+    callback node
+    
+    `ノードの種類に応じて子ノードを走査
+    node ' type = NODE_BLOCK ?
+        statements : node ' data
+        i : 0
+        
+        i < statements ' length ?
+            stmt : statements ' i
+            traverseNode stmt callback
+            i : i + 1
+            _ :
+        _ :
+    
+    node ' type = NODE_OP ?
+        traverseNode node ' data ' left callback
+        traverseNode node ' data ' right callback
+        _ :
+    
+    node ' type = NODE_FUNC ?
+        traverseNode node ' data ' params callback
+        traverseNode node ' data ' body callback
+        _ :
+    
+    node ' type = NODE_LIST ?
+        elements : node ' data
+        i : 0
+        
+        i < elements ' length ?
+            elem : elements ' i
+            traverseNode elem callback
+            i : i + 1
+            _ :
+        _ :
+    
+    node ' type = NODE_DICT ?
+        entries : node ' data
+        i : 0
+        
+        i < entries ' length ?
+            entry : entries ' i
+            traverseNode entry ' key callback
+            traverseNode entry ' value callback
+            i : i + 1
+            _ :
+        _ :
+    
+    `その他のノード型（リテラル、識別子、Unit）は子ノードを持たないのでスキップ
+    _
+
+`エクスポート関数
+#NODE_LITERAL : NODE_LITERAL
+#NODE_IDENT : NODE_IDENT
+#NODE_UNIT : NODE_UNIT
+#NODE_BLOCK : NODE_BLOCK
+#NODE_OP : NODE_OP
+#NODE_FUNC : NODE_FUNC
+#NODE_LIST : NODE_LIST
+#NODE_DICT : NODE_DICT
+#newNode : newNode
+#newLiteralNode : newLiteralNode
+#newIdentNode : newIdentNode
+#newUnitNode : newUnitNode
+#newBlockNode : newBlockNode
+#newOpNode : newOpNode
+#newFuncNode : newFuncNode
+#newListNode : newListNode
+#newDictNode : newDictNode
+#newDictEntry : newDictEntry
+#isNodeType : isNodeType
+#nodeToString : nodeToString
+#nodeTypeToString : nodeTypeToString
+#traverseNode : traverseNode

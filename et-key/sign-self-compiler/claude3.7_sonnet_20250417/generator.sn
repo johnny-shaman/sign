@@ -1,0 +1,373 @@
+`Sign言語セルフコンパイラ - コード生成モジュール
+`このファイルは抽象構文木からSign言語のコードを生成する処理を実装する
+
+`モジュールインポート
+ast@
+utils@
+error@
+
+`コード生成のメイン関数
+`入力: 抽象構文木
+`出力: 生成されたコードとエラー情報のオブジェクト
+generate : ast ?
+    `初期化
+    result : _
+    error : _
+    
+    `ASTが存在しない場合
+    ast = _ : 
+        error : 'No AST to generate code from'
+        result ' error : error
+        result
+    
+    `コード生成
+    code : generateNode ast 0
+    
+    `コード生成結果を設定
+    result ' result : code
+    result ' error : error
+    result
+
+`ノードごとのコード生成
+`入力: ASTノード、インデントレベル
+`出力: 生成されたコード
+generateNode : node indentLevel ?
+    `ノードがない場合は空文字列を返す
+    node = _ : 
+        ''
+    
+    `インデント用の文字列を生成
+    indent : generateIndent indentLevel
+    
+    `ノードの種類に応じてコード生成処理を分岐
+    node ' type = NODE_BLOCK : 
+        generateBlockNode node indentLevel
+    
+    node ' type = NODE_OP : 
+        generateOperationNode node indentLevel
+    
+    node ' type = NODE_LITERAL : 
+        generateLiteralNode node indentLevel
+    
+    node ' type = NODE_IDENT : 
+        generateIdentifierNode node indentLevel
+    
+    node ' type = NODE_UNIT : 
+        generateUnitNode node indentLevel
+    
+    node ' type = NODE_FUNC : 
+        generateFunctionNode node indentLevel
+    
+    node ' type = NODE_LIST : 
+        generateListNode node indentLevel
+    
+    node ' type = NODE_DICT : 
+        generateDictionaryNode node indentLevel
+    
+    `未知のノード型の場合はエラー
+    'Unknown node type: ' + node ' type
+
+`ブロックノードのコード生成
+generateBlockNode : node indentLevel ?
+    `ブロック内の各文を生成
+    statements : node ' data
+    
+    `空のブロックの場合
+    statements = _ | statements ' length = 0 : 
+        '_'
+    
+    `複数の文を改行で連結
+    result : ''
+    i : 0
+    
+    i < statements ' length : 
+        stmt : statements ' i
+        
+        `文のコードを生成
+        stmtCode : generateNode stmt indentLevel
+        
+        `結果に追加
+        result : result + (i > 0 ? '\n' : '') + stmtCode
+        
+        i : i + 1
+    
+    result
+
+`演算ノードのコード生成
+generateOperationNode : node indentLevel ?
+    `演算子と左右のオペランドを取得
+    op : node ' data ' op
+    left : node ' data ' left
+    right : node ' data ' right
+    
+    `インデント文字列を生成
+    indent : generateIndent indentLevel
+    
+    `演算子の種類に応じて処理を分岐
+    
+    `エクスポート演算子 #
+    op = '#' & left != _ & right != _ : 
+        indent + '#' + generateNode left 0 + ' : ' + generateNode right 0
+    
+    `定義演算子 :
+    op = ':' & left != _ & right != _ : 
+        indent + generateNode left 0 + ' : ' + generateNode right 0
+    
+    `出力演算子 # (中置)
+    op = '#' & left != _ & right != _ & isOutputOperator node : 
+        indent + generateNode left 0 + ' # ' + generateNode right 0
+    
+    `余積演算子 (空白)
+    op = ' ' & left != _ & right != _ : 
+        indent + generateNode left 0 + ' ' + generateNode right 0
+    
+    `ラムダ構築演算子 ?
+    op = '?' & left != _ & right != _ : 
+        `パラメータリストとボディを生成
+        paramCode : generateNode left 0
+        bodyCode : generateNode right 0
+        
+        `単一行のラムダか複数行のラムダかを判断
+        bodyCode ' indexOf '\n' >= 0 : 
+            indent + paramCode + ' ?\n' + generateNode right (indentLevel + 1)
+        
+        indent + paramCode + ' ? ' + bodyCode
+    
+    `積演算子 ,
+    op = ',' & left != _ & right != _ : 
+        indent + generateNode left 0 + ', ' + generateNode right 0
+    
+    `範囲リスト構築演算子 ~
+    op = '~' & left != _ & right != _ : 
+        indent + generateNode left 0 + ' ~ ' + generateNode right 0
+    
+    `残余引数リスト構築演算子 ~_
+    op = '~_' & right != _ : 
+        indent + '~' + generateNode right 0
+    
+    `論理演算子 ;, |, &
+    op = ';' | op = '|' | op = '&' : 
+        indent + generateNode left 0 + ' ' + op + ' ' + generateNode right 0
+    
+    `否定演算子 !_
+    op = '!_' & right != _ : 
+        indent + '!' + generateNode right 0
+    
+    `比較演算子 <, <=, =, >=, >, !=
+    op = '<' | op = '<=' | op = '=' | op = '>=' | op = '>' | op = '!=' : 
+        indent + generateNode left 0 + ' ' + op + ' ' + generateNode right 0
+    
+    `算術演算子 +, -, *, /, %, ^
+    op = '+' | op = '-' | op = '*' | op = '/' | op = '%' | op = '^' : 
+        indent + generateNode left 0 + ' ' + op + ' ' + generateNode right 0
+    
+    `階乗演算子 _!
+    op = '_!' & left != _ : 
+        indent + generateNode left 0 + '!'
+    
+    `展開演算子 _~
+    op = '_~' & left != _ : 
+        indent + generateNode left 0 + '~'
+    
+    `get演算子 '
+    op = '\'' & left != _ & right != _ : 
+        indent + generateNode left 0 + ' \' ' + generateNode right 0
+    
+    `get演算子 @
+    op = '@' & left != _ & right != _ & isGetOperator node : 
+        indent + generateNode left 0 + ' @ ' + generateNode right 0
+    
+    `アドレス取得演算子 $_
+    op = '$_' & right != _ : 
+        indent + '$' + generateNode right 0
+    
+    `import演算子 _@
+    op = '_@' & left != _ : 
+        indent + generateNode left 0 + '@'
+    
+    `input演算子 @_
+    op = '@_' & right != _ : 
+        indent + '@' + generateNode right 0
+    
+    `絶対値演算子 abs
+    op = 'abs' & right != _ : 
+        indent + '|' + generateNode right 0 + '|'
+    
+    `未知の演算子の場合
+    indent + 'Unknown operator: ' + op
+
+`リテラルノードのコード生成
+generateLiteralNode : node indentLevel ?
+    `インデント文字列を生成
+    indent : generateIndent indentLevel
+    
+    `リテラル値の種類に応じて処理
+    value : node ' data
+    
+    `文字列リテラルの場合
+    isString value : 
+        indent + '`' + value + '`'
+    
+    `文字リテラルの場合
+    isChar value : 
+        indent + '\\' + value
+    
+    `数値リテラルの場合
+    isNumber value : 
+        indent + value
+    
+    `その他のリテラルの場合
+    indent + value
+
+`識別子ノードのコード生成
+generateIdentifierNode : node indentLevel ?
+    `インデント文字列を生成
+    indent : generateIndent indentLevel
+    
+    `識別子の値を取得
+    value : node ' data
+    
+    `識別子を返す
+    indent + value
+
+`Unitノードのコード生成
+generateUnitNode : node indentLevel ?
+    `インデント文字列を生成
+    indent : generateIndent indentLevel
+    
+    `Unitを返す
+    indent + '_'
+
+`関数ノードのコード生成
+generateFunctionNode : node indentLevel ?
+    `インデント文字列を生成
+    indent : generateIndent indentLevel
+    
+    `パラメータとボディを取得
+    params : node ' data ' params
+    body : node ' data ' body
+    
+    `パラメータリストを生成
+    paramCode : generateNode params 0
+    
+    `ボディを生成
+    bodyCode : generateNode body 0
+    
+    `単一行の関数か複数行の関数かを判断
+    bodyCode ' indexOf '\n' >= 0 : 
+        indent + paramCode + ' ?\n' + generateNode body (indentLevel + 1)
+    
+    indent + paramCode + ' ? ' + bodyCode
+
+`リストノードのコード生成
+generateListNode : node indentLevel ?
+    `インデント文字列を生成
+    indent : generateIndent indentLevel
+    
+    `リスト要素を取得
+    elements : node ' data
+    
+    `空のリストの場合
+    elements = _ | elements ' length = 0 : 
+        indent + '_'
+    
+    `要素が1つの場合
+    elements ' length = 1 : 
+        indent + generateNode elements ' 0 0
+    
+    `複数の要素を持つリストの場合
+    result : indent
+    i : 0
+    
+    i < elements ' length : 
+        elem : elements ' i
+        
+        `要素のコードを生成
+        elemCode : generateNode elem 0
+        
+        `結果に追加
+        result : result + (i > 0 ? ', ' : '') + elemCode
+        
+        i : i + 1
+    
+    result
+
+`辞書ノードのコード生成
+generateDictionaryNode : node indentLevel ?
+    `インデント文字列を生成
+    indent : generateIndent indentLevel
+    
+    `辞書エントリを取得
+    entries : node ' data
+    
+    `空の辞書の場合
+    entries = _ | entries ' length = 0 : 
+        indent + '_ : _'
+    
+    `エントリを生成
+    result : ''
+    i : 0
+    
+    i < entries ' length : 
+        entry : entries ' i
+        key : entry ' key
+        value : entry ' value
+        
+        `キーと値のコードを生成
+        keyCode : generateNode key 0
+        valueCode : generateNode value 0
+        
+        `1行に収まらない場合は複数行の形式で出力
+        valueCode ' indexOf '\n' >= 0 : 
+            result : result + (i > 0 ? '\n' : '') + indent + keyCode + ' :\n' + generateNode value (indentLevel + 1)
+        
+        `1行の形式で出力
+        result : result + (i > 0 ? '\n' : '') + indent + keyCode + ' : ' + valueCode
+        
+        i : i + 1
+    
+    result
+
+`インデント文字列を生成
+generateIndent : level ?
+    `指定されたレベル分のタブ文字を生成
+    result : ''
+    i : 0
+    
+    i < level : 
+        result : result + '\t'
+        i : i + 1
+    
+    result
+
+`演算子の種類を判定する関数
+isOutputOperator : node ?
+    `中置演算子の#かどうかを文脈から判断
+    `簡略化のため、演算子が#でleftが識別子またはリテラルならoutput演算子とする
+    node ' data ' op = '#' & (isIdentOrLiteral node ' data ' left)
+
+isGetOperator : node ?
+    `get演算子の@かどうかを文脈から判断
+    `簡略化のため、演算子が@でleftとrightが存在するならget演算子とする
+    node ' data ' op = '@' & node ' data ' left != _ & node ' data ' right != _
+
+`識別子またはリテラルかを判定
+isIdentOrLiteral : node ?
+    node ' type = NODE_IDENT | node ' type = NODE_LITERAL | node ' type = NODE_NUMBER
+
+`型チェック関数
+isString : value ?
+    `値が文字列かを判定（簡略化）
+    value ' 0 = \` & value ' (value ' length - 1) = \`
+
+isChar : value ?
+    `値が文字かを判定（簡略化）
+    value ' 0 = \\ & value ' length > 1
+
+isNumber : value ?
+    `値が数値かを判定（簡略化）
+    digit : value ' 0
+    (digit >= \0 & digit <= \9) | digit = \- | digit = \. | (value ' 0 = \0 & value ' length > 1 & (value ' 1 = \x | value ' 1 = \o | value ' 1 = \b))
+
+`エクスポート関数
+#generate : generate

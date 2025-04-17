@@ -1,0 +1,81 @@
+`Sign言語セルフコンパイラ - メインモジュール
+`このファイルはコンパイラの全体的な制御を行う
+
+`モジュールインポート
+lexer@
+parser@
+generator@
+utils@
+error@
+
+`コンパイラのメイン関数
+`入力: ソースファイルのパス
+`出力: 成功/失敗フラグ
+compile : filename ?
+    `ファイルを読み込む
+    src : readFile filename
+    
+    `ファイルが正常に読み込めなかった場合
+    src = _ : 
+        reportError 'File not found or cannot be read:' filename
+        _
+    
+    `フォーマット処理（, および : 演算子の前後にスペース挿入）
+    formattedSrc : formatSource src
+    
+    `字句解析
+    log 'Lexical analysis...'
+    tokens : tokenize formattedSrc
+    
+    `字句解析エラーがある場合
+    tokens ' error : 
+        reportError 'Lexical error:' tokens ' error
+        _
+    
+    `構文解析
+    log 'Syntax analysis...'
+    ast : parse tokens ' result
+    
+    `構文解析エラーがある場合
+    ast ' error : 
+        reportError 'Syntax error:' ast ' error
+        _
+    
+    `コード生成
+    log 'Code generation...'
+    code : generate ast ' result
+    
+    `コード生成エラーがある場合
+    code ' error : 
+        reportError 'Code generation error:' code ' error
+        _
+    
+    `出力ファイル名を生成（.sn.out）
+    outFilename : removeExtension filename + '.out'
+    
+    `出力
+    log 'Writing output to' outFilename
+    writeStatus : writeFile outFilename code ' result
+    
+    `ファイル書き込み成功の場合
+    writeStatus : 
+        log 'Compilation successful'
+        !_
+    
+    `エラーの場合
+    log 'Failed to write output file'
+    _
+
+`コマンドラインからの実行
+main : args ?
+    `引数のチェック
+    args ' length = 0 : 
+        log 'Usage: sign compiler.sn <source_file.sn>'
+        _
+    
+    `コンパイル実行
+    compile args ' 0
+
+`プログラムエントリポイント
+args : getCommandLineArgs
+main args
