@@ -1,0 +1,306 @@
+`Sign言語セルフコンパイラ - 字句解析モジュール
+`このファイルは字句解析処理を実装する
+
+`モジュールインポート
+token@
+utils@
+error@
+
+`字句解析のメイン関数
+`入力: ソースコード文字列
+`出力: トークン配列とエラー情報のオブジェクト
+tokenize : src ?
+    tokens : _
+    error : _
+    i : 0
+    position : newPosition 1 1
+    inString : _
+    inChar : _
+    
+    `ソースコードを1文字ずつ処理
+    i < src ' length :
+        c : src ' i
+        
+        `文字列リテラル内の処理
+        inString : 
+            c = \` : 
+                `文字列終了
+                tokenValue : src ' slice stringStart i
+                newToken : newToken TOKEN_STRING tokenValue position
+                tokens : tokens , newToken
+                inString : _
+                i : i + 1
+                position : position ' col + 1
+            
+            c = \\ : 
+                `エスケープシーケンス（\は文字列内ではそのまま文字として扱われる）
+                i : i + 1
+                position : position ' col + 1
+            
+            c = \
+ : 
+                `文字列内の改行はエラー
+                error : 'Unexpected newline in string at line ' + position ' line + ', column ' + position ' col
+                i : i + 1
+                position : newPosition position ' line + 1 1
+            
+            `それ以外の文字列内の文字
+            i : i + 1
+            position : position ' col + 1
+        
+        `文字リテラル処理
+        inChar : 
+            `バックスラッシュに続く任意の1文字は文字リテラル
+            tokenValue : src ' slice i (i + 1)
+            newToken : newToken TOKEN_CHAR tokenValue position
+            tokens : tokens , newToken
+            inChar : _
+            i : i + 1
+            position : position ' col + 1
+        
+        `通常処理（文字列・文字リテラル外）
+        c = \` : 
+            `文字列開始
+            inString : !_
+            stringStart : i
+            i : i + 1
+            position : position ' col + 1
+        
+        c = \\ : 
+            `文字リテラル開始
+            inChar : !_
+            i : i + 1
+            position : position ' col + 1
+        
+        c = \	 : 
+            `タブ文字
+            newToken : newToken TOKEN_TAB \	 position
+            tokens : tokens , newToken
+            i : i + 1
+            position : position ' col + 1
+        
+        c = \  : 
+            `空白文字（連続する空白は単一の空白トークンとして扱う）
+            spaceStart : i
+            spaceCount : 1
+            
+            `連続する空白をカウント
+            j : i + 1
+            j < src ' length & src ' j = \  : 
+                spaceCount : spaceCount + 1
+                j : j + 1
+            
+            `空白トークンを作成
+            newToken : newToken TOKEN_SPACE spaceCount position
+            tokens : tokens , newToken
+            i : j
+            position : position ' col + spaceCount
+        
+        c = \
+ : 
+            `改行文字
+            newToken : newToken TOKEN_NEWLINE \
+ position
+            tokens : tokens , newToken
+            i : i + 1
+            position : newPosition position ' line + 1 1
+        
+        isDigit c : 
+            `数値リテラル処理
+            numToken : tokenizeNumber src i position
+            tokens : tokens , numToken ' token
+            i : numToken ' nextIndex
+            position : newPosition position ' line numToken ' newCol
+        
+        isLetter c | c = \_ : 
+            `識別子処理
+            identToken : tokenizeIdentifier src i position
+            tokens : tokens , identToken ' token
+            i : identToken ' nextIndex
+            position : newPosition position ' line identToken ' newCol
+        
+        isOperator c : 
+            `演算子処理
+            opToken : tokenizeOperator src i position
+            tokens : tokens , opToken ' token
+            i : opToken ' nextIndex
+            position : newPosition position ' line opToken ' newCol
+        
+        isBlockStart c : 
+            `ブロック開始文字
+            newToken : newToken TOKEN_BLOCK_START c position
+            tokens : tokens , newToken
+            i : i + 1
+            position : position ' col + 1
+        
+        isBlockEnd c : 
+            `ブロック終了文字
+            newToken : newToken TOKEN_BLOCK_END c position
+            tokens : tokens , newToken
+            i : i + 1
+            position : position ' col + 1
+        
+        `それ以外の文字は無視（エラーにすべきかも）
+        i : i + 1
+        position : position ' col + 1
+    
+    `EOFトークンを追加
+    eofToken : newToken TOKEN_EOF _ newPosition position ' line position ' col
+    tokens : tokens , eofToken
+    
+    `文字列リテラルが閉じられていないエラーチェック
+    inString : 
+        error : 'Unterminated string literal at line ' + stringStartPosition ' line + ', column ' + stringStartPosition ' col
+    
+    `結果を返す
+    result : _
+    result ' tokens : tokens
+    result ' error : error
+    result
+
+`数値リテラルをトークン化する関数
+tokenizeNumber : src startIndex position ?
+    i : startIndex
+    numStr : ''
+    isHex : _
+    isOct : _
+    isBin : _
+    
+    `数値の先頭が0xの場合は16進数
+    i + 1 < src ' length & src ' i = \0 & (src ' (i + 1) = \x | src ' (i + 1) = \X) : 
+        isHex : !_
+        numStr : numStr + src ' i + src ' (i + 1)
+        i : i + 2
+    
+    `数値の先頭が0oの場合は8進数
+    i + 1 < src ' length & src ' i = \0 & (src ' (i + 1) = \o | src ' (i + 1) = \O) : 
+        isOct : !_
+        numStr : numStr + src ' i + src ' (i + 1)
+        i : i + 2
+    
+    `数値の先頭が0bの場合は2進数
+    i + 1 < src ' length & src ' i = \0 & (src ' (i + 1) = \b | src ' (i + 1) = \B) : 
+        isBin : !_
+        numStr : numStr + src ' i + src ' (i + 1)
+        i : i + 2
+    
+    `数値の各文字を処理
+    processed : _
+    
+    processed : 
+        `数値の終わりまで処理
+        i < src ' length :
+            c : src ' i
+            
+            `16進数の場合
+            isHex & isHexDigit c : 
+                numStr : numStr + c
+                i : i + 1
+            
+            `8進数の場合
+            isOct & isOctDigit c : 
+                numStr : numStr + c
+                i : i + 1
+            
+            `2進数の場合
+            isBin & isBinDigit c : 
+                numStr : numStr + c
+                i : i + 1
+            
+            `10進数で小数点の場合
+            !isHex & !isOct & !isBin & c = \. : 
+                `小数点が既に含まれている場合はエラー（未実装）
+                numStr : numStr + c
+                i : i + 1
+            
+            `10進数の数字の場合
+            !isHex & !isOct & !isBin & isDigit c : 
+                numStr : numStr + c
+                i : i + 1
+            
+            `数値リテラル終了
+            !_
+        
+        `処理終了
+        !_
+    
+    `トークンを作成
+    token : newToken TOKEN_NUMBER numStr position
+    
+    `次の位置情報を計算
+    nextIndex : i
+    newCol : position ' col + (i - startIndex)
+    
+    `結果を返す
+    result : _
+    result ' token : token
+    result ' nextIndex : nextIndex
+    result ' newCol : newCol
+    result
+
+`識別子をトークン化する関数
+tokenizeIdentifier : src startIndex position ?
+    i : startIndex
+    identStr : ''
+    
+    `識別子の各文字を処理
+    i < src ' length : 
+        c : src ' i
+        
+        `識別子に使える文字の場合
+        isLetter c | isDigit c | c = \_ : 
+            identStr : identStr + c
+            i : i + 1
+        
+        `識別子終了
+        !_
+    
+    `単一のアンダースコアはUnitトークン
+    identStr = '_' : 
+        token : newToken TOKEN_UNIT \_ position
+    
+    `通常の識別子トークン
+    token : newToken TOKEN_IDENT identStr position
+    
+    `次の位置情報を計算
+    nextIndex : i
+    newCol : position ' col + (i - startIndex)
+    
+    `結果を返す
+    result : _
+    result ' token : token
+    result ' nextIndex : nextIndex
+    result ' newCol : newCol
+    result
+
+`演算子をトークン化する関数
+tokenizeOperator : src startIndex position ?
+    i : startIndex
+    c : src ' i
+    opStr : c
+    
+    `複合演算子のチェック
+    i + 1 < src ' length : 
+        nextChar : src ' (i + 1)
+        
+        `複合演算子の場合
+        isCompoundOperator (opStr + nextChar) : 
+            opStr : opStr + nextChar
+            i : i + 1
+    
+    `演算子トークンを作成
+    token : newToken TOKEN_OP opStr position
+    
+    `次の位置情報を計算
+    nextIndex : i + 1
+    newCol : position ' col + (nextChar - startIndex)
+    
+    `結果を返す
+    result : _
+    result ' token : token
+    result ' nextIndex : nextIndex
+    result ' newCol : newCol
+    result
+
+`エクスポート関数
+#tokenize : tokenize

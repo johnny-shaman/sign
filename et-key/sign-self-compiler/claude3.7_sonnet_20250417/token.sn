@@ -1,0 +1,128 @@
+`Sign言語セルフコンパイラ - トークン定義モジュール
+`このファイルはトークン定義と操作関数を実装する
+
+`モジュールインポート
+utils@
+
+`トークンの種類
+TOKEN_STRING : 1      `文字列リテラル
+TOKEN_CHAR : 2        `文字リテラル
+TOKEN_IDENT : 3       `識別子
+TOKEN_NUMBER : 4      `数値リテラル
+TOKEN_OP : 5          `演算子
+TOKEN_SPACE : 6       `空白（余積演算子を含む）
+TOKEN_TAB : 7         `タブ（インデント）
+TOKEN_NEWLINE : 8     `改行
+TOKEN_BLOCK_START : 9 `ブロック開始 (, [, {
+TOKEN_BLOCK_END : 10  `ブロック終了 ), ], }
+TOKEN_UNIT : 11       `Unit (_)
+TOKEN_EOF : 12        `ファイル終端
+
+`トークンを作成
+newToken : type value position ?
+    token : _
+    token ' type : type
+    token ' value : value
+    token ' position : position
+    token
+
+`トークン配列を作成
+newTokenArray : ?
+    _
+
+`トークン配列にトークンを追加
+addToken : tokens token ?
+    tokens, token
+
+`トークンを文字列に変換（デバッグ用）
+tokenToString : token ?
+    type : typeToString token ' type
+    value : token ' value
+    pos : token ' position
+    line : pos ' line
+    col : pos ' col
+    
+    '[' + type + ', "' + value + '", L' + line + ':C' + col + ']'
+
+`トークン型を文字列に変換
+typeToString : type ?
+    type = TOKEN_STRING ? 'STRING' :
+    type = TOKEN_CHAR ? 'CHAR' :
+    type = TOKEN_IDENT ? 'IDENT' :
+    type = TOKEN_NUMBER ? 'NUMBER' :
+    type = TOKEN_OP ? 'OP' :
+    type = TOKEN_SPACE ? 'SPACE' :
+    type = TOKEN_TAB ? 'TAB' :
+    type = TOKEN_NEWLINE ? 'NEWLINE' :
+    type = TOKEN_BLOCK_START ? 'BLOCK_START' :
+    type = TOKEN_BLOCK_END ? 'BLOCK_END' :
+    type = TOKEN_UNIT ? 'UNIT' :
+    type = TOKEN_EOF ? 'EOF' :
+    'UNKNOWN'
+
+`トークン配列を文字列に変換（デバッグ用）
+tokensToString : tokens ?
+    result : ''
+    i : 0
+    
+    i < tokens ' length :
+        token : tokens ' i
+        tokenStr : tokenToString token
+        
+        result : result + (i > 0 ? '\n' : '') + tokenStr
+        i : i + 1
+    
+    result
+
+`トークンの位置情報を取得
+getTokenPosition : token ?
+    token ' position
+
+`特定のトークン型をチェック
+isTokenType : token type ?
+    token ' type = type
+
+`特定のトークン型と値をチェック
+isTokenTypeAndValue : token type value ?
+    token ' type = type & token ' value = value
+
+`特定のトークン型と値のパターンをチェック
+matchesPattern : token pattern ?
+    `patternが型と値のペアの場合
+    pattern ' type != _ & pattern ' value != _ :
+        token ' type = pattern ' type & token ' value = pattern ' value
+    
+    `patternが型のみの場合
+    pattern ' type != _ :
+        token ' type = pattern ' type
+    
+    `patternが値のみの場合
+    pattern ' value != _ :
+        token ' value = pattern ' value
+    
+    `patternが空の場合は常に一致
+    !_
+
+`エクスポート関数
+#TOKEN_STRING : TOKEN_STRING
+#TOKEN_CHAR : TOKEN_CHAR
+#TOKEN_IDENT : TOKEN_IDENT
+#TOKEN_NUMBER : TOKEN_NUMBER
+#TOKEN_OP : TOKEN_OP
+#TOKEN_SPACE : TOKEN_SPACE
+#TOKEN_TAB : TOKEN_TAB
+#TOKEN_NEWLINE : TOKEN_NEWLINE
+#TOKEN_BLOCK_START : TOKEN_BLOCK_START
+#TOKEN_BLOCK_END : TOKEN_BLOCK_END
+#TOKEN_UNIT : TOKEN_UNIT
+#TOKEN_EOF : TOKEN_EOF
+#newToken : newToken
+#newTokenArray : newTokenArray
+#addToken : addToken
+#tokenToString : tokenToString
+#typeToString : typeToString
+#tokensToString : tokensToString
+#getTokenPosition : getTokenPosition
+#isTokenType : isTokenType
+#isTokenTypeAndValue : isTokenTypeAndValue
+#matchesPattern : matchesPattern

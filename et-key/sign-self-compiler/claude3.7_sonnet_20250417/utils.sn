@@ -1,0 +1,287 @@
+`Sign言語セルフコンパイラ - ユーティリティモジュール
+`このファイルは共通ユーティリティ関数を実装する
+
+`ファイルシステム操作のため実装環境からインポート
+fs@
+
+`文字種判定関数
+isDigit : c ?
+    c >= \0 & c <= \9
+
+isLetter : c ?
+    (c >= \a & c <= \z) | (c >= \A & c <= \Z)
+
+isAlphaNum : c ?
+    isDigit c | isLetter c
+
+isHexDigit : c ?
+    isDigit c | (c >= \a & c <= \f) | (c >= \A & c <= \F)
+
+isOctDigit : c ?
+    c >= \0 & c <= \7
+
+isBinDigit : c ?
+    c = \0 | c = \1
+
+isWhitespace : c ?
+    c = \  | c = \	 | c = \
+ | c = \
+
+isOperator : c ?
+    c = \+ | c = \- | c = \* | c = \/ | c = \% | c = \^ |
+    c = \: | c = \? | c = \, | c = \~ | c = \; | c = \| | c = \& |
+    c = \! | c = \< | c = \= | c = \> | c = \' | c = \@ | c = \# |
+    c = \$
+
+isCompoundOperator : s ?
+    s = '<=' | s = '>=' | s = '!=' | s = '->' | s = '=>'
+
+isBlockStart : c ?
+    c = \( | c = \[ | c = \{
+
+isBlockEnd : c ?
+    c = \) | c = \] | c = \}
+
+`対応するブロック終了文字を取得
+getMatchingBlockEnd : c ?
+    c = \( ? \) :
+    c = \[ ? \] :
+    c = \{ ? \} :
+    \_
+
+`文字列が数値かを判定
+isNumericString : s ?
+    s = _ | s ' length = 0 ? _ :
+    
+    `マイナス記号をスキップ
+    start : s ' 0 = \- ? 1 : 0
+    
+    `全ての文字が数字かをチェック
+    i : start
+    
+    i < s ' length ? 
+        isDigit s ' i | s ' i = \. ? 
+            i : i + 1
+            !_ :
+        _ :
+    
+    start < s ' length
+
+`文字列がIdentifierかを判定
+isIdentifierString : s ?
+    s = _ | s ' length = 0 ? _ :
+    
+    `先頭は文字またはアンダースコア
+    !isLetter s ' 0 & s ' 0 != \_ ? _ :
+    
+    `2文字目以降は文字、数字、アンダースコア
+    i : 1
+    
+    i < s ' length ? 
+        isAlphaNum s ' i | s ' i = \_ ? 
+            i : i + 1
+            !_ :
+        _ :
+    
+    !_
+
+`文字列が単一アンダースコアかを判定（Unit）
+isSingleUnderscore : s ?
+    s = '_'
+
+`文字列の特定の位置のサブ文字列を取得
+slice : str start end ?
+    `終了位置が指定されていない場合は文字列の終わりまで
+    end = _ ? end : str ' length
+    
+    `無効なインデックスをチェック
+    start < 0 | start >= str ' length | end < start ? '' :
+    
+    `サブ文字列を抽出
+    result : ''
+    i : start
+    
+    i < end & i < str ' length ? 
+        result : result + str ' i
+        i : i + 1
+        result
+
+`文字列のプレフィックスを確認
+startsWith : str prefix ?
+    prefix ' length > str ' length ? _ :
+    
+    `プレフィックスが一致するかをチェック
+    i : 0
+    
+    i < prefix ' length ? 
+        str ' i = prefix ' i ? 
+            i : i + 1
+            _ :
+        !_ :
+    
+    !_
+
+`文字列の拡張子を除去
+removeExtension : filename ?
+    lastDotIndex : findLastIndex filename \.
+    lastDotIndex > 0 ? slice filename 0 lastDotIndex : filename
+
+`文字列内の最後の特定文字の位置を検索
+findLastIndex : str char ?
+    i : str ' length - 1
+    
+    i >= 0 ? 
+        str ' i = char ? 
+            i
+            i : i - 1
+            findLastIndex str char :
+        -1
+
+`文字列のフォーマット処理（, および : 演算子の前後にスペース挿入）
+formatSource : src ?
+    `文字列内部を除いて,や:の前後にスペースを挿入
+    result : ''
+    i : 0
+    inString : _
+    
+    i < src ' length ? 
+        c : src ' i
+        
+        `文字列リテラル内の処理
+        inString ? 
+            c = \` ? 
+                inString : _
+                result : result + c
+                i : i + 1
+                formatSource result i src :
+            
+            `文字列内の文字はそのままコピー
+            result : result + c
+            i : i + 1
+            formatSource result i src inString
+        
+        `文字列リテラル外の処理
+        c = \` ? 
+            inString : !_
+            result : result + c
+            i : i + 1
+            formatSource result i src inString
+        
+        `カンマの前後にスペースを挿入
+        c = \, ? 
+            `カンマの前が既にスペースでなければスペースを挿入
+            result ' length > 0 & result ' (result ' length - 1) != \  ? 
+                result : result + \  + c
+                i : i + 1
+                
+                `カンマの後にもスペースを挿入
+                i < src ' length & src ' i != \  & src ' i != \
+ ? 
+                    result : result + \  
+                    formatSource result i src inString :
+                
+                formatSource result i src inString :
+            
+            `カンマの前が既にスペースの場合
+            result : result + c
+            i : i + 1
+            
+            `カンマの後にスペースを挿入
+            i < src ' length & src ' i != \  & src ' i != \
+ ? 
+                result : result + \  
+                formatSource result i src inString :
+            
+            formatSource result i src inString
+        
+        `コロンの前後にスペースを挿入
+        c = \: ? 
+            `コロンの前が既にスペースでなければスペースを挿入
+            result ' length > 0 & result ' (result ' length - 1) != \  ? 
+                result : result + \  + c
+                i : i + 1
+                
+                `コロンの後にもスペースを挿入
+                i < src ' length & src ' i != \  & src ' i != \
+ ? 
+                    result : result + \  
+                    formatSource result i src inString :
+                
+                formatSource result i src inString :
+            
+            `コロンの前が既にスペースの場合
+            result : result + c
+            i : i + 1
+            
+            `コロンの後にスペースを挿入
+            i < src ' length & src ' i != \  & src ' i != \
+ ? 
+                result : result + \  
+                formatSource result i src inString :
+            
+            formatSource result i src inString
+        
+        `その他の文字はそのままコピー
+        result : result + c
+        i : i + 1
+        formatSource result i src inString
+    
+    result
+
+`ファイル読み込み
+readFile : filename ?
+    `ファイルからテキストを読み込む
+    `実際の実装はホスト環境に依存
+    fs ' readFile filename
+
+`ファイル書き込み
+writeFile : filename content ?
+    `テキストをファイルに書き込む
+    `実際の実装はホスト環境に依存
+    fs ' writeFile filename content
+
+`コマンドライン引数の取得
+getCommandLineArgs : ?
+    `コマンドライン引数を取得
+    `実際の実装はホスト環境に依存
+    fs ' args
+
+`ログ出力
+log : message ?
+    `メッセージをログに出力
+    `実際の実装はホスト環境に依存
+    fs ' log message
+
+`位置情報の作成
+newPosition : line col ?
+    pos : _
+    pos ' line : line
+    pos ' col : col
+    pos
+
+`エクスポート関数
+#isDigit : isDigit
+#isLetter : isLetter
+#isAlphaNum : isAlphaNum
+#isHexDigit : isHexDigit
+#isOctDigit : isOctDigit
+#isBinDigit : isBinDigit
+#isWhitespace : isWhitespace
+#isOperator : isOperator
+#isCompoundOperator : isCompoundOperator
+#isBlockStart : isBlockStart
+#isBlockEnd : isBlockEnd
+#getMatchingBlockEnd : getMatchingBlockEnd
+#isNumericString : isNumericString
+#isIdentifierString : isIdentifierString
+#isSingleUnderscore : isSingleUnderscore
+#slice : slice
+#startsWith : startsWith
+#removeExtension : removeExtension
+#findLastIndex : findLastIndex
+#formatSource : formatSource
+#readFile : readFile
+#writeFile : writeFile
+#getCommandLineArgs : getCommandLineArgs
+#log : log
+#newPosition : newPosition
