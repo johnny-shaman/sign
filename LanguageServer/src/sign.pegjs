@@ -24,11 +24,11 @@ Function
   / Compose
   / Pointless
 
-  Closuer = l:(Arguments / unit) c:lambda r:Expression //右結合でOK
+  Closuer = (Arguments / unit) lambda Expression //右結合でOK
 
     Arguments = tag+ (lift tag)?
 
-  Compose = l:(tag / Closuer / Pointless) c:_ r:Compose
+  Compose = (tag / Closuer / Pointless) _ Compose
   Pointless
     = "(" (DirectMap / DirectFold) ")"
     / "{" (DirectMap / DirectFold) "}"
@@ -97,8 +97,7 @@ unit = $"_"
 key = $(string / letter / tag)
 
 prefix = $(export / import / not / lift / obtain)
-blockInfix = s:$(infix / spread)
-infix = s:(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / compare / pow) {return ` ${s} `}
+infix = $(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / compare / pow)
 compare = $(lt / le / eq / ne / me / mt )
 postfix = $(flat / factrial)
 
