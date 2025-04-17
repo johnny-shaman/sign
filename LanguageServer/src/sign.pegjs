@@ -5,7 +5,7 @@ Expression
   / Define
   / Output
   / Apply
-  / Atoms
+  / Literals
   / Function
   / Pair
   / Or
@@ -17,8 +17,8 @@ Expression
 Export = export? Define
 Define = tag _ be? _ Expression //右結合でOK
 Output = (tag / hex / (obtain tag)) __ output? __ Expression* //右結合にでOK
-Apply = Function __ Atoms
-Atoms = Literal __ Expression* //右結合でOK
+Apply = Function __ Literals
+Literals = Literal __ Literal __ Expression* //右結合でOK
 Function
   = Closuer
   / Compose
@@ -41,9 +41,9 @@ Function
       / PartialApply pair
 
       PartialApply
-        = unit? infix atom
-        / atom infix unit?
-        / tag Atoms
+        = unit? _ infix _ atom
+        / atom _ infix _ unit?
+        / tag __ Literals
 
 //直和表現
     DirectFold
