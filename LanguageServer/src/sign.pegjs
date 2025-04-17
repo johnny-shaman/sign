@@ -15,20 +15,20 @@ Expression
   / EOL
 
 Export = export? Define
-Define = tag _ be? _ Expression //右結合でOK
-Output = (tag / hex / (obtain tag)) __ output? __ Expression* //右結合にでOK
+Define = tag _ be? _ Expression* //右結合でOK
+Output = (tag / hex / (obtain tag)) __ output? __ Expression+ //右結合にでOK
 Apply = Function __ Literals
-Literals = Literal __ Literal __ Expression* //右結合でOK
+Literals = Literal __ Expression+ //右結合でOK
 Function
   = Closuer
   / Compose
   / Pointless
 
-  Closuer = (Arguments / unit) lambda Expression //右結合でOK
+  Closuer = (Arguments / unit) lambda Expression+ //右結合でOK
 
     Arguments = tag+ (lift tag)?
 
-  Compose = (tag / Closuer / Pointless) _ Compose
+  Compose = (tag / Closuer / Pointless) __ Compose+
   Pointless
     = "(" (DirectMap / DirectFold) ")"
     / "{" (DirectMap / DirectFold) "}"
