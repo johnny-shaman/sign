@@ -5,6 +5,7 @@ expression = { export }
 
 export = { f_export? ~ define }
 define = { coproduct ~ (f_define ~ define)? }
+
 coproduct = { lambda ~ (apply | literal_product)* }
   apply = { closure ~ (apply | literal_product)* }
   literal_product = { literal ~ (apply | literal_product)* }
