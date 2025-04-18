@@ -15,7 +15,7 @@ Expression
   / EOL
 
 Export = export? Define
-Define = tag _ be? _ Expression* //右結合でOK
+Define = tag _ be? _ Expression+ //右結合でOK
 Output = (tag / hex / (obtain tag)) __ output? __ Expression+ //右結合にでOK
 Apply = Function __ Literals
 Literals = Literal __ Expression+ //右結合でOK
@@ -86,14 +86,14 @@ Literal = atom / Block
 atom = $(string / letter / bin / oct / hex / number / tag / unit)
 spreadable = $(number / hex / oct / bin / letter)
 number = $("-"? [0-9]+ "."? [0-9]* )
-hex = $("0x" ([0-9] / [A-F] / [a-f])+)
+hex = $("0x" [0-9A-Fa-f]+)
 oct = $("0o" [0-7]+)
-bin = $("0b" ("0" / "1")+)
-tag = $("_" ([0-9] / [A-Z] / [a-z] / "_")+) / $(([A-Z] / [a-z]) ([0-9] / [A-Z] / [a-z] / "_")+)
+bin = $("0b" [01]+)
+tag = $(([A-Za-z] / ("_" [0-9A-Za-z_])) [0-9A-Za-z_]*) 
 letter = $("\\" .)
 comment = $("`" [^\n\r`]*)
-string = $("`" [^\n\r`]* "`")
-unit = $"_"
+string = $("`" [^\n\r`]* "`") / $letter+
+unit = $"_" {return `unit`}
 key = $(string / letter / tag)
 
 prefix = $(export / import / not / lift / obtain)
