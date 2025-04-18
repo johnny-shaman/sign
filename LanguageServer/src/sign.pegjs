@@ -1,4 +1,4 @@
-Start = $Expression*
+Start = e:Expression* {return e.join("");}
 
 Expression
   = Export
@@ -24,9 +24,9 @@ Function
   / Compose
   / Pointless
 
-  Closuer = (Arguments / unit) lambda Expression+ //右結合でOK
+  Closuer = (Arguments / unit) _ lambda _ Expression+ //右結合でOK
 
-    Arguments = tag+ (lift tag)?
+    Arguments = (tag _)* (lift? tag)
 
   Compose = (tag / Closuer / Pointless) __ Compose+
   Pointless
@@ -35,9 +35,9 @@ Function
     / "[" (DirectMap / DirectFold) "]"
 
     DirectMap
-      = (prefix"_") pair
-      / (unit? infix unit?) pair
-      / ("_"postfix) pair
+      = prefix "_" pair
+      / unit? _ infix _ unit? pair
+      / "_" postfix pair
       / PartialApply pair
 
       PartialApply
@@ -58,20 +58,21 @@ Pair
   / "[" ((spreadable / tag) spread (spreadable / tag)) "]"
   / (Closuer / Compose / Pointless / atom) _ pair _ Expression* //右結合でOK
 
-Or = And orxor? Or*
-And = Not _ and? _ And*
+Or = And (orxor Or)*
+And = Not (_ and _ And)*
 Not = not* Compare
-Compare = Additive _ compare? _ Compare*
-Additive = Multiple _ additive? _ Additive*
-Multiple = Power _ multiple? _ Multiple*
-Power = Factrial _ pow? Power*
-Factrial = Get factrial+
+Compare = Additive (_ compare _ Compare)*
+Additive = Multiple (_ additive _ Additive)*
+Multiple = Power (_ multiple _ Multiple)*
+Power = Factrial (_ pow _ Power)*
+Factrial = Get factrial*
 Absolute = "|" (Additive / Get) "|"
-Flat = Get flat
+Flat = Get flat*
 Get = (tag / Pair / Import) (_ get _ key)*
-Set = Get _ be _ Expression*
-Get_r = (key _ get_r _)*  (tag / Pair / Import)
-Import = (tag / string) import
+Set = Get _ be _ Expression+
+Get_r = (key __ get_r __)*  (tag / Pair / Import)
+Import = Input import
+Input = input Expression+
 
 Block
   = "(" _ Expression+ _ ")"
@@ -85,15 +86,15 @@ IndentBlock = BlockStart Expression+
 Literal = atom / Block
 atom = $(string / letter / bin / oct / hex / number / tag / unit)
 spreadable = $(number / hex / oct / bin / letter)
-number = $("-"? [0-9]+ "."? [0-9]* )
+number = $("-"? [0-9]+ "."? [0-9]*)
 hex = $("0x" [0-9A-Fa-f]+)
 oct = $("0o" [0-7]+)
 bin = $("0b" [01]+)
 tag = $(([A-Za-z] / ("_" [0-9A-Za-z_])) [0-9A-Za-z_]*) 
 letter = $("\\" .)
 comment = $("`" [^\n\r`]*)
-string = $("`" [^\n\r`]* "`") / $letter+
-unit = $"_" {return `unit`}
+string = $("`" [^\n\r`]* "`") / letter+
+unit = $"_"
 key = $(string / letter / tag)
 
 prefix = $(export / import / not / lift / obtain)
