@@ -1,0 +1,786 @@
+`Sign言語セルフコンパイラ - 構文解析モジュール
+`このファイルは構文解析処理を実装する
+
+`モジュールインポート
+token@
+ast@
+utils@
+error@
+
+`構文解析のメイン関数
+`入力: トークン配列
+`出力: 抽象構文木とエラー情報のオブジェクト
+parse : tokens ?
+    `初期化
+    result : _
+    error : _
+    
+    `トークンが存在しない場合
+    tokens = _ | tokens ' length = 0 : 
+        error : 'No tokens to parse'
+        result ' error : error
+        result
+    
+    `パーサー状態の初期化
+    state : newParserState tokens 0
+    
+    `プログラム全体の解析
+    programNode : parseProgram state
+    
+    `エラーチェック
+    state ' error != _ : 
+        result ' error : state ' error
+        result
+    
+    `結果を設定
+    result ' result : programNode
+    result
+
+`プログラム全体の解析
+parseProgram : state ?
+    `プログラムノードの初期化
+    programNode : newNode NODE_BLOCK _
+    statements : _
+    
+    `トークンを順に処理
+    state ' currentToken ' type != TOKEN_EOF : 
+        `現在の階層のステートメントを解析
+        stmt : parseStatement state
+        
+        `エラーチェック
+        state ' error != _ : 
+            return programNode
+        
+        `ステートメントを追加
+        statements : statements, stmt
+        
+        `改行またはEOFをチェック
+        expectNewline state
+    
+    `プログラムノードに文を設定
+    programNode ' data : statements
+    programNode
+
+`ステートメントの解析
+parseStatement : state ?
+    `現在のトークンによって処理を分岐
+    token : state ' currentToken
+    
+    `エクスポート文の解析
+    token ' type = TOKEN_OP & token ' value = '#' & !isAtEndOfLine state : 
+        parseExportStatement state
+    
+    `定義文の解析
+    token ' type = TOKEN_IDENT & peekNextToken state ' type = TOKEN_OP & peekNextToken state ' value = ':' : 
+        parseDefinitionStatement state
+    
+    `出力文の解析
+    (token ' type = TOKEN_IDENT | token ' type = TOKEN_NUMBER) & peekNextToken state ' type = TOKEN_OP & peekNextToken state ' value = '#' : 
+        parseOutputStatement state
+    
+    `タブによるブロック解析
+    token ' type = TOKEN_TAB : 
+        parseIndentedBlock state
+    
+    `一般的な式の解析
+    parseExpression state
+
+`エクスポート文の解析
+parseExportStatement : state ?
+    `#演算子の処理
+    hashToken : consumeToken state
+    
+    `識別子の処理
+    expectToken state TOKEN_IDENT
+    identToken : consumeToken state
+    
+    `:演算子の処理
+    expectToken state TOKEN_OP ':'
+    colonToken : consumeToken state
+    
+    `式の解析
+    expr : parseExpression state
+    
+    `エクスポートノードの作成
+    exportNode : newNode NODE_OP _
+    exportNode ' data ' op : '#'
+    exportNode ' data ' left : identToken ' value
+    exportNode ' data ' right : expr
+    exportNode
+
+`定義文の解析
+parseDefinitionStatement : state ?
+    `識別子の処理
+    identToken : consumeToken state
+    
+    `:演算子の処理
+    expectToken state TOKEN_OP ':'
+    colonToken : consumeToken state
+    
+    `式の解析
+    expr : parseExpression state
+    
+    `定義ノードの作成
+    defNode : newNode NODE_OP _
+    defNode ' data ' op : ':'
+    defNode ' data ' left : identToken ' value
+    defNode ' data ' right : expr
+    defNode
+
+`出力文の解析
+parseOutputStatement : state ?
+    `識別子または数値の処理
+    targetToken : consumeToken state
+    
+    `#演算子の処理
+    expectToken state TOKEN_OP '#'
+    hashToken : consumeToken state
+    
+    `式の解析
+    expr : parseExpression state
+    
+    `出力ノードの作成
+    outputNode : newNode NODE_OP _
+    outputNode ' data ' op : '#'
+    outputNode ' data ' left : targetToken ' value
+    outputNode ' data ' right : expr
+    outputNode
+
+`インデントブロックの解析
+parseIndentedBlock : state ?
+    `タブトークンの処理
+    tabToken : consumeToken state
+    indentLevel : tabToken ' value ' length
+    
+    `ブロックノードの初期化
+    blockNode : newNode NODE_BLOCK _
+    statements : _
+    
+    `同じインデントレベルの文を解析
+    currentIndent : indentLevel
+    currentIndent = indentLevel & state ' currentToken ' type != TOKEN_EOF : 
+        `ステートメントを解析
+        stmt : parseStatement state
+        
+        `エラーチェック
+        state ' error != _ : 
+            return blockNode
+        
+        `ステートメントを追加
+        statements : statements, stmt
+        
+        `改行をチェック
+        expectNewline state
+        
+        `次のインデントレベルを確認
+        state ' currentToken ' type = TOKEN_TAB : 
+            currentIndent : state ' currentToken ' value ' length
+        
+        currentIndent != indentLevel : 
+            `インデントレベルが変わったら終了
+            !_
+    
+    `ブロックノードに文を設定
+    blockNode ' data : statements
+    blockNode
+
+`式の解析（演算子優先順位に従って処理）
+parseExpression : state ?
+    `最も低い優先順位の式から解析開始
+    parseExportExpression state
+
+`エクスポート式の解析（優先順位: 0）
+parseExportExpression : state ?
+    `定義・出力式の解析
+    left : parseDefinitionExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが#演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & state ' currentToken ' value = '#' & isExportOperator state : 
+        `#演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parseExportExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        opNode
+    
+    `エクスポート演算子がなければ左辺をそのまま返す
+    left
+
+`定義・出力式の解析（優先順位: 1）
+parseDefinitionExpression : state ?
+    `構築式の解析
+    left : parseConstructionExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが:または#演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & (state ' currentToken ' value = ':' | state ' currentToken ' value = '#' & isOutputOperator state) : 
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parseDefinitionExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        opNode
+    
+    `定義・出力演算子がなければ左辺をそのまま返す
+    left
+
+`構築式の解析（優先順位: 2）
+parseConstructionExpression : state ?
+    `論理式の解析
+    left : parseLogicalExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが空白、?、,、~演算子なら処理
+    state ' currentToken ' type = TOKEN_SPACE | 
+    (state ' currentToken ' type = TOKEN_OP & 
+     (state ' currentToken ' value = '?' | 
+      state ' currentToken ' value = ',' | 
+      state ' currentToken ' value = '~' & isRangeOperator state)) : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parseConstructionExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' type = TOKEN_SPACE ? ' ' : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        opNode
+    
+    `構築演算子がなければ左辺をそのまま返す
+    left
+
+`論理式の解析（優先順位: 3）
+parseLogicalExpression : state ?
+    `比較式の解析
+    left : parseComparisonExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが論理演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & 
+    (state ' currentToken ' value = ';' | 
+     state ' currentToken ' value = '|' | 
+     state ' currentToken ' value = '&' | 
+     state ' currentToken ' value = '!' & isNotOperator state) : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parseLogicalExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : opToken ' value = '!' ? _ : left
+        opNode ' data ' right : opToken ' value = '!' ? left : right
+        opNode
+    
+    `論理演算子がなければ左辺をそのまま返す
+    left
+
+`比較式の解析（優先順位: 4）
+parseComparisonExpression : state ?
+    `算術式の解析
+    left : parseArithmeticExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが比較演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & 
+    (state ' currentToken ' value = '<' | 
+     state ' currentToken ' value = '<=' | 
+     state ' currentToken ' value = '=' | 
+     state ' currentToken ' value = '>=' | 
+     state ' currentToken ' value = '>' | 
+     state ' currentToken ' value = '!=') : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parseComparisonExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        opNode
+    
+    `比較演算子がなければ左辺をそのまま返す
+    left
+
+`算術式の解析（優先順位: 5-8）
+parseArithmeticExpression : state ?
+    `加減算の解析
+    parseAddExpression state
+
+`加減算の解析（優先順位: 5）
+parseAddExpression : state ?
+    `乗除算の解析
+    left : parseMulExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが+または-演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & 
+    (state ' currentToken ' value = '+' | 
+     state ' currentToken ' value = '-') : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parseMulExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        
+        `再帰的に+または-を処理
+        parseAddExpressionRec state opNode
+    
+    `+または-演算子がなければ左辺をそのまま返す
+    left
+
+`加減算の再帰処理
+parseAddExpressionRec : state left ?
+    `現在のトークンが+または-演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & 
+    (state ' currentToken ' value = '+' | 
+     state ' currentToken ' value = '-') : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parseMulExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        
+        `再帰的に+または-を処理
+        parseAddExpressionRec state opNode
+    
+    `+または-演算子がなければ左辺をそのまま返す
+    left
+
+`乗除算の解析（優先順位: 6）
+parseMulExpression : state ?
+    `冪乗の解析
+    left : parsePowerExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが*、/、%演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & 
+    (state ' currentToken ' value = '*' | 
+     state ' currentToken ' value = '/' | 
+     state ' currentToken ' value = '%') : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parsePowerExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        
+        `再帰的に*、/、%を処理
+        parseMulExpressionRec state opNode
+    
+    `*、/、%演算子がなければ左辺をそのまま返す
+    left
+
+`乗除算の再帰処理
+parseMulExpressionRec : state left ?
+    `現在のトークンが*、/、%演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & 
+    (state ' currentToken ' value = '*' | 
+     state ' currentToken ' value = '/' | 
+     state ' currentToken ' value = '%') : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parsePowerExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        
+        `再帰的に*、/、%を処理
+        parseMulExpressionRec state opNode
+    
+    `*、/、%演算子がなければ左辺をそのまま返す
+    left
+
+`冪乗の解析（優先順位: 7）
+parsePowerExpression : state ?
+    `階乗の解析
+    left : parseFactorialExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが^演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & state ' currentToken ' value = '^' : 
+        `^演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parsePowerExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        opNode
+    
+    `^演算子がなければ左辺をそのまま返す
+    left
+
+`階乗の解析（優先順位: 8）
+parseFactorialExpression : state ?
+    `解決評価式の解析
+    left : parseResolutionExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが!後置演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & state ' currentToken ' value = '!' & isFactorialOperator state : 
+        `!演算子の処理
+        opToken : consumeToken state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : '_!'  `後置演算子のため_!とする
+        opNode ' data ' left : left
+        opNode ' data ' right : _
+        opNode
+    
+    `!後置演算子がなければ左辺をそのまま返す
+    left
+
+`解決評価式の解析（優先順位: 9）
+parseResolutionExpression : state ?
+    `単項式の解析
+    left : parseUnaryExpression state
+    
+    `エラーチェック
+    state ' error != _ : 
+        return left
+    
+    `現在のトークンが解決評価演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & 
+    (state ' currentToken ' value = '~' & isExpansionOperator state | 
+     state ' currentToken ' value = '\'' | 
+     state ' currentToken ' value = '@' & isGetOperator state) : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析（'と@は中置演算子なので右辺が必要）
+        right : opToken ' value = '~' ? _ : parseResolutionExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value = '~' ? '_~' : opToken ' value
+        opNode ' data ' left : left
+        opNode ' data ' right : right
+        opNode
+    
+    `解決評価演算子がなければ左辺をそのまま返す
+    left
+
+`単項式の解析
+parseUnaryExpression : state ?
+    `現在のトークンが前置演算子なら処理
+    state ' currentToken ' type = TOKEN_OP & 
+    (state ' currentToken ' value = '!' & !isFactorialOperator state | 
+     state ' currentToken ' value = '~' & !isExpansionOperator state | 
+     state ' currentToken ' value = '$' | 
+     state ' currentToken ' value = '@' & isInputOperator state) : 
+        
+        `演算子の処理
+        opToken : consumeToken state
+        
+        `右辺の式を解析
+        right : parseUnaryExpression state
+        
+        `演算ノードの作成
+        opNode : newNode NODE_OP _
+        opNode ' data ' op : opToken ' value + '_'  `前置演算子のため_を追加
+        opNode ' data ' left : _
+        opNode ' data ' right : right
+        opNode
+    
+    `前置演算子がなければ主要式の解析
+    parsePrimaryExpression state
+
+`主要式の解析
+parsePrimaryExpression : state ?
+    `現在のトークンによって処理を分岐
+    token : state ' currentToken
+    
+    `リテラル処理
+    token ' type = TOKEN_NUMBER : 
+        consumeToken state
+        numNode : newNode NODE_LITERAL _
+        numNode ' data : token ' value
+        numNode
+    
+    token ' type = TOKEN_STRING : 
+        consumeToken state
+        strNode : newNode NODE_LITERAL _
+        strNode ' data : token ' value
+        strNode
+    
+    token ' type = TOKEN_CHAR : 
+        consumeToken state
+        charNode : newNode NODE_LITERAL _
+        charNode ' data : token ' value
+        charNode
+    
+    `識別子処理
+    token ' type = TOKEN_IDENT : 
+        consumeToken state
+        identNode : newNode NODE_IDENT _
+        identNode ' data : token ' value
+        identNode
+    
+    `Unit処理
+    token ' type = TOKEN_UNIT : 
+        consumeToken state
+        unitNode : newNode NODE_UNIT _
+        unitNode
+    
+    `インラインブロック処理
+    token ' type = TOKEN_BLOCK_START : 
+        parseInlineBlock state
+    
+    `インポート処理
+    token ' type = TOKEN_IDENT & peekNextToken state ' type = TOKEN_OP & peekNextToken state ' value = '@' & isImportOperator state : 
+        parseImportExpression state
+    
+    token ' type = TOKEN_STRING & peekNextToken state ' type = TOKEN_OP & peekNextToken state ' value = '@' & isImportOperator state : 
+        parseImportExpression state
+    
+    `絶対値表現処理
+    token ' type = TOKEN_OP & token ' value = '|' : 
+        parseAbsoluteValue state
+    
+    `エラー: 不正なトークン
+    setError state 'Unexpected token: ' + token ' value + ' at line ' + token ' position ' line + ', column ' + token ' position ' col
+    _
+
+`インラインブロックの解析
+parseInlineBlock : state ?
+    `ブロック開始トークンの処理
+    startToken : consumeToken state
+    startChar : startToken ' value
+    
+    `対応する終了文字を決定
+    endChar : startChar = '(' ? ')' : startChar = '[' ? ']' : '}'
+    
+    `ブロック内部の式を解析
+    expr : parseExpression state
+    
+    `ブロック終了トークンの処理
+    expectToken state TOKEN_BLOCK_END endChar
+    endToken : consumeToken state
+    
+    `式を返す
+    expr
+
+`インポート式の解析
+parseImportExpression : state ?
+    `識別子またはパス名の処理
+    sourceToken : consumeToken state
+    
+    `@演算子の処理
+    expectToken state TOKEN_OP '@'
+    atToken : consumeToken state
+    
+    `インポートノードの作成
+    importNode : newNode NODE_OP _
+    importNode ' data ' op : '_@'
+    importNode ' data ' left : sourceToken ' value
+    importNode ' data ' right : _
+    importNode
+
+`絶対値の解析
+parseAbsoluteValue : state ?
+    `最初の|の処理
+    startToken : consumeToken state
+    
+    `内部の式を解析
+    expr : parseExpression state
+    
+    `終了の|の処理
+    expectToken state TOKEN_OP '|'
+    endToken : consumeToken state
+    
+    `絶対値ノードの作成（abs関数としてモデル化）
+    absNode : newNode NODE_OP _
+    absNode ' data ' op : 'abs'
+    absNode ' data ' left : _
+    absNode ' data ' right : expr
+    absNode
+
+`パーサー状態の作成
+newParserState : tokens index ?
+    state : _
+    state ' tokens : tokens
+    state ' index : index
+    state ' currentToken : tokens ' index
+    state ' error : _
+    state
+
+`トークンを消費して次のトークンに進む
+consumeToken : state ?
+    token : state ' currentToken
+    state ' index : state ' index + 1
+    state ' currentToken : state ' tokens ' state ' index
+    token
+
+`次のトークンを先読み
+peekNextToken : state ?
+    nextIndex : state ' index + 1
+    nextIndex < state ' tokens ' length ? state ' tokens ' nextIndex : _
+
+`特定のトークンタイプと値を期待する
+expectToken : state type value ?
+    state ' currentToken ' type != type | (value != _ & state ' currentToken ' value != value) : 
+        tokenTypeStr : tokenTypeToString type
+        valueStr : value != _ ? ' with value ' + value : ''
+        setError state 'Expected token ' + tokenTypeStr + valueStr + ' but got ' + tokenTypeToString state ' currentToken ' type + ' with value "' + state ' currentToken ' value + '" at line ' + state ' currentToken ' position ' line + ', column ' + state ' currentToken ' position ' col
+    !_
+
+`改行またはEOFを期待する
+expectNewline : state ?
+    state ' currentToken ' type = TOKEN_NEWLINE : 
+        consumeToken state
+        !_
+    
+    state ' currentToken ' type = TOKEN_EOF : 
+        !_
+    
+    setError state 'Expected newline or EOF but got ' + tokenTypeToString state ' currentToken ' type + ' with value "' + state ' currentToken ' value + '" at line ' + state ' currentToken ' position ' line + ', column ' + state ' currentToken ' position ' col
+    _
+
+`行の終端にいるかをチェック
+isAtEndOfLine : state ?
+    state ' currentToken ' type = TOKEN_NEWLINE | state ' currentToken ' type = TOKEN_EOF
+
+`演算子の種類を判定する関数
+isExportOperator : state ?
+    `前置演算子の#かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+isOutputOperator : state ?
+    `中置演算子の#かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+isRangeOperator : state ?
+    `範囲リスト構築の~かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+isNotOperator : state ?
+    `否定の!かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+isFactorialOperator : state ?
+    `階乗の!かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+isExpansionOperator : state ?
+    `展開の~かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+isGetOperator : state ?
+    `get演算子の@かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+isImportOperator : state ?
+    `import演算子の@かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+isInputOperator : state ?
+    `input演算子の@かどうかを文脈から判断
+    !_  `簡略化のため常にfalse
+
+`エラーを設定
+setError : state message ?
+    state ' error : message
+    _
+
+`トークンタイプを文字列に変換
+tokenTypeToString : type ?
+    type = TOKEN_STRING ? 'STRING' : 
+    type = TOKEN_CHAR ? 'CHAR' : 
+    type = TOKEN_IDENT ? 'IDENTIFIER' : 
+    type = TOKEN_NUMBER ? 'NUMBER' : 
+    type = TOKEN_OP ? 'OPERATOR' : 
+    type = TOKEN_SPACE ? 'SPACE' : 
+    type = TOKEN_TAB ? 'TAB' : 
+    type = TOKEN_NEWLINE ? 'NEWLINE' : 
+    type = TOKEN_BLOCK_START ? 'BLOCK_START' : 
+    type = TOKEN_BLOCK_END ? 'BLOCK_END' : 
+    type = TOKEN_UNIT ? 'UNIT' : 
+    type = TOKEN_EOF ? 'EOF' : 
+    'UNKNOWN'
+
+`エクスポート関数
+#parse : parse
