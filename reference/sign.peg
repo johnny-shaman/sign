@@ -1,4 +1,4 @@
-Start = e:Expression* {return e.join("");}
+Start = Expression*
 
 Expression
   = Export
