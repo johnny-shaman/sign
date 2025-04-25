@@ -9,7 +9,7 @@
  * - 特殊演算子の処理
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250404_0
+ * ver_20250425_0
  */
 
 // 演算子優先度情報をインポート
@@ -44,15 +44,15 @@ function insertParentheses(tokens) {
         identifyStructures(processedTokens, context);
 
         // 4. 文字列リテラル処理フェーズ
-        processedTokens = processStringLiterals(processedTokens, context);
+        //processedTokens = processStringLiterals(processedTokens, context);
 
         // 5. 単項演算子処理フェーズ
-        processedTokens = processPrefixOperators(processedTokens, context);
-        processedTokens = processPostfixOperators(processedTokens, context);
+        //processedTokens = processPrefixOperators(processedTokens, context);
+        //processedTokens = processPostfixOperators(processedTokens, context);
 
         // 6. 二項演算子処理フェーズ
         processedTokens = processRightAssociativeOperators(processedTokens, context);
-        processedTokens = processLeftAssociativeOperators(processedTokens, context);
+        //processedTokens = processLeftAssociativeOperators(processedTokens, context);
 
         // 7. カッコ挿入実行フェーズ
         processedTokens = applyParentheses(processedTokens, context.parenthesisInsertions);
@@ -227,6 +227,7 @@ function classifyTokens(tokens, context) {
         const token = tokens[i];
         const info = {
             index: i,
+            token: token,  // トークン自体も保存
             type: 'unknown',
             precedence: 0
         };
@@ -337,36 +338,72 @@ function identifyStructures(tokens, context) {
 
         // ラムダ式の認識
         else if (tokenInfo.type === 'lambda_operator') {
-            // ラムダ演算子(?)の左側が引数リスト、右側が本体
-            const paramEnd = i - 1;
-            let paramStart = findExpressionStart(tokens, context, paramEnd);
+            // ?演算子の位置
+            const lambdaPos = i;
 
-            // 本体の範囲を探す
-            let bodyStart = i + 1;
-            let bodyEnd = findExpressionEnd(tokens, context, bodyStart);
+            // 引数部分の範囲特定 - :演算子を探す
+            let paramStart = lambdaPos - 1;
+            while (paramStart >= 0) {
+                // :演算子か、ブロック開始トークンを見つけたら停止
+                if (tokens[paramStart] === ':' ||
+                    operatorInfo.isBlockStart(tokens[paramStart])) {
+                    paramStart++; // :の次、またはブロック開始の次から引数開始
+                    break;
+                }
+                paramStart--;
+            }
+
+            // 見つからなければ0を使用
+            if (paramStart < 0) paramStart = 0;
+
+            const paramEnd = lambdaPos - 1;
+
+            // 本体部分の範囲特定
+            let bodyStart = lambdaPos + 1;
+
+            // 本体の終了位置を特定
+            // 1. 同じブロックレベル内の次の主要演算子まで
+            // 2. またはブロック終了位置まで
+            let bodyEnd = tokens.length - 1; // デフォルトは最後まで
+
+            // ブロック内か確認
+            for (const block of context.blocks) {
+                // ラムダ演算子がこのブロック内にある場合
+                if (lambdaPos >= block.start && lambdaPos <= block.end) {
+                    // ブロック終了位置を本体の終了位置とする
+                    bodyEnd = block.end;
+                    break;
+                }
+            }
 
             // ネストされたブロック構造を考慮
             bodyEnd = findCompleteExpressionEnd(tokens, context, bodyStart, bodyEnd);
 
             // ラムダ式の情報を記録
             context.structures.lambdas.push({
-                position: i,
+                position: lambdaPos,
                 paramStart: paramStart,
                 paramEnd: paramEnd,
                 bodyStart: bodyStart,
                 bodyEnd: bodyEnd
             });
 
-            // カッコ挿入位置を記録
+            // 引数部分にカッコを挿入
             recordParenthesisInsertion(paramStart, 'open', '(', context);
-            recordParenthesisInsertion(paramEnd + 1, 'close', ')', context);
+            //recordParenthesisInsertion(paramEnd + 1, 'close', ')', context);
+            // ★末尾は]のため、位置をbodyEnd（他のように+1ではなく）そのままとする★
+            recordParenthesisInsertion(bodyEnd, 'close', ')', context);
 
-            // 本体が既にブロックで囲まれているか確認
-            const isAlreadyBlocked = isEnclosedInBlock(tokens, context, bodyStart, bodyEnd);
-            if (!isAlreadyBlocked) {
-                recordParenthesisInsertion(bodyStart, 'open', '[', context);
-                recordParenthesisInsertion(bodyEnd + 1, 'close', ']', context);
-            }
+            // // 本体が既にブロックで囲まれているか確認
+            // const isAlreadyBlocked = isEnclosedInBlock(tokens, context, bodyStart, bodyEnd);
+            // if (!isAlreadyBlocked) {
+            //     recordParenthesisInsertion(bodyStart, 'open', '[', context);
+            //     recordParenthesisInsertion(bodyEnd + 1, 'close', ']', context);
+            // }
+
+            // // ラムダ式全体を括弧で囲む
+            // recordParenthesisInsertion(paramStart, 'open', '(', context);
+            // recordParenthesisInsertion(bodyEnd + 1, 'close', ')', context);
         }
 
         // 条件分岐の認識
@@ -653,32 +690,66 @@ function processRightAssociativeOperators(tokens, context) {
         const opIndex = operatorInfo.index;
         const operator = tokens[opIndex];
 
-        // 既存の構造情報と重複しないか確認
-        if (isPartOfExistingStructure(opIndex, context)) {
+        // 既存の構造情報と重複するか確認
+        const isPartOfStructure = isPartOfExistingStructure(opIndex, context);
+
+        // 演算子が?でなく、かつラムダ式内部の演算子かどうかをチェック
+        const isOperatorInsideLambda = isInsideLambdaBody(opIndex, context);
+
+        // ラムダ式内部の演算子は処理する、それ以外の既存構造の一部は処理しない
+        if (isPartOfStructure && !isOperatorInsideLambda) {
             continue;
         }
 
-        // 右結合演算子の左右のオペランドを見つける
-        const leftEnd = opIndex - 1;
-        const leftStart = findExpressionStart(tokens, context, leftEnd);
+        // 演算子タイプに応じた範囲計算方法を決定
+        let leftStart, rightEnd;
 
-        const rightStart = opIndex + 1;
-        const rightEnd = findExpressionEnd(tokens, context, rightStart);
+        // if (tokens[opIndex] === '?') {
+        //     // ラムダ演算子の場合 - 引数リストと関数本体
+        //     const leftEnd = opIndex - 1;
+        //     leftStart = findExpressionStart(tokens, context, leftEnd);
 
-        // 左オペランドにカッコを挿入
-        if (isComplexExpression(tokens, context, leftStart, leftEnd)) {
-            recordParenthesisInsertion(leftStart, 'open', '(', context);
-            recordParenthesisInsertion(leftEnd + 1, 'close', ')', context);
-        }
+        //     const rightStart = opIndex + 1;
+        //     rightEnd = findExpressionEnd(tokens, context, rightStart);
+        // }
+        // else if (tokens[opIndex] === ':') {
+        //     // 定義演算子の場合 - 左は通常単一の識別子
+        //     leftStart = opIndex - 1;
 
-        // 右オペランドにカッコを挿入
-        if (isComplexExpression(tokens, context, rightStart, rightEnd)) {
-            recordParenthesisInsertion(rightStart, 'open', '(', context);
-            recordParenthesisInsertion(rightEnd + 1, 'close', ')', context);
-        }
+        //     const rightStart = opIndex + 1;
+        //     rightEnd = findExpressionEnd(tokens, context, rightStart);
+        // }
+        // else {
+        // その他の右結合演算子 - より単純な式構造
+        leftStart = opIndex - 1;
+        rightEnd = opIndex + 1;
+        // }
+
+        // 式全体をカッコで囲む - 共通処理
+        recordParenthesisInsertion(leftStart, 'open', '(', context);
+        recordParenthesisInsertion(rightEnd + 1, 'close', ')', context);
     }
 
     return tokens;
+}
+
+/**
+ * 指定されたインデックスのトークンがラムダ式の本体内部にあるかをチェック
+ * 
+ * @param {number} index - チェックするトークンのインデックス
+ * @param {Object} context - 処理コンテキスト
+ * @returns {boolean} ラムダ式の本体内部にある場合はtrue
+ */
+function isInsideLambdaBody(index, context) {
+    // ラムダ式内部かチェック
+    for (const lambda of context.structures.lambdas || []) {
+        // ラムダ演算子自体は除外し、本体部分に含まれる場合はtrue
+        if (index !== lambda.position &&
+            (index > lambda.position && index <= lambda.bodyEnd)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -904,29 +975,17 @@ function applyParentheses(tokens, insertions) {
     // 挿入位置の混乱を避けるため、位置の降順でソート（後ろから挿入）
     insertions.sort((a, b) => b.position - a.position);
 
-    // 重複排除のために挿入済み位置を記録
-    const insertedPositions = new Set();
-
     // 各挿入情報を処理
     for (const insertion of insertions) {
         const { position, token, type } = insertion;
 
-        // 範囲外チェック
+        // 範囲外チェックのみ実施
         if (position < 0 || position > result.length) {
             continue;
         }
 
-        // 重複チェック - 同じ位置に同じタイプのカッコを挿入しない
-        const posKey = `${position}-${type}`;
-        if (insertedPositions.has(posKey)) {
-            continue;
-        }
-
-        // カッコを挿入
+        // カッコを挿入（重複チェックなし）
         result.splice(position, 0, token);
-
-        // 挿入済み位置を記録
-        insertedPositions.add(posKey);
     }
 
     return result;
