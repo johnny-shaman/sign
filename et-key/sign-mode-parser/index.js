@@ -24,6 +24,7 @@ const { normalizeSourceCode } = require('./preprocessor');
 const { extractAndProcessBlocks } = require('./block-extractor');
 const { tokenizeBlock } = require('./tokenizer');
 const { insertParentheses } = require('./parenthesis-inserter');
+const { buildExpressionTree, formatExpressionTree } = require('./expression-tree-builder');
 //const { wrapExpression } = require('./expression-wrapper'); // 後で実装予定
 
 /**
@@ -96,19 +97,19 @@ async function main() {
     const codeBlocks = extractAndProcessBlocks(normalizedCode);
     console.log(`${codeBlocks.length}個のコードブロックを抽出しました`);
 
-    // ステップ3: 文字列分割とカッコ挿入
+    // ステップ3: トークン化とカッコ挿入
     console.log('ステップ3: トークン化とカッコ挿入');
     const processedBlocks = [];
-    
+
     for (let i = 0; i < codeBlocks.length; i++) {
       console.log(`ブロック${i + 1}を処理しています...`);
 
       // トークナイザーを使用
       const tokens = tokenizeBlock(codeBlocks[i]);
-      
+
       // カッコを挿入
       const withParentheses = insertParentheses(tokens);
-      
+
       processedBlocks.push({
         originalBlock: codeBlocks[i],
         tokens: tokens,
@@ -116,17 +117,48 @@ async function main() {
       });
     }
 
+    // ステップ4: 式木生成
+    console.log('ステップ4: 式木生成');
+    const expressionTrees = [];
+
+    for (let i = 0; i < processedBlocks.length; i++) {
+      console.log(`ブロック${i + 1}の式木を生成しています...`);
+
+      try {
+        // カッコ付きトークンから式木を構築
+        const expressionTree = buildExpressionTree(processedBlocks[i].withParentheses);
+
+        // 生成された式木を保存
+        expressionTrees.push(expressionTree);
+
+        // ブロックの情報に式木を追加
+        processedBlocks[i].expressionTree = expressionTree;
+      } catch (error) {
+        console.error(`ブロック${i + 1}の式木生成中にエラーが発生しました:`, error.message);
+        // エラーが発生しても処理を続行
+        expressionTrees.push(null);
+        processedBlocks[i].expressionTree = null;
+        processedBlocks[i].expressionTreeError = error.message;
+      }
+    }
+
     // --------★デバッグ用ここから★--------
     // カッコ挿入後のテキストファイル出力
-    const parenthesizedOutputFile = `${inputFile}.debug_parenthesized.txt`;
-    console.log(`カッコ挿入結果を${parenthesizedOutputFile}に保存しています...`);
-    const parenthesizedText = processedBlocks.map((block, index) =>
+    /*
+    const expressionTreeOutputFile = `${inputFile}.debug_expression_trees.txt`;
+    console.log(`式木を${expressionTreeOutputFile}に保存しています...`);
+    const expressionTreeText = expressionTrees.map((tree, index) =>
       `# BlockID: ${index + 1}\n` +
-      `# Original: ${block.originalBlock}\n` +
+      `# Original: ${processedBlocks[index].originalBlock}\n` +
       `# tokens: \`\"${block.tokens.join('","')}\"\`\n` +
-      `# withParentheses: \`\"${block.withParentheses.join('","')}\"\`\n\n`
+      `# withParentheses: \`\"${block.withParentheses.join('","')}\"\`\n` +
+      `# Formatted Expression Tree:\n` +
+      `${formatExpressionTree(tree)}\n\n` +
+      `# JSON Structure:\n` +
+      `${JSON.stringify(tree, null, 2)}\n\n`
     ).join('');
-    await writeFile(parenthesizedOutputFile, parenthesizedText);
+    await writeFile(expressionTreeOutputFile, expressionTreeText);
+    */
     // --------★デバッグ用ここまで★--------
 
     // 結果の生成
@@ -138,9 +170,12 @@ async function main() {
       blocks: processedBlocks.map((block, index) => ({
         blockId: index + 1,
         originalText: block.originalBlock,
-        tokenCount: block.tokens.length,
-        tokens: block.tokens, // トークンが多すぎる場合はコメントアウトを検討
-        withParentheses: block.withParentheses
+        //tokenCount: block.tokens.length,
+        //tokens: block.tokens, // トークンが多すぎる場合はコメントアウトを検討
+        withParentheses: block.withParentheses,
+        // 式木情報を追加
+        expressionTree: block.expressionTree,
+        expressionTreeError: block.expressionTreeError
       }))
       // expressionTrees: expressionTrees // 将来的に追加
     };
