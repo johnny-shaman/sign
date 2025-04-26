@@ -7,39 +7,42 @@
 #tabs : c ~cs ? tab c , tabs cs~
 #Block : c ~cs ? rt c , tabs cs~
 
-#letter : c ? [ = c | ] [\a ~ \z]
-#LETTER : c ? [ = c | ] [\A ~ \Z]
-#Letter : c ? [ = c | ] [[\A ~ \Z] [\a ~ \z]]
-#nzero  : c ? [ = c | ] [\1 ~ \9]
-#digit  : c ? [ = c | ] [\0 ~ \9]
-#hexa   : c ? [ = c | ] [[\0 ~ \9] [\A ~ \F] [\a ~ \f]]
-#octa   : c ? [ = c | ] [\0 ~ \7]
-#bool : c ? [ = c | ] \0 \1
-
-#AlphaNum  : c ? [ = c | ] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z]]
-#Alpha_Num : c ? [ = c | ] [[\0 ~ \9] [\A ~ \Z] [\a ~ \z] \_]
+#LETTER : c ? \A <= c <= \Z & c
+#letter : c ? \a <= c <= \z & c
+#Letter : c ? LETTER c | letter c
+#nzero  : c ? \1 <= c <= \9 & c
+#digit  : c ? \0 <= c <= \9 & c
+#AlphaNum  : c ? Letter c | digit c
+#Alpha_Num : c ? Letter c | digit c | \_ & c
+#hexa : c ? digit c | \A <= c <= \F & c | \a <= c <= \f & c
+#octa : c ? \0 <= c <= \7 & c
+#bool : c ? \0 <= c <= \1 & c
 
 #LETTERS : c ~s ? LETTER c , LETTERS s~
 #letters : c ~s ? letter c , letters s~
 #Letters : c ~s ? Letter c , Letters s~
 #digits : c ~s ? digit c , digits s~
+#AlphaNums : c ~s ? AlphaNum c , AlphaNums s~
+#Alpha_Nums : c ~s ? Alpha_Num c , Alpha_Nums s~
 #hexas : c ~s ? hexa c , hexas s~
 #octas : c ~s ? octa c , octas s~
 #bools : c ~s ? bool c , bools s~
 
-#AlphaNums : c ~s ? AlphaNum c , AlphaNums s~
-#Alpha_Nums : c ~s ? Alpha_Num c , Alpha_Nums s~
-
 #Identifier : c ~s ? Letter c , Alpha_Nums s~
 #unit : c ? c = \_
 
-#hex : t u ~cs ? t = \0 & u = \x & t , u , hexas cs~
-#oct : t u ~cs ? t = \0 & u = \o & t , u , octas cs~
-#bit : t u ~cs ? t = \0 & u = \b & t , u , bools cs~
+#hex : t u ~s ? t = \0 & u = \x & t , u , hexas s~
+#oct : t u ~s ? t = \0 & u = \o & t , u , octas s~
+#bit : t u ~s ? t = \0 & u = \b & t , u , bools s~
 
-#string : p ~cs ? p = \` & p , cs~
+#string : c ~s ? c = \` & c , s~
 
-#uint : c ~cs ? nzero c , digits cs~
-#int : c ~cs ? [c = \- | c = nzero] , digits cs~
+#uint : c ~s ? nzero c , digits s~
+#int : c ~s ? [c = \- & c | nzero c] , uint s~
 
-#float : c ~cs ? [c = \- | nzero c] & [[= \. | ] cs | digits cs~] & c cs
+#float : c ~s ?
+	c = \- : c , float s~
+	c = \. : c , float s~
+	c = \e : c , float s~
+	\0 <= c <= \9 : c , float s~
+	_
