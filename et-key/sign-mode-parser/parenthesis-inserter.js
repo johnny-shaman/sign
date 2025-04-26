@@ -9,7 +9,7 @@
  * - 特殊演算子の処理
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250426_0
+ * ver_20250426_1
  */
 
 // 演算子優先度情報をインポート
@@ -52,7 +52,7 @@ function insertParentheses(tokens) {
 
         // 6. 二項演算子処理フェーズ（カッコ挿入あり）
         processedTokens = processRightAssociativeOperators(processedTokens, context);
-        //processedTokens = processLeftAssociativeOperators(processedTokens, context);
+        processedTokens = processLeftAssociativeOperators(processedTokens, context);
 
         // 7. カッコ挿入実行フェーズ
         processedTokens = applyParentheses(processedTokens, context.parenthesisInsertions);
@@ -389,10 +389,10 @@ function identifyStructures(tokens, context) {
             });
 
             // 引数部分にカッコを挿入
-            recordParenthesisInsertion(paramStart, 'open', '(', context);
+            recordParenthesisInsertion(paramStart, 'open', '[', context);
             //recordParenthesisInsertion(paramEnd + 1, 'close', ')', context);
             // ★末尾は]のため、位置をbodyEnd（他のように+1ではなく）そのままとする★
-            recordParenthesisInsertion(bodyEnd, 'close', ')', context);
+            recordParenthesisInsertion(bodyEnd, 'close', ']', context);
         }
 
 
@@ -460,6 +460,12 @@ function identifyStructures(tokens, context) {
         // 定義の認識
         else if (tokenInfo.type === 'definition_operator') {
             // ★最小実装では辞書型扱わないので大外のカッコだけで十分、辞書型追加時にここのカッコ追加処理必要★
+
+            // ★定義の場合、右辺全体をカッコで囲う。冗長になる見込みなので後で処理修正予定？★
+            if (i === 2) {
+                recordParenthesisInsertion(3, 'open', '[', context);
+                recordParenthesisInsertion(tokens.length - 1, 'close', ']', context);
+            }
 
             // // 定義演算子(:)の左側が名前、右側が値
             // const nameEnd = i - 1;
@@ -767,8 +773,8 @@ function processRightAssociativeOperators(tokens, context) {
         }
 
         // 式全体をカッコで囲む - 共通処理
-        recordParenthesisInsertion(leftStart, 'open', '(', context);
-        recordParenthesisInsertion(rightEnd + 1, 'close', ')', context);
+        recordParenthesisInsertion(leftStart, 'open', '[', context);
+        recordParenthesisInsertion(rightEnd + 1, 'close', ']', context);
     }
 
     return tokens;
@@ -860,8 +866,8 @@ function processCommaLists(tokens, context) {
         // リストが複数の要素を持つ場合のみ処理
         if (sequence.elements.length > 1) {
             // リスト全体を括弧で囲む
-            recordParenthesisInsertion(sequence.start, 'open', '{', context);
-            recordParenthesisInsertion(sequence.end + 1, 'close', '}', context);
+            recordParenthesisInsertion(sequence.start, 'open', '[', context);
+            recordParenthesisInsertion(sequence.end + 1, 'close', ']', context);
 
             // 各カンマ演算子を処理済みとしてマーク
             for (const commaIndex of sequence.commas) {
@@ -945,169 +951,74 @@ function processLeftAssociativeOperators(tokens, context) {
         return tokens;
     }
 
-    // 操車場アルゴリズムの実装
-    const operatorStack = [];
-    const outputQueue = [];  // 出力キュー
+    // 左結合演算子を優先順位の高い順に処理
+    const leftAssociativeOperators = Object.keys(context.tokenInfo)
+        .map(index => {
+            const info = context.tokenInfo[index];
+            return { index: parseInt(index), info };
+        })
+        .filter(item =>
+            item.info.type &&
+            item.info.type.includes('infix_operator') &&
+            !item.info.rightAssociative
+        )
+        .sort((a, b) => b.info.precedence - a.info.precedence); // 優先順位の高い順
 
-    // 1. トークンを左から右へ処理
-    for (let i = 0; i < tokens.length; i++) {
-        const tokenInfo = context.tokenInfo[i] || {};
+    // 各左結合演算子を処理
+    for (const operatorInfo of leftAssociativeOperators) {
+        const opIndex = operatorInfo.index;
+        const operator = tokens[opIndex];
 
-        // オペランド（識別子、リテラルなど）を処理
-        if (tokenInfo.type === 'identifier' ||
-            tokenInfo.type === 'string_literal' ||
-            tokenInfo.type === 'number_literal' ||
-            tokenInfo.type === 'char_literal') {
-            outputQueue.push({ index: i, token: tokens[i] });
+        // 既存の構造情報と重複するか確認
+        // if (isPartOfExistingStructure(opIndex, context)) {
+        //     continue;
+        // }
+
+        // 演算子の左右のオペランド範囲を特定
+        const leftStart = opIndex - 1;
+        const rightEnd = opIndex + 1;
+
+        // 左右のオペランドが存在するか確認
+        if (leftStart < 0 || rightEnd >= tokens.length) {
+            continue;
         }
-        // ブロック開始を処理
-        else if (tokenInfo.type === 'block_start') {
-            operatorStack.push({ index: i, token: tokens[i] });
-        }
-        // ブロック終了を処理
-        else if (tokenInfo.type === 'block_end') {
-            // ブロック開始が見つかるまでスタックからポップ
-            while (operatorStack.length > 0) {
-                const topOp = operatorStack[operatorStack.length - 1];
-                const topInfo = context.tokenInfo[topOp.index] || {};
 
-                if (topInfo.type === 'block_start') {
-                    break;
-                }
+        // 左右のオペランド全体を特定するために、式の範囲を調べる
+        // 左側の式の開始位置を特定
+        let leftExprStart = leftStart;
+        while (leftExprStart > 0) {
+            const prevTokenInfo = context.tokenInfo[leftExprStart - 1] || {};
 
-                // 演算子を出力キューに追加
-                operatorStack.pop();
-                outputQueue.push(topOp);
+            // 前のトークンが演算子、ブロック開始、またはカンマの場合は式の境界
+            if ((prevTokenInfo.type && prevTokenInfo.type.includes('operator') &&
+                prevTokenInfo.precedence <= operatorInfo.info.precedence) ||
+                prevTokenInfo.type === 'block_start' ||
+                tokens[leftExprStart - 1] === ',') {
+                break;
             }
-
-            // 対応するブロック開始をポップ
-            if (operatorStack.length > 0) {
-                operatorStack.pop();
-            }
+            leftExprStart--;
         }
-        // 左結合演算子を処理
-        else if (tokenInfo.type &&
-            tokenInfo.type.includes('infix_operator') &&
-            !tokenInfo.rightAssociative) {
 
-            // 既存の構造情報と重複しないか確認
-            if (isPartOfExistingStructure(i, context)) {
-                continue;
+        // 右側の式の終了位置を特定
+        let rightExprEnd = rightEnd;
+        while (rightExprEnd < tokens.length - 1) {
+            const nextTokenInfo = context.tokenInfo[rightExprEnd + 1] || {};
+
+            // 次のトークンが演算子、ブロック終了、またはカンマの場合は式の境界
+            if ((nextTokenInfo.type && nextTokenInfo.type.includes('operator') &&
+                nextTokenInfo.precedence <= operatorInfo.info.precedence) ||
+                nextTokenInfo.type === 'block_end' ||
+                tokens[rightExprEnd + 1] === ',') {
+                break;
             }
-
-            const currentOperator = tokens[i];
-            const currentPrecedence = tokenInfo.precedence;
-
-            // スタックから優先順位の高い演算子を処理（操車場アルゴリズムのコア）
-            while (operatorStack.length > 0) {
-                const topOp = operatorStack[operatorStack.length - 1];
-                const topInfo = context.tokenInfo[topOp.index] || {};
-
-                // ブロック開始なら終了
-                if (topInfo.type === 'block_start') {
-                    break;
-                }
-
-                // 優先順位比較
-                if ((topInfo.type && topInfo.type.includes('operator')) &&
-                    ((topInfo.precedence > currentPrecedence) ||
-                        (topInfo.precedence === currentPrecedence && !topInfo.rightAssociative))) {
-                    // 高優先度の演算子を出力キューに追加
-                    operatorStack.pop();
-                    outputQueue.push(topOp);
-                } else {
-                    break;
-                }
-            }
-
-            // 現在の演算子をスタックに追加
-            operatorStack.push({ index: i, token: currentOperator });
+            rightExprEnd++;
         }
-        // その他の演算子（右結合演算子など）
-        else if (tokenInfo.type && tokenInfo.type.includes('operator')) {
-            operatorStack.push({ index: i, token: tokens[i] });
-        }
+
+        // 式全体をカッコで囲む
+        recordParenthesisInsertion(leftExprStart, 'open', '[', context);
+        recordParenthesisInsertion(rightExprEnd + 1, 'close', ']', context);
     }
 
-    // 残りの演算子をすべて出力キューに追加
-    while (operatorStack.length > 0) {
-        const operator = operatorStack.pop();
-        outputQueue.push(operator);
-    }
-
-    // 出力キューを使用して式のカッコ挿入位置を決定
-    const expressionStack = [];
-
-    for (const item of outputQueue) {
-        const { index, token } = item;
-        const tokenInfo = context.tokenInfo[index] || {};
-
-        // オペランドの場合はスタックに追加
-        if (tokenInfo.type === 'identifier' ||
-            tokenInfo.type === 'string_literal' ||
-            tokenInfo.type === 'number_literal' ||
-            tokenInfo.type === 'char_literal') {
-            expressionStack.push({ start: index, end: index });
-        }
-        // 演算子の場合は必要な数のオペランドをポップ
-        else if (tokenInfo.type && tokenInfo.type.includes('operator')) {
-            // 基本的に二項演算子を想定
-            if (expressionStack.length >= 2) {
-                const right = expressionStack.pop();
-                const left = expressionStack.pop();
-
-                // 左右のオペランドと演算子をまとめて式として扱う
-                const expr = {
-                    start: Math.min(left.start, index, right.start),
-                    end: Math.max(left.end, index, right.end),
-                    operator: { index, token }
-                };
-
-                // 左オペランドにカッコを挿入（必要な場合）
-                if (isComplexExpression(tokens, context, left.start, left.end)) {
-                    recordParenthesisInsertion(left.start, 'open', '(', context);
-                    recordParenthesisInsertion(left.end + 1, 'close', ')', context);
-                }
-
-                // 右オペランドにカッコを挿入（必要な場合）
-                if (isComplexExpression(tokens, context, right.start, right.end)) {
-                    recordParenthesisInsertion(right.start, 'open', '(', context);
-                    recordParenthesisInsertion(right.end + 1, 'close', ')', context);
-                }
-
-                // 式全体を括弧で囲む
-                recordParenthesisInsertion(expr.start, 'open', '(', context);
-                recordParenthesisInsertion(expr.end + 1, 'close', ')', context);
-
-                // 新しい式をスタックに追加
-                expressionStack.push(expr);
-            }
-            // 単項演算子の場合
-            else if (expressionStack.length >= 1) {
-                const operand = expressionStack.pop();
-
-                // オペランドと演算子をまとめて式として扱う
-                const expr = {
-                    start: Math.min(operand.start, index),
-                    end: Math.max(operand.end, index),
-                    operator: { index, token }
-                };
-
-                // 必要に応じてカッコを挿入
-                if (isComplexExpression(tokens, context, operand.start, operand.end)) {
-                    recordParenthesisInsertion(operand.start, 'open', '(', context);
-                    recordParenthesisInsertion(operand.end + 1, 'close', ')', context);
-                }
-
-                // 式全体を括弧で囲む
-                recordParenthesisInsertion(expr.start, 'open', '(', context);
-                recordParenthesisInsertion(expr.end + 1, 'close', ')', context);
-
-                // 新しい式をスタックに追加
-                expressionStack.push(expr);
-            }
-        }
-    }
     return tokens;
 }
 
@@ -1372,15 +1283,15 @@ function isInfixOperator(token, tokens, index) {
         const prevToken = tokens[index - 1];
         const nextToken = tokens[index + 1];
 
-        // 前のトークンがリテラルまたは識別子で、次のトークンもリテラルまたは識別子なら中置演算子
-        // （範囲リスト構文 a ~ b）
-        if ((isIdentifier(prevToken) ||
-            isLiteral(prevToken, context, index - 1) ||
-            operatorInfo.isBlockEnd(prevToken)) &&
-            (isIdentifier(nextToken) ||
-                isLiteral(nextToken, context, index + 1) ||
-                operatorInfo.isBlockStart(nextToken))) {
-            return true;
+        // 前後にトークンがあるかを確認
+        if (index > 0 && index < tokens.length - 1) {
+            // 前が数値リテラルで次も数値リテラルなら、範囲リスト構文
+            const isPrevNumber = !isNaN(Number(prevToken));
+            const isNextNumber = !isNaN(Number(nextToken));
+
+            if (isPrevNumber && isNextNumber) {
+                return true;
+            }
         }
 
         // 上記以外は中置演算子ではない
