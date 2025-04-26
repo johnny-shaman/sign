@@ -61,7 +61,7 @@
 # BlockID: 13
 # Original: [group_calc : (x + y) * (z - 5)]
 # tokens: `"[","group_calc",":","(","x","+","y",")","*","(","z","-","5",")","]"`
-# withParentheses: `"[","group_calc",":","[","(","x","+","y",")","]","*","(","z","-","5",")","]"`
+# withParentheses: `"[","group_calc",":","(","x","+","y",")","*","(","z","-","5",")","]"`
 
 # BlockID: 14
 # Original: [person :
@@ -76,7 +76,7 @@
 	","contact",":","
 		","email",":","`john@example.com`","
 		","phone",":","`555-1234`","]"`
-# withParentheses: `"[","person",":","[","[","name",":","`John`",",","age",":","30",",","contact",":","[","[","email",":","`john@example.com`",",","phone",":","`555-1234`","]","]","]","]","]"`
+# withParentheses: `"[","person",":","[","name",":","`John`",",","[","age",":","30","]",",","[","contact",":","[","email",":","`john@example.com`","]",",","[","phone",":","`555-1234`","]","]","]","]"`
 
 # BlockID: 15
 # Original: [add : a b ? a + b]
@@ -107,7 +107,7 @@
 	","x","<","y",":","x","
 	","x","=","y",":","y","
 	","x","+","y","]"`
-# withParentheses: `"[","matchTest",":","(","x","y","?","[","x","<","(","y",":","(","x",")",",","x",")","=","(","y",":","(","y",")",",","x",")","+","y","]",")","]"`
+# withParentheses: `"[","matchTest",":","(","x","y","?","[","[","x","<","y",":","x","]",",","[","x","=","y",":","y","]",",","x","+","y","]",")","]"`
 
 # BlockID: 20
 # Original: [digit : x ? [ = x | ] [\0 ~ \9]]
@@ -132,7 +132,7 @@
 # BlockID: 24
 # Original: [list2 : 1, 2, 3, 4, 5]
 # tokens: `"[","list2",":","1",",","2",",","3",",","4",",","5","]"`
-# withParentheses: `"[","list2",":","(","1",",","(","2",")",",","(","3",")",",","(","4",")",",","5",")","]"`
+# withParentheses: `"[","list2",":","{","1",",","(","2",",","(","3",",","(","4",",","5",")",")",")","}","]"`
 
 # BlockID: 25
 # Original: [combined : list1 list2]
@@ -157,12 +157,12 @@
 # BlockID: 29
 # Original: [mapped_double : [* 2,] list1]
 # tokens: `"[","mapped_double",":","[","*","2",",","]","list1","]"`
-# withParentheses: `"[","mapped_double",":","[","[","*","2",",","]","]","list1","]"`
+# withParentheses: `"[","mapped_double",":","[","*","2",",","]","list1","]"`
 
 # BlockID: 30
 # Original: [reduced_sum : [+] list2]
 # tokens: `"[","reduced_sum",":","[","+","]","list2","]"`
-# withParentheses: `"[","reduced_sum",":","[","[","+","]","]","list2","]"`
+# withParentheses: `"[","reduced_sum",":","[","+","]","list2","]"`
 
 # BlockID: 31
 # Original: [range_list : 1 ~ 5]
@@ -181,7 +181,7 @@
 # tokens: `"[","abs",":","x","?","
 	","x",">=","0",":","x","
 	","x","<","0",":","-x","]"`
-# withParentheses: `"[","abs",":","(","x","?","[","x",">=","(","[","0","]",":","(","x",")",",","x",")","<","(","[","0","]",":","-x",")","]",")","]"`
+# withParentheses: `"[","abs",":","(","x","?","[","[","x",">=","0",":","x","]",",","[","x","<","0",":","-x","]","]",")","]"`
 
 # BlockID: 34
 # Original: [complex : this :
@@ -196,7 +196,7 @@
 		","4","5","6",",","
 		","7","8","9","
 	","transform",":","x","y","?","this","'","data","'","x","*","this","'","data","'","y","+","1","]"`
-# withParentheses: `"[","complex",":","this",":","[","[","data",":","[","[","1","2","3",",","4","5","6",",","7","8","9","]","]","]","transform",":","(","x","y","?","this","'","data","'","x","*","this","'","data","'","y","+","1","]",")","]"`
+# withParentheses: `"[","[","complex",":","this",":","[","data",":","[","1","2","{","3","]",",","4","5","6",",","[","7","8","9","}","]","transform",":","(","x","y","?","this","'","data","'","x","*","this","'","data","'","y","+","1","]","]",")","]"`
 
 # BlockID: 35
 # Original: [complex ' data ' 0 ' 1 = 2]
