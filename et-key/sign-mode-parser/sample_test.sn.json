@@ -1,1235 +1,1568 @@
 {
-  "sourceFile": "sample_test.sn",
+  "sourceFile": ".\\sample_test.sn",
   "processorVersion": "0.1.0",
-  "processDate": "2025-04-05T14:12:23.375Z",
-  "blockCount": 35,
+  "processDate": "2025-04-26T05:06:10.582Z",
+  "blockCount": 34,
   "blocks": [
     {
       "blockId": 1,
       "originalText": "[x : 10]",
-      "tokenCount": 5,
-      "tokens": [
-        "[",
-        "x",
-        ":",
-        "10",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "x",
         ":",
+        "[",
         "10",
-        ")",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "x"
+          },
+          {
+            "type": "Number",
+            "value": 10
+          }
+        ]
+      }
     },
     {
       "blockId": 2,
       "originalText": "[y : 20]",
-      "tokenCount": 5,
-      "tokens": [
-        "[",
-        "y",
-        ":",
-        "20",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "y",
         ":",
+        "[",
         "20",
-        ")",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "y"
+          },
+          {
+            "type": "Number",
+            "value": 20
+          }
+        ]
+      }
     },
     {
       "blockId": 3,
       "originalText": "[z : x + y]",
-      "tokenCount": 7,
-      "tokens": [
-        "[",
-        "z",
-        ":",
-        "x",
-        "+",
-        "y",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "z",
         ":",
-        "(",
+        "[",
+        "[",
         "x",
         "+",
         "y",
-        ")",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "z"
+          },
+          {
+            "type": "BinaryOperation",
+            "operator": "+",
+            "arguments": [
+              {
+                "type": "Symbol",
+                "value": "x"
+              },
+              {
+                "type": "Symbol",
+                "value": "y"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 4,
       "originalText": "[hello : `Hello`]",
-      "tokenCount": 5,
-      "tokens": [
-        "[",
-        "hello",
-        ":",
-        "`Hello`",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "hello",
         ":",
+        "[",
         "`Hello`",
-        ")",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "hello"
+          },
+          {
+            "type": "String",
+            "value": "Hello"
+          }
+        ]
+      }
     },
     {
       "blockId": 5,
       "originalText": "[world : `World`]",
-      "tokenCount": 5,
-      "tokens": [
-        "[",
-        "world",
-        ":",
-        "`World`",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "world",
         ":",
+        "[",
         "`World`",
-        ")",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "world"
+          },
+          {
+            "type": "String",
+            "value": "World"
+          }
+        ]
+      }
     },
     {
       "blockId": 6,
       "originalText": "[greeting : hello \\  world \\!]",
-      "tokenCount": 8,
-      "tokens": [
-        "[",
-        "greeting",
-        ":",
-        "hello",
-        "\\ ",
-        "world",
-        "\\!",
-        "]"
-      ],
       "withParentheses": [
         "[",
         "greeting",
-        "(",
         ":",
+        "[",
         "hello",
         "\\ ",
         "world",
         "\\!",
-        ")",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "greeting"
+          },
+          {
+            "type": "Symbol",
+            "value": "hello"
+          }
+        ]
+      }
     },
     {
       "blockId": 7,
       "originalText": "[sum : x + y]",
-      "tokenCount": 7,
-      "tokens": [
-        "[",
-        "sum",
-        ":",
-        "x",
-        "+",
-        "y",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "sum",
         ":",
-        "(",
+        "[",
+        "[",
         "x",
         "+",
         "y",
-        ")",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "sum"
+          },
+          {
+            "type": "BinaryOperation",
+            "operator": "+",
+            "arguments": [
+              {
+                "type": "Symbol",
+                "value": "x"
+              },
+              {
+                "type": "Symbol",
+                "value": "y"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 8,
       "originalText": "[product : x * y]",
-      "tokenCount": 7,
-      "tokens": [
-        "[",
-        "product",
-        ":",
-        "x",
-        "*",
-        "y",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "product",
         ":",
-        "(",
+        "[",
+        "[",
         "x",
         "*",
         "y",
-        ")",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "product"
+          },
+          {
+            "type": "BinaryOperation",
+            "operator": "*",
+            "arguments": [
+              {
+                "type": "Symbol",
+                "value": "x"
+              },
+              {
+                "type": "Symbol",
+                "value": "y"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 9,
       "originalText": "[power : x ^ 2]",
-      "tokenCount": 7,
-      "tokens": [
+      "withParentheses": [
         "[",
         "power",
         ":",
+        "[",
+        "[",
         "x",
         "^",
         "2",
+        "]",
+        "]",
         "]"
       ],
-      "withParentheses": [
-        "(",
-        "[",
-        "(",
-        "power",
-        ":",
-        "(",
-        "x",
-        ")",
-        "^",
-        "(",
-        "2",
-        ")",
-        "]",
-        ")"
-      ]
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "power"
+          },
+          {
+            "type": "BinaryOperation",
+            "operator": "^",
+            "arguments": [
+              {
+                "type": "Symbol",
+                "value": "x"
+              },
+              {
+                "type": "Number",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 10,
       "originalText": "[factorial : 5!]",
-      "tokenCount": 5,
-      "tokens": [
-        "[",
-        "factorial",
-        ":",
-        "5!",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "factorial",
         ":",
-        ")",
+        "[",
         "5!",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "factorial"
+          },
+          {
+            "type": "Symbol",
+            "value": "5!"
+          }
+        ]
+      }
     },
     {
       "blockId": 11,
       "originalText": "[is_valid : x >= 0 & y <= 100]",
-      "tokenCount": 11,
-      "tokens": [
-        "[",
-        "is_valid",
-        ":",
-        "x",
-        ">=",
-        "0",
-        "&",
-        "y",
-        "<=",
-        "100",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "is_valid",
         ":",
-        "(",
+        "[",
+        "[",
+        "[",
         "x",
         ">=",
         "0",
-        ")",
+        "]",
         "&",
-        "(",
+        "[",
         "y",
         "<=",
         "100",
-        ")",
+        "]",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "is_valid"
+          },
+          {
+            "type": "LogicalOperation",
+            "operator": "&",
+            "arguments": [
+              {
+                "type": "Comparison",
+                "operator": ">=",
+                "arguments": [
+                  {
+                    "type": "Symbol",
+                    "value": "x"
+                  },
+                  {
+                    "type": "Number",
+                    "value": 0
+                  }
+                ]
+              },
+              {
+                "type": "Comparison",
+                "operator": "<=",
+                "arguments": [
+                  {
+                    "type": "Symbol",
+                    "value": "y"
+                  },
+                  {
+                    "type": "Number",
+                    "value": 100
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 12,
       "originalText": "[range : [1 ~ 10]]",
-      "tokenCount": 9,
-      "tokens": [
-        "[",
-        "range",
-        ":",
-        "[",
-        "1",
-        "~",
-        "10",
-        "]",
-        "]"
-      ],
       "withParentheses": [
         "[",
         "range",
         ":",
         "[",
+        "[",
+        "[",
         "1",
         "~",
         "10",
         "]",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "range"
+          },
+          {
+            "type": "RangeOrExpand",
+            "operator": "~",
+            "arguments": [
+              {
+                "type": "Number",
+                "value": 1
+              },
+              {
+                "type": "Number",
+                "value": 10
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 13,
       "originalText": "[group_calc : (x + y) * (z - 5)]",
-      "tokenCount": 15,
-      "tokens": [
-        "[",
-        "group_calc",
-        ":",
-        "(",
-        "x",
-        "+",
-        "y",
-        ")",
-        "*",
-        "(",
-        "z",
-        "-",
-        "5",
-        ")",
-        "]"
-      ],
       "withParentheses": [
         "[",
         "group_calc",
-        "(",
         ":",
         "[",
         "(",
+        "[",
         "x",
         "+",
-        "(",
+        "[",
         "y",
-        ")",
         "]",
+        ")",
         "*",
         "(",
-        "(",
+        "[",
         "z",
+        "]",
         "-",
         "5",
+        "]",
         ")",
-        ")",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "group_calc"
+          },
+          {
+            "type": "BinaryOperation",
+            "operator": "*",
+            "arguments": [
+              {
+                "type": "BinaryOperation",
+                "operator": "+",
+                "arguments": [
+                  {
+                    "type": "Symbol",
+                    "value": "x"
+                  },
+                  {
+                    "type": "Symbol",
+                    "value": "y"
+                  }
+                ]
+              },
+              {
+                "type": "BinaryOperation",
+                "operator": "-",
+                "arguments": [
+                  {
+                    "type": "Symbol",
+                    "value": "z"
+                  },
+                  {
+                    "type": "Number",
+                    "value": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 14,
       "originalText": "[person :\n\tname : `John`\n\tage : 30\n\tcontact :\n\t\temail : `john@example.com`\n\t\tphone : `555-1234`]",
-      "tokenCount": 23,
-      "tokens": [
-        "[",
-        "person",
-        ":",
-        "\n\t",
-        "name",
-        ":",
-        "`John`",
-        "\n\t",
-        "age",
-        ":",
-        "30",
-        "\n\t",
-        "contact",
-        ":",
-        "\n\t\t",
-        "email",
-        ":",
-        "`john@example.com`",
-        "\n\t\t",
-        "phone",
-        ":",
-        "`555-1234`",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
         "person",
         ":",
         "[",
         "[",
-        "(",
         "name",
         ":",
-        "(",
         "`John`",
         ",",
-        "(",
+        "[",
         "age",
         ":",
-        "(",
         "30",
+        "]",
         ",",
-        "(",
+        "[",
         "contact",
         ":",
         "[",
-        "[",
-        "(",
         "email",
         ":",
-        "(",
         "`john@example.com`",
+        "]",
         ",",
-        "(",
+        "[",
         "phone",
         ":",
         "`555-1234`",
-        ")",
+        "]",
         "]",
         "]",
         "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "person"
+          },
+          {
+            "type": "Definition",
+            "operator": ":",
+            "arguments": [
+              {
+                "type": "Symbol",
+                "value": "name"
+              },
+              {
+                "type": "Product",
+                "operator": ",",
+                "arguments": [
+                  {
+                    "type": "String",
+                    "value": "John"
+                  },
+                  {
+                    "type": "Product",
+                    "operator": ",",
+                    "arguments": [
+                      {
+                        "type": "Definition",
+                        "operator": ":",
+                        "arguments": [
+                          {
+                            "type": "Symbol",
+                            "value": "age"
+                          },
+                          {
+                            "type": "Number",
+                            "value": 30
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Definition",
+                        "operator": ":",
+                        "arguments": [
+                          {
+                            "type": "Symbol",
+                            "value": "contact"
+                          },
+                          {
+                            "type": "Product",
+                            "operator": ",",
+                            "arguments": [
+                              {
+                                "type": "Definition",
+                                "operator": ":",
+                                "arguments": [
+                                  {
+                                    "type": "Symbol",
+                                    "value": "email"
+                                  },
+                                  {
+                                    "type": "String",
+                                    "value": "john@example.com"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "Definition",
+                                "operator": ":",
+                                "arguments": [
+                                  {
+                                    "type": "Symbol",
+                                    "value": "phone"
+                                  },
+                                  {
+                                    "type": "String",
+                                    "value": "555-1234"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 15,
       "originalText": "[add : a b ? a + b]",
-      "tokenCount": 10,
-      "tokens": [
-        "[",
-        "add",
-        ":",
-        "a",
-        "b",
-        "?",
-        "a",
-        "+",
-        "b",
-        "]"
-      ],
       "withParentheses": [
         "[",
         "add",
-        "(",
         ":",
+        "[",
+        "[",
         "a",
         "b",
         "?",
-        "(",
+        "[",
         "a",
         "+",
         "b",
-        ")",
+        "]",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "add"
+          },
+          {
+            "type": "Symbol",
+            "value": "a"
+          }
+        ]
+      }
     },
     {
       "blockId": 16,
       "originalText": "[multiply : a b ? a * b]",
-      "tokenCount": 10,
-      "tokens": [
-        "[",
-        "multiply",
-        ":",
-        "a",
-        "b",
-        "?",
-        "a",
-        "*",
-        "b",
-        "]"
-      ],
       "withParentheses": [
         "[",
         "multiply",
-        "(",
         ":",
+        "[",
+        "[",
         "a",
         "b",
         "?",
-        "(",
+        "[",
         "a",
         "*",
         "b",
-        ")",
+        "]",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "multiply"
+          },
+          {
+            "type": "Symbol",
+            "value": "a"
+          }
+        ]
+      }
     },
     {
       "blockId": 17,
       "originalText": "[power_fn : base exp ? base ^ exp]",
-      "tokenCount": 10,
-      "tokens": [
+      "withParentheses": [
         "[",
         "power_fn",
         ":",
+        "[",
+        "[",
         "base",
         "exp",
         "?",
+        "[",
         "base",
         "^",
         "exp",
+        "]",
+        "]",
+        "]",
         "]"
       ],
-      "withParentheses": [
-        "(",
-        "[",
-        "power_fn",
-        "(",
-        ":",
-        "base",
-        "exp",
-        "?",
-        "(",
-        "base",
-        ")",
-        "^",
-        "(",
-        "exp",
-        ")",
-        "]",
-        ")"
-      ]
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "power_fn"
+          },
+          {
+            "type": "Symbol",
+            "value": "base"
+          }
+        ]
+      }
     },
     {
       "blockId": 18,
       "originalText": "[calc : x y ? (x + y) + (x - y) + (x * y)]",
-      "tokenCount": 24,
-      "tokens": [
-        "[",
-        "calc",
-        ":",
-        "x",
-        "y",
-        "?",
-        "(",
-        "x",
-        "+",
-        "y",
-        ")",
-        "+",
-        "(",
-        "x",
-        "-",
-        "y",
-        ")",
-        "+",
-        "(",
-        "x",
-        "*",
-        "y",
-        ")",
-        "]"
-      ],
       "withParentheses": [
         "[",
         "calc",
-        "(",
         ":",
+        "[",
+        "[",
         "x",
         "y",
         "?",
         "(",
-        "(",
+        "[",
         "x",
         "+",
+        "[",
         "y",
-        ")",
+        "]",
         ")",
         "+",
         "(",
-        "(",
+        "[",
         "x",
+        "]",
         "-",
+        "[",
         "y",
-        ")",
+        "]",
         ")",
         "+",
         "(",
-        "(",
+        "[",
         "x",
         "*",
         "y",
+        "]",
+        "]",
         ")",
-        ")",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "calc"
+          },
+          {
+            "type": "Symbol",
+            "value": "x"
+          }
+        ]
+      }
     },
     {
       "blockId": 19,
       "originalText": "[matchTest : x y ?\n\tx < y : x\n\tx = y : y\n\tx + y]",
-      "tokenCount": 23,
-      "tokens": [
-        "[",
-        "matchTest",
-        ":",
-        "x",
-        "y",
-        "?",
-        "\n\t",
-        "x",
-        "<",
-        "y",
-        ":",
-        "x",
-        "\n\t",
-        "x",
-        "=",
-        "y",
-        ":",
-        "y",
-        "\n\t",
-        "x",
-        "+",
-        "y",
-        "]"
-      ],
       "withParentheses": [
         "[",
         "matchTest",
-        "(",
         ":",
+        "[",
+        "[",
         "x",
         "y",
         "?",
-        "(",
         "[",
-        "(",
+        "[",
+        "[",
         "x",
         "<",
-        "(",
         "y",
+        "]",
         ":",
-        "(",
         "x",
-        ")",
+        "]",
         ",",
-        "(",
+        "[",
+        "[",
         "x",
         "=",
-        "(",
         "y",
+        "]",
         ":",
-        "(",
         "y",
-        ")",
+        "]",
         ",",
-        "(",
+        "[",
         "x",
         "+",
         "y",
-        ")",
         "]",
-        ")",
+        "]",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "matchTest"
+          },
+          {
+            "type": "Symbol",
+            "value": "x"
+          }
+        ]
+      }
     },
     {
       "blockId": 20,
-      "originalText": "[digit : x ? [ = x | ] [\\0 ~ \\9]]",
-      "tokenCount": 16,
-      "tokens": [
+      "originalText": "[result1 : add 5 10]",
+      "withParentheses": [
         "[",
-        "digit",
+        "result1",
         ":",
-        "x",
-        "?",
         "[",
-        "=",
-        "x",
-        "|",
-        "]",
-        "[",
-        "\\0",
-        "~",
-        "\\9",
+        "add",
+        "5",
+        "10",
         "]",
         "]"
       ],
-      "withParentheses": [
-        "[",
-        "digit",
-        ":",
-        "x",
-        "?",
-        "[",
-        "=",
-        "x",
-        "|",
-        "]",
-        "[",
-        "\\0",
-        "~",
-        "\\9",
-        "]",
-        "]"
-      ]
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "result1"
+          },
+          {
+            "type": "Symbol",
+            "value": "add"
+          }
+        ]
+      }
     },
     {
       "blockId": 21,
-      "originalText": "[result1 : add 5 10]",
-      "tokenCount": 7,
-      "tokens": [
-        "[",
-        "result1",
-        ":",
-        "add",
-        "5",
-        "10",
-        "]"
-      ],
+      "originalText": "[result2 : multiply 4 8]",
       "withParentheses": [
         "[",
-        "result1",
-        "(",
+        "result2",
         ":",
-        "add",
-        "5",
-        "10",
-        ")",
+        "[",
+        "multiply",
+        "4",
+        "8",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "result2"
+          },
+          {
+            "type": "Symbol",
+            "value": "multiply"
+          }
+        ]
+      }
     },
     {
       "blockId": 22,
-      "originalText": "[result2 : multiply 4 8]",
-      "tokenCount": 7,
-      "tokens": [
-        "[",
-        "result2",
-        ":",
-        "multiply",
-        "4",
-        "8",
-        "]"
-      ],
+      "originalText": "[list1 : 1 2 3 4 5]",
       "withParentheses": [
         "[",
-        "result2",
-        "(",
+        "list1",
         ":",
-        "multiply",
+        "[",
+        "1",
+        "2",
+        "3",
         "4",
-        "8",
-        ")",
+        "5",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "list1"
+          },
+          {
+            "type": "Number",
+            "value": 1
+          }
+        ]
+      }
     },
     {
       "blockId": 23,
-      "originalText": "[list1 : 1 2 3 4 5]",
-      "tokenCount": 9,
-      "tokens": [
-        "[",
-        "list1",
-        ":",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "]"
-      ],
+      "originalText": "[list2 : 1, 2, 3, 4, 5]",
       "withParentheses": [
         "[",
-        "list1",
-        "(",
+        "list2",
         ":",
+        "[",
+        "[",
         "1",
+        ",",
+        "[",
         "2",
+        ",",
+        "[",
         "3",
+        ",",
+        "[",
         "4",
+        ",",
         "5",
-        ")",
+        "]",
+        "]",
+        "]",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "list2"
+          },
+          {
+            "type": "Product",
+            "operator": ",",
+            "arguments": [
+              {
+                "type": "Number",
+                "value": 1
+              },
+              {
+                "type": "Product",
+                "operator": ",",
+                "arguments": [
+                  {
+                    "type": "Number",
+                    "value": 2
+                  },
+                  {
+                    "type": "Product",
+                    "operator": ",",
+                    "arguments": [
+                      {
+                        "type": "Number",
+                        "value": 3
+                      },
+                      {
+                        "type": "Product",
+                        "operator": ",",
+                        "arguments": [
+                          {
+                            "type": "Number",
+                            "value": 4
+                          },
+                          {
+                            "type": "Number",
+                            "value": 5
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 24,
-      "originalText": "[list2 : 1, 2, 3, 4, 5]",
-      "tokenCount": 13,
-      "tokens": [
+      "originalText": "[combined : list1 list2]",
+      "withParentheses": [
         "[",
-        "list2",
+        "combined",
         ":",
-        "1",
-        ",",
-        "2",
-        ",",
-        "3",
-        ",",
-        "4",
-        ",",
-        "5",
+        "[",
+        "list1",
+        "list2",
+        "]",
         "]"
       ],
-      "withParentheses": [
-        "(",
-        "[",
-        "(",
-        "list2",
-        ":",
-        "(",
-        "1",
-        ")",
-        ",",
-        "(",
-        "2",
-        ")",
-        ",",
-        "(",
-        "3",
-        ")",
-        ",",
-        "(",
-        "4",
-        ")",
-        ",",
-        "(",
-        "5",
-        ")",
-        "]",
-        ")"
-      ]
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "combined"
+          },
+          {
+            "type": "Symbol",
+            "value": "list1"
+          }
+        ]
+      }
     },
     {
       "blockId": 25,
-      "originalText": "[combined : list1 list2]",
-      "tokenCount": 6,
-      "tokens": [
-        "[",
-        "combined",
-        ":",
-        "list1",
-        "list2",
-        "]"
-      ],
+      "originalText": "[neg : !true]",
       "withParentheses": [
         "[",
-        "combined",
-        "(",
+        "neg",
         ":",
-        "list1",
-        "list2",
-        ")",
+        "[",
+        "!true",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "neg"
+          },
+          {
+            "type": "Symbol",
+            "value": "!true"
+          }
+        ]
+      }
     },
     {
       "blockId": 26,
-      "originalText": "[neg : !true]",
-      "tokenCount": 5,
-      "tokens": [
-        "[",
-        "neg",
-        ":",
-        "!true",
-        "]"
-      ],
+      "originalText": "[spread : ~combined]",
       "withParentheses": [
         "[",
-        "(",
-        "neg",
+        "spread",
         ":",
-        ")",
-        "!true",
+        "[",
+        "~combined",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "spread"
+          },
+          {
+            "type": "Symbol",
+            "value": "~combined"
+          }
+        ]
+      }
     },
     {
       "blockId": 27,
-      "originalText": "[spread : ~combined]",
-      "tokenCount": 5,
-      "tokens": [
-        "[",
-        "spread",
-        ":",
-        "~combined",
-        "]"
-      ],
+      "originalText": "[factorials : 3! 4! 5!]",
       "withParentheses": [
         "[",
-        "(",
-        "spread",
+        "factorials",
         ":",
-        ")",
-        "~combined",
+        "[",
+        "3!",
+        "4!",
+        "5!",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "factorials"
+          },
+          {
+            "type": "Symbol",
+            "value": "3!"
+          }
+        ]
+      }
     },
     {
       "blockId": 28,
-      "originalText": "[factorials : 3! 4! 5!]",
-      "tokenCount": 7,
-      "tokens": [
-        "[",
-        "factorials",
-        ":",
-        "3!",
-        "4!",
-        "5!",
-        "]"
-      ],
+      "originalText": "[mapped_double : [* 2,] list1]",
       "withParentheses": [
         "[",
-        "(",
-        "factorials",
+        "mapped_double",
         ":",
-        ")",
-        "3!",
-        "4!",
-        "5!",
+        "[",
+        "[",
+        "*",
+        "2",
+        ",",
+        "]",
+        "list1",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "mapped_double"
+          },
+          null
+        ]
+      }
     },
     {
       "blockId": 29,
-      "originalText": "[mapped_double : [* 2,] list1]",
-      "tokenCount": 10,
-      "tokens": [
-        "[",
-        "mapped_double",
-        ":",
-        "[",
-        "*",
-        "2",
-        ",",
-        "]",
-        "list1",
-        "]"
-      ],
+      "originalText": "[reduced_sum : [+] list2]",
       "withParentheses": [
         "[",
-        "mapped_double",
-        "(",
+        "reduced_sum",
         ":",
         "[",
         "[",
-        "*",
-        "2",
-        ",",
+        "+",
         "]",
+        "list2",
         "]",
-        "list1",
-        ")",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "reduced_sum"
+          },
+          {
+            "type": "Symbol",
+            "value": "+"
+          }
+        ]
+      }
     },
     {
       "blockId": 30,
-      "originalText": "[reduced_sum : [+] list2]",
-      "tokenCount": 8,
-      "tokens": [
-        "[",
-        "reduced_sum",
-        ":",
-        "[",
-        "+",
-        "]",
-        "list2",
-        "]"
-      ],
+      "originalText": "[range_list : 1 ~ 5]",
       "withParentheses": [
         "[",
-        "(",
-        "reduced_sum",
+        "range_list",
         ":",
         "[",
         "[",
-        "+",
+        "1",
+        "~",
+        "5",
         "]",
         "]",
-        "list2",
-        ")",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "range_list"
+          },
+          {
+            "type": "RangeOrExpand",
+            "operator": "~",
+            "arguments": [
+              {
+                "type": "Number",
+                "value": 1
+              },
+              {
+                "type": "Number",
+                "value": 5
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 31,
-      "originalText": "[range_list : 1 ~ 5]",
-      "tokenCount": 7,
-      "tokens": [
-        "[",
-        "range_list",
-        ":",
-        "1",
-        "~",
-        "5",
-        "]"
-      ],
+      "originalText": "[rest_args : a ~args ? a args~]",
       "withParentheses": [
         "[",
-        "range_list",
+        "rest_args",
         ":",
-        "1",
-        "~",
-        "5",
+        "[",
+        "[",
+        "a",
+        "~args",
+        "?",
+        "a",
+        "args~",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "rest_args"
+          },
+          {
+            "type": "Symbol",
+            "value": "a"
+          }
+        ]
+      }
     },
     {
       "blockId": 32,
-      "originalText": "[rest_args : a ~args ? a args~]",
-      "tokenCount": 9,
-      "tokens": [
-        "[",
-        "rest_args",
-        ":",
-        "a",
-        "~args",
-        "?",
-        "a",
-        "args~",
-        "]"
-      ],
+      "originalText": "[abs : x ?\n\tx >= 0 : x\n\tx < 0 : -x]",
       "withParentheses": [
         "[",
-        "rest_args",
-        "(",
+        "abs",
         ":",
-        "a",
-        "~args",
+        "[",
+        "[",
+        "x",
         "?",
-        "a",
-        ")",
-        "args~",
+        "[",
+        "[",
+        "[",
+        "x",
+        ">=",
+        "0",
+        "]",
+        ":",
+        "x",
+        "]",
+        ",",
+        "[",
+        "[",
+        "x",
+        "<",
+        "0",
+        "]",
+        ":",
+        "-x",
+        "]",
+        "]",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "abs"
+          },
+          {
+            "type": "Lambda",
+            "operator": "?",
+            "arguments": [
+              {
+                "type": "Symbol",
+                "value": "x"
+              },
+              {
+                "type": "Product",
+                "operator": ",",
+                "arguments": [
+                  {
+                    "type": "Conditional",
+                    "operator": ":",
+                    "arguments": [
+                      {
+                        "type": "Comparison",
+                        "operator": ">=",
+                        "arguments": [
+                          {
+                            "type": "Symbol",
+                            "value": "x"
+                          },
+                          {
+                            "type": "Number",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Symbol",
+                        "value": "x"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Conditional",
+                    "operator": ":",
+                    "arguments": [
+                      {
+                        "type": "Comparison",
+                        "operator": "<",
+                        "arguments": [
+                          {
+                            "type": "Symbol",
+                            "value": "x"
+                          },
+                          {
+                            "type": "Number",
+                            "value": 0
+                          }
+                        ]
+                      },
+                      {
+                        "type": "Symbol",
+                        "value": "-x"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 33,
-      "originalText": "[abs : x ?\n\tx >= 0 : x\n\tx < 0 : -x]",
-      "tokenCount": 18,
-      "tokens": [
-        "[",
-        "abs",
-        ":",
-        "x",
-        "?",
-        "\n\t",
-        "x",
-        ">=",
-        "0",
-        ":",
-        "x",
-        "\n\t",
-        "x",
-        "<",
-        "0",
-        ":",
-        "-x",
-        "]"
-      ],
+      "originalText": "[complex : this :\n\tdata :\n\t\t1 2 3,\n\t\t4 5 6,\n\t\t7 8 9\n\ttransform : x y ? this ' data ' x * this ' data ' y + 1]",
       "withParentheses": [
         "[",
-        "(",
-        "abs",
+        "[",
+        "complex",
         ":",
-        "(",
-        "x",
-        "?",
-        "(",
         "[",
-        "(",
-        "x",
-        ">=",
+        "this",
+        ":",
         "[",
-        "0",
+        "data",
+        ":",
+        "[",
+        "1",
+        "2",
+        "[",
+        "3",
         "]",
-        ":",
-        "(",
-        "x",
-        ")",
         ",",
-        "(",
-        "x",
-        "<",
+        "4",
+        "5",
+        "6",
+        ",",
         "[",
-        "0",
+        "7",
+        "8",
+        "9",
         "]",
+        "]",
+        "transform",
         ":",
-        ")",
-        "-x",
+        "[",
+        "x",
+        "y",
+        "?",
+        "[",
+        "[",
+        "[",
+        "this",
+        "'",
+        "[",
+        "data",
         "]",
-        ")",
+        "'",
+        "x",
+        "]",
+        "*",
+        "[",
+        "this",
+        "'",
+        "[",
+        "data",
+        "]",
+        "'",
+        "y",
+        "]",
+        "]",
+        "+",
+        "1",
+        "]",
+        "]",
+        "]",
+        "]",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Definition",
+        "operator": ":",
+        "arguments": [
+          {
+            "type": "Symbol",
+            "value": "complex"
+          },
+          {
+            "type": "Definition",
+            "operator": ":",
+            "arguments": [
+              {
+                "type": "Symbol",
+                "value": "this"
+              },
+              {
+                "type": "Symbol",
+                "value": "data"
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "blockId": 34,
-      "originalText": "[complex : this :\n\tdata :\n\t\t1 2 3,\n\t\t4 5 6,\n\t\t7 8 9\n\ttransform : x y ? this ' data ' x * this ' data ' y + 1]",
-      "tokenCount": 42,
-      "tokens": [
-        "[",
-        "complex",
-        ":",
-        "this",
-        ":",
-        "\n\t",
-        "data",
-        ":",
-        "\n\t\t",
-        "1",
-        "2",
-        "3",
-        ",",
-        "\n\t\t",
-        "4",
-        "5",
-        "6",
-        ",",
-        "\n\t\t",
-        "7",
-        "8",
-        "9",
-        "\n\t",
-        "transform",
-        ":",
-        "x",
-        "y",
-        "?",
-        "this",
-        "'",
-        "data",
-        "'",
-        "x",
-        "*",
-        "this",
-        "'",
-        "data",
-        "'",
-        "y",
-        "+",
-        "1",
-        "]"
-      ],
-      "withParentheses": [
-        "[",
-        "complex",
-        "(",
-        ":",
-        "this",
-        "(",
-        ":",
-        "[",
-        "[",
-        "data",
-        "(",
-        ":",
-        "[",
-        "[",
-        "1",
-        "2",
-        "3",
-        "(",
-        ",",
-        "4",
-        "5",
-        "6",
-        "(",
-        ",",
-        "7",
-        "8",
-        "9",
-        ")",
-        "]",
-        "]",
-        "transform",
-        "(",
-        ":",
-        "x",
-        "y",
-        "?",
-        "(",
-        "this",
-        "'",
-        "data",
-        ")",
-        "'",
-        "x",
-        ")",
-        "*",
-        "(",
-        "this",
-        "'",
-        "data",
-        ")",
-        "'",
-        "y",
-        ")",
-        "+",
-        "1",
-        ")",
-        "]",
-        "]"
-      ]
-    },
-    {
-      "blockId": 35,
       "originalText": "[complex ' data ' 0 ' 1 = 2]",
-      "tokenCount": 11,
-      "tokens": [
-        "[",
-        "complex",
-        "'",
-        "data",
-        "'",
-        "0",
-        "'",
-        "1",
-        "=",
-        "2",
-        "]"
-      ],
       "withParentheses": [
         "[",
-        "(",
+        "[",
+        "[",
         "complex",
         "'",
+        "[",
         "data",
-        ")",
+        "]",
         "'",
+        "[",
         "0",
-        ")",
+        "]",
         "'",
         "1",
-        ")",
+        "]",
         "=",
         "2",
-        ")",
+        "]",
         "]"
-      ]
+      ],
+      "expressionTree": {
+        "type": "Comparison",
+        "operator": "=",
+        "arguments": [
+          {
+            "type": "Application",
+            "operator": "'",
+            "arguments": [
+              {
+                "type": "Application",
+                "operator": "'",
+                "arguments": [
+                  {
+                    "type": "Application",
+                    "operator": "'",
+                    "arguments": [
+                      {
+                        "type": "Symbol",
+                        "value": "complex"
+                      },
+                      {
+                        "type": "Symbol",
+                        "value": "data"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Number",
+                    "value": 0
+                  }
+                ]
+              },
+              {
+                "type": "Number",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "type": "Number",
+            "value": 2
+          }
+        ]
+      }
     }
   ]
 }

@@ -1,67 +1,67 @@
 # BlockID: 1
 # Original: [x : 10]
 # tokens: `"[","x",":","10","]"`
-# withParentheses: `"[","(","x",":","10",")","]"`
+# withParentheses: `"[","x",":","[","10","]","]"`
 
 # BlockID: 2
 # Original: [y : 20]
 # tokens: `"[","y",":","20","]"`
-# withParentheses: `"[","(","y",":","20",")","]"`
+# withParentheses: `"[","y",":","[","20","]","]"`
 
 # BlockID: 3
 # Original: [z : x + y]
 # tokens: `"[","z",":","x","+","y","]"`
-# withParentheses: `"[","(","z",":","(","x","+","y",")","]"`
+# withParentheses: `"[","z",":","[","[","x","+","y","]","]","]"`
 
 # BlockID: 4
 # Original: [hello : `Hello`]
 # tokens: `"[","hello",":","`Hello`","]"`
-# withParentheses: `"[","(","hello",":","`Hello`",")","]"`
+# withParentheses: `"[","hello",":","[","`Hello`","]","]"`
 
 # BlockID: 5
 # Original: [world : `World`]
 # tokens: `"[","world",":","`World`","]"`
-# withParentheses: `"[","(","world",":","`World`",")","]"`
+# withParentheses: `"[","world",":","[","`World`","]","]"`
 
 # BlockID: 6
 # Original: [greeting : hello \  world \!]
 # tokens: `"[","greeting",":","hello","\ ","world","\!","]"`
-# withParentheses: `"[","greeting","(",":","hello","\ ","world","\!",")","]"`
+# withParentheses: `"[","greeting",":","[","hello","\ ","world","\!","]","]"`
 
 # BlockID: 7
 # Original: [sum : x + y]
 # tokens: `"[","sum",":","x","+","y","]"`
-# withParentheses: `"[","(","sum",":","(","x","+","y",")","]"`
+# withParentheses: `"[","sum",":","[","[","x","+","y","]","]","]"`
 
 # BlockID: 8
 # Original: [product : x * y]
 # tokens: `"[","product",":","x","*","y","]"`
-# withParentheses: `"[","(","product",":","(","x","*","y",")","]"`
+# withParentheses: `"[","product",":","[","[","x","*","y","]","]","]"`
 
 # BlockID: 9
 # Original: [power : x ^ 2]
 # tokens: `"[","power",":","x","^","2","]"`
-# withParentheses: `"(","[","(","power",":","(","x",")","^","(","2",")","]",")"`
+# withParentheses: `"[","power",":","[","[","x","^","2","]","]","]"`
 
 # BlockID: 10
 # Original: [factorial : 5!]
 # tokens: `"[","factorial",":","5!","]"`
-# withParentheses: `"[","(","factorial",":",")","5!","]"`
+# withParentheses: `"[","factorial",":","[","5!","]","]"`
 
 # BlockID: 11
 # Original: [is_valid : x >= 0 & y <= 100]
 # tokens: `"[","is_valid",":","x",">=","0","&","y","<=","100","]"`
-# withParentheses: `"[","(","is_valid",":","(","x",">=","0",")","&","(","y","<=","100",")","]"`
+# withParentheses: `"[","is_valid",":","[","[","[","x",">=","0","]","&","[","y","<=","100","]","]","]","]"`
 
 # BlockID: 12
 # Original: [range : [1 ~ 10]]
 # tokens: `"[","range",":","[","1","~","10","]","]"`
-# withParentheses: `"[","range",":","[","1","~","10","]","]"`
+# withParentheses: `"[","range",":","[","[","[","1","~","10","]","]","]","]"`
 
 # BlockID: 13
 # Original: [group_calc : (x + y) * (z - 5)]
 # tokens: `"[","group_calc",":","(","x","+","y",")","*","(","z","-","5",")","]"`
-# withParentheses: `"[","group_calc","(",":","[","(","x","+","(","y",")","]","*","(","(","z","-","5",")",")","]"`
+# withParentheses: `"[","group_calc",":","[","(","[","x","+","[","y","]",")","*","(","[","z","]","-","5","]",")","]","]"`
 
 # BlockID: 14
 # Original: [person :
@@ -76,27 +76,27 @@
 	","contact",":","
 		","email",":","`john@example.com`","
 		","phone",":","`555-1234`","]"`
-# withParentheses: `"[","(","person",":","[","[","(","name",":","(","`John`",",","(","age",":","(","30",",","(","contact",":","[","[","(","email",":","(","`john@example.com`",",","(","phone",":","`555-1234`",")","]","]","]","]"`
+# withParentheses: `"[","person",":","[","[","name",":","`John`",",","[","age",":","30","]",",","[","contact",":","[","email",":","`john@example.com`","]",",","[","phone",":","`555-1234`","]","]","]","]","]"`
 
 # BlockID: 15
 # Original: [add : a b ? a + b]
 # tokens: `"[","add",":","a","b","?","a","+","b","]"`
-# withParentheses: `"[","add","(",":","a","b","?","(","a","+","b",")","]"`
+# withParentheses: `"[","add",":","[","[","a","b","?","[","a","+","b","]","]","]","]"`
 
 # BlockID: 16
 # Original: [multiply : a b ? a * b]
 # tokens: `"[","multiply",":","a","b","?","a","*","b","]"`
-# withParentheses: `"[","multiply","(",":","a","b","?","(","a","*","b",")","]"`
+# withParentheses: `"[","multiply",":","[","[","a","b","?","[","a","*","b","]","]","]","]"`
 
 # BlockID: 17
 # Original: [power_fn : base exp ? base ^ exp]
 # tokens: `"[","power_fn",":","base","exp","?","base","^","exp","]"`
-# withParentheses: `"(","[","power_fn","(",":","base","exp","?","(","base",")","^","(","exp",")","]",")"`
+# withParentheses: `"[","power_fn",":","[","[","base","exp","?","[","base","^","exp","]","]","]","]"`
 
 # BlockID: 18
 # Original: [calc : x y ? (x + y) + (x - y) + (x * y)]
 # tokens: `"[","calc",":","x","y","?","(","x","+","y",")","+","(","x","-","y",")","+","(","x","*","y",")","]"`
-# withParentheses: `"[","calc","(",":","x","y","?","(","(","x","+","y",")",")","+","(","(","x","-","y",")",")","+","(","(","x","*","y",")",")","]"`
+# withParentheses: `"[","calc",":","[","[","x","y","?","(","[","x","+","[","y","]",")","+","(","[","x","]","-","[","y","]",")","+","(","[","x","*","y","]","]",")","]","]","]"`
 
 # BlockID: 19
 # Original: [matchTest : x y ?
@@ -107,83 +107,78 @@
 	","x","<","y",":","x","
 	","x","=","y",":","y","
 	","x","+","y","]"`
-# withParentheses: `"[","matchTest","(",":","x","y","?","(","[","(","x","<","(","y",":","(","x",")",",","(","x","=","(","y",":","(","y",")",",","(","x","+","y",")","]",")","]"`
+# withParentheses: `"[","matchTest",":","[","[","x","y","?","[","[","[","x","<","y","]",":","x","]",",","[","[","x","=","y","]",":","y","]",",","[","x","+","y","]","]","]","]","]"`
 
 # BlockID: 20
-# Original: [digit : x ? [ = x | ] [\0 ~ \9]]
-# tokens: `"[","digit",":","x","?","[","=","x","|","]","[","\0","~","\9","]","]"`
-# withParentheses: `"[","digit",":","x","?","[","=","x","|","]","[","\0","~","\9","]","]"`
-
-# BlockID: 21
 # Original: [result1 : add 5 10]
 # tokens: `"[","result1",":","add","5","10","]"`
-# withParentheses: `"[","result1","(",":","add","5","10",")","]"`
+# withParentheses: `"[","result1",":","[","add","5","10","]","]"`
 
-# BlockID: 22
+# BlockID: 21
 # Original: [result2 : multiply 4 8]
 # tokens: `"[","result2",":","multiply","4","8","]"`
-# withParentheses: `"[","result2","(",":","multiply","4","8",")","]"`
+# withParentheses: `"[","result2",":","[","multiply","4","8","]","]"`
 
-# BlockID: 23
+# BlockID: 22
 # Original: [list1 : 1 2 3 4 5]
 # tokens: `"[","list1",":","1","2","3","4","5","]"`
-# withParentheses: `"[","list1","(",":","1","2","3","4","5",")","]"`
+# withParentheses: `"[","list1",":","[","1","2","3","4","5","]","]"`
 
-# BlockID: 24
+# BlockID: 23
 # Original: [list2 : 1, 2, 3, 4, 5]
 # tokens: `"[","list2",":","1",",","2",",","3",",","4",",","5","]"`
-# withParentheses: `"(","[","(","list2",":","(","1",")",",","(","2",")",",","(","3",")",",","(","4",")",",","(","5",")","]",")"`
+# withParentheses: `"[","list2",":","[","[","1",",","[","2",",","[","3",",","[","4",",","5","]","]","]","]","]","]"`
 
-# BlockID: 25
+# BlockID: 24
 # Original: [combined : list1 list2]
 # tokens: `"[","combined",":","list1","list2","]"`
-# withParentheses: `"[","combined","(",":","list1","list2",")","]"`
+# withParentheses: `"[","combined",":","[","list1","list2","]","]"`
 
-# BlockID: 26
+# BlockID: 25
 # Original: [neg : !true]
 # tokens: `"[","neg",":","!true","]"`
-# withParentheses: `"[","(","neg",":",")","!true","]"`
+# withParentheses: `"[","neg",":","[","!true","]","]"`
 
-# BlockID: 27
+# BlockID: 26
 # Original: [spread : ~combined]
 # tokens: `"[","spread",":","~combined","]"`
-# withParentheses: `"[","(","spread",":",")","~combined","]"`
+# withParentheses: `"[","spread",":","[","~combined","]","]"`
 
-# BlockID: 28
+# BlockID: 27
 # Original: [factorials : 3! 4! 5!]
 # tokens: `"[","factorials",":","3!","4!","5!","]"`
-# withParentheses: `"[","(","factorials",":",")","3!","4!","5!","]"`
+# withParentheses: `"[","factorials",":","[","3!","4!","5!","]","]"`
 
-# BlockID: 29
+# BlockID: 28
 # Original: [mapped_double : [* 2,] list1]
 # tokens: `"[","mapped_double",":","[","*","2",",","]","list1","]"`
-# withParentheses: `"[","mapped_double","(",":","[","[","*","2",",","]","]","list1",")","]"`
+# withParentheses: `"[","mapped_double",":","[","[","*","2",",","]","list1","]","]"`
 
-# BlockID: 30
+# BlockID: 29
 # Original: [reduced_sum : [+] list2]
 # tokens: `"[","reduced_sum",":","[","+","]","list2","]"`
-# withParentheses: `"[","(","reduced_sum",":","[","[","+","]","]","list2",")","]"`
+# withParentheses: `"[","reduced_sum",":","[","[","+","]","list2","]","]"`
 
-# BlockID: 31
+# BlockID: 30
 # Original: [range_list : 1 ~ 5]
 # tokens: `"[","range_list",":","1","~","5","]"`
-# withParentheses: `"[","range_list",":","1","~","5","]"`
+# withParentheses: `"[","range_list",":","[","[","1","~","5","]","]","]"`
 
-# BlockID: 32
+# BlockID: 31
 # Original: [rest_args : a ~args ? a args~]
 # tokens: `"[","rest_args",":","a","~args","?","a","args~","]"`
-# withParentheses: `"[","rest_args","(",":","a","~args","?","a",")","args~","]"`
+# withParentheses: `"[","rest_args",":","[","[","a","~args","?","a","args~","]","]","]"`
 
-# BlockID: 33
+# BlockID: 32
 # Original: [abs : x ?
 	x >= 0 : x
 	x < 0 : -x]
 # tokens: `"[","abs",":","x","?","
 	","x",">=","0",":","x","
 	","x","<","0",":","-x","]"`
-# withParentheses: `"[","(","abs",":","(","x","?","(","[","(","x",">=","[","0","]",":","(","x",")",",","(","x","<","[","0","]",":",")","-x","]",")","]"`
+# withParentheses: `"[","abs",":","[","[","x","?","[","[","[","x",">=","0","]",":","x","]",",","[","[","x","<","0","]",":","-x","]","]","]","]","]"`
 
-# BlockID: 34
+# BlockID: 33
 # Original: [complex : this :
 	data :
 		1 2 3,
@@ -196,10 +191,10 @@
 		","4","5","6",",","
 		","7","8","9","
 	","transform",":","x","y","?","this","'","data","'","x","*","this","'","data","'","y","+","1","]"`
-# withParentheses: `"[","complex","(",":","this","(",":","[","[","data","(",":","[","[","1","2","3","(",",","4","5","6","(",",","7","8","9",")","]","]","transform","(",":","x","y","?","(","this","'","data",")","'","x",")","*","(","this","'","data",")","'","y",")","+","1",")","]","]"`
+# withParentheses: `"[","[","complex",":","[","this",":","[","data",":","[","1","2","[","3","]",",","4","5","6",",","[","7","8","9","]","]","transform",":","[","x","y","?","[","[","[","this","'","[","data","]","'","x","]","*","[","this","'","[","data","]","'","y","]","]","+","1","]","]","]","]","]","]"`
 
-# BlockID: 35
+# BlockID: 34
 # Original: [complex ' data ' 0 ' 1 = 2]
 # tokens: `"[","complex","'","data","'","0","'","1","=","2","]"`
-# withParentheses: `"[","(","complex","'","data",")","'","0",")","'","1",")","=","2",")","]"`
+# withParentheses: `"[","[","[","complex","'","[","data","]","'","[","0","]","'","1","]","=","2","]","]"`
 
