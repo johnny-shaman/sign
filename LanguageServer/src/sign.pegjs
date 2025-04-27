@@ -1,26 +1,37 @@
-Start = e:Expression* {return e.join("");}
+Start = e:Program* {return e.join("");}
 
-Expression = Export
-  / Flat
-  / Literal
+Program
+  = 
+  (Export / Define)
+  / Expression // can Calculate Syntax
+  / Import
+  / Literal // can Constantic Syntax
   / EOL
 
+
+Assigns = Export
+
 Export = export? Define
-Define = tag _ be? _ (Define / Output)*
-Output = (tag / hex / (obtain tag)) __ output? __ (Output / Apply)*
-Apply = Function __ (Pair / Flat / Atoms)
+Define = (tag _ be _)* Literal
+
+Literal
+  = Function
+  / Stream
+  / List
+  / atom
 
 Function
-  = Closuer
-  / Compose
+  = Compose
+  / Closuer
   / Pointless
   / tag
 
-  Closuer = (Arguments / unit) _ lambda _ Expression
+  Compose = (tag / Closuer / Pointless) (__ Compose)*
 
-    Arguments = (tag _)* (lift? tag)
+  Closuer = (Arguments / unit) _ f _ Output
 
-  Compose = (tag / Closuer / Pointless) __ Compose
+    Arguments = (tag __)* lift? tag
+
   Pointless
     = "(" (DirectMap / DirectFold) ")"
     / "{" (DirectMap / DirectFold) "}"
@@ -36,14 +47,18 @@ Function
         / atom _ infix _ unit?
         / tag __ atom*
 
-Pair
-  = lift+ (Pair / tag)
-  / "(" (((spreadable / tag) spread (spreadable / tag)) / Atoms) ")"
-  / "{" (((spreadable / tag) spread (spreadable / tag)) / Atoms) "}"
-  / "[" (((spreadable / tag) spread (spreadable / tag)) / Atoms) "]"
-  / (Function / atom) _ (pair _ (Pair / Or))*
+Stream = atom+
 
-Atoms = atom+
+List
+  = lift+ (List / tag)
+  / "(" (((spreadable / tag) spread (spreadable / tag)) / Stream) ")"
+  / "{" (((spreadable / tag) spread (spreadable / tag)) / Stream) "}"
+  / "[" (((spreadable / tag) spread (spreadable / tag)) / Stream) "]"
+  / (Function / atom) _ (pair _ List)*
+
+Expression = Output
+Output = (tag / hex / (place tag)) __ output? __ (Output / Apply)*
+Apply = Function __ Literal
 
 Or = And (orxor Or)*
 And = Not (_ and _ And)*
@@ -56,8 +71,8 @@ Factrial = Absolute factrial*
 Absolute = "|" (Additive / Get) "|"
 Flat = Set flat*
 Set = Get (_ be _ Apply)*
-Get = (tag / Pair / Import) (_ get _ key)*
-Get_r = (key __ get_r __)*  (tag / Pair / Import)
+Get = (tag / List / Import) (_ get _ key)*
+Get_r = (key __ get_r __)*  (tag / List / Import)
 Import = Input import
 Input = input Expression
 
@@ -70,7 +85,6 @@ Block
 IndentBlock = BlockStart Expression
   BlockStart = $(EOL tab+)
 
-Literal = atom / Block
 atom = $(string / letter / bin / oct / hex / Number / tag / unit)
 spreadable = $(Number / hex / oct / bin / letter)
 Number = uint / int / float
@@ -87,8 +101,8 @@ string = $("`" [^\n\r`]* "`") / letter+
 unit = $"_"
 key = $(string / letter / tag / int)
 
-prefix = $(export / import / not / lift / obtain)
-infix = $(be / lambda / pair / or / xor / and / add / sub / mul / div / mod / get / compare / pow)
+prefix = $(export / import / not / lift / place)
+infix = $(be / f / pair / or / xor / and / add / sub / mul / div / mod / get / compare / pow)
 compare = $(lt / le / eq / ne / me / mt )
 postfix = $(flat / factrial)
 
@@ -100,9 +114,9 @@ multiple = $(mul / div / mod)
 
 export = $"#"
 output = $"#"
-obtain = $"$"
+place = $"$"
 be = $":"
-lambda = $"?"
+f = $"?"
 pair = $","
 or = $"|"
 xor = $";"
