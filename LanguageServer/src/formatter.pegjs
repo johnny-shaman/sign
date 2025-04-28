@@ -2,6 +2,8 @@ Start = e:Expression* {return e.join("");}
 
 Expression
   = l:literal* _+ c:or _+ r:Expression* {return `${l.join("")} ${c} ${r.flat(Infinity).join("")}`;}
+  / l:literal* _+ c:output _+ r:Expression* {return `${l.join("")} ${c} ${r.flat(Infinity).join("")}`;}
+  / l:literal* _+ c:get_r _+ r:Expression* {return `${l.join("")} ${c} ${r.flat(Infinity).join("")}`;}
   / l:literal* _* c:infix _* r:Expression* {return `${l.join("")}${c}${r.flat(Infinity).join("")}`;}
   / l:literal+ r:postfix* { return `${l.join(" ").replace(/^ /gm, "").replace(/ +[\n]/gm, "\n")}${r.join("")}`;}
   / l:prefix+ r:Expression { return `${l.join("")}${r}`;}
@@ -42,18 +44,21 @@ string = $("`" [^\n\r`]* "`")
 unit = $"_"
 key = $(string / letter / tag)
 
-prefix = $(export / import / not / spread)
+prefix = $(export / not / spread / input / place)
 blockInfix = s:$(infix / spread) {return ` ${s} `}
-infix = s:(be / lambda / pair / xor / and / compare / add / sub / mul / div / mod / get / pow) {return ` ${s} `}
+infix = s:(output / be / lambda / pair / xor / and / compare / add / sub / mul / div / mod / pow / get / get_r) {return ` ${s} `}
 compare = $(lt / le / eq / ne / me / mt )
-postfix = $(spread / factrial)
+postfix = $(spread / factrial / import)
 
 logicOr = $(or / xor)
 additive = $(add / sub)
 multiple = $(mul / div / mod)
 
 export = $"#"
+output = $"#"
+place = $"$"
 be = $":"
+
 lambda = $"?"
 pair = $","
 or = $"|"
@@ -75,7 +80,9 @@ pow = $"^"
 factrial = $"!"
 spread = $"~"
 get = $"'"
+get_r = $"@"
 import = $"@"
+input = $"@"
 tab = $"\t"
 EOL = $("\n" / "\r" "\n"?)
 _ = $" "
