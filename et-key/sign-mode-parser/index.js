@@ -12,7 +12,7 @@
  *   node index.js <入力ファイル> [--out]
  *   --out: 結果をファイルに保存 (入力ファイル名.json)
  * CreateBy: Claude3.7Sonnet
- * ver_20250404_0
+ * ver_20250427_0
  */
 
 // Node.js標準モジュール
@@ -25,7 +25,7 @@ const { extractAndProcessBlocks } = require('./block-extractor');
 const { tokenizeBlock } = require('./tokenizer');
 const { insertParentheses } = require('./parenthesis-inserter');
 const { buildExpressionTree, formatExpressionTree } = require('./expression-tree-builder');
-//const { wrapExpression } = require('./expression-wrapper'); // 後で実装予定
+const { generateLispCode } = require('./lisp-translator');
 
 /**
  * ファイルを読み込む
@@ -74,15 +74,23 @@ async function main() {
 
     // 出力ファイルパスの取得（指定がなければ入力ファイル名 + .json）
     let outputFile = null;
+    let lispOutputFile = null;
     const outFlagIndex = args.indexOf('--out');
     if (outFlagIndex !== -1 && args.length > outFlagIndex + 1) {
       outputFile = args[outFlagIndex + 1];
+      // LISP出力ファイルのパスを生成
+      lispOutputFile = outputFile.replace(/\.json$/, '.lisp');
+      if (lispOutputFile === outputFile) {
+        lispOutputFile = `${outputFile}.lisp`;
+      }
     } else {
       outputFile = `${inputFile}.json`;
+      lispOutputFile = `${inputFile}.lisp`;
     }
 
     console.log(`入力ファイル: ${inputFile}`);
     console.log(`出力ファイル: ${outputFile}`);
+    console.log(`LISP出力ファイル: ${lispOutputFile}`);
 
     // ファイルの読み込み
     console.log('ファイルを読み込んでいます...');
@@ -142,24 +150,45 @@ async function main() {
       }
     }
 
-    // --------★デバッグ用ここから★--------
-    // カッコ挿入後のテキストファイル出力
-    /*
-    const expressionTreeOutputFile = `${inputFile}.debug_expression_trees.txt`;
-    console.log(`式木を${expressionTreeOutputFile}に保存しています...`);
-    const expressionTreeText = expressionTrees.map((tree, index) =>
-      `# BlockID: ${index + 1}\n` +
-      `# Original: ${processedBlocks[index].originalBlock}\n` +
-      `# tokens: \`\"${block.tokens.join('","')}\"\`\n` +
-      `# withParentheses: \`\"${block.withParentheses.join('","')}\"\`\n` +
-      `# Formatted Expression Tree:\n` +
-      `${formatExpressionTree(tree)}\n\n` +
-      `# JSON Structure:\n` +
-      `${JSON.stringify(tree, null, 2)}\n\n`
-    ).join('');
-    await writeFile(expressionTreeOutputFile, expressionTreeText);
-    */
-    // --------★デバッグ用ここまで★--------
+    // ステップ5: LISP変換を追加
+    console.log('ステップ5: LISP変換');
+    const lispTranslations = [];
+
+    for (let i = 0; i < expressionTrees.length; i++) {
+      console.log(`ブロック${i + 1}をLISPに変換しています...`);
+
+      try {
+        const lispCode = generateLispCode(expressionTrees[i]);
+        lispTranslations.push(lispCode);
+        processedBlocks[i].lispCode = lispCode;
+      } catch (error) {
+        console.error(`ブロック${i + 1}のLISP変換中にエラーが発生しました:`, error.message);
+        lispTranslations.push(null);
+        processedBlocks[i].lispCode = null;
+        processedBlocks[i].lispCodeError = error.message;
+      }
+    }
+
+    // LISPコードをファイルに保存
+    if (lispTranslations.length > 0) {
+      console.log(`LISPコードを${lispOutputFile}に保存しています...`);
+
+      // 全てのLISPコードを結合
+      const combinedLispCode = lispTranslations
+        .filter(code => code) // nullや空文字列を除外
+        .join("\n\n");
+
+      // LISPコードにコメントヘッダーを追加
+      const lispContent = `;;; Generated LISP code from Sign language source: ${inputFile}
+;;; Generated on: ${new Date().toISOString()}
+;;; Processor version: 0.1.0
+
+${combinedLispCode}`;
+
+      // ファイルに保存
+      await writeFile(lispOutputFile, lispContent);
+      console.log('LISPコードの保存が完了しました');
+    }
 
     // 結果の生成
     const result = {

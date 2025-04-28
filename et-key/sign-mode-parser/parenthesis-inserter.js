@@ -9,7 +9,7 @@
  * - 特殊演算子の処理
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250426_1
+ * ver_20250427_0
  */
 
 // 演算子優先度情報をインポート
@@ -37,16 +37,19 @@ function insertParentheses(tokens) {
         // インデントをブロック構造に変換（トークンの\n\tを [ , ] に変換）
         processedTokens = processIndentation(processedTokens);
 
-        // トークンを分類
+        // 3. トークンを分類
         classifyTokens(processedTokens, context);
 
-        // 3. 構造認識フェーズ（ラムダ?と条件:のカッコ挿入あり）
+        // 4. 連続リテラル処理
+        processConsecutiveLiterals(processedTokens, context);
+
+        // 5. 構造認識フェーズ（ラムダ?と条件:のカッコ挿入あり）
         identifyStructures(processedTokens, context);
 
-        // 4. 文字列リテラル処理フェーズ
+        // x. 文字列リテラル処理フェーズ
         //processedTokens = processStringLiterals(processedTokens, context);
 
-        // 5. 単項演算子処理フェーズ
+        // x. 単項演算子処理フェーズ
         //processedTokens = processPrefixOperators(processedTokens, context);
         //processedTokens = processPostfixOperators(processedTokens, context);
 
@@ -293,6 +296,86 @@ function classifyTokens(tokens, context) {
 }
 
 /**
+ * 連続するリテラル/識別子の処理
+ * 複数の連続するリテラルや識別子をグループ化し、適切なカッコで囲む
+ * 
+ * 主な処理：
+ * - スペース区切りの連続リテラル/識別子をグループとして検出
+ * - ラムダ引数リスト、関数適用、リスト定義など様々なパターンを判別
+ * - 適切なカッコタイプで囲んでグループ化
+ * 
+ * @param {string[]} tokens - 処理対象のトークン配列
+ * @param {Object} context - 処理コンテキスト
+ */
+function processConsecutiveLiterals(tokens, context) {
+    let i = 0;
+
+    // 処理済みの範囲を記録するための配列
+    context.processedLiteralGroups = context.processedLiteralGroups || [];
+
+    while (i < tokens.length) {
+        // 連続リテラルの開始を特定
+        const start = i;
+        let end = i;
+
+        // 現在のトークンが演算子またはブロック境界でないことを確認
+        const currentTokenInfo = context.tokenInfo[i] || {};
+        const isCurrentOperator = currentTokenInfo.type &&
+            (currentTokenInfo.type.includes('operator') ||
+                currentTokenInfo.type.includes('block'));
+
+        // 現在のトークンが演算子でない場合のみ処理
+        if (!isCurrentOperator) {
+            // 連続するリテラル/識別子を検出
+            while (end + 1 < tokens.length) {
+                const nextTokenInfo = context.tokenInfo[end + 1] || {};
+                // 次のトークンが演算子またはブロック境界でなければ連続している
+                const isNextOperator = nextTokenInfo.type &&
+                    (nextTokenInfo.type.includes('operator') ||
+                        nextTokenInfo.type.includes('block'));
+
+                if (!isNextOperator) {
+                    end++;
+                } else {
+                    break;
+                }
+            }
+
+            // 2つ以上のリテラル/識別子が連続している場合、グループとして処理
+            if (end > start) {
+                // 次のトークンを確認してグループの種類を判断
+                const nextPos = end + 1;
+                const nextToken = nextPos < tokens.length ? tokens[nextPos] : null;
+                const nextTokenInfo = nextPos < tokens.length ? context.tokenInfo[nextPos] || {} : {};
+
+                // ラムダ引数リストの場合 (次が ? 演算子)
+                const isLambdaArgs = nextToken === '?' && nextTokenInfo.type === 'lambda_operator';
+
+                // 関数適用の場合 (最初が識別子で残りがリテラル/識別子)
+                const isFirstIdentifier = currentTokenInfo.type === 'identifier';
+                const isFunctionApplication = isFirstIdentifier && end > start;
+
+                // カッコ挿入情報を記録
+                recordParenthesisInsertion(start, 'open', '[', context);
+                recordParenthesisInsertion(end + 1, 'close', ']', context);
+
+                // 処理済みの範囲を記録
+                context.processedLiteralGroups.push({
+                    start: start,
+                    end: end,
+                    type: isLambdaArgs ? 'lambda_args' :
+                        isFunctionApplication ? 'function_application' :
+                            'literal_group'
+                });
+            }   
+        }
+
+        // 次のトークンへ
+        i = end + 1;
+    }
+}
+
+/**
  * ブロック構造、ラムダ式、条件分岐などの構造を認識する
  * 
  * @param {string[]} tokens - 処理対象のトークン配列
@@ -440,21 +523,6 @@ function identifyStructures(tokens, context) {
 
             recordParenthesisInsertion(conditionStart, 'open', '[', context);
             recordParenthesisInsertion(resultEnd, 'close', ']', context);
-
-            // // カッコ挿入位置を記録
-            // // 条件部分が既にブロックで囲まれているか確認
-            // const isConditionBlocked = isEnclosedInBlock(tokens, context, conditionStart, conditionEnd);
-            // if (!isConditionBlocked) {
-            //     recordParenthesisInsertion(conditionStart, 'open', '[', context);
-            //     recordParenthesisInsertion(conditionEnd + 1, 'close', ']', context);
-            // }
-
-            // // 結果部分が複雑な式なら括弧で囲む
-            // const isResultBlocked = isEnclosedInBlock(tokens, context, resultStart, resultEnd);
-            // if (isComplexExpression(tokens, context, resultStart, resultEnd) && !isResultBlocked) {
-            //     recordParenthesisInsertion(resultStart, 'open', '[', context);
-            //     recordParenthesisInsertion(resultEnd + 1, 'close', ']', context);
-            // }
         }
 
         // 定義の認識
@@ -466,33 +534,6 @@ function identifyStructures(tokens, context) {
                 recordParenthesisInsertion(3, 'open', '[', context);
                 recordParenthesisInsertion(tokens.length - 1, 'close', ']', context);
             }
-
-            // // 定義演算子(:)の左側が名前、右側が値
-            // const nameEnd = i - 1;
-            // let nameStart = findExpressionStart(tokens, context, nameEnd);
-
-            // // 値の範囲を探す
-            // let valueStart = i + 1;
-            // let valueEnd = findExpressionEnd(tokens, context, valueStart);
-
-            // // ネストされた定義を考慮
-            // valueEnd = findCompleteExpressionEnd(tokens, context, valueStart, valueEnd);
-
-            // // 定義の情報を記録
-            // context.structures.definitions.push({
-            //     position: i,
-            //     nameStart: nameStart,
-            //     nameEnd: nameEnd,
-            //     valueStart: valueStart,
-            //     valueEnd: valueEnd
-            // });
-
-            // // カッコ挿入は定義の場合、値の部分のみ必要に応じて
-            // const isValueBlocked = isEnclosedInBlock(tokens, context, valueStart, valueEnd);
-            // if (isComplexExpression(tokens, context, valueStart, valueEnd) && !isValueBlocked) {
-            //     recordParenthesisInsertion(valueStart, 'open', '[', context);
-            //     recordParenthesisInsertion(valueEnd + 1, 'close', ']', context);
-            // }
         }
     }
 }

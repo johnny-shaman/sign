@@ -9,7 +9,7 @@
  * - インデントの正規化（スペース→タブ変換）
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250327_0
+ * ver_20250427_0
  */
 
 /**
@@ -49,10 +49,48 @@ function removeComments(sourceCode) {
 }
 
 /**
+ * ソースコード内のすべてのカッコを統一する
+ * - 丸カッコ () → 角カッコ []
+ * - 波カッコ {} → 角カッコ []
+ * 
+ * @param {string} sourceCode - 処理対象のソースコード文字列
+ * @returns {string} カッコが統一されたソースコード
+ */
+function unifyBrackets(sourceCode) {
+  if (!sourceCode || typeof sourceCode !== 'string') {
+    return '';
+  }
+
+  // 文字列リテラル内のカッコは変換しないよう注意する必要がある
+  // バッククォートで囲まれた部分を一時的に置換して保護
+  const stringLiterals = [];
+  let protectedCode = sourceCode.replace(/`[^`]*`/g, match => {
+    stringLiterals.push(match);
+    return `__STRING_LITERAL_${stringLiterals.length - 1}__`;
+  });
+
+  // すべての丸カッコと波カッコを角カッコに変換
+  protectedCode = protectedCode
+    .replace(/\(/g, '[')
+    .replace(/\)/g, ']')
+    .replace(/\{/g, '[')
+    .replace(/\}/g, ']');
+
+  // 文字列リテラルを元に戻す
+  let resultCode = protectedCode;
+  for (let i = 0; i < stringLiterals.length; i++) {
+    resultCode = resultCode.replace(`__STRING_LITERAL_${i}__`, stringLiterals[i]);
+  }
+
+  return resultCode;
+}
+
+/**
  * ソースコードを正規化する
  * - コメントと空行の削除
  * - 行末の空白除去
  * - スペースベースのインデントをタブに変換
+ * - すべてのカッコの種類を角カッコ[]に統一
  * 
  * @param {string} sourceCode - 処理対象のソースコード文字列
  * @returns {string} 正規化されたソースコード
@@ -60,6 +98,9 @@ function removeComments(sourceCode) {
 function normalizeSourceCode(sourceCode) {
   // コメントと空行の削除、行末の空白除去
   let processed = removeComments(sourceCode);
+
+  // カッコの統一
+  processed = unifyBrackets(processed);
 
   // インデントをタブで統一
   // 行頭の連続スペース4つをタブに変換（エディタの設定に応じて調整可能）
@@ -73,5 +114,6 @@ function normalizeSourceCode(sourceCode) {
 // モジュールとしてエクスポート
 module.exports = {
   removeComments,
-  normalizeSourceCode
+  normalizeSourceCode,
+  unifyBrackets
 };
