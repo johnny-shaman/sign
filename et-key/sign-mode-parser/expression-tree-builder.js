@@ -1,526 +1,384 @@
 // expression-tree-builder.js
 /**
- * Sign言語のトークン配列から式木を構築するモジュール
+ * Sign言語の式木生成モジュール
  * 
  * 機能:
- * - カッコで階層化されたトークン配列から式木を構築
- * - 演算子と引数の関係を表現する構造を生成
- * - ノードに適切な型情報を付与
+ * - カッコが挿入されたトークン列から式木を生成
+ * - 操車場アルゴリズムを用いたスタックベースのAST構築
+ * - PEG文法に沿った型の割り当て
  * 
- * 入力: カッコが適切に挿入されたトークン配列
- * 出力: Sign言語の式木構造
+ * 使い方:
+ *   const { buildExpressionTree, formatExpressionTree } = require('./expression-tree-builder');
+ *   const ast = buildExpressionTree(withParenthesesTokens);
+ *   const formattedAst = formatExpressionTree(ast);
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250426_1
+ * ver_20250427_0
  */
 
-// 演算子優先度情報をインポート
-const operatorInfo = require('./operator-precedence');
-
 /**
- * カッコ付きトークン配列から式木を構築する
+ * カッコが挿入されたトークン列から式木を生成する
  * 
- * @param {string[]} tokens - カッコが付与されたトークン配列
- * @returns {Object} 構築された式木
+ * @param {string[]} tokens - カッコが挿入されたトークン列
+ * @returns {object} - 式木
+ * @throws {Error} - 構文エラーが発生した場合
  */
 function buildExpressionTree(tokens) {
-  if (!tokens || tokens.length === 0) {
-    return null;
-  }
+  // 現在の処理位置
+  let position = 0;
 
-  // 階層構造の解析（ブロック処理）
-  const hierarchyTree = processHierarchy(tokens);
-  
-  // 型情報の付与
-  const typedTree = assignNodeTypes(hierarchyTree);
-  
-  return typedTree;
-}
+  /**
+   * 式を解析する
+   * @returns {object} - 式のノード
+   */
+  function parseExpression() {
+    const token = tokens[position];
 
-/**
- * トークン配列の階層構造を処理する
- * カッコによるブロック構造を再帰的に解析
- * 
- * @param {string[]} tokens - 処理するトークン配列
- * @returns {Object} 階層構造を持つツリー
- */
-function processHierarchy(tokens) {
-  // ブロックがない場合は直接式を解析
-  if (!containsBlock(tokens)) {
-    return parseExpression(tokens);
-  }
+    // カッコの場合は中の式を解析
+    if (isOpenBracket(token)) {
+      position++; // 開きカッコをスキップ
 
-  // 結果を格納する配列
-  const result = [];
-  let i = 0;
+      // 空のカッコ対を処理
+      if (isCloseBracket(tokens[position])) {
+        position++; // 閉じカッコをスキップ
+        return { type: "EmptyList" };
+      }
 
-  while (i < tokens.length) {
-    // ブロック開始を検出
-    if (operatorInfo.isBlockStart(tokens[i])) {
-      // ブロック内のトークンを抽出
-      const blockInfo = extractBlockTokens(tokens, i);
-      // 再帰的にブロック内を処理
-      const blockTree = processHierarchy(blockInfo.tokens);
-      // 結果を追加
-      result.push(blockTree);
-      // ブロック全体をスキップ
-      i = blockInfo.endIndex + 1;
+      const expr = parseSubExpression();
+
+      // 閉じカッコがあることを確認
+      if (position < tokens.length && isCloseBracket(tokens[position])) {
+        position++; // 閉じカッコをスキップ
+      } else {
+        console.error(`閉じカッコがありません: 位置 ${position}, ここまでのトークン: ${tokens.slice(Math.max(0, position-5), position).join(', ')}`);
+        throw new Error(`閉じカッコがありません: 位置 ${position}`);
+      }
+
+      return expr;
     }
-    // 通常のトークン処理
-    else if (!operatorInfo.isBlockEnd(tokens[i])) {
-      result.push(tokens[i]);
-      i++;
-    }
-    // ブロック終了トークンはスキップ
     else {
-      i++;
+      // 通常のトークン
+      position++;
+      return createLiteralOrIdentifier(token);
     }
   }
 
-  // 単一のブロックだけの場合は直接その内容を返す
-  if (result.length === 1 && typeof result[0] !== 'string') {
-    return result[0];
-  }
+  /**
+   * サブ式を解析する (カッコ内の式)
+   * @returns {object} - 式のノード
+   */
+  function parseSubExpression() {
+    const startPos = position;
+    let elements = [];
 
-  // 複数の要素がある場合は式を解析
-  return parseExpression(result);
-}
+    // カッコ内の要素を収集
+    while (position < tokens.length && !isCloseBracket(tokens[position])) {
+      const elementStartPos = position;
 
-/**
- * トークン配列がブロック構造を含むか判定
- * 
- * @param {Array} tokens - 判定するトークン配列
- * @returns {boolean} ブロック構造を含む場合はtrue
- */
-function containsBlock(tokens) {
-  if (!tokens || !Array.isArray(tokens)) {
-    return false;
-  }
+      // Define パターンの検出 (identifier : expression)
+      if (isIdentifier(tokens[position]) &&
+        position + 2 < tokens.length &&
+        tokens[position + 1] === ":") {
 
-  for (const token of tokens) {
-    if (operatorInfo.isBlockStart(token) || operatorInfo.isBlockEnd(token)) {
-      return true;
-    }
-    // ネストされた配列/オブジェクトもブロックとみなす
-    if (typeof token !== 'string') {
-      return true;
-    }
-  }
-  return false;
-}
+        const identifier = createLiteralOrIdentifier(tokens[position]);
+        position += 2; // identifierと":"をスキップ
 
-/**
- * ブロック内のトークンを抽出する
- * 
- * @param {string[]} tokens - 処理するトークン配列
- * @param {number} startIndex - ブロック開始位置
- * @returns {Object} ブロック内トークンと終了インデックス
- */
-function extractBlockTokens(tokens, startIndex) {
-  const result = [];
-  let depth = 0;
-  let i = startIndex + 1; // ブロック開始トークンをスキップ
+        const value = parseExpression();
 
-  while (i < tokens.length) {
-    if (operatorInfo.isBlockStart(tokens[i])) {
-      depth++;
-    }
-    else if (operatorInfo.isBlockEnd(tokens[i])) {
-      if (depth === 0) {
-        // ブロックの終わりに到達
         return {
-          tokens: result,
-          endIndex: i
+          type: "Define",
+          identifier: identifier,
+          value: value
         };
       }
-      depth--;
-    }
-    result.push(tokens[i]);
-    i++;
-  }
 
-  // ブロックが閉じられていない場合
-  console.error("構文エラー: ブロックが閉じられていません");
-  return {
-    tokens: result,
-    endIndex: tokens.length - 1
-  };
-}
+      // ポイントフリースタイルの検出 ([operator] expression)
+      else if (tokens[position] === "[" &&
+        position + 2 < tokens.length &&
+        isBinaryOperator(tokens[position + 1]) &&
+        tokens[position + 2] === "]") {
 
-/**
- * 式を解析して演算子と引数の構造を構築する
- * 操車場アルゴリズムを使用
- * 
- * @param {Array} tokens - 解析するトークン配列
- * @returns {Object} 解析された式木
- */
-function parseExpression(tokens) {
-  if (!tokens || tokens.length === 0) {
-    return null;
-  }
+        const operator = tokens[position + 1];
+        position += 3; // "[", operator, "]"をスキップ
 
-  // 単一要素の場合は直接返す
-  if (tokens.length === 1) {
-    // オブジェクトの場合はそのまま返す
-    if (typeof tokens[0] !== 'string') {
-      return tokens[0];
-    }
-    // 文字列の場合は値ノードを作成
-    return { value: tokens[0] };
-  }
-
-  // 操車場アルゴリズムの実装
-  const outputQueue = [];   // 出力キュー（後置記法）
-  const operatorStack = []; // 演算子スタック
-
-  // トークンを順に処理
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
-
-    // オブジェクト（ネストされた式）の場合
-    if (typeof token !== 'string') {
-      outputQueue.push(token);
-      continue;
-    }
-
-    // 演算子かどうかを判定
-    if (operatorInfo.isOperator(token)) {
-      // 演算子の優先順位と結合性
-      const precedence = operatorInfo.getPrecedence(token);
-      const isRightAssoc = operatorInfo.isRightAssociative(token);
-
-      // スタック内の優先順位が高い演算子を処理
-      while (
-        operatorStack.length > 0 &&
-        operatorInfo.isOperator(operatorStack[operatorStack.length - 1]) &&
-        ((isRightAssoc && 
-          operatorInfo.getPrecedence(operatorStack[operatorStack.length - 1]) > precedence) ||
-         (!isRightAssoc && 
-          operatorInfo.getPrecedence(operatorStack[operatorStack.length - 1]) >= precedence))
-      ) {
-        outputQueue.push(operatorStack.pop());
+        if (position < tokens.length) {
+          const argument = parseExpression();
+          return {
+            type: "PointFreeApplication",
+            operator: operator,
+            argument: argument
+          };
+        }
       }
 
-      // 現在の演算子をスタックに追加
-      operatorStack.push(token);
-    }
-    // オペランドの場合は出力キューに追加
-    else {
-      outputQueue.push(token);
-    }
-  }
+      // ポイントフリースタイルの部分適用検出 ([operator value,] expression)
+      else if (tokens[position] === "[" &&
+        position + 4 < tokens.length &&
+        isBinaryOperator(tokens[position + 1]) &&
+        tokens[position + 3] === "," &&
+        tokens[position + 4] === "]") {
 
-  // 残りの演算子をすべて出力キューに移動
-  while (operatorStack.length > 0) {
-    outputQueue.push(operatorStack.pop());
-  }
+        const operator = tokens[position + 1];
+        const value = createLiteralOrIdentifier(tokens[position + 2]);
+        position += 5; // "[", operator, value, ",", "]"をスキップ
 
-  // 出力キューから二分木構造を構築
-  return buildTree(outputQueue);
-}
-
-/**
- * 出力キューから二分木構造を構築する
- * 
- * @param {Array} queue - 後置記法に変換された式の出力キュー
- * @returns {Object} 構築された二分木
- */
-function buildTree(queue) {
-  const stack = [];
-
-  for (const item of queue) {
-    // オブジェクトの場合（ネスト済み）はそのままスタックに追加
-    if (typeof item !== 'string') {
-      stack.push(item);
-      continue;
-    }
-
-    // 演算子の場合
-    if (operatorInfo.isOperator(item)) {
-      // オペランドが不足している場合のエラー処理
-      if (stack.length < 2) {
-        console.error(`構文エラー: 演算子 ${item} に対するオペランドが不足しています`);
-        return null;
+        if (position < tokens.length) {
+          const argument = parseExpression();
+          return {
+            type: "PartialApplication",
+            operator: operator,
+            value: value,
+            argument: argument
+          };
+        }
       }
 
-      // 二項演算子なので2つのオペランドが必要
-      const right = stack.pop();
-      const left = stack.pop();
+      // Lambda パターンの検出 (arguments ? body)
+      else if (tokens[position] === "{") {
+        const args = [];
+        position++; // "{"をスキップ
 
-      // 演算子ノードを作成
-      const node = {
-        operator: item,
-        arguments: [left, right]
-      };
+        // 引数リストを処理
+        while (position < tokens.length && tokens[position] !== "}" && tokens[position] !== "?") {
+          if (tokens[position] === "~") {
+            // 残余引数
+            position++;
+            if (position < tokens.length && isIdentifier(tokens[position])) {
+              args.push({
+                type: "RestArgument",
+                name: tokens[position]
+              });
+              position++;
+            } else {
+              throw new Error(`残余引数の名前がありません: 位置 ${position}`);
+            }
+          }
+          else if (isIdentifier(tokens[position])) {
+            args.push({
+              type: "Identifier",
+              name: tokens[position]
+            });
+            position++;
+          }
+          else {
+            position++;
+          }
+        }
 
-      // ノードをスタックに追加
-      stack.push(node);
-    }
-    // オペランドの場合は値ノードとしてスタックに追加
-    else {
-      stack.push({ value: item });
-    }
-  }
+        if (tokens[position] === "}") {
+          position++; // "}"をスキップ
+        }
 
-  // スタックに複数の要素が残っている場合のエラー処理
-  if (stack.length !== 1) {
-    console.error("構文エラー: 不正な式構造", stack);
-    return stack.length > 0 ? stack[0] : null;
-  }
+        if (position < tokens.length && tokens[position] === "?") {
+          position++; // "?"をスキップ
+          const body = parseExpression();
 
-  // 最終結果はスタックの唯一の要素
-  return stack[0];
-}
+          return {
+            type: "Lambda",
+            arguments: args,
+            body: body
+          };
+        }
+      }
 
-/**
- * ノードに型情報を付与する
- * 
- * @param {Object} node - 型情報を付与するノード
- * @returns {Object} 型情報が付与されたノード
- */
-function assignNodeTypes(node) {
-  // ノードがnullまたは未定義の場合は処理しない
-  if (!node) return null;
+      // 二項演算パターンの検出
+      else if (position + 2 < tokens.length &&
+        isBinaryOperator(tokens[position + 1])) {
 
-  // 値ノード（リテラル、識別子）の処理
-  if (node.value !== undefined) {
-    return assignValueNodeType(node);
-  }
+        const left = parseExpression();
+        const operator = tokens[position];
+        position++; // 演算子をスキップ
+        const right = parseExpression();
 
-  // 演算子ノードの処理
-  if (node.operator !== undefined) {
-    // 子ノードを再帰的に処理
-    const processedArgs = node.arguments.map(arg => assignNodeTypes(arg));
-    return assignOperatorNodeType(node.operator, processedArgs);
-  }
-
-  // ブロックノードの処理（演算子がないが引数があるケース）
-  if (node.arguments !== undefined && node.arguments.length > 0) {
-    const processedArgs = node.arguments.map(arg => assignNodeTypes(arg));
-    
-    // 引数が1つだけの場合は、そのまま返す（不要なBlockを避ける）
-    if (processedArgs.length === 1) {
-      return processedArgs[0];
-    }
-
-    return {
-      type: "Block",
-      arguments: processedArgs
-    };
-  }
-
-  // その他のケース
-  return node;
-}
-
-/**
- * 値ノードに型情報を付与する
- * 
- * @param {Object} node - 値ノード
- * @returns {Object} 型情報が付与された値ノード
- */
-function assignValueNodeType(node) {
-  const value = node.value;
-
-  // 数値の場合
-  if (!isNaN(Number(value))) {
-    return {
-      type: "Number",
-      value: Number(value)
-    };
-  }
-  // 文字列リテラル（バッククォート）の場合
-  else if (typeof value === 'string' && value.startsWith("`") && value.endsWith("`")) {
-    return {
-      type: "String",
-      value: value.slice(1, -1)
-    };
-  }
-  // 文字リテラル（バックスラッシュ）の場合
-  else if (typeof value === 'string' && value.startsWith("\\")) {
-    return {
-      type: "Character",
-      value: value.slice(1)
-    };
-  }
-  // 単位（アンダースコア）の場合
-  else if (value === "_") {
-    return {
-      type: "Unit",
-      value: "_"
-    };
-  }
-  // それ以外は識別子として扱う
-  else {
-    return {
-      type: "Symbol",
-      value: value
-    };
-  }
-}
-
-/**
- * 演算子ノードに型情報を付与する
- * 
- * @param {string} operator - 演算子
- * @param {Array} args - 処理済みの引数ノード
- * @returns {Object} 型情報が付与された演算子ノード
- */
-function assignOperatorNodeType(operator, args) {
-  switch (operator) {
-    case ":":
-      // 左側が識別子の場合は定義
-      if (args[0] && args[0].type === "Symbol") {
         return {
-          type: "Definition",
-          operator: ":",
-          arguments: args
+          type: "BinaryOperation",
+          operator: operator,
+          left: left,
+          right: right
         };
       }
-      // それ以外は条件分岐
+
+      // 前置演算子パターンの検出
+      else if (isPrefixOperator(tokens[position])) {
+        const operator = tokens[position];
+        position++; // 演算子をスキップ
+        const argument = parseExpression();
+
+        return {
+          type: "UnaryOperation",
+          operator: operator,
+          prefix: true,
+          argument: argument
+        };
+      }
+
+      // 後置演算子パターンの検出
+      else if (position + 1 < tokens.length &&
+        isPostfixOperator(tokens[position + 1])) {
+
+        const argument = parseExpression();
+        const operator = tokens[position];
+        position++; // 演算子をスキップ
+
+        return {
+          type: "UnaryOperation",
+          operator: operator,
+          prefix: false,
+          argument: argument
+        };
+      }
+
+      // Get演算子の特別処理 (value ' key)
+      else if (position + 2 < tokens.length &&
+        tokens[position + 1] === "'") {
+
+        const target = parseExpression(); // 最初の式
+        position++; // "'"をスキップ
+        const key = parseExpression();
+
+        return {
+          type: "GetOperation",
+          target: target,
+          key: key
+        };
+      }
+
+      // リストセパレータ
+      else if (tokens[position] === "," || tokens[position] === " ") {
+        position++;
+        continue;
+      }
+
+      // その他のトークン
       else {
-        return {
-          type: "Conditional",
-          operator: ":",
-          arguments: args
-        };
+        elements.push(parseExpression());
       }
 
-    case "+":
-    case "-":
-    case "*":
-    case "/":
-    case "%":
-    case "^":
-      return {
-        type: "BinaryOperation",
-        operator: operator,
-        arguments: args
-      };
+      // 無限ループ防止
+      if (elementStartPos === position) {
+        console.warn(`警告: 位置 ${position} で進展がありません。トークン: ${tokens[position]}`);
+        position++; // 進展がない場合は強制的に進める
+      }
+    }
 
-    case "?":
-      return {
-        type: "Lambda",
-        operator: "?",
-        arguments: args
-      };
+    // 特別な処理: カッコ内に何もない場合の処理を追加
+    if (elements.length === 0) {
+      return { type: "EmptyList" };
+    }
 
-    case ",":
+    // 複数要素があればリスト、単一要素ならそのまま返す
+    if (elements.length > 1) {
       return {
-        type: "Product",
-        operator: ",",
-        arguments: args
+        type: "List",
+        elements: elements
       };
+    } else if (elements.length === 1) {
+      return elements[0];
+    }
+  }
 
-    case "~":
-      // 前置か後置か中置かで型が変わる - シンプル実装では位置判断難しいため必要に応じて拡張
-      return {
-        type: "RangeOrExpand",
-        operator: "~",
-        arguments: args
-      };
+  // メイン処理を開始
+  try {
+    const ast = parseExpression();
 
-    // 論理演算子
-    case "&":
-    case "|":
-    case ";":
-      return {
-        type: "LogicalOperation",
-        operator: operator,
-        arguments: args
-      };
+    // すべてのトークンが処理されたかチェック
+    if (position < tokens.length) {
+      console.warn(`警告: すべてのトークンが処理されていません。位置 ${position}/${tokens.length}`);
+    }
 
-    // 比較演算子
-    case "<":
-    case "<=":
-    case "=":
-    case ">=":
-    case ">":
-    case "!=":
-      return {
-        type: "Comparison",
-        operator: operator,
-        arguments: args
-      };
-
-    // @と#の処理（輸出入と取得）
-    case "@":
-    case "#":
-      return {
-        type: "IOOperation",
-        operator: operator,
-        arguments: args
-      };
-
-    // その他の演算子やデフォルト
-    default:
-      // デフォルトはApplicationとして扱う（空白演算子など）
-      return {
-        type: "Application",
-        operator: operator,
-        arguments: args
-      };
+    return ast;
+  } catch (error) {
+    throw new Error(`式木の構築に失敗しました: ${error.message}`);
   }
 }
 
 /**
- * 式木を整形された文字列として出力する
- * デバッグ用
+ * 式木を整形する（簡略化や最適化を行う）
  * 
- * @param {Object} tree - 出力する式木
- * @param {number} indent - インデントレベル
- * @returns {string} 整形された文字列
+ * @param {object} ast - 式木
+ * @returns {object} - 整形された式木
  */
-function formatExpressionTree(tree, indent = 0) {
-  if (!tree) {
-    return 'null';
+function formatExpressionTree(ast) {
+  if (!ast) return null;
+
+  // ディープコピーを作成
+  const result = JSON.parse(JSON.stringify(ast));
+
+  // 不要なプロパティを削除
+  function cleanup(node) {
+    if (!node || typeof node !== 'object') return;
+
+    // 再帰的に子ノードを処理
+    Object.keys(node).forEach(key => {
+      if (Array.isArray(node[key])) {
+        node[key].forEach(item => cleanup(item));
+      } else if (typeof node[key] === 'object') {
+        cleanup(node[key]);
+      }
+    });
   }
 
-  const spaces = ' '.repeat(indent * 2);
-  
-  // 値ノード
-  if (tree.value !== undefined) {
-    const type = tree.type ? `${tree.type}: ` : '';
-    return `${spaces}${type}${JSON.stringify(tree.value)}`;
-  }
-  
-  // 演算子ノード
-  if (tree.operator !== undefined) {
-    const type = tree.type ? `${tree.type}: ` : '';
-    let result = `${spaces}${type}${tree.operator}\n`;
-    
-    // 引数を再帰的に整形
-    if (tree.arguments && tree.arguments.length > 0) {
-      tree.arguments.forEach((arg, i) => {
-        result += `${spaces}  Arg${i+1}:\n${formatExpressionTree(arg, indent + 2)}\n`;
-      });
-    }
-    
-    return result;
-  }
-  
-  // ブロックノード
-  if (tree.arguments !== undefined) {
-    const type = tree.type ? `${tree.type}` : 'Block';
-    let result = `${spaces}${type}\n`;
-    
-    // 引数を再帰的に整形
-    if (tree.arguments.length > 0) {
-      tree.arguments.forEach((arg, i) => {
-        result += `${spaces}  Item${i+1}:\n${formatExpressionTree(arg, indent + 2)}\n`;
-      });
-    }
-    
-    return result;
-  }
-  
-  // その他のケース
-  return `${spaces}${JSON.stringify(tree)}`;
+  cleanup(result);
+  return result;
 }
 
-// モジュールのエクスポート
+// ユーティリティ関数
+function isOpenBracket(token) {
+  return token === "[" || token === "{" || token === "(";
+}
+
+function isCloseBracket(token) {
+  return token === "]" || token === "}" || token === ")";
+}
+
+function isIdentifier(token) {
+  // 識別子の判定
+  return /^[A-Za-z_][A-Za-z0-9_]*$/.test(token);
+}
+
+function isLiteral(token) {
+  // リテラルの判定（数値、文字列、文字）
+  return /^(\d+(\.\d+)?|`.*`|\\.)$/.test(token);
+}
+
+function isBinaryOperator(token) {
+  // 二項演算子の判定
+  const binaryOperators = [
+    "+", "-", "*", "/", "%", "^",
+    "&", "|", ";", // 論理演算子
+    "<", "<=", "=", ">=", ">", "!=", // 比較演算子
+    ":", "@", "'", "~", "," // その他の演算子
+  ];
+  return binaryOperators.includes(token);
+}
+
+function isPrefixOperator(token) {
+  // 前置演算子の判定
+  const prefixOperators = ["!", "~", "#", "@", "$"];
+  return prefixOperators.includes(token);
+}
+
+function isPostfixOperator(token) {
+  // 後置演算子の判定
+  const postfixOperators = ["!", "~", "@"];
+  return postfixOperators.includes(token);
+}
+
+function createLiteralOrIdentifier(token) {
+  if (isLiteral(token)) {
+    return {
+      type: "Literal",
+      value: token
+    };
+  } else {
+    return {
+      type: "Identifier",
+      name: token
+    };
+  }
+}
+
 module.exports = {
   buildExpressionTree,
-  assignNodeTypes,
   formatExpressionTree
 };

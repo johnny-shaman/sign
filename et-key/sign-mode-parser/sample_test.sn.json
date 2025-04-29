@@ -1,7 +1,7 @@
 {
   "sourceFile": ".\\sample_test.sn",
   "processorVersion": "0.1.0",
-  "processDate": "2025-04-26T05:06:10.582Z",
+  "processDate": "2025-04-28T13:24:35.624Z",
   "blockCount": 34,
   "blocks": [
     {
@@ -17,18 +17,15 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "x"
-          },
-          {
-            "type": "Number",
-            "value": 10
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "x"
+        },
+        "value": {
+          "type": "Literal",
+          "value": "10"
+        }
       }
     },
     {
@@ -44,18 +41,15 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "y"
-          },
-          {
-            "type": "Number",
-            "value": 20
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "y"
+        },
+        "value": {
+          "type": "Literal",
+          "value": "20"
+        }
       }
     },
     {
@@ -75,28 +69,23 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "z"
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "z"
+        },
+        "value": {
+          "type": "BinaryOperation",
+          "operator": "+",
+          "left": {
+            "type": "Identifier",
+            "name": "x"
           },
-          {
-            "type": "BinaryOperation",
-            "operator": "+",
-            "arguments": [
-              {
-                "type": "Symbol",
-                "value": "x"
-              },
-              {
-                "type": "Symbol",
-                "value": "y"
-              }
-            ]
+          "right": {
+            "type": "Identifier",
+            "name": "y"
           }
-        ]
+        }
       }
     },
     {
@@ -112,18 +101,15 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "hello"
-          },
-          {
-            "type": "String",
-            "value": "Hello"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "hello"
+        },
+        "value": {
+          "type": "Literal",
+          "value": "`Hello`"
+        }
       }
     },
     {
@@ -139,18 +125,15 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "world"
-          },
-          {
-            "type": "String",
-            "value": "World"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "world"
+        },
+        "value": {
+          "type": "Literal",
+          "value": "`World`"
+        }
       }
     },
     {
@@ -161,26 +144,42 @@
         "greeting",
         ":",
         "[",
+        "[",
         "hello",
         "\\ ",
         "world",
         "\\!",
         "]",
+        "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "greeting"
-          },
-          {
-            "type": "Symbol",
-            "value": "hello"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "greeting"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "Identifier",
+              "name": "hello"
+            },
+            {
+              "type": "Literal",
+              "value": "\\ "
+            },
+            {
+              "type": "Identifier",
+              "name": "world"
+            },
+            {
+              "type": "Literal",
+              "value": "\\!"
+            }
+          ]
+        }
       }
     },
     {
@@ -200,28 +199,23 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "sum"
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "sum"
+        },
+        "value": {
+          "type": "BinaryOperation",
+          "operator": "+",
+          "left": {
+            "type": "Identifier",
+            "name": "x"
           },
-          {
-            "type": "BinaryOperation",
-            "operator": "+",
-            "arguments": [
-              {
-                "type": "Symbol",
-                "value": "x"
-              },
-              {
-                "type": "Symbol",
-                "value": "y"
-              }
-            ]
+          "right": {
+            "type": "Identifier",
+            "name": "y"
           }
-        ]
+        }
       }
     },
     {
@@ -241,28 +235,23 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "product"
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "product"
+        },
+        "value": {
+          "type": "BinaryOperation",
+          "operator": "*",
+          "left": {
+            "type": "Identifier",
+            "name": "x"
           },
-          {
-            "type": "BinaryOperation",
-            "operator": "*",
-            "arguments": [
-              {
-                "type": "Symbol",
-                "value": "x"
-              },
-              {
-                "type": "Symbol",
-                "value": "y"
-              }
-            ]
+          "right": {
+            "type": "Identifier",
+            "name": "y"
           }
-        ]
+        }
       }
     },
     {
@@ -282,28 +271,23 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "power"
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "power"
+        },
+        "value": {
+          "type": "BinaryOperation",
+          "operator": "^",
+          "left": {
+            "type": "Identifier",
+            "name": "x"
           },
-          {
-            "type": "BinaryOperation",
-            "operator": "^",
-            "arguments": [
-              {
-                "type": "Symbol",
-                "value": "x"
-              },
-              {
-                "type": "Number",
-                "value": 2
-              }
-            ]
+          "right": {
+            "type": "Literal",
+            "value": "2"
           }
-        ]
+        }
       }
     },
     {
@@ -319,18 +303,15 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "factorial"
-          },
-          {
-            "type": "Symbol",
-            "value": "5!"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "factorial"
+        },
+        "value": {
+          "type": "Identifier",
+          "name": "5!"
+        }
       }
     },
     {
@@ -358,48 +339,44 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "is_valid"
-          },
-          {
-            "type": "LogicalOperation",
-            "operator": "&",
-            "arguments": [
-              {
-                "type": "Comparison",
-                "operator": ">=",
-                "arguments": [
-                  {
-                    "type": "Symbol",
-                    "value": "x"
-                  },
-                  {
-                    "type": "Number",
-                    "value": 0
-                  }
-                ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "is_valid"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "BinaryOperation",
+              "operator": ">=",
+              "left": {
+                "type": "Identifier",
+                "name": "x"
               },
-              {
-                "type": "Comparison",
-                "operator": "<=",
-                "arguments": [
-                  {
-                    "type": "Symbol",
-                    "value": "y"
-                  },
-                  {
-                    "type": "Number",
-                    "value": 100
-                  }
-                ]
+              "right": {
+                "type": "Literal",
+                "value": "0"
               }
-            ]
-          }
-        ]
+            },
+            {
+              "type": "Identifier",
+              "name": "&"
+            },
+            {
+              "type": "BinaryOperation",
+              "operator": "<=",
+              "left": {
+                "type": "Identifier",
+                "name": "y"
+              },
+              "right": {
+                "type": "Literal",
+                "value": "100"
+              }
+            }
+          ]
+        }
       }
     },
     {
@@ -421,101 +398,97 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "range"
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "range"
+        },
+        "value": {
+          "type": "BinaryOperation",
+          "operator": "~",
+          "left": {
+            "type": "Literal",
+            "value": "1"
           },
-          {
-            "type": "RangeOrExpand",
-            "operator": "~",
-            "arguments": [
-              {
-                "type": "Number",
-                "value": 1
-              },
-              {
-                "type": "Number",
-                "value": 10
-              }
-            ]
+          "right": {
+            "type": "Literal",
+            "value": "10"
           }
-        ]
+        }
       }
     },
     {
       "blockId": 13,
-      "originalText": "[group_calc : (x + y) * (z - 5)]",
+      "originalText": "[group_calc : [x + y] * [z - 5]]",
       "withParentheses": [
         "[",
         "group_calc",
         ":",
         "[",
-        "(",
+        "[",
         "[",
         "x",
         "+",
         "[",
         "y",
         "]",
-        ")",
+        "]",
         "*",
-        "(",
+        "[",
         "[",
         "z",
         "]",
         "-",
         "5",
         "]",
-        ")",
+        "]",
         "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "group_calc"
-          },
-          {
-            "type": "BinaryOperation",
-            "operator": "*",
-            "arguments": [
-              {
-                "type": "BinaryOperation",
-                "operator": "+",
-                "arguments": [
-                  {
-                    "type": "Symbol",
-                    "value": "x"
-                  },
-                  {
-                    "type": "Symbol",
-                    "value": "y"
-                  }
-                ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "group_calc"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "BinaryOperation",
+              "operator": "+",
+              "left": {
+                "type": "Identifier",
+                "name": "x"
               },
-              {
-                "type": "BinaryOperation",
-                "operator": "-",
-                "arguments": [
-                  {
-                    "type": "Symbol",
-                    "value": "z"
-                  },
-                  {
-                    "type": "Number",
-                    "value": 5
-                  }
-                ]
+              "right": {
+                "type": "Identifier",
+                "name": "y"
               }
-            ]
-          }
-        ]
+            },
+            {
+              "type": "Identifier",
+              "name": "*"
+            },
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "name": "z"
+                },
+                {
+                  "type": "Identifier",
+                  "name": "-"
+                },
+                {
+                  "type": "Literal",
+                  "value": "5"
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -556,100 +529,8 @@
         "]",
         "]"
       ],
-      "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "person"
-          },
-          {
-            "type": "Definition",
-            "operator": ":",
-            "arguments": [
-              {
-                "type": "Symbol",
-                "value": "name"
-              },
-              {
-                "type": "Product",
-                "operator": ",",
-                "arguments": [
-                  {
-                    "type": "String",
-                    "value": "John"
-                  },
-                  {
-                    "type": "Product",
-                    "operator": ",",
-                    "arguments": [
-                      {
-                        "type": "Definition",
-                        "operator": ":",
-                        "arguments": [
-                          {
-                            "type": "Symbol",
-                            "value": "age"
-                          },
-                          {
-                            "type": "Number",
-                            "value": 30
-                          }
-                        ]
-                      },
-                      {
-                        "type": "Definition",
-                        "operator": ":",
-                        "arguments": [
-                          {
-                            "type": "Symbol",
-                            "value": "contact"
-                          },
-                          {
-                            "type": "Product",
-                            "operator": ",",
-                            "arguments": [
-                              {
-                                "type": "Definition",
-                                "operator": ":",
-                                "arguments": [
-                                  {
-                                    "type": "Symbol",
-                                    "value": "email"
-                                  },
-                                  {
-                                    "type": "String",
-                                    "value": "john@example.com"
-                                  }
-                                ]
-                              },
-                              {
-                                "type": "Definition",
-                                "operator": ":",
-                                "arguments": [
-                                  {
-                                    "type": "Symbol",
-                                    "value": "phone"
-                                  },
-                                  {
-                                    "type": "String",
-                                    "value": "555-1234"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+      "expressionTree": null,
+      "expressionTreeError": "式木の構築に失敗しました: 閉じカッコがありません: 位置 8"
     },
     {
       "blockId": 15,
@@ -660,8 +541,10 @@
         ":",
         "[",
         "[",
+        "[",
         "a",
         "b",
+        "]",
         "?",
         "[",
         "a",
@@ -673,18 +556,45 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "add"
-          },
-          {
-            "type": "Symbol",
-            "value": "a"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "add"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "name": "a"
+                },
+                {
+                  "type": "Identifier",
+                  "name": "b"
+                }
+              ]
+            },
+            {
+              "type": "Identifier",
+              "name": "?"
+            },
+            {
+              "type": "BinaryOperation",
+              "operator": "+",
+              "left": {
+                "type": "Identifier",
+                "name": "a"
+              },
+              "right": {
+                "type": "Identifier",
+                "name": "b"
+              }
+            }
+          ]
+        }
       }
     },
     {
@@ -696,8 +606,10 @@
         ":",
         "[",
         "[",
+        "[",
         "a",
         "b",
+        "]",
         "?",
         "[",
         "a",
@@ -709,18 +621,45 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "multiply"
-          },
-          {
-            "type": "Symbol",
-            "value": "a"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "multiply"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "name": "a"
+                },
+                {
+                  "type": "Identifier",
+                  "name": "b"
+                }
+              ]
+            },
+            {
+              "type": "Identifier",
+              "name": "?"
+            },
+            {
+              "type": "BinaryOperation",
+              "operator": "*",
+              "left": {
+                "type": "Identifier",
+                "name": "a"
+              },
+              "right": {
+                "type": "Identifier",
+                "name": "b"
+              }
+            }
+          ]
+        }
       }
     },
     {
@@ -732,8 +671,10 @@
         ":",
         "[",
         "[",
+        "[",
         "base",
         "exp",
+        "]",
         "?",
         "[",
         "base",
@@ -745,42 +686,71 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "power_fn"
-          },
-          {
-            "type": "Symbol",
-            "value": "base"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "power_fn"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "name": "base"
+                },
+                {
+                  "type": "Identifier",
+                  "name": "exp"
+                }
+              ]
+            },
+            {
+              "type": "Identifier",
+              "name": "?"
+            },
+            {
+              "type": "BinaryOperation",
+              "operator": "^",
+              "left": {
+                "type": "Identifier",
+                "name": "base"
+              },
+              "right": {
+                "type": "Identifier",
+                "name": "exp"
+              }
+            }
+          ]
+        }
       }
     },
     {
       "blockId": 18,
-      "originalText": "[calc : x y ? (x + y) + (x - y) + (x * y)]",
+      "originalText": "[calc : x y ? [x + y] + [x - y] + [x * y]]",
       "withParentheses": [
         "[",
         "calc",
         ":",
         "[",
         "[",
+        "[",
         "x",
         "y",
+        "]",
         "?",
-        "(",
+        "[",
         "[",
         "x",
         "+",
         "[",
         "y",
         "]",
-        ")",
+        "]",
         "+",
-        "(",
+        "[",
         "[",
         "x",
         "]",
@@ -788,33 +758,102 @@
         "[",
         "y",
         "]",
-        ")",
+        "]",
         "+",
-        "(",
+        "[",
         "[",
         "x",
         "*",
         "y",
         "]",
         "]",
-        ")",
+        "]",
         "]",
         "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "calc"
-          },
-          {
-            "type": "Symbol",
-            "value": "x"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "calc"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "name": "x"
+                },
+                {
+                  "type": "Identifier",
+                  "name": "y"
+                }
+              ]
+            },
+            {
+              "type": "Identifier",
+              "name": "?"
+            },
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "BinaryOperation",
+                  "operator": "+",
+                  "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "name": "y"
+                  }
+                },
+                {
+                  "type": "Identifier",
+                  "name": "+"
+                },
+                {
+                  "type": "List",
+                  "elements": [
+                    {
+                      "type": "Identifier",
+                      "name": "x"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "-"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "y"
+                    }
+                  ]
+                },
+                {
+                  "type": "Identifier",
+                  "name": "+"
+                },
+                {
+                  "type": "BinaryOperation",
+                  "operator": "*",
+                  "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "name": "y"
+                  }
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -826,8 +865,10 @@
         ":",
         "[",
         "[",
+        "[",
         "x",
         "y",
+        "]",
         "?",
         "[",
         "[",
@@ -861,18 +902,100 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "matchTest"
-          },
-          {
-            "type": "Symbol",
-            "value": "x"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "matchTest"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "name": "x"
+                },
+                {
+                  "type": "Identifier",
+                  "name": "y"
+                }
+              ]
+            },
+            {
+              "type": "Identifier",
+              "name": "?"
+            },
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "List",
+                  "elements": [
+                    {
+                      "type": "BinaryOperation",
+                      "operator": "<",
+                      "left": {
+                        "type": "Identifier",
+                        "name": "x"
+                      },
+                      "right": {
+                        "type": "Identifier",
+                        "name": "y"
+                      }
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": ":"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "x"
+                    }
+                  ]
+                },
+                {
+                  "type": "List",
+                  "elements": [
+                    {
+                      "type": "BinaryOperation",
+                      "operator": "=",
+                      "left": {
+                        "type": "Identifier",
+                        "name": "x"
+                      },
+                      "right": {
+                        "type": "Identifier",
+                        "name": "y"
+                      }
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": ":"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "y"
+                    }
+                  ]
+                },
+                {
+                  "type": "BinaryOperation",
+                  "operator": "+",
+                  "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "name": "y"
+                  }
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -883,25 +1006,37 @@
         "result1",
         ":",
         "[",
+        "[",
         "add",
         "5",
         "10",
         "]",
+        "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "result1"
-          },
-          {
-            "type": "Symbol",
-            "value": "add"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "result1"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "Identifier",
+              "name": "add"
+            },
+            {
+              "type": "Literal",
+              "value": "5"
+            },
+            {
+              "type": "Literal",
+              "value": "10"
+            }
+          ]
+        }
       }
     },
     {
@@ -912,25 +1047,37 @@
         "result2",
         ":",
         "[",
+        "[",
         "multiply",
         "4",
         "8",
         "]",
+        "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "result2"
-          },
-          {
-            "type": "Symbol",
-            "value": "multiply"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "result2"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "Identifier",
+              "name": "multiply"
+            },
+            {
+              "type": "Literal",
+              "value": "4"
+            },
+            {
+              "type": "Literal",
+              "value": "8"
+            }
+          ]
+        }
       }
     },
     {
@@ -941,27 +1088,47 @@
         "list1",
         ":",
         "[",
+        "[",
         "1",
         "2",
         "3",
         "4",
         "5",
         "]",
+        "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "list1"
-          },
-          {
-            "type": "Number",
-            "value": 1
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "list1"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "Literal",
+              "value": "1"
+            },
+            {
+              "type": "Literal",
+              "value": "2"
+            },
+            {
+              "type": "Literal",
+              "value": "3"
+            },
+            {
+              "type": "Literal",
+              "value": "4"
+            },
+            {
+              "type": "Literal",
+              "value": "5"
+            }
+          ]
+        }
       }
     },
     {
@@ -993,58 +1160,47 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "list2"
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "list2"
+        },
+        "value": {
+          "type": "BinaryOperation",
+          "operator": ",",
+          "left": {
+            "type": "Literal",
+            "value": "1"
           },
-          {
-            "type": "Product",
+          "right": {
+            "type": "BinaryOperation",
             "operator": ",",
-            "arguments": [
-              {
-                "type": "Number",
-                "value": 1
+            "left": {
+              "type": "Literal",
+              "value": "2"
+            },
+            "right": {
+              "type": "BinaryOperation",
+              "operator": ",",
+              "left": {
+                "type": "Literal",
+                "value": "3"
               },
-              {
-                "type": "Product",
+              "right": {
+                "type": "BinaryOperation",
                 "operator": ",",
-                "arguments": [
-                  {
-                    "type": "Number",
-                    "value": 2
-                  },
-                  {
-                    "type": "Product",
-                    "operator": ",",
-                    "arguments": [
-                      {
-                        "type": "Number",
-                        "value": 3
-                      },
-                      {
-                        "type": "Product",
-                        "operator": ",",
-                        "arguments": [
-                          {
-                            "type": "Number",
-                            "value": 4
-                          },
-                          {
-                            "type": "Number",
-                            "value": 5
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                "left": {
+                  "type": "Literal",
+                  "value": "4"
+                },
+                "right": {
+                  "type": "Literal",
+                  "value": "5"
+                }
               }
-            ]
+            }
           }
-        ]
+        }
       }
     },
     {
@@ -1055,24 +1211,32 @@
         "combined",
         ":",
         "[",
+        "[",
         "list1",
         "list2",
+        "]",
         "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "combined"
-          },
-          {
-            "type": "Symbol",
-            "value": "list1"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "combined"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "Identifier",
+              "name": "list1"
+            },
+            {
+              "type": "Identifier",
+              "name": "list2"
+            }
+          ]
+        }
       }
     },
     {
@@ -1088,18 +1252,15 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "neg"
-          },
-          {
-            "type": "Symbol",
-            "value": "!true"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "neg"
+        },
+        "value": {
+          "type": "Identifier",
+          "name": "!true"
+        }
       }
     },
     {
@@ -1115,18 +1276,15 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "spread"
-          },
-          {
-            "type": "Symbol",
-            "value": "~combined"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "spread"
+        },
+        "value": {
+          "type": "Identifier",
+          "name": "~combined"
+        }
       }
     },
     {
@@ -1137,25 +1295,37 @@
         "factorials",
         ":",
         "[",
+        "[",
         "3!",
         "4!",
         "5!",
         "]",
+        "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "factorials"
-          },
-          {
-            "type": "Symbol",
-            "value": "3!"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "factorials"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "Identifier",
+              "name": "3!"
+            },
+            {
+              "type": "Identifier",
+              "name": "4!"
+            },
+            {
+              "type": "Identifier",
+              "name": "5!"
+            }
+          ]
+        }
       }
     },
     {
@@ -1167,25 +1337,18 @@
         ":",
         "[",
         "[",
+        "[",
         "*",
         "2",
         ",",
+        "]",
         "]",
         "list1",
         "]",
         "]"
       ],
-      "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "mapped_double"
-          },
-          null
-        ]
-      }
+      "expressionTree": null,
+      "expressionTreeError": "式木の構築に失敗しました: 閉じカッコがありません: 位置 11"
     },
     {
       "blockId": 29,
@@ -1203,18 +1366,19 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "reduced_sum"
-          },
-          {
-            "type": "Symbol",
-            "value": "+"
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "reduced_sum"
+        },
+        "value": {
+          "type": "PointFreeApplication",
+          "operator": "+",
+          "argument": {
+            "type": "Identifier",
+            "name": "list2"
           }
-        ]
+        }
       }
     },
     {
@@ -1234,28 +1398,23 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "range_list"
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "range_list"
+        },
+        "value": {
+          "type": "BinaryOperation",
+          "operator": "~",
+          "left": {
+            "type": "Literal",
+            "value": "1"
           },
-          {
-            "type": "RangeOrExpand",
-            "operator": "~",
-            "arguments": [
-              {
-                "type": "Number",
-                "value": 1
-              },
-              {
-                "type": "Number",
-                "value": 5
-              }
-            ]
+          "right": {
+            "type": "Literal",
+            "value": "5"
           }
-        ]
+        }
       }
     },
     {
@@ -1267,28 +1426,60 @@
         ":",
         "[",
         "[",
+        "[",
         "a",
         "~args",
+        "]",
         "?",
+        "[",
         "a",
         "args~",
+        "]",
         "]",
         "]",
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "rest_args"
-          },
-          {
-            "type": "Symbol",
-            "value": "a"
-          }
-        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "rest_args"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "name": "a"
+                },
+                {
+                  "type": "Identifier",
+                  "name": "~args"
+                }
+              ]
+            },
+            {
+              "type": "Identifier",
+              "name": "?"
+            },
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "Identifier",
+                  "name": "a"
+                },
+                {
+                  "type": "Identifier",
+                  "name": "args~"
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -1328,78 +1519,79 @@
         "]"
       ],
       "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "abs"
-          },
-          {
-            "type": "Lambda",
-            "operator": "?",
-            "arguments": [
-              {
-                "type": "Symbol",
-                "value": "x"
-              },
-              {
-                "type": "Product",
-                "operator": ",",
-                "arguments": [
-                  {
-                    "type": "Conditional",
-                    "operator": ":",
-                    "arguments": [
-                      {
-                        "type": "Comparison",
-                        "operator": ">=",
-                        "arguments": [
-                          {
-                            "type": "Symbol",
-                            "value": "x"
-                          },
-                          {
-                            "type": "Number",
-                            "value": 0
-                          }
-                        ]
+        "type": "Define",
+        "identifier": {
+          "type": "Identifier",
+          "name": "abs"
+        },
+        "value": {
+          "type": "List",
+          "elements": [
+            {
+              "type": "Identifier",
+              "name": "x"
+            },
+            {
+              "type": "Identifier",
+              "name": "?"
+            },
+            {
+              "type": "List",
+              "elements": [
+                {
+                  "type": "List",
+                  "elements": [
+                    {
+                      "type": "BinaryOperation",
+                      "operator": ">=",
+                      "left": {
+                        "type": "Identifier",
+                        "name": "x"
                       },
-                      {
-                        "type": "Symbol",
-                        "value": "x"
+                      "right": {
+                        "type": "Literal",
+                        "value": "0"
                       }
-                    ]
-                  },
-                  {
-                    "type": "Conditional",
-                    "operator": ":",
-                    "arguments": [
-                      {
-                        "type": "Comparison",
-                        "operator": "<",
-                        "arguments": [
-                          {
-                            "type": "Symbol",
-                            "value": "x"
-                          },
-                          {
-                            "type": "Number",
-                            "value": 0
-                          }
-                        ]
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": ":"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "x"
+                    }
+                  ]
+                },
+                {
+                  "type": "List",
+                  "elements": [
+                    {
+                      "type": "BinaryOperation",
+                      "operator": "<",
+                      "left": {
+                        "type": "Identifier",
+                        "name": "x"
                       },
-                      {
-                        "type": "Symbol",
-                        "value": "-x"
+                      "right": {
+                        "type": "Literal",
+                        "value": "0"
                       }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": ":"
+                    },
+                    {
+                      "type": "Identifier",
+                      "name": "-x"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     },
     {
@@ -1417,27 +1609,35 @@
         "data",
         ":",
         "[",
+        "[",
         "1",
         "2",
         "[",
         "3",
         "]",
+        "]",
         ",",
+        "[",
         "4",
         "5",
         "6",
+        "]",
         ",",
+        "[",
         "[",
         "7",
         "8",
         "9",
         "]",
         "]",
+        "]",
         "transform",
         ":",
         "[",
+        "[",
         "x",
         "y",
+        "]",
         "?",
         "[",
         "[",
@@ -1470,30 +1670,8 @@
         "]",
         "]"
       ],
-      "expressionTree": {
-        "type": "Definition",
-        "operator": ":",
-        "arguments": [
-          {
-            "type": "Symbol",
-            "value": "complex"
-          },
-          {
-            "type": "Definition",
-            "operator": ":",
-            "arguments": [
-              {
-                "type": "Symbol",
-                "value": "this"
-              },
-              {
-                "type": "Symbol",
-                "value": "data"
-              }
-            ]
-          }
-        ]
-      }
+      "expressionTree": null,
+      "expressionTreeError": "式木の構築に失敗しました: 閉じカッコがありません: 位置 33"
     },
     {
       "blockId": 34,
@@ -1519,50 +1697,8 @@
         "]",
         "]"
       ],
-      "expressionTree": {
-        "type": "Comparison",
-        "operator": "=",
-        "arguments": [
-          {
-            "type": "Application",
-            "operator": "'",
-            "arguments": [
-              {
-                "type": "Application",
-                "operator": "'",
-                "arguments": [
-                  {
-                    "type": "Application",
-                    "operator": "'",
-                    "arguments": [
-                      {
-                        "type": "Symbol",
-                        "value": "complex"
-                      },
-                      {
-                        "type": "Symbol",
-                        "value": "data"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "Number",
-                    "value": 0
-                  }
-                ]
-              },
-              {
-                "type": "Number",
-                "value": 1
-              }
-            ]
-          },
-          {
-            "type": "Number",
-            "value": 2
-          }
-        ]
-      }
+      "expressionTree": null,
+      "expressionTreeError": "式木の構築に失敗しました: 閉じカッコがありません: 位置 8"
     }
   ]
 }
