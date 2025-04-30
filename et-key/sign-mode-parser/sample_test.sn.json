@@ -1,7 +1,7 @@
 {
   "sourceFile": ".\\sample_test.sn",
   "processorVersion": "0.1.0",
-  "processDate": "2025-04-28T13:24:35.624Z",
+  "processDate": "2025-04-30T10:58:14.132Z",
   "blockCount": 34,
   "blocks": [
     {
@@ -18,6 +18,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "x"
@@ -42,6 +43,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "y"
@@ -70,6 +72,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "z"
@@ -102,6 +105,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "hello"
@@ -126,6 +130,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "world"
@@ -155,6 +160,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "greeting"
@@ -200,6 +206,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "sum"
@@ -236,6 +243,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "product"
@@ -272,6 +280,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "power"
@@ -304,6 +313,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "factorial"
@@ -340,42 +350,38 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "is_valid"
         },
         "value": {
-          "type": "List",
-          "elements": [
-            {
-              "type": "BinaryOperation",
-              "operator": ">=",
-              "left": {
-                "type": "Identifier",
-                "name": "x"
-              },
-              "right": {
-                "type": "Literal",
-                "value": "0"
-              }
-            },
-            {
+          "type": "BinaryOperation",
+          "operator": "&",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": ">=",
+            "left": {
               "type": "Identifier",
-              "name": "&"
+              "name": "x"
             },
-            {
-              "type": "BinaryOperation",
-              "operator": "<=",
-              "left": {
-                "type": "Identifier",
-                "name": "y"
-              },
-              "right": {
-                "type": "Literal",
-                "value": "100"
-              }
+            "right": {
+              "type": "Literal",
+              "value": "0"
             }
-          ]
+          },
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "<=",
+            "left": {
+              "type": "Identifier",
+              "name": "y"
+            },
+            "right": {
+              "type": "Literal",
+              "value": "100"
+            }
+          }
         }
       }
     },
@@ -399,6 +405,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "range"
@@ -447,47 +454,38 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "group_calc"
         },
         "value": {
-          "type": "List",
-          "elements": [
-            {
-              "type": "BinaryOperation",
-              "operator": "+",
-              "left": {
-                "type": "Identifier",
-                "name": "x"
-              },
-              "right": {
-                "type": "Identifier",
-                "name": "y"
-              }
-            },
-            {
+          "type": "BinaryOperation",
+          "operator": "*",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "+",
+            "left": {
               "type": "Identifier",
-              "name": "*"
+              "name": "x"
             },
-            {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "Identifier",
-                  "name": "z"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "-"
-                },
-                {
-                  "type": "Literal",
-                  "value": "5"
-                }
-              ]
+            "right": {
+              "type": "Identifier",
+              "name": "y"
             }
-          ]
+          },
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "-",
+            "left": {
+              "type": "Identifier",
+              "name": "z"
+            },
+            "right": {
+              "type": "Literal",
+              "value": "5"
+            }
+          }
         }
       }
     },
@@ -557,43 +555,36 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "add"
         },
         "value": {
-          "type": "List",
-          "elements": [
+          "type": "Lambda",
+          "operator": "?",
+          "left": [
             {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "Identifier",
-                  "name": "a"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "b"
-                }
-              ]
+              "type": "Identifier",
+              "name": "a"
             },
             {
               "type": "Identifier",
-              "name": "?"
-            },
-            {
-              "type": "BinaryOperation",
-              "operator": "+",
-              "left": {
-                "type": "Identifier",
-                "name": "a"
-              },
-              "right": {
-                "type": "Identifier",
-                "name": "b"
-              }
+              "name": "b"
             }
-          ]
+          ],
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "+",
+            "left": {
+              "type": "Identifier",
+              "name": "a"
+            },
+            "right": {
+              "type": "Identifier",
+              "name": "b"
+            }
+          }
         }
       }
     },
@@ -622,43 +613,36 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "multiply"
         },
         "value": {
-          "type": "List",
-          "elements": [
+          "type": "Lambda",
+          "operator": "?",
+          "left": [
             {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "Identifier",
-                  "name": "a"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "b"
-                }
-              ]
+              "type": "Identifier",
+              "name": "a"
             },
             {
               "type": "Identifier",
-              "name": "?"
-            },
-            {
-              "type": "BinaryOperation",
-              "operator": "*",
-              "left": {
-                "type": "Identifier",
-                "name": "a"
-              },
-              "right": {
-                "type": "Identifier",
-                "name": "b"
-              }
+              "name": "b"
             }
-          ]
+          ],
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "*",
+            "left": {
+              "type": "Identifier",
+              "name": "a"
+            },
+            "right": {
+              "type": "Identifier",
+              "name": "b"
+            }
+          }
         }
       }
     },
@@ -687,43 +671,36 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "power_fn"
         },
         "value": {
-          "type": "List",
-          "elements": [
+          "type": "Lambda",
+          "operator": "?",
+          "left": [
             {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "Identifier",
-                  "name": "base"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "exp"
-                }
-              ]
+              "type": "Identifier",
+              "name": "base"
             },
             {
               "type": "Identifier",
-              "name": "?"
-            },
-            {
-              "type": "BinaryOperation",
-              "operator": "^",
-              "left": {
-                "type": "Identifier",
-                "name": "base"
-              },
-              "right": {
-                "type": "Identifier",
-                "name": "exp"
-              }
+              "name": "exp"
             }
-          ]
+          ],
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "^",
+            "left": {
+              "type": "Identifier",
+              "name": "base"
+            },
+            "right": {
+              "type": "Identifier",
+              "name": "exp"
+            }
+          }
         }
       }
     },
@@ -774,85 +751,68 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "calc"
         },
         "value": {
-          "type": "List",
-          "elements": [
+          "type": "Lambda",
+          "operator": "?",
+          "left": [
             {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "Identifier",
-                  "name": "x"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "y"
-                }
-              ]
+              "type": "Identifier",
+              "name": "x"
             },
             {
               "type": "Identifier",
-              "name": "?"
-            },
-            {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "BinaryOperation",
-                  "operator": "+",
-                  "left": {
-                    "type": "Identifier",
-                    "name": "x"
-                  },
-                  "right": {
-                    "type": "Identifier",
-                    "name": "y"
-                  }
-                },
-                {
-                  "type": "Identifier",
-                  "name": "+"
-                },
-                {
-                  "type": "List",
-                  "elements": [
-                    {
-                      "type": "Identifier",
-                      "name": "x"
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": "-"
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": "y"
-                    }
-                  ]
-                },
-                {
-                  "type": "Identifier",
-                  "name": "+"
-                },
-                {
-                  "type": "BinaryOperation",
-                  "operator": "*",
-                  "left": {
-                    "type": "Identifier",
-                    "name": "x"
-                  },
-                  "right": {
-                    "type": "Identifier",
-                    "name": "y"
-                  }
-                }
-              ]
+              "name": "y"
             }
-          ]
+          ],
+          "right": {
+            "type": "BinaryOperation",
+            "operator": "+",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "+",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "+",
+                "left": {
+                  "type": "Identifier",
+                  "name": "x"
+                },
+                "right": {
+                  "type": "Identifier",
+                  "name": "y"
+                }
+              },
+              "right": {
+                "type": "BinaryOperation",
+                "operator": "-",
+                "left": {
+                  "type": "Identifier",
+                  "name": "x"
+                },
+                "right": {
+                  "type": "Identifier",
+                  "name": "y"
+                }
+              }
+            },
+            "right": {
+              "type": "BinaryOperation",
+              "operator": "*",
+              "left": {
+                "type": "Identifier",
+                "name": "x"
+              },
+              "right": {
+                "type": "Identifier",
+                "name": "y"
+              }
+            }
+          }
         }
       }
     },
@@ -903,86 +863,33 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "matchTest"
         },
         "value": {
-          "type": "List",
-          "elements": [
+          "type": "Lambda",
+          "operator": "?",
+          "left": [
             {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "Identifier",
-                  "name": "x"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "y"
-                }
-              ]
+              "type": "Identifier",
+              "name": "x"
             },
             {
               "type": "Identifier",
-              "name": "?"
-            },
-            {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "List",
-                  "elements": [
-                    {
-                      "type": "BinaryOperation",
-                      "operator": "<",
-                      "left": {
-                        "type": "Identifier",
-                        "name": "x"
-                      },
-                      "right": {
-                        "type": "Identifier",
-                        "name": "y"
-                      }
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": ":"
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": "x"
-                    }
-                  ]
-                },
-                {
-                  "type": "List",
-                  "elements": [
-                    {
-                      "type": "BinaryOperation",
-                      "operator": "=",
-                      "left": {
-                        "type": "Identifier",
-                        "name": "x"
-                      },
-                      "right": {
-                        "type": "Identifier",
-                        "name": "y"
-                      }
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": ":"
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": "y"
-                    }
-                  ]
-                },
-                {
+              "name": "y"
+            }
+          ],
+          "right": {
+            "type": "List",
+            "elements": [
+              {
+                "type": "ConditionalClause",
+                "operator": "]",
+                "condition": {
                   "type": "BinaryOperation",
-                  "operator": "+",
+                  "operator": "<",
                   "left": {
                     "type": "Identifier",
                     "name": "x"
@@ -991,10 +898,46 @@
                     "type": "Identifier",
                     "name": "y"
                   }
+                },
+                "result": {
+                  "type": "Identifier",
+                  "name": "x"
                 }
-              ]
-            }
-          ]
+              },
+              {
+                "type": "ConditionalClause",
+                "operator": "]",
+                "condition": {
+                  "type": "BinaryOperation",
+                  "operator": "=",
+                  "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                  },
+                  "right": {
+                    "type": "Identifier",
+                    "name": "y"
+                  }
+                },
+                "result": {
+                  "type": "Identifier",
+                  "name": "y"
+                }
+              },
+              {
+                "type": "BinaryOperation",
+                "operator": "+",
+                "left": {
+                  "type": "Identifier",
+                  "name": "x"
+                },
+                "right": {
+                  "type": "Identifier",
+                  "name": "y"
+                }
+              }
+            ]
+          }
         }
       }
     },
@@ -1016,6 +959,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "result1"
@@ -1057,6 +1001,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "result2"
@@ -1100,6 +1045,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "list1"
@@ -1161,6 +1107,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "list2"
@@ -1220,6 +1167,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "combined"
@@ -1253,6 +1201,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "neg"
@@ -1277,6 +1226,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "spread"
@@ -1305,6 +1255,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "factorials"
@@ -1367,6 +1318,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "reduced_sum"
@@ -1399,6 +1351,7 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "range_list"
@@ -1441,44 +1394,37 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "rest_args"
         },
         "value": {
-          "type": "List",
-          "elements": [
+          "type": "Lambda",
+          "operator": "?",
+          "left": [
             {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "Identifier",
-                  "name": "a"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "~args"
-                }
-              ]
+              "type": "Identifier",
+              "name": "a"
             },
             {
               "type": "Identifier",
-              "name": "?"
-            },
-            {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "Identifier",
-                  "name": "a"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "args~"
-                }
-              ]
+              "name": "~args"
             }
-          ]
+          ],
+          "right": {
+            "type": "List",
+            "elements": [
+              {
+                "type": "Identifier",
+                "name": "a"
+              },
+              {
+                "type": "Identifier",
+                "name": "args~"
+              }
+            ]
+          }
         }
       }
     },
@@ -1520,77 +1466,65 @@
       ],
       "expressionTree": {
         "type": "Define",
+        "operator": "]",
         "identifier": {
           "type": "Identifier",
           "name": "abs"
         },
         "value": {
-          "type": "List",
-          "elements": [
+          "type": "Lambda",
+          "operator": "?",
+          "left": [
             {
               "type": "Identifier",
               "name": "x"
-            },
-            {
-              "type": "Identifier",
-              "name": "?"
-            },
-            {
-              "type": "List",
-              "elements": [
-                {
-                  "type": "List",
-                  "elements": [
-                    {
-                      "type": "BinaryOperation",
-                      "operator": ">=",
-                      "left": {
-                        "type": "Identifier",
-                        "name": "x"
-                      },
-                      "right": {
-                        "type": "Literal",
-                        "value": "0"
-                      }
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": ":"
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": "x"
-                    }
-                  ]
-                },
-                {
-                  "type": "List",
-                  "elements": [
-                    {
-                      "type": "BinaryOperation",
-                      "operator": "<",
-                      "left": {
-                        "type": "Identifier",
-                        "name": "x"
-                      },
-                      "right": {
-                        "type": "Literal",
-                        "value": "0"
-                      }
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": ":"
-                    },
-                    {
-                      "type": "Identifier",
-                      "name": "-x"
-                    }
-                  ]
-                }
-              ]
             }
-          ]
+          ],
+          "right": {
+            "type": "List",
+            "elements": [
+              {
+                "type": "ConditionalClause",
+                "operator": "]",
+                "condition": {
+                  "type": "BinaryOperation",
+                  "operator": ">=",
+                  "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                  },
+                  "right": {
+                    "type": "Literal",
+                    "value": "0"
+                  }
+                },
+                "result": {
+                  "type": "Identifier",
+                  "name": "x"
+                }
+              },
+              {
+                "type": "ConditionalClause",
+                "operator": "]",
+                "condition": {
+                  "type": "BinaryOperation",
+                  "operator": "<",
+                  "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                  },
+                  "right": {
+                    "type": "Literal",
+                    "value": "0"
+                  }
+                },
+                "result": {
+                  "type": "Identifier",
+                  "name": "-x"
+                }
+              }
+            ]
+          }
         }
       }
     },

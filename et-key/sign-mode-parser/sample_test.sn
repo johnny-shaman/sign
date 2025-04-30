@@ -1,33 +1,61 @@
 ` sample.sn - Sign言語パーサーテスト用サンプルコード
 
+` ###########################
 ` 基本的な変数定義
 x : 10
-y : 20
-z : x + y
+`【LISP動確済】 (defvar x 10)
 
+y : 20
+`【LISP動確済】 (defvar y 20)
+
+z : x + y
+`【LISP動確済】 (defvar z (+ x y))
+
+` ###########################
 ` 文字列と文字リテラル
 hello : `Hello`
-world : `World`
-greeting : hello \  world \!
+`【LISP動確済】 (defvar hello "Hello")
 
+world : `World`
+`【LISP動確済】 (defvar world "World")
+
+greeting : hello \  world \!
+`【LISP動確未】 xxxxx
+
+` ###########################
 ` 数値リテラル - 様々な形式
 ` dec : 123.45
 ` hex : 0x1A2B
 ` bin : 0b1010
 
+` ###########################
 ` 基本的な算術演算
 sum : x + y
-product : x * y
-power : x ^ 2
-factorial : 5!
+`【LISP動確済】 (defvar sum (+ x y))
 
+product : x * y
+`【LISP動確済】 (defvar product (* x y))
+
+power : x ^ 2
+`【LISP動確済】 (defvar power (expt x 2))
+
+factorial : 5!
+`【LISP動確未】 xxxxx
+
+` ###########################
 ` 複合演算子
 is_valid : x >= 0 & y <= 100
-range : [1 ~ 10]
+`【LISP動確済】 (defvar is_valid (and (>= x 0) (<= y 100)))
 
+range : [1 ~ 10]
+`【LISP動確未】 xxxxx
+
+` ###########################
 ` ブロック構造（括弧）
 group_calc : (x + y) * (z - 5)
+`【LISP動確済】 (defvar group_calc (* (+ x y) (- z 5)))
 
+` ###########################
 ` ブロック構造（インデント）
 person :
 	name : `John`
@@ -35,12 +63,20 @@ person :
 	contact :
 		email : `john@example.com`
 		phone : `555-1234`
+`【LISP動確未】 xxxxx
 
+` ###########################
 ` ラムダ式（関数定義）
 add : a b ? a + b
-multiply : a b ? a * b
-power_fn : base exp ? base ^ exp
+`【LISP動確済】 (defun add (a b) (+ a b))
 
+multiply : a b ? a * b
+`【LISP動確済】 (defun multiply (a b) (* a b))
+
+power_fn : base exp ? base ^ exp
+`【LISP動確済】 (defun power_fn (base exp) (expt base exp))
+
+` ###########################
 ` インデントによるラムダ本体は、match_caseかモナド的な手続き計算のみ。
 ` 現状の仕様では手続き計算の特別構文化にインデントを用いなくていいので、match_caseを使って下さい。
 ` つまり、Signでは、愚直な言語的構成を行わなくてもプログラミングは出来るという思想があるので、同様の意味のコードは以下
@@ -52,46 +88,78 @@ power_fn : base exp ? base ^ exp
 `	sum + diff + product
 
 calc : x y ? (x + y) + (x - y) + (x * y)
+`【LISP動確済】 (defun calc (x y) (+ (+ (+ x y) (- x y)) (* x y)))
 
+` ###########################
 ` インデントによるラムダ本体
 matchTest : x y ?
 	x < y : x
 	x = y : y
 	x + y
+`【LISP動確済】 (defun matchTest (x y) (cond ((< x y) x) ((equal x y) y) (t (+ x y))))
 
 ` ポイントフリーな関数を含むラムダ式（これが意味解析できる重要性は、コンパイラの生成に絶対必要！）
 ` ★最新言語仕様で[ = x | ]の使い方許容しない認識のため、テストから除外
 ` digit : x ? [ = x | ] [\0 ~ \9]
 
+` ###########################
 ` 関数適用
 result1 : add 5 10
-result2 : multiply 4 8
+`【LISP動確済】 (defvar result1 (add 5 10))
 
+result2 : multiply 4 8
+`【LISP動確済】 (defvar result2 (multiply 4 8))
+
+` ###########################
 ` 特殊構文テスト
 list1 : 1 2 3 4 5
-list2 : 1, 2, 3, 4, 5
-combined : list1 list2
+`【LISP動確済】 (defvar list1 (list 1 2 3 4 5))
 
+list2 : 1, 2, 3, 4, 5
+`【LISP動確未】 xxxxx
+
+combined : list1 list2
+`【LISP動確未】 xxxxx
+
+` ###########################
 ` 前置演算子
 neg : !true
+`【LISP動確未】 xxxxx
+
 spread : ~combined
 ` 二重配列になることに注意！
 
+`【LISP動確未】 xxxxx
+
+
+` ###########################
 ` 後置演算子
 factorials : 3! 4! 5!
+`【LISP動確未】 xxxxx
 
+` ###########################
 ` ポイントフリースタイル
 mapped_double : [* 2,] list1
-reduced_sum : [+] list2
+`【LISP動確未】 xxxxx
 
+reduced_sum : [+] list2
+`【LISP動確未】 xxxxx
+
+
+` ###########################
 ` 文脈依存演算子のテスト
 range_list : 1 ~ 5
-rest_args : a ~args ? a args~
+`【LISP動確未】 xxxxx
 
+rest_args : a ~args ? a args~
+`【LISP動確未】 xxxxx
+
+` ###########################
 ` コンディショナル
 abs : x ?
 	x >= 0 : x
 	x < 0 : -x
+`【LISP動確未】 xxxxx
 
 ` コメント行と各種リテラルの混合
 ` types :
@@ -101,6 +169,7 @@ abs : x ?
 ` 	char : \$       ` 文字
 ` 	hex : 0xFF      ` 16進数
 
+` ###########################
 ` 複雑なネスト構造
 complex : this : 
 	data :
@@ -108,5 +177,8 @@ complex : this :
 		4 5 6,
 		7 8 9
 	transform : x y ? this ' data ' x * this ' data ' y + 1
+`【LISP動確未】 xxxxx
+
 
 complex ' data ' 0 ' 1 = 2
+`【LISP動確未】 xxxxx
