@@ -131,6 +131,9 @@ spread : ~combined
 
 `【LISP動確未】 xxxxx
 
+` ~ （残余引数リスト構築）
+tail : x ~y ? y
+`【LISP動確済】 (defun tail (x &rest y) y)
 
 ` ###########################
 ` 後置演算子
@@ -152,7 +155,7 @@ range_list : 1 ~ 5
 `【LISP動確未】 xxxxx
 
 rest_args : a ~args ? a args~
-`【LISP動確未】 xxxxx
+`【LISP動確済】 (defun rest_args (a &rest args) (list* a args))
 
 ` ###########################
 ` コンディショナル

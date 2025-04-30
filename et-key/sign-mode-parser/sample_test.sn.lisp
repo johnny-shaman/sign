@@ -1,5 +1,5 @@
 ;;; Generated LISP code from Sign language source: .\sample_test.sn
-;;; Generated on: 2025-04-30T10:58:14.127Z
+;;; Generated on: 2025-04-30T14:05:45.204Z
 ;;; Processor version: 0.1.0
 
 (defvar x 10)
@@ -52,12 +52,14 @@
 
 (defvar spread &rest combined)
 
+(defun tail (x &rest y) y)
+
 (defvar factorials (3! 4! 5!))
 
 (defvar reduced_sum ; PointFreeApplication型はまだ実装されていません)
 
 (defvar range_list (range 1 5))
 
-(defun rest_args (a &rest args) (apply #'a args))
+(defun rest_args (a &rest args) (list* a args))
 
 (defun abs (x) (cond ((>= x 0) x) ((< x 0) -x)))

@@ -12,7 +12,7 @@
  *   const lispCode = generateLispCode(expressionTree);
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250430_1
+ * ver_20250430_2
  */
 
 /**
@@ -55,7 +55,9 @@ function translateNode(node) {
       if (isRestParameter(node)) {
         return `&rest ${node.name.substring(1)}`;
       } else if (isSpreadOperator(node)) {
-        return `${node.name.slice(0, -1)}`; // 〜を除去した識別子名
+        // 後置〜の場合は文脈によって処理が異なるが、
+        // translateIdentifierで基本的な変換を行う
+        return translateIdentifier(node);
       }
       return translateIdentifier(node);
     case 'List':
@@ -159,6 +161,14 @@ function translateLiteral(node) {
  * @returns {string} 生成されたLISPコード
  */
 function translateIdentifier(node) {
+  // 後置〜の場合は特別処理
+  if (isSpreadOperator(node)) {
+    // 〜を除去して識別子名を取得
+    const baseName = node.name.slice(0, -1);
+    // ラムダ内などでの使用を想定し、単に識別子名を返す
+    // 実際の展開処理は親コンテキスト（Listなど）で行う
+    return baseName;
+  }
   return node.name;
 }
 
@@ -227,7 +237,7 @@ function translateFunctionApplication(node) {
 
       // normalArgsが空でなければリストとして連結
       if (normalArgs.length > 0) {
-        return `(apply #'${funcName} (list ${normalArgs.join(' ')} (append ${spreadArg})))`;
+        return `(apply #'${funcName} (append (list ${normalArgs.join(' ')}) ${spreadArg}))`;
       } else {
         return `(apply #'${funcName} ${spreadArg})`;
       }
@@ -252,6 +262,59 @@ function translateList(node) {
     return "nil";
   }
 
+  // 後置〜を含むか確認
+  const hasSpreadOperator = node.elements.some(elem =>
+    elem.type === 'Identifier' && isSpreadOperator(elem)
+  );
+
+  // 後置〜を含む場合の特別処理
+  if (hasSpreadOperator) {
+    // 最初の要素が識別子で、2番目の要素が後置〜を持つ識別子の場合
+    // これは「a args~」のパターン
+    if (node.elements.length === 2 &&
+      node.elements[0].type === 'Identifier' &&
+      node.elements[1].type === 'Identifier' &&
+      isSpreadOperator(node.elements[1])) {
+
+      const firstArg = translateNode(node.elements[0]);
+      const spreadArg = node.elements[1].name.slice(0, -1);
+
+      // cons または list* を使って先頭要素とリストを結合
+      return `(cons ${firstArg} ${spreadArg})`;
+    }
+
+    // その他の後置〜を含むリストの処理
+    const nonSpreadElems = node.elements
+      .filter(elem => !(elem.type === 'Identifier' && isSpreadOperator(elem)))
+      .map(elem => translateNode(elem));
+
+    const spreadElems = node.elements
+      .filter(elem => elem.type === 'Identifier' && isSpreadOperator(elem))
+      .map(elem => elem.name.slice(0, -1));
+
+    if (nonSpreadElems.length > 0 && spreadElems.length > 0) {
+      // 通常要素と展開要素の両方がある場合
+      const normalList = nonSpreadElems.length === 1
+        ? nonSpreadElems[0]
+        : `(list ${nonSpreadElems.join(' ')})`;
+
+      // 複数の展開要素がある場合
+      if (spreadElems.length > 1) {
+        const appendCalls = spreadElems.map(e => e).join(' ');
+        return `(append ${normalList} ${appendCalls})`;
+      } else {
+        // 1つの展開要素の場合
+        return `(append ${normalList} ${spreadElems[0]})`;
+      }
+    } else if (spreadElems.length > 0) {
+      // 展開要素のみの場合
+      if (spreadElems.length === 1) {
+        return spreadElems[0];
+      } else {
+        return `(append ${spreadElems.join(' ')})`;
+      }
+    }
+  }
   const elements = node.elements.map(elem => translateNode(elem)).join(' ');
   return `(list ${elements})`;
 }
@@ -345,6 +408,32 @@ function extractLambdaBody(node) {
     body.elements.some(e => e.type === 'ConditionalClause')) {
     return translateConditional(body);
   }
+
+  // 特殊なケースの処理
+  // rest_args : a ~args ? a args~ のパターン
+  if (body.type === 'List' && body.elements && body.elements.length === 2) {
+    const firstElem = body.elements[0];
+    const secondElem = body.elements[1];
+
+    if (firstElem.type === 'Identifier' &&
+      secondElem.type === 'Identifier' &&
+      isSpreadOperator(secondElem)) {
+
+      // a args~ パターンを検出
+      const paramName = translateNode(firstElem);
+      const restName = secondElem.name.slice(0, -1);
+
+      // 特殊変換: (list* a args) または (cons a args)
+      return `(list* ${paramName} ${restName})`;
+    }
+  }
+
+  // 0x40 # s~ のようなパターンの処理（現時点では実装せず）
+  // TODO: 将来的に実装する場合のプレースホルダー
+  // if (body に 0x40 # があり、後置〜も含む場合) {
+  //   // print関数のような特殊パターンの処理
+  //   // return `(mapc #'princ args)`;
+  // }
 
   // 通常の式の場合
   return translateNode(body);

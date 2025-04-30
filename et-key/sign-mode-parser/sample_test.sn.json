@@ -1,8 +1,8 @@
 {
   "sourceFile": ".\\sample_test.sn",
   "processorVersion": "0.1.0",
-  "processDate": "2025-04-30T10:58:14.132Z",
-  "blockCount": 34,
+  "processDate": "2025-04-30T14:05:45.208Z",
+  "blockCount": 35,
   "blocks": [
     {
       "blockId": 1,
@@ -1239,6 +1239,52 @@
     },
     {
       "blockId": 27,
+      "originalText": "[tail : x ~y ? y]",
+      "withParentheses": [
+        "[",
+        "tail",
+        ":",
+        "[",
+        "[",
+        "[",
+        "x",
+        "~y",
+        "]",
+        "?",
+        "y",
+        "]",
+        "]",
+        "]"
+      ],
+      "expressionTree": {
+        "type": "Define",
+        "operator": "]",
+        "identifier": {
+          "type": "Identifier",
+          "name": "tail"
+        },
+        "value": {
+          "type": "Lambda",
+          "operator": "?",
+          "left": [
+            {
+              "type": "Identifier",
+              "name": "x"
+            },
+            {
+              "type": "Identifier",
+              "name": "~y"
+            }
+          ],
+          "right": {
+            "type": "Identifier",
+            "name": "y"
+          }
+        }
+      }
+    },
+    {
+      "blockId": 28,
       "originalText": "[factorials : 3! 4! 5!]",
       "withParentheses": [
         "[",
@@ -1280,7 +1326,7 @@
       }
     },
     {
-      "blockId": 28,
+      "blockId": 29,
       "originalText": "[mapped_double : [* 2,] list1]",
       "withParentheses": [
         "[",
@@ -1302,7 +1348,7 @@
       "expressionTreeError": "式木の構築に失敗しました: 閉じカッコがありません: 位置 11"
     },
     {
-      "blockId": 29,
+      "blockId": 30,
       "originalText": "[reduced_sum : [+] list2]",
       "withParentheses": [
         "[",
@@ -1334,7 +1380,7 @@
       }
     },
     {
-      "blockId": 30,
+      "blockId": 31,
       "originalText": "[range_list : 1 ~ 5]",
       "withParentheses": [
         "[",
@@ -1371,7 +1417,7 @@
       }
     },
     {
-      "blockId": 31,
+      "blockId": 32,
       "originalText": "[rest_args : a ~args ? a args~]",
       "withParentheses": [
         "[",
@@ -1429,7 +1475,7 @@
       }
     },
     {
-      "blockId": 32,
+      "blockId": 33,
       "originalText": "[abs : x ?\n\tx >= 0 : x\n\tx < 0 : -x]",
       "withParentheses": [
         "[",
@@ -1529,7 +1575,7 @@
       }
     },
     {
-      "blockId": 33,
+      "blockId": 34,
       "originalText": "[complex : this :\n\tdata :\n\t\t1 2 3,\n\t\t4 5 6,\n\t\t7 8 9\n\ttransform : x y ? this ' data ' x * this ' data ' y + 1]",
       "withParentheses": [
         "[",
@@ -1608,7 +1654,7 @@
       "expressionTreeError": "式木の構築に失敗しました: 閉じカッコがありません: 位置 33"
     },
     {
-      "blockId": 34,
+      "blockId": 35,
       "originalText": "[complex ' data ' 0 ' 1 = 2]",
       "withParentheses": [
         "[",
