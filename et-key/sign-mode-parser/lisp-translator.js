@@ -12,7 +12,7 @@
  *   const lispCode = generateLispCode(expressionTree);
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250428_0
+ * ver_20250430_2
  */
 
 /**
@@ -51,17 +51,33 @@ function translateNode(node) {
     case 'Literal':
       return translateLiteral(node);
     case 'Identifier':
+      // 前置〜と後置〜の処理
+      if (isRestParameter(node)) {
+        return `&rest ${node.name.substring(1)}`;
+      } else if (isSpreadOperator(node)) {
+        // 後置〜の場合は文脈によって処理が異なるが、
+        // translateIdentifierで基本的な変換を行う
+        return translateIdentifier(node);
+      }
       return translateIdentifier(node);
     case 'List':
       // リストの内容を確認して条件分岐かどうかを判断
-      if (isLambdaDefinition(node)) {
-        return translateLambda(node);
-      }   
       if (isConditionalPattern(node)) {
         return translateConditional(node);
       }
-      // それ以外のリストは未実装
-      return "; List型の条件分岐以外はまだ実装されていません";
+      // 関数適用パターンの確認
+      if (isFunctionApplication(node)) {
+        return translateFunctionApplication(node);
+      }
+      // 通常のリスト
+      return translateList(node);
+    case 'Lambda':
+      return translateLambda(node);
+    case 'ConditionalClause':
+      // ConditionalClause型ノードの処理
+      const condition = translateNode(node.condition);
+      const result = translateNode(node.result);
+      return `(${condition} ${result})`;
     // 他のケースは順次実装
     case 'Function':
       // return translateFunction(node);
@@ -85,10 +101,17 @@ function translateDefine(node) {
   const value = translateNode(node.value);
 
   // 値がラムダ式の場合、defunを使用する
-  if (node.value && node.value.type === 'List' && isLambdaDefinition(node.value)) {
-    const params = extractLambdaParams(node.value);
+  if (node.value && node.value.type === 'Lambda') {
+    const [params, restParam] = extractLambdaParametersWithRest(node.value);
+
+    // パラメータリストの作成
+    let paramList = params.join(' ');
+    if (restParam) {
+      paramList += (params.length > 0 ? ' &rest ' : '&rest ') + restParam;
+    }
+
     const body = extractLambdaBody(node.value);
-    return `(defun ${identifier} (${params.join(' ')}) ${body})`;
+    return `(defun ${identifier} (${paramList}) ${body})`;
   } else {
     // それ以外はdefvarを使用
     return `(defvar ${identifier} ${value})`;
@@ -105,6 +128,11 @@ function translateBinaryOperation(node) {
   const operator = operatorMap[node.operator] || node.operator;
   const left = translateNode(node.left);
   const right = translateNode(node.right);
+
+  // 範囲演算子〜の特別処理
+  if (node.operator === '~') {
+    return `(range ${left} ${right})`;
+  }
 
   return `(${operator} ${left} ${right})`;
 }
@@ -133,7 +161,162 @@ function translateLiteral(node) {
  * @returns {string} 生成されたLISPコード
  */
 function translateIdentifier(node) {
+  // 後置〜の場合は特別処理
+  if (isSpreadOperator(node)) {
+    // 〜を除去して識別子名を取得
+    const baseName = node.name.slice(0, -1);
+    // ラムダ内などでの使用を想定し、単に識別子名を返す
+    // 実際の展開処理は親コンテキスト（Listなど）で行う
+    return baseName;
+  }
   return node.name;
+}
+
+/**
+ * 識別子が前置〜かどうかをチェック
+ * 
+ * @param {Object} node - Identifier型ノード
+ * @returns {boolean} 前置〜ならtrue
+ */
+function isRestParameter(node) {
+  return node.type === 'Identifier' && node.name.startsWith('~');
+}
+
+/**
+ * 識別子が後置〜かどうかをチェック
+ * 
+ * @param {Object} node - Identifier型ノード
+ * @returns {boolean} 後置〜ならtrue
+ */
+function isSpreadOperator(node) {
+  return node.type === 'Identifier' && node.name.endsWith('~');
+}
+
+/**
+ * ノードが関数適用パターンかどうかをチェック
+ * 
+ * @param {Object} node - チェックするノード
+ * @returns {boolean} 関数適用パターンならtrue
+ */
+function isFunctionApplication(node) {
+  return node.type === 'List' &&
+    node.elements &&
+    node.elements.length > 0 &&
+    node.elements[0].type === 'Identifier';
+}
+
+/**
+ * 関数適用パターンをLISPコードに変換
+ * 
+ * @param {Object} node - 関数適用ノード
+ * @returns {string} 生成されたLISPコード
+ */
+function translateFunctionApplication(node) {
+  const funcName = node.elements[0].name;
+  const args = node.elements.slice(1);
+
+  // 後置〜を含むかチェック
+  const spreadArgs = args.filter(arg =>
+    arg.type === 'Identifier' && isSpreadOperator(arg)
+  );
+
+  if (spreadArgs.length > 0) {
+    // 単一の後置〜引数
+    if (args.length === 1 && isSpreadOperator(args[0])) {
+      const listName = args[0].name.slice(0, -1);
+      return `(apply #'${funcName} ${listName})`;
+    }
+
+    // 複数引数（通常引数 + 後置〜）
+    else {
+      const normalArgs = args
+        .filter(arg => !isSpreadOperator(arg))
+        .map(arg => translateNode(arg));
+
+      const spreadArg = spreadArgs[0].name.slice(0, -1);
+
+      // normalArgsが空でなければリストとして連結
+      if (normalArgs.length > 0) {
+        return `(apply #'${funcName} (append (list ${normalArgs.join(' ')}) ${spreadArg}))`;
+      } else {
+        return `(apply #'${funcName} ${spreadArg})`;
+      }
+    }
+  }
+
+  // 通常の関数適用
+  else {
+    const translatedArgs = args.map(arg => translateNode(arg)).join(' ');
+    return `(${funcName} ${translatedArgs})`;
+  }
+}
+
+/**
+ * リストをLISPコードに変換
+ * 
+ * @param {Object} node - リストノード
+ * @returns {string} 生成されたLISPコード
+ */
+function translateList(node) {
+  if (!Array.isArray(node.elements) || node.elements.length === 0) {
+    return "nil";
+  }
+
+  // 後置〜を含むか確認
+  const hasSpreadOperator = node.elements.some(elem =>
+    elem.type === 'Identifier' && isSpreadOperator(elem)
+  );
+
+  // 後置〜を含む場合の特別処理
+  if (hasSpreadOperator) {
+    // 最初の要素が識別子で、2番目の要素が後置〜を持つ識別子の場合
+    // これは「a args~」のパターン
+    if (node.elements.length === 2 &&
+      node.elements[0].type === 'Identifier' &&
+      node.elements[1].type === 'Identifier' &&
+      isSpreadOperator(node.elements[1])) {
+
+      const firstArg = translateNode(node.elements[0]);
+      const spreadArg = node.elements[1].name.slice(0, -1);
+
+      // cons または list* を使って先頭要素とリストを結合
+      return `(cons ${firstArg} ${spreadArg})`;
+    }
+
+    // その他の後置〜を含むリストの処理
+    const nonSpreadElems = node.elements
+      .filter(elem => !(elem.type === 'Identifier' && isSpreadOperator(elem)))
+      .map(elem => translateNode(elem));
+
+    const spreadElems = node.elements
+      .filter(elem => elem.type === 'Identifier' && isSpreadOperator(elem))
+      .map(elem => elem.name.slice(0, -1));
+
+    if (nonSpreadElems.length > 0 && spreadElems.length > 0) {
+      // 通常要素と展開要素の両方がある場合
+      const normalList = nonSpreadElems.length === 1
+        ? nonSpreadElems[0]
+        : `(list ${nonSpreadElems.join(' ')})`;
+
+      // 複数の展開要素がある場合
+      if (spreadElems.length > 1) {
+        const appendCalls = spreadElems.map(e => e).join(' ');
+        return `(append ${normalList} ${appendCalls})`;
+      } else {
+        // 1つの展開要素の場合
+        return `(append ${normalList} ${spreadElems[0]})`;
+      }
+    } else if (spreadElems.length > 0) {
+      // 展開要素のみの場合
+      if (spreadElems.length === 1) {
+        return spreadElems[0];
+      } else {
+        return `(append ${spreadElems.join(' ')})`;
+      }
+    }
+  }
+  const elements = node.elements.map(elem => translateNode(elem)).join(' ');
+  return `(list ${elements})`;
 }
 
 /**
@@ -146,63 +329,61 @@ function isConditionalPattern(node) {
   if (!Array.isArray(node.elements) || node.elements.length < 2) {
     return false;
   }
-  
+
   // 条件分岐パターンの特徴: 各要素がList型で、その中に条件と結果のペアがある
-  return node.elements.some(element => 
-    element.type === 'List' && 
-    element.elements && 
-    element.elements.some(subElem => 
-      subElem.type === 'Identifier' && 
+  return node.elements.some(element =>
+    element.type === 'List' &&
+    element.elements &&
+    element.elements.some(subElem =>
+      subElem.type === 'ConditionalClause' &&
       subElem.name === ':'
     )
   );
 }
 
 /**
- * ラムダ定義パターンかどうかをチェック
- * 
- * @param {Object} node - チェックするノード
- * @returns {boolean} ラムダ定義パターンならtrue
- */
-function isLambdaDefinition(node) {
-  if (!Array.isArray(node.elements) || node.elements.length < 3) {
-    return false;
-  }
-  
-  // ラムダ定義の特徴: 第2要素が ? 演算子
-  const secondElement = node.elements[1];
-  return secondElement && 
-         secondElement.type === 'Identifier' && 
-         secondElement.name === '?';
-}
-
-/**
- * ラムダ式の引数リストを抽出
+ * ラムダ式の引数リストから前置〜パラメータを抽出
  * 
  * @param {Object} node - ラムダノード
- * @returns {Array} 引数名の配列
+ * @returns {Array} [通常パラメータ, 残余パラメータ] の組
  */
-function extractLambdaParams(node) {
-  if (!isLambdaDefinition(node)) {
-    return [];
+function extractLambdaParametersWithRest(node) {
+  if (node.type !== 'Lambda') {
+    return [[], null];
   }
-  
-  const paramsNode = node.elements[0];
-  
-  // 引数が単一の識別子の場合
-  if (paramsNode.type === 'Identifier') {
-    return [paramsNode.name];
+
+  let normalParams = [];
+  let restParam = null;
+
+  // Lambda ノードの left プロパティから引数リストを取得
+  const params = node.left;
+
+  // 単一の識別子の場合
+  if (!Array.isArray(params) && params.type === 'Identifier') {
+    if (isRestParameter(params)) {
+      restParam = params.name.substring(1);
+    } else {
+      normalParams = [params.name];
+    }
+    return [normalParams, restParam];
   }
-  
-  // 引数がリストの場合
-  if (paramsNode.type === 'List' && Array.isArray(paramsNode.elements)) {
-    return paramsNode.elements
-      .filter(elem => elem.type === 'Identifier')
-      .map(elem => elem.name);
+
+  // 複数の引数（配列）の場合
+  if (Array.isArray(params)) {
+    params.forEach(param => {
+      if (param.type === 'Identifier') {
+        if (isRestParameter(param)) {
+          restParam = param.name.substring(1);
+        } else {
+          normalParams.push(param.name);
+        }
+      }
+    });
   }
-  
-  return [];
+
+  return [normalParams, restParam];
 }
+
 
 /**
  * ラムダ式の本体を抽出して変換
@@ -211,30 +392,51 @@ function extractLambdaParams(node) {
  * @returns {string} 変換されたラムダ本体
  */
 function extractLambdaBody(node) {
-  if (!isLambdaDefinition(node)) {
+  if (node.type !== 'Lambda') {
     return "nil";
   }
-  
-  // 本体部分（3番目以降の要素）
-  const bodyElements = node.elements.slice(2);
-  
-  // 本体が条件分岐の場合
-  if (bodyElements.length > 0 && isConditionalPattern({ type: 'List', elements: bodyElements })) {
-    return translateConditional({ type: 'List', elements: bodyElements });
+
+  // Lambda ノードの right プロパティから本体を取得
+  const body = node.right;
+
+  if (!body) {
+    return "nil";
   }
-  
-  // 本体が単一の要素の場合
-  if (bodyElements.length === 1) {
-    return translateNode(bodyElements[0]);
+
+  // 本体がList型で条件分岐を含む場合
+  if (body.type === 'List' && body.elements &&
+    body.elements.some(e => e.type === 'ConditionalClause')) {
+    return translateConditional(body);
   }
-  
-  // 本体が複数の要素の場合（複合式として扱う）
-  if (bodyElements.length > 1) {
-    const translatedElements = bodyElements.map(elem => translateNode(elem)).join(" ");
-    return `(progn ${translatedElements})`;
+
+  // 特殊なケースの処理
+  // rest_args : a ~args ? a args~ のパターン
+  if (body.type === 'List' && body.elements && body.elements.length === 2) {
+    const firstElem = body.elements[0];
+    const secondElem = body.elements[1];
+
+    if (firstElem.type === 'Identifier' &&
+      secondElem.type === 'Identifier' &&
+      isSpreadOperator(secondElem)) {
+
+      // a args~ パターンを検出
+      const paramName = translateNode(firstElem);
+      const restName = secondElem.name.slice(0, -1);
+
+      // 特殊変換: (list* a args) または (cons a args)
+      return `(list* ${paramName} ${restName})`;
+    }
   }
-  
-  return "nil";
+
+  // 0x40 # s~ のようなパターンの処理（現時点では実装せず）
+  // TODO: 将来的に実装する場合のプレースホルダー
+  // if (body に 0x40 # があり、後置〜も含む場合) {
+  //   // print関数のような特殊パターンの処理
+  //   // return `(mapc #'princ args)`;
+  // }
+
+  // 通常の式の場合
+  return translateNode(body);
 }
 
 /**
@@ -246,55 +448,40 @@ function extractLambdaBody(node) {
 function translateConditional(node) {
   // cond構文を構築
   let condClauses = [];
-  
-  for (const element of node.elements) {
-    if (element.type === 'List' && element.elements) {
-      // ':' の位置を見つける
-      const colonIndex = element.elements.findIndex(e => 
-        e.type === 'Identifier' && e.name === ':'
-      );
-      
-      if (colonIndex !== -1 && colonIndex < element.elements.length - 1) {
-        // 条件部分と結果部分を抽出
-        const condition = element.elements.slice(0, colonIndex);
-        const result = element.elements.slice(colonIndex + 1);
-        
+  const elements = node.elements || [];
+
+  // ConditionalClause型の要素を処理
+  for (const element of elements) {
+    if (element.type === 'ConditionalClause') {
+      // 条件と結果を抽出
+      const condition = element.condition;
+      const result = element.result;
+
+      if (condition && result) {
         // 条件を変換
-        let conditionCode;
-        if (condition.length === 1) {
-          conditionCode = translateNode(condition[0]);
-        } else if (condition.length === 3 && condition[1].type === 'Identifier') {
-          // 二項演算の条件の場合（例: x > 0）
-          const operator = operatorMap[condition[1].name] || condition[1].name;
-          const left = translateNode(condition[0]);
-          const right = translateNode(condition[2]);
-          conditionCode = `(${operator} ${left} ${right})`;
-        } else {
-          conditionCode = 't'; // 複雑な条件はまだサポートしていないので常にtrue
-        }
-        
+        const conditionCode = translateNode(condition);
         // 結果を変換
-        let resultCode;
-        if (result.length === 1) {
-          resultCode = translateNode(result[0]);
-        } else {
-          // 複雑な結果はまだサポートしていない
-          resultCode = "'unsupported-result";
-        }
-        
+        const resultCode = translateNode(result);
+
         condClauses.push(`(${conditionCode} ${resultCode})`);
       }
     } else {
-      // デフォルト節として扱う（たとえばelse節に相当）
+      // ConditionalClause型でない要素はデフォルト節として扱う
       const defaultResult = translateNode(element);
-      condClauses.push(`(t ${defaultResult})`);
+      // すでに条件節があれば、これをelse節として追加
+      if (condClauses.length > 0) {
+        condClauses.push(`(t ${defaultResult})`);
+      } else {
+        // 条件節がなければそのまま返す
+        return defaultResult;
+      }
     }
   }
-  
+
   if (condClauses.length === 0) {
     return "nil";
   }
-  
+
   return `(cond ${condClauses.join(" ")})`;
 }
 
@@ -305,13 +492,23 @@ function translateConditional(node) {
  * @returns {string} 生成されたLISPコード
  */
 function translateLambda(node) {
-  // 引数リストの取得
-  const params = extractLambdaParams(node);
-  
+  if (node.type !== 'Lambda') {
+    return "nil";
+  }
+
+  // 引数リストの取得（残余パラメータ対応）
+  const [params, restParam] = extractLambdaParametersWithRest(node);
+
+  // パラメータリストの作成
+  let paramList = params.join(' ');
+  if (restParam) {
+    paramList += (params.length > 0 ? ' &rest ' : '&rest ') + restParam;
+  }
+
   // ラムダ本体の変換
   const body = extractLambdaBody(node);
-  
-  return `(lambda (${params.join(' ')}) ${body})`;
+
+  return `(lambda (${paramList}) ${body})`;
 }
 
 /**
@@ -333,7 +530,7 @@ const operatorMap = {
   '&': 'and',
   '|': 'or',
   ';': 'xor',
-  '~': 'sequence'  // 範囲リスト用
+  '~': 'range'  // 範囲リスト用
 };
 
 /**

@@ -9,6 +9,7 @@
 - 字句解析：入力テキストをトークン配列に変換
 - 式木生成：モードベース処理によるトークンから式木への変換
 - JSON出力：解析結果の簡易的な出力
+- LISP出力：式木からLISPへの出力
 
 ## 必要環境
 
@@ -22,29 +23,30 @@
 ## 使用方法
 
 ```bash
-# 標準出力に結果を表示
+# 結果をJSON、LISPファイルに保存
 node index.js <入力ファイル>
-
-# 結果をJSONファイルに保存
-node index.js <入力ファイル> --out
 ```
 
 ### 例
 
 ```bash
-# sample.snファイルを解析
+# sample.snファイルをJSON、LISPファイルに保存
 node index.js sample.sn
-
-# 結果をファイルに保存
-node index.js sample.sn --out
 ```
 
 ## ファイル構成
 
-- `lexer.js`: 字句解析器（トークン化処理）
-- `builder.js`: 式木ビルダー（モードベース処理実装）
 - `index.js`: メインプログラム（ファイル入出力とエントリポイント）
-- `sample.sn`: テスト用サンプルコード
+- `preprocessor.js`: ソースコードからコメントと空行を削除し、空白を正規化するモジュール
+- `block-extractor.js`: ソースコードからコードブロックを抽出するモジュール
+- `tokenizer.js`: ソースコードをトークン化するモジュール
+- `parenthesis-inserter.js`: トークン配列に適切なカッコを挿入するモジュール
+- `expression-tree-builder.js`: 式木生成モジュール
+- `lisp-translator.js`: LISPコードへの変換モジュール
+- `operator-precedence.js`: Sign言語の演算子優先順位と関連情報を定義するモジュール
+- `sample_test.sn`: テスト用サンプルコード
+- `sample_test.sn.json`: トークン化～式木変換までの結果
+- `sample_test.sn.lisp`: LISP変換後のコード
 
 ## 制限事項
 

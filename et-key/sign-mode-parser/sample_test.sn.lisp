@@ -1,5 +1,5 @@
 ;;; Generated LISP code from Sign language source: .\sample_test.sn
-;;; Generated on: 2025-04-28T13:24:35.619Z
+;;; Generated on: 2025-04-30T14:05:45.204Z
 ;;; Processor version: 0.1.0
 
 (defvar x 10)
@@ -12,7 +12,7 @@
 
 (defvar world "World")
 
-(defvar greeting ; List型の条件分岐以外はまだ実装されていません)
+(defvar greeting (hello \  world \!))
 
 (defvar sum (+ x y))
 
@@ -22,11 +22,11 @@
 
 (defvar factorial 5!)
 
-(defvar is_valid ; List型の条件分岐以外はまだ実装されていません)
+(defvar is_valid (and (>= x 0) (<= y 100)))
 
-(defvar range (sequence 1 10))
+(defvar range (range 1 10))
 
-(defvar group_calc ; List型の条件分岐以外はまだ実装されていません)
+(defvar group_calc (* (+ x y) (- z 5)))
 
 (defun add (a b) (+ a b))
 
@@ -34,30 +34,32 @@
 
 (defun power_fn (base exp) (expt base exp))
 
-(defun calc (x y) ; List型の条件分岐以外はまだ実装されていません)
+(defun calc (x y) (+ (+ (+ x y) (- x y)) (* x y)))
 
 (defun matchTest (x y) (cond ((< x y) x) ((equal x y) y) (t (+ x y))))
 
-(defvar result1 ; List型の条件分岐以外はまだ実装されていません)
+(defvar result1 (add 5 10))
 
-(defvar result2 ; List型の条件分岐以外はまだ実装されていません)
+(defvar result2 (multiply 4 8))
 
-(defvar list1 ; List型の条件分岐以外はまだ実装されていません)
+(defvar list1 (list 1 2 3 4 5))
 
 (defvar list2 (, 1 (, 2 (, 3 (, 4 5)))))
 
-(defvar combined ; List型の条件分岐以外はまだ実装されていません)
+(defvar combined (list1 list2))
 
 (defvar neg !true)
 
-(defvar spread ~combined)
+(defvar spread &rest combined)
 
-(defvar factorials ; List型の条件分岐以外はまだ実装されていません)
+(defun tail (x &rest y) y)
+
+(defvar factorials (3! 4! 5!))
 
 (defvar reduced_sum ; PointFreeApplication型はまだ実装されていません)
 
-(defvar range_list (sequence 1 5))
+(defvar range_list (range 1 5))
 
-(defun rest_args (a ~args) ; List型の条件分岐以外はまだ実装されていません)
+(defun rest_args (a &rest args) (list* a args))
 
 (defun abs (x) (cond ((>= x 0) x) ((< x 0) -x)))
