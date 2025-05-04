@@ -12,8 +12,11 @@
  *   const lispCode = generateLispCode(expressionTree);
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250430_2
+ * ver_20250503_0
  */
+
+// 予約語チェック用モジュールのインポート
+const { isReservedName, makeSafeIdentifier } = require('./lisp-reserved-names');
 
 /**
  * 式木をLISPコードに変換するメイン関数
@@ -134,6 +137,11 @@ function translateBinaryOperation(node) {
     return `(range ${left} ${right})`;
   }
 
+  // 単項マイナスの特別処理
+  if (node.operator === '-' && !left) {
+    return `(- ${right})`;
+  }
+
   return `(${operator} ${left} ${right})`;
 }
 
@@ -161,15 +169,18 @@ function translateLiteral(node) {
  * @returns {string} 生成されたLISPコード
  */
 function translateIdentifier(node) {
+  let identifier = node.name;
+
   // 後置〜の場合は特別処理
   if (isSpreadOperator(node)) {
     // 〜を除去して識別子名を取得
-    const baseName = node.name.slice(0, -1);
-    // ラムダ内などでの使用を想定し、単に識別子名を返す
-    // 実際の展開処理は親コンテキスト（Listなど）で行う
-    return baseName;
+    identifier = node.name.slice(0, -1);
   }
-  return node.name;
+  // 予約語チェックと変換
+  // makeSafeIdentifierは内部でisReservedNameをチェックする
+  identifier = makeSafeIdentifier(identifier);
+
+  return identifier;
 }
 
 /**
@@ -212,7 +223,8 @@ function isFunctionApplication(node) {
  * @returns {string} 生成されたLISPコード
  */
 function translateFunctionApplication(node) {
-  const funcName = node.elements[0].name;
+  const originalFuncName = node.elements[0].name;
+  const funcName = makeSafeIdentifier(originalFuncName);
   const args = node.elements.slice(1);
 
   // 後置〜を含むかチェック
@@ -224,7 +236,8 @@ function translateFunctionApplication(node) {
     // 単一の後置〜引数
     if (args.length === 1 && isSpreadOperator(args[0])) {
       const listName = args[0].name.slice(0, -1);
-      return `(apply #'${funcName} ${listName})`;
+      const safeListName = makeSafeIdentifier(listName);
+      return `(apply #'${funcName} ${safeListName})`;
     }
 
     // 複数引数（通常引数 + 後置〜）
@@ -234,12 +247,13 @@ function translateFunctionApplication(node) {
         .map(arg => translateNode(arg));
 
       const spreadArg = spreadArgs[0].name.slice(0, -1);
+      const safeSpreadArg = makeSafeIdentifier(spreadArg);
 
       // normalArgsが空でなければリストとして連結
       if (normalArgs.length > 0) {
-        return `(apply #'${funcName} (append (list ${normalArgs.join(' ')}) ${spreadArg}))`;
+        return `(apply #'${funcName} (append (list ${normalArgs.join(' ')}) ${safeSpreadArg}))`;
       } else {
-        return `(apply #'${funcName} ${spreadArg})`;
+        return `(apply #'${funcName} ${safeSpreadArg})`;
       }
     }
   }
@@ -362,8 +376,9 @@ function extractLambdaParametersWithRest(node) {
   if (!Array.isArray(params) && params.type === 'Identifier') {
     if (isRestParameter(params)) {
       restParam = params.name.substring(1);
+      restParam = makeSafeIdentifier(restParam);
     } else {
-      normalParams = [params.name];
+      normalParams = [makeSafeIdentifier(params.name)];
     }
     return [normalParams, restParam];
   }
@@ -374,8 +389,9 @@ function extractLambdaParametersWithRest(node) {
       if (param.type === 'Identifier') {
         if (isRestParameter(param)) {
           restParam = param.name.substring(1);
+          restParam = makeSafeIdentifier(restParam);
         } else {
-          normalParams.push(param.name);
+          normalParams.push(makeSafeIdentifier(param.name));
         }
       }
     });
@@ -428,11 +444,30 @@ function extractLambdaBody(node) {
     }
   }
 
-  // 0x40 # s~ のようなパターンの処理（現時点では実装せず）
-  // TODO: 将来的に実装する場合のプレースホルダー
-  // if (body に 0x40 # があり、後置〜も含む場合) {
-  //   // print関数のような特殊パターンの処理
-  //   // return `(mapc #'princ args)`;
+  // // 0x40 # s~ のようなパターン検出（print関数パターン）
+  // // ★最小実装の暫定処理とする★
+  // if (body.type === 'BinaryOperation' && body.elements && body.elements.length >= 2) {
+  //   // 最初の要素がLiteralで16進数の場合
+  //   const firstElem = body.elements[0];
+
+  //   // 16進数と#演算子のパターン検出
+  //   if (firstElem.type === 'Literal' &&
+  //     typeof firstElem.value === 'string' &&
+  //     firstElem.value === '0x40') {
+
+  //     // 後置〜を含む要素を検索
+  //     const spreadElem = body.elements.find(elem =>
+  //       elem.type === 'Identifier' && isSpreadOperator(elem)
+  //     );
+
+  //     if (spreadElem) {
+  //       // print関数パターンを検出
+  //       const restName = spreadElem.name.slice(0, -1);
+
+  //       // 標準出力への出力と推定（printfのようなもの）
+  //       return `(mapc #'princ ${restName})`;
+  //     }
+  //   }
   // }
 
   // 通常の式の場合
