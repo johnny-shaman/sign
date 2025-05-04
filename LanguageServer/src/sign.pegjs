@@ -2,7 +2,7 @@ Start = e:Program* {return e.join("");}
 
 Program
   = 
-  (Export / Define)
+  (Export / Define / KVS)
   / Expression // can Calculate Syntax
   / Import
   / Literal // can Constantic Syntax
@@ -12,13 +12,15 @@ Program
 Assigns = Export
 
 Export = export? Define
-Define = (tag _ be _)* Literal
+Define = (tag _ be _)* KVS
+KVS = BlockStart (tag / string) _ be _ Literal
 
 Literal
   = Function
   / Stream
   / List
   / atom
+  / KVS
 
 Function
   = Compose
@@ -26,11 +28,12 @@ Function
   / Pointless
   / tag
 
-  Compose = (tag / Closuer / Pointless) (__ Compose)*
+  Compose = ( tag / Closuer / Pointless ) (__ Compose)*
 
-  Closuer = (Arguments / unit) _ f _ Output
-
+  Closuer = ( Arguments / unit ) _ f _ ( Expression / Pointless / Match_case )
     Arguments = (tag __)* lift? tag
+    Match_case = (BlockStart Condition _ be _ Function)+ Expression
+    Condition = not? (tag / Literal) (_ (compare / orxor / and) _ Condition)*
 
   Pointless
     = "(" (DirectMap / DirectFold) ")"
@@ -68,10 +71,11 @@ Additive = Multiple (_ additive _ Additive)*
 Multiple = Power (_ multiple _ Multiple)*
 Power = Factrial (_ pow _ Additive)*
 Factrial = Absolute factrial*
-Absolute = "|" (Additive / Get) "|"
+Absolute = "|" (Additive / Negate) "|"
+Negate = "-"? Get
 Flat = Set flat*
 Set = Get (_ be _ Apply)*
-Get = (tag / List / Import) (_ get _ key)*
+Get = (tag / List / Import / KVS) (_ get _ key)*
 Get_r = (key __ get_r __)*  (tag / List / Import)
 Import = Input import
 Input = input Expression
