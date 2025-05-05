@@ -481,7 +481,7 @@ The reason is that loops and conditional branches are implemented using lambdas.
     This method provides a practical solution for lambdas.
 
     ```javascript
-    map : f x ~y ? @f x, map $f y~
+    map : f x ~y ? @f x, map f y~
     map $[+ 2] 1 2 3 4
     ```
 

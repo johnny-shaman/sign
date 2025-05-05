@@ -481,7 +481,7 @@ hello sign = `Hello Sign!`
     この方法は、ラムダに対しての現実的な解決策を提供する。
 
     ```javascript
-    map : f x ~y ? @f x, map @$f y~
+    map : f x ~y ? @f x, map f y~
     map $[+ 2] 1 2 3 4
     ```
 
