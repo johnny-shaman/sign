@@ -477,6 +477,13 @@ The reason is that loops and conditional branches are implemented using lambdas.
      [* 2,] 1 2 3 4
      ```
 
+4. ### Higher order function Usage
+    (Example)
+    ```javascript
+    map : f x ~y ? @f x, map $f y~
+    map $[+ 2] 1 2 3 4
+    ```
+
 ## `,`	(product infix operator *) []({#　,-(product-infix-operator-*)})
 
 `,` is an operator representing a product and is used to define lists.
