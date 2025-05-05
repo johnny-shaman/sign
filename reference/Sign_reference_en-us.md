@@ -299,14 +299,14 @@ However, most operators can be properly inserted with spaces through input compl
       * `)`
 
 
-## `#`	(export prefix operator) []({#　-#(export-prefix-operator)})
+## `#`	(export prefix operator) []({#-number(export-prefix-operator)})
 
 (Example with define)
 ```javascript
 #hello : `hello`
 ```
 
-## `:`	(define infix operator *) []({#　:-(define-infix-operator-*)})
+## `:`	(define infix operator *) []({#-colon(define-infix-operator-star)})
 
 The reason define has the lowest priority in this language is that it is used to define other functions or operations under different names.
 It's possible to nest as syntax, in which case it becomes a dictionary type.
@@ -325,11 +325,11 @@ calc :
 		sub : \-
 	multiply :
 		mul : \*
-		div : /
-		mod : %
+		div : \/
+		mod : \%
 ```
 
-## `#`	(output infix operator) []({#　#-(output-infix-operator)})
+## `#`	(output infix operator) []({#-number(output-infix-operator)})
 
 It's possible to get specific IO addresses or memory addresses. The type is as follows:
 
@@ -342,7 +342,7 @@ It's possible to get specific IO addresses or memory addresses. The type is as f
 	print t~
 ```
 
-## ` `	(coproduct infix operator) []({#　-(coproduct-infix-operator)})
+## ` `	(coproduct infix operator) []({#-space(coproduct-infix-operator)})
 
 The act of separating tokens with spaces represents an operation.
 However, it's more rational for the system to understand coproduct as a simple token delimiter.
@@ -361,7 +361,7 @@ The operator takes the following types, and their behaviors are listed below:
 
 (Example)
 ```javascript
-1 2 3 = 1,2,3
+[1 2 3] = 1,2,3
 1,2,3 4,5,6 = 1,2,3,4,5,6
 `hello` \  `world!` = `hello world!`
 
@@ -384,7 +384,7 @@ hello sign = `Hello Sign!`
 [* 2,] [+] 1 2 3 4 = 20
 ```
 
-## `?`	(lambda construction infix operator *) []({#　?-(lambda-construction-infix-operator-*)})
+## `?`	(lambda construction infix operator *) []({#-question(lambda-construction-infix-operator-star)})
 
 `?` defines a lambda (anonymous function).
 This functionality is a core feature of Sign, so I'd like to explain it with abundant concrete examples.
@@ -477,14 +477,15 @@ The reason is that loops and conditional branches are implemented using lambdas.
      [* 2,] 1 2 3 4
      ```
 
-4. ### Higher order function Usage
-    (Example)
+4. ### Higher-order functions apply reference passing
+    This method provides a practical solution for lambdas.
+
     ```javascript
     map : f x ~y ? @f x, map $f y~
     map $[+ 2] 1 2 3 4
     ```
 
-## `,`	(product infix operator *) []({#　,-(product-infix-operator-*)})
+## `,`	(product infix operator *) []({#-comma(product-infix-operator-star)})
 
 `,` is an operator representing a product and is used to define lists.
 When separating non-functions with spaces, product and coproduct uniquely correspond.
@@ -501,7 +502,7 @@ Thus, even functions can be directly added to the argument list by separating th
 F [* 2] , 1 , 2 , 3
 ```
 
-## `~`	(range list construction infix operator) []({#　~-(range-list-construction-infix-operator)})
+## `~`	(range list construction infix operator) []({#-tilde(range-list-construction-infix-operator)})
 
 Note that `~` has different meanings as prefix, postfix, and infix!
 
@@ -520,7 +521,7 @@ It's also easy to use when getting a specific range from a list.
 [\a ~ \z]
 ```
 
-## `~`	(rest argument list construction prefix operator) []({#　~　(rest-argument-list-construction-prefix-operator)})
+## `~`	(rest argument list construction prefix operator) []({#-tilde(rest-argument-list-construction-prefix-operator)})
 
 Note that `~` has different meanings as prefix, postfix, and infix!
 
@@ -542,7 +543,7 @@ y = _ : x
 ] 0
 ```
 
-## `;`	(xor infix operator) []({#　;　(xor-infix-operator)})
+## `;`	(xor infix operator) []({#-semicolon(xor-infix-operator)})
 
 From here, we'll explain the operators for specific operational operations.
 
@@ -551,26 +552,26 @@ In Sign, since numeric 0 or an empty list is false, there is no explicit boolean
 This operator is purely for logical operations.
 All logical operations are short-circuit evaluated.
 
-## `|`	(or infix operator) []({#　|　(or-infix-operator)})
+## `|`	(or infix operator) []({#-pipe(or-infix-operator)})
 
 `|` is an infix operator for logical OR.
 This operator is purely for logical operations.
 All logical operations are short-circuit evaluated.
 
-## `&`	(and infix operator) []({#　&　(and-infix-operator)})
+## `&`	(and infix operator) []({#-ampersand(and-infix-operator)})
 
 `&` is an infix operator for logical AND.
 This operator is purely for logical operations.
 All logical operations are short-circuit evaluated.
 
-## `!`	(not prefix operator) []({#　!　(not-prefix-operator)})
+## `!`	(not prefix operator) []({#-exclamation(not-prefix-operator)})
 
 `!` is a prefix operator for negation.
 Note that the `!` postfix operator is factorial.
 This operator is purely for logical operations.
 All logical operations are short-circuit evaluated.
 
-## `<`	(less infix operator) []({#　<-(less-infix-operator)})
+## `<`	(less infix operator) []({#-less(less-infix-operator)})
 
 From here, we'll explain comparison operators.
 In Sign, it's possible to write polynomials of all comparison operators.
@@ -587,29 +588,29 @@ Less is true if the left is smaller.
 [x y ? [[[3 < x & x] = y & y] < 20 & y]]
 ```
 
-## `<=`	(less equal infix operator) []({#　<=　(less-equal-infix-operator)})
+## `<=`	(less equal infix operator) []({#-lessequal(less-equal-infix-operator)})
 
 Less equal is true if the left is less than or equal to the right.
 
-## `=`	(equal infix operator) []({#　=　(equal-infix-operator)})
+## `=`	(equal infix operator) []({#-equal(equal-infix-operator)})
 
 Equal is true if the left and right are equal.
 Equal can also compare lists or strings.
 
-## `>=`	(more equal infix operator) []({#　>=　(more-equal-infix-operator)})
+## `>=`	(more equal infix operator) []({#-moreequal(more-equal-infix-operator)})
 
 More equal is true if the left is greater than or equal to the right.
 
-## `>`	(more infix operator) []({#　>　(more-infix-operator)})
+## `>`	(more infix operator) []({#-more(more-infix-operator)})
 
 More is true if the left is larger.
 
-## `!=`	(not equal infix operator) []({#　!=　(not-equal-infix-operator)})
+## `!=`	(not equal infix operator) []({#-notequal(not-equal-infix-operator)})
 
 Not equal is true if the left and right are not equal.
 Not equal can also compare lists or strings.
 
-## Absolute value (About absolute value notation) []({#　about-absolute-value-notation})
+## Absolute value (About absolute value notation) []({#-about-absolute-value-notation})
 
 From here, we'll explain arithmetic operators.
 In Sign, absolute value is expressed by an expression enclosed in `|` and has computational rules as an absolute value block.
@@ -619,33 +620,33 @@ In this case, the distinction from the or operator is determined as an or operat
 ||x + y| - 5|
 ```
 
-## `+`	(addition infix operator) []({#　+-(addition-infix-operator)})
+## `+`	(addition infix operator) []({#-plus(addition-infix-operator)})
 
 Addition... that is, an operator that performs general addition.
 
-## `-`	(subtraction infix operator) []({#　--(subtraction-infix-operator)})
+## `-`	(subtraction infix operator) []({#-minus(subtraction-infix-operator)})
 
 Subtraction... that is, an operator that performs general subtraction.
 
-## `*`	(multiplication infix operator) []({#　*-(multiplication-infix-operator)})
+## `*`	(multiplication infix operator) []({#-asterisk(multiplication-infix-operator)})
 
 Multiplication... that is, an operator that performs general multiplication.
 
-## `/`	(division infix operator) []({#　/-(division-infix-operator)})
+## `/`	(division infix operator) []({#-slash(division-infix-operator)})
 
 Division... that is, an operator that performs general division.
 
-## `%`	(modulus infix operator) []({#　%-(modulus-infix-operator)})
+## `%`	(modulus infix operator) []({#-percent(modulus-infix-operator)})
 
 Modulus... that is, an operator that calculates only the remainder.
 
-## `^`	(power infix operator *) []({#　^-(power-infix-operator-*)})
+## `^`	(power infix operator *) []({#-caret(power-infix-operator-star)})
 
 Power... that is, an operator that performs exponentiation.
 If the right side is written in division, it's possible to calculate the nth root.
 If the right side becomes a negative number, it becomes a series of divisions.
 
-## `!`	(factorial postfix operator) []({#　!-(factorial-postfix-operator)})
+## `!`	(factorial postfix operator) []({#-exclamation(factorial-postfix-operator)})
 
 Factorial is a postfix operator.
 It's simply realized as syntactic sugar.
@@ -656,7 +657,7 @@ It's simply realized as syntactic sugar.
 [*] [1 ~ 5]
 1 * 2 * 3 * 4 * 5
 ```
-## `~`	(expansion postfix operator) []({#　~-(expansion-postfix-operator)})
+## `~`	(expansion postfix operator) []({#-tilde(expansion-postfix-operator)})
 
 Note that `~` has different meanings as prefix, postfix, and infix!
 
@@ -687,7 +688,7 @@ IO@~
 say `hello!`
 ```
 
-## `$`	(address acquisition prefix operator) []({#　$　(address-acquisition-prefix-operator)})
+## `$`	(address acquisition prefix operator) []({#-dollar(address-acquisition-prefix-operator)})
 Returns the address that holds the value of an identifier.
 The type is as follows:
 
@@ -730,7 +731,7 @@ $@a = 0xF000
 @$@a = @a
 ```
 
-## `'`	(get infix operator) []({#　'-(get-infix-operator)})
+## `'`	(get infix operator) []({#-quote(get-infix-operator)})
 
 The `'` infix operator obtains a specific value from the target. If there is no corresponding value, it returns Unit.
 By adding the `:` infix operator afterwards, it's possible to rewrite the target value.
@@ -754,7 +755,7 @@ car :
 car ' brand ' 0 : `Foo`
 ```
 
-## `@`	(get infix operator *) []({#　@(get-infix-operator-*)})
+## `@`	(get infix operator *) []({#-at(get-infix-operator-star)})
 
 The `@` infix operator obtains a specific value from the target, so it's the right identity version of `'`.
 The reason why both right and left identities exist is for the unification of import-time notation.
@@ -772,12 +773,12 @@ car :
 0 @ brand @ car
 ```
 
-## `↵`	(evaluation postfix operator) []({#(evaluation-postfix-operator)})
+## `↵`	(evaluation postfix operator) []({#evaluation-postfix-operator})
 
 The evaluation operator has the same meaning as the system's delimiter for token groups by line. Therefore, a newline is used.
 It's just possible to view a newline as nothing more than an operator indicating that the line can be evaluated.
 
-## `@`	(import postfix operator) []({#　@　(import-postfix-operator)})
+## `@`	(import postfix operator) []({#-at(import-postfix-operator)})
 
 The `@` postfix operator is used when importing files or libraries. The type is as follows:
 
@@ -793,7 +794,7 @@ IO@ ' say `hello`
 myFunc : myFunc @ `myObject`@
 ```
 
-## `@`	(input prefix operator) []({#　@　(input-prefix-operator)})
+## `@`	(input prefix operator) []({#-at(input-prefix-operator)})
 
 The `@` prefix operator handles references to address values... that is, input.
 The type is as follows:
@@ -802,10 +803,7 @@ The type is as follows:
 `@[Identifier → Hexadecimal]`
 
 
-
-
-
-## About Block Construction []({#　about-block-construction})
+## About Block Construction []({#about-block-construction})
 
 The block construction prefix operator is the construction of blocks by indentation.
 
@@ -820,7 +818,7 @@ The block construction prefix operator is the construction of blocks by indentat
 ```
 The following inline block construction with parentheses has the same meaning, so it's omitted.
 
-# Type Description
+# Type Description []({#type-description})
 
 Parts enclosed in `"` are treated as type definitions and acquisitions.
 ```
