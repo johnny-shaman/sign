@@ -74,7 +74,7 @@ multiply : a b ? a * b
 `【LISP動確済】 (defun multiply (a b) (* a b))
 
 power_fn : base exp ? base ^ exp
-`【LISP動確済】 (defun power_fn (base exp) (expt base exp))
+`【LISP動確済】 (defun power_fn (base exp_sign) (expt base exp_sign))
 
 ` ###########################
 ` インデントによるラムダ本体は、match_caseかモナド的な手続き計算のみ。
@@ -161,7 +161,7 @@ rest_args : a ~args ? a args~
 ` コンディショナル
 abs : x ?
 	x >= 0 : x
-	x < 0 : -x
+	x < 0 : -1 * x
 `【LISP動確未】 xxxxx
 
 ` コメント行と各種リテラルの混合

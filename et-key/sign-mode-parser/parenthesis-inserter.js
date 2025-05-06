@@ -9,7 +9,7 @@
  * - 特殊演算子の処理
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250427_0
+ * ver_20250502_0
  */
 
 // 演算子優先度情報をインポート
@@ -255,16 +255,6 @@ function classifyTokens(tokens, context) {
         else if (operatorInfo.isBlockEnd(token)) {
             info.type = 'block_end';
         }
-        // 前置演算子
-        else if (isPrefixOperator(token, tokens, i)) {
-            info.type = 'prefix_operator';
-            info.precedence = operatorInfo.getPrecedence(token, 'prefix');
-        }
-        // 後置演算子
-        else if (isPostfixOperator(token, tokens, i)) {
-            info.type = 'postfix_operator';
-            info.precedence = operatorInfo.getPrecedence(token, 'postfix');
-        }
         // 中置演算子
         else if (isInfixOperator(token, tokens, i)) {
             info.type = 'infix_operator';
@@ -367,7 +357,7 @@ function processConsecutiveLiterals(tokens, context) {
                         isFunctionApplication ? 'function_application' :
                             'literal_group'
                 });
-            }   
+            }
         }
 
         // 次のトークンへ
@@ -439,6 +429,7 @@ function identifyStructures(tokens, context) {
             // 見つからなければ0を使用
             if (paramStart < 0) paramStart = 0;
 
+            // ラムダの直前が引数末尾
             const paramEnd = lambdaPos - 1;
 
             // 本体部分の範囲特定
@@ -471,10 +462,10 @@ function identifyStructures(tokens, context) {
                 bodyEnd: bodyEnd
             });
 
-            // 引数部分にカッコを挿入
-            recordParenthesisInsertion(paramStart, 'open', '[', context);
-            //recordParenthesisInsertion(paramEnd + 1, 'close', ')', context);
-            // ★末尾は]のため、位置をbodyEnd（他のように+1ではなく）そのままとする★
+            // ラムダ式をカッコで囲む（ラムダ全体としては:定義演算子で囲っているため省略）
+            // 左辺・引数部分のカッコは processConsecutiveLiterals で処理
+            // ここでは右辺・本体部分のカッコを挿入
+            recordParenthesisInsertion(bodyStart, 'open', '[', context);
             recordParenthesisInsertion(bodyEnd, 'close', ']', context);
         }
 
@@ -1174,131 +1165,6 @@ function validateFinalResult(tokens) {
 }
 
 // 補助関数
-/**
- * トークンが演算子かどうかを判定する
- * 
- * @param {string} token - 判定するトークン
- * @param {string|null} type - 演算子タイプ (prefix, infix, postfix)
- * @returns {boolean} 演算子の場合はtrue
- */
-function isOperator(token, type = null) {
-    if (!token) return false;
-
-    if (type === 'prefix') {
-        return operatorInfo.isPrefixOperator(token);
-    } else if (type === 'infix') {
-        return operatorInfo.isInfixOperator(token);
-    } else if (type === 'postfix') {
-        return operatorInfo.isPostfixOperator(token);
-    }
-
-    // タイプ指定なしの場合は、すべての演算子タイプをチェック
-    return operatorInfo.isOperator(token);
-}
-
-/**
- * 文脈に基づいてトークンが前置演算子かどうかを判定する
- * 
- * @param {string} token - 判定するトークン
- * @param {string[]} tokens - トークン配列
- * @param {number} index - 現在のトークンインデックス
- * @returns {boolean} 前置演算子の場合はtrue
- */
-function isPrefixOperator(token, tokens, index) {
-    // 前置演算子の候補リストに含まれるか確認
-    if (!operatorInfo.PREFIX_OPERATORS.includes(token)) {
-        return false;
-    }
-
-    // トークン配列の先頭にある場合は常に前置演算子
-    if (index === 0) {
-        return true;
-    }
-
-    // 前のトークンをチェック
-    const prevToken = tokens[index - 1];
-
-    // チルダ(~)の特殊処理
-    if (token === '~') {
-        // 前のトークンが識別子で、直後に?が続く場合は前置演算子（残余引数構文）
-        if (isIdentifier(prevToken) &&
-            index + 1 < tokens.length &&
-            tokens[index + 1] === '?') {
-            return true;
-        }
-
-        // 前のトークンが空白や演算子なら前置演算子
-        if (operatorInfo.isOperator(prevToken) ||
-            operatorInfo.isBlockStart(prevToken) ||
-            prevToken === ',') {
-            return true;
-        }
-
-        // それ以外は前置演算子ではない（中置または後置）
-        return false;
-    }
-
-    // 前のトークンがブロック開始や別の演算子なら前置演算子
-    if (operatorInfo.isBlockStart(prevToken) ||
-        operatorInfo.isOperator(prevToken) ||
-        prevToken === ',') {
-        return true;
-    }
-
-    // その他の場合は前置演算子ではない
-    return false;
-}
-
-/**
- * 文脈に基づいてトークンが後置演算子かどうかを判定する
- * 
- * @param {string} token - 判定するトークン
- * @param {string[]} tokens - トークン配列
- * @param {number} index - 現在のトークンインデックス
- * @returns {boolean} 後置演算子の場合はtrue
- */
-function isPostfixOperator(token, tokens, index) {
-    // 後置演算子の候補リストに含まれるか確認
-    if (!operatorInfo.POSTFIX_OPERATORS.includes(token)) {
-        return false;
-    }
-
-    // トークン配列の末尾にある場合は常に後置演算子
-    if (index === tokens.length - 1) {
-        return true;
-    }
-
-    // 次のトークンをチェック
-    const nextToken = tokens[index + 1];
-
-    // チルダ(~)の特殊処理
-    if (token === '~') {
-        // 前のトークンが識別子または閉じ括弧の場合は後置演算子（展開構文）
-        const prevToken = index > 0 ? tokens[index - 1] : null;
-        if (prevToken && (isIdentifier(prevToken) || operatorInfo.isBlockEnd(prevToken))) {
-            // 次のトークンが演算子や区切り文字なら後置演算子
-            if (operatorInfo.isOperator(nextToken) ||
-                operatorInfo.isBlockEnd(nextToken) ||
-                nextToken === ',') {
-                return true;
-            }
-        }
-
-        // それ以外は後置演算子ではない
-        return false;
-    }
-
-    // 次のトークンがブロック終了や別の演算子なら後置演算子
-    if (operatorInfo.isBlockEnd(nextToken) ||
-        operatorInfo.isOperator(nextToken) ||
-        nextToken === ',') {
-        return true;
-    }
-
-    // その他の場合は後置演算子ではない
-    return false;
-}
-
 /**
  * 文脈に基づいてトークンが中置演算子かどうかを判定する
  * 

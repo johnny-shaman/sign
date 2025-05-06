@@ -1,5 +1,5 @@
 ;;; Generated LISP code from Sign language source: .\sample_test.sn
-;;; Generated on: 2025-04-30T14:05:45.204Z
+;;; Generated on: 2025-05-03T02:12:29.227Z
 ;;; Processor version: 0.1.0
 
 (defvar x 10)
@@ -32,7 +32,7 @@
 
 (defun multiply (a b) (* a b))
 
-(defun power_fn (base exp) (expt base exp))
+(defun power_fn (base exp_sign) (expt base exp_sign))
 
 (defun calc (x y) (+ (+ (+ x y) (- x y)) (* x y)))
 
@@ -62,4 +62,4 @@
 
 (defun rest_args (a &rest args) (list* a args))
 
-(defun abs (x) (cond ((>= x 0) x) ((< x 0) -x)))
+(defun abs_sign (x) (cond ((>= x 0) x) ((< x 0) -x)))
