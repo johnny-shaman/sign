@@ -2,11 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef char* string;
-
-void print(string s) {
-    printf("%s\n", s);
-}
+/* Sign言語ランタイム */
+#include "runtime.h"
 
 int main() {
     double x = 10.000000;
@@ -34,7 +31,14 @@ int main() {
     /* 未実装の定義タイプ */
     /* 未実装の定義タイプ */
     /* 未実装の定義タイプ */
-    /* 未実装の定義タイプ */
+    SignList* list2;
+    {
+        SignList* temp_list = /* 注: 変換前にSignList* temp_list; の宣言が必要 */
+list_create();
+list_append(temp_list, );
+list_append(temp_list, &(double){5.000000});
+        list2 = temp_list;
+    }
     /* 未実装の定義タイプ */
     return 0;
 }

@@ -19,7 +19,8 @@
 # ver_20250506_1
 
 CC = gcc
-CFLAGS = -Wall -g -I./src -fexec-charset=UTF-8 -DYYDEBUG
+CFLAGS = -Wall -g -I./src -fexec-charset=UTF-8
+# CFLAGS = -Wall -g -I./src -fexec-charset=UTF-8 -DYYDEBUG
 
 # 実行ファイル名
 TARGET = sign_c
@@ -34,9 +35,9 @@ BISON_HDR = $(SRC_DIR)/parser.tab.h
 FLEX_OUT = $(SRC_DIR)/lex.yy.c
 
 # ソースとオブジェクトファイル
-SOURCES = $(SRC_DIR)/ast.c $(SRC_DIR)/codegen.c $(SRC_DIR)/main.c
+SOURCES = $(SRC_DIR)/ast.c $(SRC_DIR)/codegen.c $(SRC_DIR)/main.c $(SRC_DIR)/runtime.c
 GENERATED_SOURCES = $(BISON_OUT) $(BISON_HDR) $(FLEX_OUT)
-OBJECTS = $(OBJ_DIR)/ast.o $(OBJ_DIR)/codegen.o $(OBJ_DIR)/main.o $(OBJ_DIR)/parser.tab.o $(OBJ_DIR)/lex.yy.o
+OBJECTS = $(OBJ_DIR)/ast.o $(OBJ_DIR)/codegen.o $(OBJ_DIR)/main.o $(OBJ_DIR)/runtime.o $(OBJ_DIR)/parser.tab.o $(OBJ_DIR)/lex.yy.o
 
 all: $(TARGET)
 
