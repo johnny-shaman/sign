@@ -69,11 +69,89 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    /* ランタイムライブラリをコピー */
+    char runtime_h_path[256] = "src/runtime.h";
+    char runtime_c_path[256] = "src/runtime.c";
+
+    FILE *runtime_h = fopen(runtime_h_path, "r");
+    FILE *runtime_c = fopen(runtime_c_path, "r");
+
+    if (!runtime_h || !runtime_c)
+    {
+        fprintf(stderr, "ランタイムライブラリを読み込めませんでした\n");
+        if (runtime_h)
+            fclose(runtime_h);
+        if (runtime_c)
+            fclose(runtime_c);
+        fclose(input);
+        fclose(output);
+        return 1;
+    }
+
+    /* ランタイムヘッダをコピー先ディレクトリに作成 */
+    char runtime_h_dest[256];
+    char runtime_c_dest[256];
+
+    if (dot)
+    {
+        size_t base_len = dot - argv[1];
+        strncpy(runtime_h_dest, argv[1], base_len);
+        runtime_h_dest[base_len] = '\0';
+        strcat(runtime_h_dest, "_runtime.h");
+
+        strncpy(runtime_c_dest, argv[1], base_len);
+        runtime_c_dest[base_len] = '\0';
+        strcat(runtime_c_dest, "_runtime.c");
+    }
+    else
+    {
+        snprintf(runtime_h_dest, sizeof(runtime_h_dest), "%s_runtime.h", argv[1]);
+        snprintf(runtime_c_dest, sizeof(runtime_c_dest), "%s_runtime.c", argv[1]);
+    }
+
+    FILE *runtime_h_out = fopen(runtime_h_dest, "w");
+    FILE *runtime_c_out = fopen(runtime_c_dest, "w");
+
+    if (!runtime_h_out || !runtime_c_out)
+    {
+        fprintf(stderr, "ランタイムライブラリの出力先を開けませんでした\n");
+        if (runtime_h)
+            fclose(runtime_h);
+        if (runtime_c)
+            fclose(runtime_c);
+        if (runtime_h_out)
+            fclose(runtime_h_out);
+        if (runtime_c_out)
+            fclose(runtime_c_out);
+        fclose(input);
+        fclose(output);
+        return 1;
+    }
+
+    /* ランタイムライブラリをコピー */
+    char buffer[1024];
+    size_t n;
+
+    while ((n = fread(buffer, 1, sizeof(buffer), runtime_h)) > 0)
+    {
+        fwrite(buffer, 1, n, runtime_h_out);
+    }
+
+    while ((n = fread(buffer, 1, sizeof(buffer), runtime_c)) > 0)
+    {
+        fwrite(buffer, 1, n, runtime_c_out);
+    }
+
+    fclose(runtime_h);
+    fclose(runtime_c);
+    fclose(runtime_h_out);
+    fclose(runtime_c_out);
+
     /* 字句解析器を初期化 */
     init_lexer();
 
     /* デバッグモードを有効にする */
-    yydebug = 1;
+    //yydebug = 1;
 
     /* パースを実行 */
     yyin = input;

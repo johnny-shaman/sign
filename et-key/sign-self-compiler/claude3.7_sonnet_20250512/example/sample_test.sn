@@ -1,0 +1,36 @@
+` sign_parser_test.sn - 基本構文解析のテスト用サンプル
+
+` 単純な値と計算
+x : 10
+y : 20
+z : x + y
+
+` 文字列リテラル
+hello : `Hello`
+world : `World`
+
+` 基本的な算術演算
+sum : x + y
+product : x * y
+power : x ^ 2
+
+` 複合演算
+complex_calc : (2 + 3) * (4 - 1)
+
+` 比較演算
+is_valid : x >= 0 & y <= 100
+
+` 論理演算
+logical_test : x > 0 & y < 50 | z = 30
+
+` 単項演算子
+negative : -10
+not_value : !true
+
+` 単純なラムダ式
+add : a b ? a + b
+multiply : a b ? a * b
+square : x ? x * x
+
+` トップレベルの関数適用
+result : add 5 10
