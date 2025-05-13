@@ -343,7 +343,7 @@ It's possible to get specific IO addresses or memory addresses. The type is as f
 ```
 
 ## ` `	(coproduct infix operator) []({#-space(coproduct-infix-operator)})
-
+The coproduct in this language is defined as **concating lists** or **applying a function**.
 The act of separating tokens with spaces represents an operation.
 However, it's more rational for the system to understand coproduct as a simple token delimiter.
 In this language, it's important to remember that coproduct and product form clean pairs.
