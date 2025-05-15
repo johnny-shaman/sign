@@ -25,7 +25,7 @@ g : f 2 _ 3
 twice : _0 _1 ? _0 (_0 _1)
 flip : _0 ? _1 _2 ? _0 _2 _1
 f : _0 _1 _2 ? _0 * _1 + _2
-g : [_arg_mask=0b010][_fixed_args=[2,-,3]](_0) ? f 2 _0 3
+g : _0 ? f 2 _0 3
 ```
 
 ## 3. 辞書型とパターンマッチング
@@ -33,17 +33,17 @@ g : [_arg_mask=0b010][_fixed_args=[2,-,3]](_0) ? f 2 _0 3
 ```
 // 原始構文
 HTTPCode :
-    200 : `OK`
-    404 : `Not Found`
-    500 : `Server Error`
-    _ : `Unknown Error`
+	200 : `OK`
+	404 : `Not Found`
+	500 : `Server Error`
+	_ : `Unknown Error`
 
 // 変換後
 HTTPCode : _0 ?
-    _0 = 200 & `OK` |
-    _0 = 404 & `Not Found` |
-    _0 = 500 & `Server Error` |
-    `Unknown Error`
+	_0 = 200 & `OK`
+	| _0 = 404 & `Not Found`
+	| _0 = 500 & `Server Error` |
+	`Unknown Error`
 ```
 
 ## 4. 階層化辞書型と入れ子パターンマッチング
@@ -51,21 +51,21 @@ HTTPCode : _0 ?
 ```
 // 原始構文
 response :
-    success : 
-        data : `Process data`
-    error :
-        not_found : `Resource missing`
-        server : `Internal error`
-    _ : `Unknown scenario`
+	success : 
+		data : `Process data`
+	error :
+		not_found : `Resource missing`
+		server : `Internal error`
+	_ : `Unknown scenario`
 
 // 変換後
 response : _0 ?
-    _0 = `success` & _1 ?
-        _1 = `data` & `Process data`
-    | _0 = `error` & _1 ?
-        _1 = `not_found` & `Resource missing`
-      | _1 = `server` & `Internal error`
-    | `Unknown scenario`
+	_0 = `success` & _1 ?
+		_1 = `data` & `Process data`
+	| _0 = `error` & _1 ?
+		_1 = `not_found` & `Resource missing`
+	  | _1 = `server` & `Internal error`
+	| `Unknown scenario`
 ```
 
 ## 5. 高階関数の変換
@@ -89,17 +89,17 @@ evens : filter ([_0 ? _0 % 2 = 0]) _0
 ```
 // 原始構文
 factorial : n ?
-    n = 0 ? 1
-    n * factorial (n - 1)
+	n = 0 ? 1
+	n * factorial (n - 1)
 
 // 変換後 - 末尾再帰形式
 factorial : _0 ?
-    _0 = 0 ? 1 |
-    factorial_tail _0 1
+	_0 = 0 ? 1 |
+	factorial_tail _0 1
 
 factorial_tail : _0 _1 ?
-    _0 = 0 ? _1 |
-    factorial_tail (_0 - 1) (_0 * _1)
+	_0 = 0 ? _1 |
+	factorial_tail (_0 - 1) (_0 * _1)
 ```
 
 ## 7. メタプログラミング構文
