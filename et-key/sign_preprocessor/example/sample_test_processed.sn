@@ -1,0 +1,16 @@
+add : _0 _1 ? _0 + _1
+
+multiply : _0 _1 ? _0 * _1
+
+power_fn : _0 _1 ? _0 ^ _1
+
+calc : _0 _1 ? [ _0 + _1 ] + [ _0 - _1 ] + [ _0 * _1 ]
+
+matchTest : _0 _1 ? 
+	 _0 < _1 : x 
+	 x = y : y 
+	 x + y
+
+result1 : add 5 10
+
+result2 : multiply 4 8
