@@ -234,7 +234,7 @@ However, most operators can be properly inserted with spaces through input compl
   * `?`	(lambda construction infix operator *)
   * `,`	(product infix operator *)
   * `~`	(range list construction infix operator)
-  * `~`	(rest argument list construction prefix operator)
+  * `~`	( list construction chain prefix operator)
 
 * Logical area
   * Logical OR
@@ -521,7 +521,7 @@ It's also easy to use when getting a specific range from a list.
 [\a ~ \z]
 ```
 
-## `~`	(rest argument list construction prefix operator) []({#-tilde(rest-argument-list-construction-prefix-operator)})
+## `~`	(list construction chain prefix operator) []({#-tilde(list-construction-chain-prefix-operator)})
 
 Note that `~` has different meanings as prefix, postfix, and infix!
 
@@ -530,6 +530,7 @@ The `~` prefix operator can be thought of as "enclosing the rest of the argument
 The type is as follows:
 
 `~[Identifier] ? [Expression]`
+`~[Expression<Stream>]`
 
 (Example 1: Function that returns the rest as a list except for the beginning)
 ```javascript
