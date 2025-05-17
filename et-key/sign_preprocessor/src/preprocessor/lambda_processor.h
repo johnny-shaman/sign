@@ -8,7 +8,7 @@
  * - スコープ管理と変換済みラムダ式の再構築
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250516_0
+ * ver_20250517_0
  */
 
 #ifndef SIGN_LAMBDA_PROCESSOR_H
@@ -47,30 +47,6 @@ struct Scope {
  * @return 変数が位置ベースの識別子に置換されたトークン列
  */
 std::vector<Token> processLambdaExpressions(const std::vector<Token>& tokens);
-
-/**
- * ラムダ式の引数部分を処理する
- * 
- * @param tokens トークン列
- * @param startIndex 開始インデックス
- * @param scope 現在のスコープ
- * @param processedTokens 処理結果を格納するトークン列
- * @return ラムダ式の?の位置のインデックス
- */
-size_t processLambdaArguments(const std::vector<Token>& tokens, size_t startIndex, 
-                              std::shared_ptr<Scope>& scope, std::vector<Token>& processedTokens);
-
-/**
- * ラムダ式の本体部分を処理する
- * 
- * @param tokens トークン列
- * @param startIndex 開始インデックス
- * @param scope 現在のスコープ
- * @param processedTokens 処理結果を格納するトークン列
- * @return 処理後の位置のインデックス
- */
-size_t processLambdaBody(const std::vector<Token>& tokens, size_t startIndex, 
-                         const std::shared_ptr<Scope>& scope, std::vector<Token>& processedTokens);
 
 /**
  * ラムダ式をカリー化形式に変換する

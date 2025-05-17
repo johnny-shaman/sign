@@ -3,7 +3,7 @@
  * Sign言語の処理済みコードを最終形式に変換する実装
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250516_0
+ * ver_20250516_1
  */
 
 #include "preprocessor/sign_transformer.h"
@@ -22,7 +22,7 @@ std::string generateFinalCode(const std::vector<std::string>& processedBlocks) {
     
     for (size_t i = 0; i < processedBlocks.size(); ++i) {
         if (i > 0) {
-            result << "\n\n"; // ブロック間に空行を挿入
+            result << "\n"; // ブロック間に空行を挿入
         }
         result << processedBlocks[i];
     }
