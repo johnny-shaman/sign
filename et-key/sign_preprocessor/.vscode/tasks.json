@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Sign Compiler",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.bat",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "detail": "デバッグ用のコンパイラをビルドします"
+        },
+        {
+            "label": "Run Test",
+            "type": "shell",
+            "command": "${workspaceFolder}/run-test.bat",
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "detail": "テストを実行します"
+        }
+    ]
+}
