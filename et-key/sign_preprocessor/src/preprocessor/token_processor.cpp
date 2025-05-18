@@ -4,7 +4,7 @@
  * シンプルな区切りルールに基づく設計
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250516_0
+ * ver_20250518_0
  */
 
 #include "preprocessor/token_processor.h"
@@ -189,6 +189,55 @@ std::vector<Token> tokenizeBlock(const std::string& block) {
     addCurrentToken();
 
     return tokens;
+}
+
+std::string extractPrefixOperator(const std::string& token) {
+    if (token.empty()) return "";
+    
+    // 最長の前置演算子を検索
+    std::string prefix = "";
+    for (size_t i = 1; i <= token.length(); ++i) {
+        std::string candidate = token.substr(0, i);
+        
+        // 単一文字の演算子チェック
+        if (i == 1 && PREFIX_OPERATORS.find(candidate) != PREFIX_OPERATORS.end()) {
+            prefix = candidate;
+        }
+        // 複数文字の演算子（例：$@）のチェック
+        else if (i > 1 && PREFIX_OPERATORS.find(token.substr(i-1, 1)) != PREFIX_OPERATORS.end()) {
+            prefix = token.substr(0, i);
+        }
+        else {
+            // 演算子でない文字が見つかったら終了
+            break;
+        }
+    }
+    
+    return prefix;
+}
+
+std::string extractPostfixOperator(const std::string& token) {
+    if (token.empty()) return "";
+    
+    // 後置演算子は通常単一文字なので、最後の文字をチェック
+    if (POSTFIX_OPERATORS.find(token.substr(token.length() - 1)) != POSTFIX_OPERATORS.end()) {
+        return token.substr(token.length() - 1);
+    }
+    
+    return "";
+}
+
+std::string extractIdentifier(const std::string& token) {
+    if (token.empty()) return "";
+    
+    std::string prefix = extractPrefixOperator(token);
+    
+    // 前置演算子を除いた残りの部分から識別子と後置演算子を分離
+    std::string remainder = token.substr(prefix.length());
+    std::string postfix = extractPostfixOperator(remainder);
+    
+    // 識別子部分を抽出
+    return remainder.substr(0, remainder.length() - postfix.length());
 }
 
 } // namespace sign
