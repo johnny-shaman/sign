@@ -8,7 +8,7 @@
  * - 演算子やリテラルの識別
  * 
  * CreateBy: Claude3.7Sonnet
- * ver_20250516_0
+ * ver_20250518_0
  */
 
 #ifndef SIGN_TOKEN_PROCESSOR_H
@@ -118,6 +118,32 @@ bool isWhitespace(char c);
  * @return トークンを結合した文字列
  */
 std::string tokensToString(const std::vector<Token>& tokens);
+
+/**
+ * トークンから前置演算子部分を抽出する
+ * 
+ * @param token 対象トークン
+ * @return 前置演算子部分の文字列（なければ空文字列）
+ */
+std::string extractPrefixOperator(const std::string& token);
+
+/**
+ * トークンから後置演算子部分を抽出する
+ * 
+ * @param token 対象トークン
+ * @return 後置演算子部分の文字列（なければ空文字列）
+ */
+std::string extractPostfixOperator(const std::string& token);
+
+/**
+ * トークンから識別子部分を抽出する
+ * 前置演算子と後置演算子を除いた部分を返す
+ * 
+ * @param token 対象トークン
+ * @return 識別子部分の文字列
+ */
+std::string extractIdentifier(const std::string& token);
+
 
 // 演算子リスト
 extern const std::unordered_set<std::string> INFIX_OPERATORS;

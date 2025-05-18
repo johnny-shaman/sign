@@ -107,7 +107,7 @@ result2 : multiply 4 8
 ` 二重配列になることに注意！
 
 ` ~ （残余引数リスト構築）
-` tail : x ~y ? y
+tail : x ~y ? y
 
 ` ###########################
 ` 後置演算子
@@ -124,7 +124,7 @@ result2 : multiply 4 8
 ` 文脈依存演算子のテスト
 ` range_list : 1 ~ 5
 
-` rest_args : a ~args ? a args~
+rest_args : a ~args ? a args~
 
 ` ###########################
 ` コンディショナル

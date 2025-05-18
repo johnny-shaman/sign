@@ -8,3 +8,5 @@ matchTest : _0 _1 ?
 	 _0 + _1
 result1 : add 5 10
 result2 : multiply 4 8
+tail : _0 ~_1 ? _1
+rest_args : _0 ~_1 ? _0 _1~
