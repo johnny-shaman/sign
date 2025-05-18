@@ -578,8 +578,8 @@ From here, we'll explain comparison operators.
 In Sign, it's possible to write polynomials of all comparison operators.
 The reason is that comparison operations of each term return an explicit value of either Unit or a solution.
 The following terms will return a lambda term, but the lambda term itself is defined as false.
-If you want to ask whether a lambda term is a valid function or not, you would need to acquire a valid address with the $ prefix operator.
-The details of $ are not public in the current specification.
+If you want to ask whether a lambda term is a valid function or not, you would need to acquire a valid address with the \$ prefix operator.
+The details of \$ are not public in the current specification.
 
 Less is true if the left is smaller.
 
