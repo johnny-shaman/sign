@@ -59,7 +59,7 @@ The following summarizes its features:
 * Prefix and postfix operators must not have spaces between them and their target literals
 * Lines with only literals without meaning are never executed
 * Code files have local scope, and scopes are not contaminated unless import or export is used
-* 0, empty lists, and unexecuted lambda terms are false. Everything else is true, so the boolean type is never explicitly specified
+* empty lists, and unexecuted lambda terms are false. Everything else is true, so the boolean type is never explicitly specified
 * All logical operations are short-circuit evaluated
 * Bit operations exist for optimization. Therefore, there are no operators or functions that directly represent bit operations
 * Lists of arguments passed to functions are lists
