@@ -18,7 +18,7 @@ I hope that together we can grow with Sign, a language that helps us think bette
 
 Thank you for your continued support of Sign, a compact, expressive, predictable, and readable programming language.
 
-Shinichi Okazaki
+Noboru Okazaki
 
 # Prerequisites []({#prerequisites})
 

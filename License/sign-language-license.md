@@ -8,74 +8,93 @@ In this license, the following terms have the following meanings:
 
 - "Sign" refers to the Sign programming language.
 - "Sign Project" refers to the entire ecosystem including the Sign language specification, official compiler, and related tools.
-- "Sign Development Team" refers to the core team maintaining Sign.
-- "Official Sign Compiler" refers to the compiler officially released by the Sign Development Team.
+- "Sign Development Team" refers to the core team that maintains Sign.
+- "Official Compiler" or "Official Sign Compiler" refers to the compiler officially released by the Sign Development Team.
 - "Modified Compiler" refers to a modified version of the Sign compiler created through a fork of the official repository.
+- "Self-hosted" refers to a Sign language compiler written in Sign language.
 - "Fork" refers to a copy of the official Sign compiler repository created to develop a modified version.
-- "Program" refers to any software written in Sign.
-- "User" refers to any individual or organization using Sign.
-- "SignCertified" refers to a certification given to programs built with the official Sign compiler and receiving technical support.
+- "Program" refers to all software written in Sign.
+- "User" refers to any individual or organization that uses Sign.
+- "Contributor" refers to a contributor to the community.
+- "Investor" refers to a person who invests in or provides capital to this community.
+- "SignCertified" refers to certification granted to programs built with the official Sign compiler that receive technical support.
 - "Technical Support" refers to paid support services provided by the Sign Development Team.
 
-## 1. Compliance Requirements
+## 1. Creator's Declaration
+- All copyright to the design, specifications, and implementation examples of the Sign language belongs to the creator, "Noboru Okazaki."
+- The copyright of the design and implementation of the official tools principally belongs to "Noboru Okazaki."
+- The creator has an obligation to ensure that the benefits of this community are properly distributed.
+- The creator will respond to any attempt to monopolize this language by dissolving the community and re-establishing a creator-led community to maintain public interest.
+- The creator shall uphold public interest and observe the duty of care of a prudent manager.
+- The creator's benefit is established as one-tenth of the direct profit from this community, with the remainder allocated to community operation and distribution.
+- The benefits from using the Sign language belong to the users of the Sign language.
 
-- The copyright for the Sign language design, implementation examples, and official toolchain belongs entirely to the creator, "Noboru Okazaki"
-- The community of this ecosystem shall comply with the duty of care based on public interest
-- Monopolization or oligopolization of the community and ecosystem based on this language is prohibited by any means
-- When creating a custom compiler derived from the Sign language, acknowledgment that this repository is the original must be displayed
-- Sale of the official Sign compiler, its copies, and derived custom compilers is prohibited
+## 2. Compliance Matters
+- Users shall respect that all copyright to the design and implementation examples of the Sign language and the official tool chain belongs to the creator, "Noboru Okazaki."
+- To maintain the extensive ecosystem of the Sign language, investors shall comply with the operation of this community as a "Joint Venture."
+- Users shall not monopolize or dominate this language, its community, or ecosystem.
+- When publishing derivative compilers, including self-hosted ones, users shall indicate that this repository is the original and maintain compliance with the license.
+- Users shall not sell any implementation of the Sign Project, including self-hosted ones, whether official, copied, or modified, even in part.
+- Similarly, related tools shall not be sold, whether official, copied, or modified.
+- Community members of this ecosystem shall observe the duty of care of a prudent manager based on public interest.
+- Users shall appropriately consent to legal measures and disciplinary actions in case of non-compliance with these matters.
 
-## 2. Granted Rights
+## 3. Granted Rights
 
-### 2.1 Basic Rights
+### 3.1 Basic Rights
 The following rights are granted:
-- Creating programs in the Sign language
-- Using the official Sign compiler (including copies) and derivative compilers
-- Using programs created with Sign
-- Implementing programs for any purpose
+- Creation of programs using the Sign language
+- Use of the official Sign compiler (including copies) and derivative compilers
+- Use of programs created with Sign
+- Implementation of programs for any purpose
 
-### 2.2 Program Rights
-Regarding programs written in Sign:
-   - Copyright belongs to the program creator
-   - Usage for any purpose, including commercial use, is permitted
-   - Distribution under any license chosen by the creator is allowed
-   - Free modification and addition of features is permitted
-   - Programs may be distributed in source or compiled form
-   - There are no restrictions on distribution, whether commercial or non-commercial
+### 3.2 Program Rights
+For programs written in Sign, unless they are self-hosted compilers or copies or modifications of official tools, the following rights are granted:
+- Copyright belongs to the program creator
+- Use for any purpose, including commercial use, is permitted
+- Distribution under any license chosen by the creator is permitted
+- Free modification and feature addition is permitted
+- Programs may be distributed in source or compiled form
+- There are no restrictions on distribution, whether commercial or non-commercial
 
-## 3. Technical Support and Certification
+## 4. Copyright of Submitted Code
+- Even if submitted code passes review and is merged, the copyright of that code belongs to the submitter
+- Submitted code, including that of the creator, is treated as an asset with value equivalent to bonds, stocks, etc.
+- Submitted code is evaluated as a contribution to the community, and profit distribution is based on its value
 
-### 3.1 Technical Support
-1. Provision Conditions:
+## 5. Technical Support and Certification
+
+### 5.1 Technical Support
+1. Provision conditions:
    - Provided as a paid service by the Sign Development Team
-   - Only applies to programs built with the official Sign compiler
+   - Only available for programs built with the official Sign compiler
    - Detailed conditions are specified in a separate support contract
 
-2. Support Content:
+2. Support content:
    - Guidance on implementation
    - Verification of specification compliance
    - Performance optimization
    - Security advice
 
-### 3.2 SignCertified Certification
+### 5.2 SignCertified Certification
 1. Requirements:
-   - Must be built with the official Sign compiler
+   - Building with the official Sign compiler is required
    - A valid technical support contract is required
 
 2. Benefits:
-   - Proof of official compiler usage
+   - Proof of using the official compiler
    - Guarantee of specification compliance
    - Right to use the SignCertified mark
    - Access to technical support services
 
-## 4. Disclaimer and Limitation of Liability
+## 6. Disclaimer and Limitation of Liability
 
 1. The Sign language is provided "as is"
-2. Except to the extent expressly provided in a technical support contract:
+2. Except to the extent explicitly specified in the technical support contract:
    - No compensation is provided
    - The Sign Development Team bears no responsibility
 3. Support and warranty conditions are defined in a separate support contract
 
-## 5. Governing Law
+## 7. Governing Law
 
-This license is governed by and shall be construed in accordance with the laws of Japan.
+This license is governed by and construed in accordance with Japanese law.
