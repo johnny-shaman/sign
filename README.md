@@ -15,6 +15,3 @@
 ## License
   [Language-License](./License/sign-language-license.md)
   [日本語はこちら](./License/sign-language-license-ja.md)
-
-  [Compiler-License](./License/sign-compiler-license.md)
-  [日本語はこちら](./License/sign-compiler-license-ja.md)
