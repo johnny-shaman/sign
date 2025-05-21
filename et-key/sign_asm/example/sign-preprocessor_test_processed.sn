@@ -1,0 +1,56 @@
+increment : _0 ? _0 + 1
+add : _0 _1 ? _0 + _1
+L : _0 ? _0
+R : _0 ~_1 ? _1
+map : _0 _1 ~_2 ? @_0 _1 , map _0 _2~
+foldr : [ _0 _1 _2 ~_3 ? 
+	 !_2 ] : _1 
+	 @_0 _2 _0 _1 _2 ~_3 ? 
+	 !_2 _0 _1 _3~
+twice : _0 ? _0 _0
+flip : _0 _1 _2 ? _0 _2 _1
+f : _0 _1 _2 ? _0 * _1 + _2
+g : _0 ? f 2 _0 3
+g2 : _0 _1 ? f _0 5 _1
+add : [ + ]
+mul : [ * ]
+sub : [ - ]
+result1 : [ + ] 5 7
+result2 : [ * ] 3 4
+result3 : [ - ] 10 2
+pow2 : [ ^ 2 ]
+inc : [ + 1 ]
+half : [ / 2 ]
+square_and_add_ten : [ pow2 ] [ + 10 ]
+value1 : [ + 1 ] 5
+value2 : [ ^ 2 ] 4
+value3 : [ [ [ ^ 2 ] ] ] [ + 10 ] 3
+value4 : [ inc ] [ pow2 ] 4
+add_n : _0 ? [ + ] _0
+mul_by : _0 ? _0 [ * ]
+between : _0 _1 _2 ? _0 < _1 < _2
+add5 : _0 ? [ + ] _0 5
+triple : _0 ? _0 [ * ] 3
+in_range : _0 ? between 0 _0 100
+value5 : [ _0 ? [ + ] _0 ] 5 10
+value6 : [ _0 ? _0 [ * ] ] 3 7
+valid : _0 ? [ _0 _1 _2 ? _0 < _1 < _2 ] 0 _0 100 42
+map : [ * 2 , ]
+filter : [ > 5 , ]
+reduce : [ + ]
+doubled : [ * 2 , ] 1 2 3 4
+filtered : [ > 5 , ] 3 7 2 9
+sum : [ + ] 1 2 3 4
+average : _0 _1 ? [ / ] [ + ] _0 [ length _1 ]
+square_sum : _0 ? [ + ] [ [ ^ 2 , ] _0 ]
+apply_twice : _0 ? _0 _0
+avg_value : _0 _1 ? [ / ] [ + ] _0 [ length _1 ] 1 2 3 4
+squares : _0 ? [ + ] [ [ ^ 2 , ] _0 ] 1 2 3
+twice_inc : _0 ? _0 _0 inc
+value7 : [ _0 ? _0 _0 ] [ [ + 1 ] ] 5
+compose : _0 _1 ? _0 _1 _
+identity : _0 ? _0
+nop : _0 ? _0
+inc_then_double : _0 _1 ? _0 _1 _ mul inc
+pass_through : _0 ? _0 42
+empty : nop
