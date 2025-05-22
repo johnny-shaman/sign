@@ -24,14 +24,14 @@ In this license, the following terms have the following meanings:
 - All copyright to the design, specifications, and implementation examples of the Sign language belongs to the creator, "Noboru Okazaki."
 - The copyright of the design and implementation of the official tools principally belongs to "Noboru Okazaki."
 - The creator has an obligation to ensure that the benefits of this community are properly distributed.
-- The creator will respond to any attempt to monopolize this language by dissolving the community and re-establishing a creator-led community to maintain public interest.
+- The creator has the obligation to maintain the public interest of this language regardless of any circumstances.
 - The creator shall uphold public interest and observe the duty of care of a prudent manager.
 - The creator's benefit is established as one-tenth of the direct profit from this community, with the remainder allocated to community operation and distribution.
 - The benefits from using the Sign language belong to the users of the Sign language.
 
 ## 2. Compliance Matters
 - Users shall respect that all copyright to the design and implementation examples of the Sign language and the official tool chain belongs to the creator, "Noboru Okazaki."
-- To maintain the extensive ecosystem of the Sign language, investors shall comply with the operation of this community as a "Joint Venture."
+- To maintain the extensive ecosystem of the Sign language, investors shall make investments through an investment company that invests in the ecosystem.
 - Users shall not monopolize or dominate this language, its community, or ecosystem.
 - When publishing derivative compilers, including self-hosted ones, users shall indicate that this repository is the original and maintain compliance with the license.
 - Users shall not sell any implementation of the Sign Project, including self-hosted ones, whether official, copied, or modified, even in part.
