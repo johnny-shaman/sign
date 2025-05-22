@@ -81,11 +81,11 @@ valid : in_range 42
 `valid : [_0 ? 0 < _0 < 100] 42
 
 `テストケース4: 高階関数とリスト処理
-map : [* 2,]
+map_1 : [* 2,]
 filter : [> 5,]
 reduce : [+]
 
-doubled : map 1 2 3 4
+doubled : map_1 1 2 3 4
 filtered : filter 3 7 2 9
 sum : reduce 1 2 3 4
 
