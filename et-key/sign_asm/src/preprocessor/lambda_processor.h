@@ -8,7 +8,7 @@
  * - スコープ管理と変換済みラムダ式の再構築
  *
  * CreateBy: Claude3.7Sonnet
- * ver_20250521_1
+ * ver_20250522_0
  */
 
 #ifndef SIGN_LAMBDA_PROCESSOR_H
@@ -87,14 +87,6 @@ namespace sign
      */
     std::unordered_map<std::string, std::vector<common::Token>> resolveNestedDefinitions(
         const std::unordered_map<std::string, std::vector<common::Token>> &definitions);
-
-    /**
-     * 関数適用パターンを検出し、必要に応じて括弧で囲む
-     *
-     * @param tokens 処理対象のトークン列
-     * @return 括弧付けされたトークン列
-     */
-    std::vector<common::Token> wrapFunctionApplications(const std::vector<common::Token> &tokens);
 
     /**
      * 特殊識別子を適切に処理する

@@ -3,14 +3,14 @@
  * Sign言語のラムダ式を処理する実装
  *
  * CreateBy: Claude3.7Sonnet
- * ver_20250521_1
+ * ver_20250522_0
  */
 
 #include "preprocessor/lambda_processor.h"
 #include "common/lexer/tokenizer.h"
 #include <algorithm>
 #include <sstream>
-#include <functional> 
+#include <functional>
 
 namespace sign
 {
@@ -192,6 +192,20 @@ namespace sign
                     size_t defineStart = i + 1;
                     size_t defineEnd = result.size();
 
+                    // 定義の右辺が単一のUnitかチェック
+                    bool isSingleUnit = false;
+                    if (defineStart < result.size() && defineStart + 1 <= result.size())
+                    {
+                        if (result[defineStart].type == TokenType::IDENTIFIER &&
+                            result[defineStart].value == "_" &&
+                            (defineStart + 1 == result.size() ||
+                             result[defineStart + 1].type == TokenType::DEFINE ||
+                             result[defineStart + 1].type == TokenType::BRACKET_CLOSE))
+                        {
+                            isSingleUnit = true;
+                        }
+                    }
+
                     // 右側のスコープを特定
                     int nestedLevel = 0;
 
@@ -234,8 +248,8 @@ namespace sign
                         }
                     }
 
-                    // 単独の '_' が1つ以上含まれ、ラムダ演算子を含まない場合に変換
-                    if (!unitPositions.empty() && !hasLambdaOperator)
+                    // 単独の '_' が1つ以上含まれ、ラムダ演算子を含まず、単一Unitでない場合に変換
+                    if (!unitPositions.empty() && !hasLambdaOperator && !isSingleUnit)
                     {
                         // 新しいトークン列を構築
                         std::vector<Token> newTokens;
@@ -397,62 +411,90 @@ namespace sign
                 {
                     std::string identifierName = extractIdentifier(result[i].value);
 
+                    // 定義文の左辺（:の左側）かどうかをチェック
+                    bool isDefinitionLHS = false;
+                    if (i + 1 < result.size() && result[i + 1].type == TokenType::DEFINE)
+                    {
+                        isDefinitionLHS = true;
+                    }
+
+                    // 定義文の左辺は置換しない
+                    if (isDefinitionLHS)
+                    {
+                        continue;
+                    }
+
                     // 定義テーブルに存在するか確認
                     auto it = resolvedDefinitions.find(identifierName);
                     if (it != resolvedDefinitions.end())
                     {
-                        // この識別子がラムダ引数でないことを確認
-                        bool isLambdaArg = false;
-                        // 後方を検索してラムダ演算子を見つける
-                        for (int j = static_cast<int>(i) - 1; j >= 0; --j)
+                        // 定義がラムダ式を含むかチェック
+                        bool containsLambda = false;
+                        for (const auto &token : it->second)
                         {
-                            if (result[j].type == TokenType::LAMBDA)
+                            if (token.type == TokenType::LAMBDA)
                             {
-                                isLambdaArg = true;
-                                break;
-                            }
-                            // 別の定義や文の区切りを見つけた場合は検索終了
-                            if (result[j].type == TokenType::DEFINE)
-                            {
+                                containsLambda = true;
                                 break;
                             }
                         }
 
-                        // ラムダ引数でない場合のみ置換
-                        if (!isLambdaArg)
+                        // ラムダ式を含む定義はインライン展開しない
+                        if (containsLambda)
                         {
-                            // 定義された識別子の後に引数がある場合（関数呼び出し）
-                            size_t nextPos = i + 1;
-
-                            // 前置/後置演算子を除いた純粋な識別子部分
-                            std::string prefix = extractPrefixOperator(result[i].value);
-                            std::string postfix = extractPostfixOperator(result[i].value);
-
-                            // 演算子部分は保持
-                            if (!prefix.empty() || !postfix.empty())
-                            {
-                                continue; // 演算子付きは現時点ではスキップ
-                            }
-
-                            // 関数呼び出しとして使われているか確認
-                            if (nextPos < result.size() &&
-                                (result[nextPos].type == TokenType::IDENTIFIER ||
-                                 result[nextPos].type == TokenType::NUMBER ||
-                                 result[nextPos].type == TokenType::BRACKET_OPEN))
-                            {
-
-                                // 定義を複製して置換
-                                std::vector<Token> replacementTokens = it->second;
-
-                                // 元の識別子を削除し、定義トークンを挿入
-                                result.erase(result.begin() + i);
-                                result.insert(result.begin() + i, replacementTokens.begin(), replacementTokens.end());
-
-                                // 位置インデックスを調整
-                                i += replacementTokens.size() - 1;
-                                modified = true;
-                            }
+                            continue;
                         }
+
+                        // 前置/後置演算子を除いた純粋な識別子部分
+                        std::string prefix = extractPrefixOperator(result[i].value);
+                        std::string postfix = extractPostfixOperator(result[i].value);
+
+                        // 演算子部分は保持（現時点では置換しない）
+                        if (!prefix.empty() || !postfix.empty())
+                        {
+                            continue; // 演算子付きは現時点ではスキップ
+                        }
+
+                        // 単純な定義かどうかをチェック（さらに厳密に）
+                        bool isSimpleDefinition = true;
+                        const auto &tokens = it->second;
+
+                        // 括弧で囲まれた単純な演算子のみを許可
+                        if (tokens.size() == 3 &&
+                            tokens[0].type == TokenType::BRACKET_OPEN &&
+                            tokens[2].type == TokenType::BRACKET_CLOSE &&
+                            (tokens[1].type == TokenType::OPERATOR ||
+                             (tokens[1].type == TokenType::IDENTIFIER && tokens[1].value.size() <= 2)))
+                        {
+                            // [+], [*], [^] などの単純な演算子定義
+                            isSimpleDefinition = true;
+                        }
+                        else if (tokens.size() <= 5 && tokens[0].type == TokenType::BRACKET_OPEN)
+                        {
+                            // [+ 1], [^ 2] などの単純な部分適用
+                            isSimpleDefinition = true;
+                        }
+                        else
+                        {
+                            isSimpleDefinition = false;
+                        }
+
+                        // 単純な定義でない場合はスキップ
+                        if (!isSimpleDefinition)
+                        {
+                            continue;
+                        }
+
+                        // 基本的なインライン展開: 定義をそのまま置換
+                        std::vector<Token> replacementTokens = it->second;
+
+                        // 元の識別子を削除し、定義内容を挿入
+                        result.erase(result.begin() + i);
+                        result.insert(result.begin() + i, replacementTokens.begin(), replacementTokens.end());
+
+                        // 位置インデックスを調整
+                        i += replacementTokens.size() - 1;
+                        modified = true;
                     }
                 }
             }
@@ -460,9 +502,6 @@ namespace sign
 
         // 特殊識別子の処理
         result = processSpecialIdentifiers(result);
-
-        // ラムダ式を括弧で囲む処理
-        result = wrapFunctionApplications(result);
 
         // トークンを文字列に再構築
         std::stringstream output;
@@ -593,8 +632,16 @@ namespace sign
                         std::string prefix = extractPrefixOperator(token.value);
                         std::string postfix = extractPostfixOperator(token.value);
 
-                        // 展開した定義を囲む括弧が必要か判断
-                        bool needsBrackets = resolvedDep.size() > 1;
+                        // 展開した定義を囲む括弧が必要か判断を改善
+                        bool needsBrackets = false;
+
+                        // 複数トークンかつ、最初と最後が括弧でない場合のみ括弧を追加
+                        if (resolvedDep.size() > 1)
+                        {
+                            bool isAlreadyBracketed = (resolvedDep.front().type == TokenType::BRACKET_OPEN &&
+                                                       resolvedDep.back().type == TokenType::BRACKET_CLOSE);
+                            needsBrackets = !isAlreadyBracketed;
+                        }
 
                         if (needsBrackets)
                         {
@@ -652,121 +699,6 @@ namespace sign
         return resolvedDefs;
     }
 
-    // 関数適用パターンを検出し、必要に応じて括弧で囲む
-    std::vector<common::Token> wrapFunctionApplications(const std::vector<common::Token> &tokens)
-    {
-        using namespace common;
-
-        if (tokens.empty())
-        {
-            return tokens;
-        }
-
-        std::vector<Token> result = tokens;
-        std::vector<std::pair<size_t, size_t>> lambdaBlocks; // ラムダ式のブロック位置を記録
-
-        // ラムダ式ブロックを特定
-        for (size_t i = 0; i < result.size(); i++)
-        {
-            if (result[i].type == TokenType::LAMBDA)
-            {
-                size_t blockStart = i - 1; // ラムダの前にある引数位置
-                // ラムダの開始位置を特定（引数部分）
-                while (blockStart > 0 && result[blockStart].type == TokenType::IDENTIFIER)
-                {
-                    blockStart--;
-                }
-                blockStart++; // 補正
-
-                // ラムダ本体の終端を探す
-                size_t blockEnd = i + 1;
-                int nestedLevel = 0;
-                bool foundEnd = false;
-
-                while (blockEnd < result.size() && !foundEnd)
-                {
-                    if (result[blockEnd].type == TokenType::BRACKET_OPEN)
-                    {
-                        nestedLevel++;
-                    }
-                    else if (result[blockEnd].type == TokenType::BRACKET_CLOSE)
-                    {
-                        nestedLevel--;
-                        if (nestedLevel < 0)
-                        {
-                            foundEnd = true;
-                            break;
-                        }
-                    }
-                    else if (result[blockEnd].type == TokenType::DEFINE && nestedLevel == 0)
-                    {
-                        foundEnd = true;
-                        break;
-                    }
-                    blockEnd++;
-                }
-
-                lambdaBlocks.push_back({blockStart, blockEnd});
-                i = blockEnd - 1; // 処理位置を更新
-            }
-        }
-
-        // 関数適用コンテキストを特定して括弧で囲む
-        for (size_t i = 0; i < result.size(); i++)
-        {
-            // 識別子の直後に別の識別子/数値/括弧がある場合（関数適用パターン）
-            if (i > 0 && i + 1 < result.size() &&
-                result[i].type == TokenType::IDENTIFIER &&
-                (result[i + 1].type == TokenType::IDENTIFIER ||
-                 result[i + 1].type == TokenType::NUMBER ||
-                 result[i + 1].type == TokenType::BRACKET_OPEN))
-            {
-
-                // この識別子がラムダ式で生成された関数かチェック
-                for (const auto &[start, end] : lambdaBlocks)
-                {
-                    if (i == start && end + 1 < result.size() &&
-                        (result[end + 1].type == TokenType::IDENTIFIER ||
-                         result[end + 1].type == TokenType::NUMBER ||
-                         result[end + 1].type == TokenType::BRACKET_OPEN))
-                    {
-                        // 括弧で囲む
-                        std::vector<Token> bracketedFunc;
-                        bracketedFunc.push_back(Token("[", TokenType::BRACKET_OPEN));
-                        bracketedFunc.insert(bracketedFunc.end(), result.begin() + start, result.begin() + end);
-                        bracketedFunc.push_back(Token("]", TokenType::BRACKET_CLOSE));
-
-                        // 元のラムダ式を括弧付きに置換
-                        result.erase(result.begin() + start, result.begin() + end);
-                        result.insert(result.begin() + start, bracketedFunc.begin(), bracketedFunc.end());
-
-                        // インデックスとブロック位置を調整
-                        size_t adjustment = bracketedFunc.size() - (end - start);
-                        i += adjustment;
-
-                        // 他のブロック位置も調整
-                        for (auto &[bStart, bEnd] : lambdaBlocks)
-                        {
-                            if (bStart > end)
-                            {
-                                bStart += adjustment;
-                                bEnd += adjustment;
-                            }
-                            else if (bEnd > end)
-                            {
-                                bEnd += adjustment;
-                            }
-                        }
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
     // 特殊識別子を適切に処理する
     std::vector<common::Token> processSpecialIdentifiers(const std::vector<common::Token> &tokens)
     {
@@ -785,8 +717,7 @@ namespace sign
                 if (idName == "nop")
                 {
                     // 定義コンテキストでnopが使われている場合
-                    if (i > 0 && i + 1 < result.size() &&
-                        result[i - 1].type == TokenType::DEFINE)
+                    if (i > 0 && result[i - 1].type == TokenType::DEFINE)
                     {
                         result[i] = Token("_", TokenType::IDENTIFIER);
                     }
