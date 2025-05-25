@@ -1,0 +1,90 @@
+x : 10
+y : 20
+pi : 3.14159
+sum : x + y
+diff : x - y
+product : x * y
+quotient : x / y
+remainder : x % y
+power : x ^ 2
+buffer_addr : 0x8000
+io_port : 0x4000
+mask : 0b11110000
+flags : 0b00001111
+perms : 0o755
+float_val : 123.456
+test1 : _0 ? _0 & x
+test2 : _0 ? x & _0
+test3 : _0 ? _0 | x
+test4 : _0 ? x | _0
+add_something : _0 ? _0 + 5
+mul_by_x : _0 ? x * _0
+range_check : 0 <= x <= 100
+three_way : 3 < x = y < 20
+bounds : 1 < x < 10 & 5 < y < 15
+equality_chain : a = b = c = 42
+add : _0 _1 ? _0 + _1
+multiply : _0 _1 ? _0 * _1
+square : _0 ? _0 * _0
+negate : _0 ? -x
+sum_all : _0 ~_1 ? _0 + sum_all _1~
+first_and_rest : _0 ~_1 ? _0 , _1
+add5 : _0 ? add 5 _0
+mul_by_2 : _0 ? multiply _0 2
+flip_add : _0 ? add _0 10
+reverse_sub : _0 ? _0 - x
+add_fn : [ + ]
+mul_fn : [ * ]
+sub_fn : [ - ]
+double : [ * 2 ]
+increment : [ + 1 ]
+halve : [ / 2 ]
+map_double : [ * 2 , ]
+sum_reduce : [ + ]
+list1 : 1 2 3 4 5
+list2 : 1 , 2 , 3 , 4 , 5
+doubled : [ * 2 , ] list1
+total : [ + ] list2
+range1 : 1 ~ 10
+range2 : \a ~ \z
+abs : _0 ? 
+	 _0 >= 0 : _0 
+	 _0 < 0 : -x
+sign : _0 ? 
+	 _0 > 0 : 1 
+	 _0 = 0 : 0 
+	 _0 < 0 : -1
+validate : _0 ? 
+	 _0 >= 0 & _0 <= 100 : _0 
+	 _
+ptr : $buffer_addr
+value : @ptr
+ptr # 42
+ptr_to_ptr : $ptr
+indirect_value : @@ptr_to_ptr
+input_data : @io_port
+keyboard : @0x60
+io_port # result
+0x80 # status
+inc_then_double : [ + 1 ] [ * 2 ]
+square_then_inc : [ ^ 2 ] [ + 1 ]
+process : [ + 1 ] [ * 2 ] [ ^ 2 ] [ / 3 ]
+result1 : inc_then_double 5
+result2 : process 4
+#global_state : 0
+#api_version : `1.0.0`
+local_temp : 273.15
+local_buffer : 0x2000
+average : _0 ? 
+	 sum : [ + ] _0 
+	 count : length _0 
+	 sum / count
+fib : _0 ? 
+	 _0 <= 1 : _0 
+	 fib [ _0 - 1 ] + fib [ _0 - 2 ]
+process_numbers : _0 ? 
+	 filtered : [ > 0 , ] _0 
+	 doubled : [ * 2 , ] filtered 
+	 [ + ] doubled
+test_list : 1 -2 3 -4 5
+result : process_numbers test_list
