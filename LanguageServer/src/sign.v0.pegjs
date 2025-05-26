@@ -6,8 +6,8 @@ Expression = Export
   / EOL
 
 Export = export? Define
-Define = tag _ be? _ (Define / Output)*
-Output = (tag / hex / (obtain tag)) __ output? __ (Output / Apply)*
+Define = tag _ be? _ Expression
+Output = (tag / hex / (obtain tag)) __ output? __ Expression
 Apply = Function __ (Pair / Flat / Atoms)
 
 Function
