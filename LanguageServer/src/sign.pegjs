@@ -269,18 +269,14 @@ PointlessExpression =
 
 PointlessContent = 
     PartialApplication
-    / DirectMap
     / DirectFold
 
 PartialApplication = 
-    left:PrimaryLiteral __ op:InfixOperator __ right:PrimaryLiteral {
-        return { type: "PartialApplication", operator: op, left: left, right: right };
+    op:InfixOperator __ operand:PrimaryLiteral type:(flag:","? {return flag ? "DirectMap" : "PartialApplication"}) {
+        return { type, operator: op, right: operand };
     }
-    / op:InfixOperator __ operand:PrimaryLiteral {
-        return { type: "PartialApplication", operator: op, right: operand };
-    }
-    / operand:PrimaryLiteral __ op:InfixOperator {
-        return { type: "PartialApplication", operator: op, left: operand };
+    / operand:PrimaryLiteral __ op:InfixOperator type:(flag:","? {return flag ? "DirectMap" : "PartialApplication"}) {
+        return { type, operator: op, left: operand };
     }
 
 DirectFold = 
@@ -441,3 +437,4 @@ EOF = !.
  * [+1] [*2] 5      -> 関数合成
  * x y z            -> 一般的な余積
  */
+ 
