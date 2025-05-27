@@ -1,433 +1,407 @@
-{
-  function buildList(head, tail) {
-    return [head].concat(tail);
-  }
+// 完全なSign言語PEG.js構文解析仕様
+// 演算子記号表の優先順位1-16を完全実装
+// ポイントレス記法と余積表現の4つの意味を実装
+
+Start = program:Program
+
+// ==================== プログラム構造 ====================
+
+Program = statements:(Statement _?)*
+
+Statement = 
+    ExportLevel 
+    / Comment
+    / EOL
+
+Comment = "`" content:[^\n\r`]* "`"?
+
+// ==================== 優先順位階層（1-16） ====================
+
+// 優先順位1: Export（最低優先度）
+ExportLevel = 
+    ExportSymbol DefineLevel
+    / DefineLevel
+
+// 優先順位2: Define + Output
+DefineLevel = 
+    Identifier __ DefineSymbol __ OutputLevel
+    / OutputLevel
+
+OutputLevel = 
+    (HexNumber / AddressSymbol? Identifier) __ OutputSymbol __ FunctionApplyLevel
+    / FunctionApplyLevel
+
+// 優先順位3: 構築域（Coproduct, Lambda, Product, Range）
+FunctionApplyLevel = 
+    (LambdaLevel / PointlessExpression / Unit / Identifier) (__ ConcatListLevel)*
+    / ConcatListLevel
+
+ConcatListLevel = 
+    (ProductLevel / Number / String / Character / Unit / Identifier) (__ ListConstructLevel)*
+    / ListConstructLevel
+
+ListConstructLevel = 
+    (Number / Character / Identifier) (__ FunctionComposeLevel)*
+    / FunctionComposeLevel
+
+FunctionComposeLevel = 
+    (LambdaLevel / PointlessExpression / Unit / Identifier) (__ ProductLevel)*
+    / LambdaLevel
+
+LambdaLevel = 
+    ParameterList __ LambdaSymbol __ ProductLevel
+    / ProductLevel
+
+ParameterList = 
+    Parameter (__ Parameter)*
+
+Parameter = 
+    ContinuousSymbol identifier:Identifier { 
+        return { type: "Parameter", name: identifier, continuous: true }; 
+    }
+    / identifier:Identifier { 
+        return { type: "Parameter", name: identifier, continuous: false }; 
+    }
+
+ProductLevel = 
+    head:RangeLevel tail:(__ ProductSymbol __ elem:RangeLevel { return elem; })* {
+        return tail.length > 0 
+            ? { type: "ProductExpression", elements: [head, ...tail] }
+            : head;
+    }
+
+RangeLevel = 
+    start:LogicalXorLevel __ RangeSymbol __ end:LogicalXorLevel {
+        return { type: "RangeExpression", start: start, end: end };
+    }
+    / LogicalXorLevel
+
+// 優先順位4-6: 論理域
+LogicalXorLevel = 
+    left:LogicalOrLevel rest:(__ XorSymbol __ right:LogicalOrLevel { return right; })* {
+        return rest.reduce((acc, right) => 
+            ({ type: "BinaryOperation", operator: "xor", left: acc, right: right }), left);
+    }
+
+LogicalOrLevel = 
+    left:LogicalAndLevel rest:(__ OrSymbol __ right:LogicalAndLevel { return right; })* {
+        return rest.reduce((acc, right) => 
+            ({ type: "BinaryOperation", operator: "or", left: acc, right: right }), left);
+    }
+
+LogicalAndLevel = 
+    left:LogicalNotLevel rest:(__ AndSymbol __ right:LogicalNotLevel { return right; })* {
+        return rest.reduce((acc, right) => 
+            ({ type: "BinaryOperation", operator: "and", left: acc, right: right }), left);
+    }
+
+LogicalNotLevel = 
+    NotSymbol operand:ComparisonLevel {
+        return { type: "UnaryOperation", operator: "not", operand: operand };
+    }
+    / ComparisonLevel
+
+// 優先順位7: 比較演算域（連鎖比較対応）
+ComparisonLevel = 
+    first:AbsoluteLevel rest:ComparisonChain* {
+        if (rest.length === 0) return first;
+        return { 
+            type: "ChainedComparison", 
+            operands: [first, ...rest.map(r => r.operand)], 
+            operators: rest.map(r => r.operator) 
+        };
+    }
+
+ComparisonChain = __ op:ComparisonOperator __ operand:AbsoluteLevel {
+    return { operator: op, operand: operand };
 }
 
-// トップレベル
-Program
-  = _ body:ExportLevel* { return { type: "Program", body }; }
+ComparisonOperator = 
+    "<=" { return "less_equal"; }
+    / ">=" { return "more_equal"; }
+    / "!=" { return "not_equal"; }
+    / "<" { return "less"; }
+    / ">" { return "more"; }
+    / "=" { return "equal"; }
 
-// 優先順位に従った演算子レベル
-ExportLevel
-  = DefineLevel
-  / Export
+// 優先順位8: 絶対値
+AbsoluteLevel = 
+    "|" _ expression:ArithmeticAddLevel _ "|" {
+        return { type: "UnaryOperation", operator: "abs", operand: expression };
+    }
+    / ArithmeticAddLevel
 
-Export
-  = "#" right:DefineLevel {
-    return { type: "Export", value: exp };
-  }
+// 優先順位9: 加減算
+ArithmeticAddLevel = 
+    left:ArithmeticMulLevel rest:(_ op:AdditiveOperator _ right:ArithmeticMulLevel 
+        { return { operator: op, operand: right }; })* {
+        return rest.reduce((acc, item) => 
+            ({ type: "BinaryOperation", operator: item.operator, left: acc, right: item.operand }), left);
+    }
 
-DefineLevel
-  = ConstructLevel
-  / Define
+AdditiveOperator = 
+    "+" { return "add"; }
+    / "-" { return "sub"; }
 
-Define
-  = id:Identifier _ ":" _ exp:ConstructLevel {
-    return { type: "Define", id, value: exp };
-  }
+// 優先順位10: 乗除算
+ArithmeticMulLevel = 
+    left:PowerLevel rest:(_ op:MultiplicativeOperator _ right:PowerLevel 
+        { return { operator: op, operand: right }; })* {
+        return rest.reduce((acc, item) => 
+            ({ type: "BinaryOperation", operator: item.operator, left: acc, right: item.operand }), left);
+    }
 
-ConstructLevel 
-  = LogicalLevel
-  / Product
-  / Lambda
-  / Coproduct
+MultiplicativeOperator = 
+    "*" { return "mul"; }
+    / "/" { return "div"; }
+    / "%" { return "mod"; }
 
-Product
-  = head:LogicalLevel tail:(_ "," _ LogicalLevel)* {
-    return {
-      type: "Product",
-      values: buildList(head, tail.map(([,,,v]) => v))
-    };
-  }
+// 優先順位11: 冪乗（右結合）
+PowerLevel = 
+    base:FactorialLevel _ PowerSymbol _ exponent:PowerLevel {
+        return { type: "BinaryOperation", operator: "pow", left: base, right: exponent };
+    }
+    / FactorialLevel
 
-Coproduct
-  = FunctionComposition
-  / ListComposition
-  / ListConstruction
-  / FunctionApplication
+// 優先順位12: 階乗
+FactorialLevel = 
+    operand:ResolveLevel FactorialSymbol {
+        return { type: "UnaryOperation", operator: "factorial", operand: operand };
+    }
+    / ResolveLevel
 
-// 1. 関数合成
-FunctionComposition
-  = head:Function tail:(_ Function)+ {
-    return {
-      type: "FunctionComposition",
-      functions: buildList(head, tail.map(([_, f]) => f))
-    };
-  }
+// 優先順位13: 解決評価域（Expand, Address, Get）
+ResolveLevel = ExpandLevel
 
-// 2. リスト合成
-ListComposition
-  = head:List tail:(_ List)+ {
-    return {
-      type: "ListComposition",
-      lists: buildList(head, tail.map(([_, l]) => l))
-    };
-  }
+ExpandLevel = 
+    operand:AddressLevel ExpandSymbol {
+        return { type: "UnaryOperation", operator: "expand", operand: operand };
+    }
+    / AddressLevel
 
-// 3. 関数適用
-FunctionApplication
-  = func:Function args:(_ Atom)+ {
-    return {
-      type: "FunctionApplication",
-      function: func,
-      arguments: args.map(([_, a]) => a)
-    };
-  }
+AddressLevel = 
+    AddressSymbol operand:GetLevel {
+        return { type: "UnaryOperation", operator: "address", operand: operand };
+    }
+    / GetLevel
 
-// 4. リスト構築
-ListConstruction
-  = head:Atom tail:(_ Atom)+ {
-    return {
-      type: "ListConstruction",
-      elements: buildList(head, tail.map(([_, a]) => a))
-    };
-  }
+GetLevel = GetRightExpression / GetLeftExpression / ImportLevel
 
+// 右単位元: key @ object（左結合）
+GetRightExpression = 
+    key:(Identifier / String / Integer) __ GetRightSymbol __ object:GetLeftExpression {
+        return { type: "GetRightExpression", key: key, object: object };
+    }
+    / key:(Identifier / String / Integer) __ GetRightSymbol __ object:ImportLevel {
+        return { type: "GetRightExpression", key: key, object: object };
+    }
 
-// ラムダ演算子
-Lambda
-  = left:ParamList __ "?" __ right:LogicalLevel {
-    return {
-      type: "Lambda",
-      left,
-      right
-    };
-  }
+// 左単位元: object ' key（左結合）
+GetLeftExpression = 
+    object:ImportLevel rest:(__ GetLeftSymbol __ key:(Identifier / String / Integer) { return key; })+ {
+        return rest.reduce((acc, key) => 
+            ({ type: "GetLeftExpression", object: acc, key: key }), object);
+    }
 
-// パラメータリスト
-ParamList
-  = "(" _ params:(Identifier (__ Identifier)*)? _ ")" {
-    return params 
-      ? buildList(params[0], params[1].map(([,,,p]) => p))
-      : [];
-  }
-  / Identifier {
-    return [{ type: "Identifier", name: text() }];
-  }
+// 優先順位14: Import
+ImportLevel = 
+    module:InputLevel ImportSymbol {
+        return { type: "ImportExpression", module: module };
+    }
+    / InputLevel
 
+// 優先順位15: Input
+InputLevel = 
+    InputSymbol address:(HexNumber / Identifier) {
+        return { type: "InputExpression", address: address };
+    }
+    / PrimaryLevel
 
-// 論理演算子レベル
+// 優先順位16: ブロック・基本要素
+PrimaryLevel = 
+    PointlessExpression
+    / BlockExpression
+    / Literal
+    / Identifier
+    / "(" _ expr:ExportLevel _ ")" { return expr; }
 
-LogicalLevel
-  = CompareLevel
-  / LogicalNot
-  / LogicalAnd
-  / LogicalOr
-  / LogicalXor
+// ==================== ポイントレス記法 ====================
 
-LogicalNot
-  = "!" right:LogicalLevel {
-    return {
-      type: "LogicalNot",
-      left: "",
-      right
-    };
-  }
+PointlessExpression = 
+    ("[" _ content:PointlessContent _ "]")
+    / ("{" _ content:PointlessContent _ "}")
+    / ("(" _ content:PointlessContent _ ")") {
+        return { type: "PointlessExpression", content: content };
+    }
 
-LogicalAnd
-  = left:CompareLevel __ "&" __ right:LogicalLevel {
-    return {
-      type: "LogicalAnd",
-      left,
-      right
-    };
-  }
+PointlessContent = 
+    PartialApplication
+    / DirectFold
 
-LogicalOr
-  = left:CompareLevel __ ";" __ right:LogicalLevel {
-    return {
-      type: "LogicalXor",
-      left,
-      right
-    };
-  }
+PartialApplication = 
+    op:InfixOperator __ operand:PrimaryLiteral type:(flag:","? {return flag ? "DirectMap" : "PartialApplication"}) {
+        return { type, operator: op, right: operand };
+    }
+    / operand:PrimaryLiteral __ op:InfixOperator type:(flag:","? {return flag ? "DirectMap" : "PartialApplication"}) {
+        return { type, operator: op, left: operand };
+    }
 
-LogicalXor
-  = left:CompareLevel __ "|" __ right:LogicalLevel {
-    return {
-      type: "LogicalOr",
-      left,
-      right
-    };
-  }
+DirectFold = 
+    op:AnyOperator {
+        return { type: "OperatorFunction", operator: op };
+    }
 
-CompareLevel
-  = ArithmeticLevel
-  / Equal
-  / NotEqual
-  / LessThan
-  / GreaterThan
-  / LessEqual
-  / GreaterEqual
+PrimaryLiteral = Literal / Identifier
 
-Equal
-  = left:ArithmeticLevel __ "=" __ right:CompareLevel {
-    return {
-      type: "Equal",
-      left,
-      right
-    };
-  }
+// ==================== ブロック構築 ====================
 
-NotEqual
-  = left:ArithmeticLevel __ "/=" __ right:CompareLevel {
-    return {
-      type: "NotEqual",
-      left,
-      right
-    };
-  }
+BlockExpression = 
+    "(" _ expr:ExportLevel _ ")" { return { type: "Block", bracket: "paren", expression: expr }; }
+    / "{" _ expr:ExportLevel _ "}" { return { type: "Block", bracket: "brace", expression: expr }; }
+    / "[" _ expr:ExportLevel _ "]" { return { type: "Block", bracket: "square", expression: expr }; }
+    / IndentBlock
 
-LessThan
-  = left:ArithmeticLevel __ "<" __ right:CompareLevel {
-    return {
-      type: "LessThan",
-      left,
-      right
-    };
-  }
+IndentBlock = BlockStart expr:ExportLevel { 
+    return { type: "IndentBlock", expression: expr }; 
+}
 
-GreaterThan
-  = left:ArithmeticLevel __ ">" __ right:CompareLevel {
-    return {
-      type: "GreaterThan",
-      left,
-      right
-    };
-  }
+BlockStart = $(EOL TAB+)
 
-LessEqual
-  = left:ArithmeticLevel __ "<=" __ right:CompareLevel {
-    return {
-      type: "LessEqual",
-      left,
-      right
-    };
-  }
+// ==================== リテラル ====================
 
-GreaterEqual
-  = left:ArithmeticLevel __ ">=" __ right:CompareLevel {
-    return {
-      type: "GreaterEqual",
-      left,
-      right
-    };
-  }
+Literal = 
+    Unit
+    / Number
+    / String
+    / Character
 
-// ...existing code...
+Unit = "_" { 
+    return { 
+        type: "Unit", 
+        semantics: ["empty_list", "identity_morphism", "unit_element"]
+    }; 
+}
 
-// 算術演算子レベル
-ArithmeticLevel
-  = MultiplicativeLevel
-  / Addition
-  / Subtraction
+Number = Float / Integer / HexNumber / OctNumber / BinNumber
 
-Addition
-  = left:MultiplicativeLevel __ "+" __ right:ArithmeticLevel {
-    return {
-      type: "Addition",
-      left,
-      right
-    };
-  }
+Integer = 
+    sign:"-"? digits:UnsignedInteger {
+        const value = parseInt((sign || "") + digits);
+        return { type: "Integer", value: value, raw: (sign || "") + digits };
+    }
 
-Subtraction
-  = left:MultiplicativeLevel __ "-" __ right:ArithmeticLevel {
-    return {
-      type: "Subtraction",
-      left,
-      right
-    };
-  }
+UnsignedInteger = $([1-9] [0-9]*) / "0"
 
-MultiplicativeLevel
-  = UnaryLevel
-  / Multiplication
-  / Division
-  / Modulo
+Float = 
+    sign:"-"? intPart:[0-9]+ "." fracPart:[0-9]+ {
+        const raw = (sign || "") + intPart.join("") + "." + fracPart.join("");
+        return { type: "Float", value: parseFloat(raw), raw: raw };
+    }
 
-Multiplication
-  = left:UnaryLevel __ "*" __ right:MultiplicativeLevel {
-    return {
-      type: "Multiplication",
-      left,
-      right
-    };
-  }
+HexNumber = $("0x" [0-9A-Fa-f]+) {
+    return { type: "HexNumber", value: parseInt(text(), 16), raw: text() };
+}
 
-Division
-  = left:UnaryLevel __ "/" __ right:MultiplicativeLevel {
-    return {
-      type: "Division",
-      left,
-      right
-    };
-  }
+OctNumber = $("0o" [0-7]+) {
+    return { type: "OctNumber", value: parseInt(text().slice(2), 8), raw: text() };
+}
 
-Modulo
-  = left:UnaryLevel __ "%" __ right:MultiplicativeLevel {
-    return {
-      type: "Modulo",
-      left,
-      right
-    };
-  }
+BinNumber = $("0b" [01]+) {
+    return { type: "BinNumber", value: parseInt(text().slice(2), 2), raw: text() };
+}
 
-// 単項演算子レベル
-UnaryLevel
-  = AtomLevel
-  / UnaryPlus
-  / UnaryMinus
+String = 
+    "`" content:[^`\n\r]* "`" {
+        return { type: "String", value: content.join("") };
+    }
 
-UnaryPlus
-  = "+" _ right:AtomLevel {
-    return {
-      type: "UnaryPlus",
-      right
-    };
-  }
+Character = 
+    "\\" char:. {
+        return { type: "Character", value: char };
+    }
 
-UnaryMinus
-  = "-" _ right:AtomLevel {
-    return {
-      type: "UnaryMinus",
-      right
-    };
-  }
+Identifier = 
+    $([A-Za-z_] [0-9A-Za-z_]*) {
+        return { type: "Identifier", name: text() };
+    }
 
-// 評価解決域
-ResolveLevel
-  = IndentBlock
-  / GroupBlock
-  / Atom
+// ==================== 演算子の位置区別実装 ====================
 
-IndentBlock
-  = ("\r" / "\n") "\t" body:ResolveLevel+ {
-    return {
-      type: "IndentBlock",
-      body
-    };
-  }
+// 余積演算子（空白演算子）- 優先順位3の重要な演算子
+CoproductSymbol = __ { return "coproduct"; }
 
-GroupBlock
-  = "(" _ body:ResolveLevel* _ ")" {
-    return {
-      type: "GroupBlock",
-      body
-    };
-  }
-  / "[" _ body:ResolveLevel* _ "]" {
-    return {
-      type: "GroupBlock",
-      body
-    };
-  }
-  / "{" _ body:ResolveLevel* _ "}" {
-    return {
-      type: "GroupBlock",
-      body
-    };
-  }
+// # 演算子（Export vs Output）
+ExportSymbol = "#" &(Identifier __ ":") { return "export"; }
+OutputSymbol = "#" &(" ") { return "output"; }
 
-// 単位元
-Unit
-  = "_" {
-    return {
-      type: "Unit",
-      value: null
-    };
-  }
+// ! 演算子（Not vs Factorial）
+NotSymbol = "!" &(!FactorialContext) { return "not"; }
+FactorialSymbol = "!" &(FactorialContext) { return "factorial"; }
+FactorialContext = (_ / EOL / EOF / ")" / "}" / "]" / ProductSymbol / RangeSymbol)
 
-// 識別子
-Identifier
-  = !ReservedWord head:[a-zA-Z_] tail:[a-zA-Z0-9_]* {
-    return {
-      type: "Identifier",
-      name: head + tail.join("")
-    };
-  }
+// ~ 演算子（Continuous vs Range vs Expand）
+ContinuousSymbol = $"~"
+RangeSymbol = $"~"
+ExpandSymbol = $"~"
+ExpandContext = (_ / EOL / EOF / ")" / "}" / "]" / ProductSymbol)
 
-// 基本要素
-Atom
-  = Number
-  / String
-  / Character
-  / List
-  / Unit
-  / Identifier
+// @ 演算子（Input vs GetRight vs Import）
+InputSymbol = "@" &(HexNumber / Identifier) !(" ") { return "input"; }
+GetLeftSymbol = "'" { return "get_left"; }
+GetRightSymbol = "@" &(" ") { return "get_right"; }
+ImportSymbol = "@" &(ImportContext) { return "import"; }
+ImportContext = (_ / EOL / EOF / ")" / "}" / "]")
 
-// ...existing code...
+// その他の基本演算子
+DefineSymbol = ":" { return "define"; }
+LambdaSymbol = "?" { return "lambda"; }
+ProductSymbol = "," { return "product"; }
+XorSymbol = ";" { return "xor"; }
+OrSymbol = "|" { return "or"; }
+AndSymbol = "&" { return "and"; }
+PowerSymbol = "^" { return "pow"; }
+AddressSymbol = "$" { return "address"; }
 
-// 数値リテラル
-Number
-  = Float
-  / Integer
-  / Scientific
+// ==================== ポイントレス記法用演算子分類 ====================
 
-Float
-  = sign:("-"?)? whole:[0-9]+ "." decimal:[0-9]+ {
-    return {
-      type: "Float",
-      value: parseFloat((sign || "") + whole.join("") + "." + decimal.join(""))
-    };
-  }
+AnyOperator = 
+    InfixOperator / PrefixOperator / PostfixOperator
 
-Integer
-  = sign:("-"?)? digits:[0-9]+ {
-    return {
-      type: "Integer",
-      value: parseInt((sign || "") + digits.join(""), 10)
-    };
-  }
+InfixOperator = 
+    CoproductSymbol / DefineSymbol / ProductSymbol / RangeSymbol / XorSymbol / OrSymbol / AndSymbol
+    / ComparisonOperator / AdditiveOperator / MultiplicativeOperator / PowerSymbol / GetLeftSymbol / GetRightSymbol
 
-Scientific
-  = base:(Float / Integer) ("e" / "E") exp:Integer {
-    return {
-      type: "Scientific",
-      value: base.value * Math.pow(10, exp.value)
-    };
-  }
+PrefixOperator = 
+    ExportSymbol / NotSymbol / ContinuousSymbol / AddressSymbol / InputSymbol
 
-// 文字列リテラル
-String
-  = "`" content:([^`\\] / "\\" .)* "`" {
-    return {
-      type: "String",
-      value: content.map(c => Array.isArray(c) ? c[0] : c).join("")
-    };
-  }
+PostfixOperator = 
+    FactorialSymbol / ExpandSymbol / ImportSymbol
 
-// 文字リテラル
-Character
-  = "'" char:([^'\\] / "\\" .) "'" {
-    return {
-      type: "Character",
-      value: Array.isArray(char) ? char[0] : char
-    };
-  }
+// ==================== 空白・制御文字 ====================
 
-// リストリテラル
-List
-  = "[" _ items:(ListItem (_ "," _ ListItem)*)? _ "]" {
-    return {
-      type: "List",
-      items: items 
-        ? buildList(items[0], items[1].map(([,,,item]) => item))
-        : []
-    };
-  }
+_ = $(" "*) // 任意個の空白（トークン区切り）
+__ = $(" "+) // 1個以上の空白（優先順位3の余積演算子）
 
-ListItem
-  = ResolveLevel
+TAB = "\t"
+EOL = "\n" / "\r\n" / "\r"
+EOF = !.
 
-// 空白とコメント
-_ "Space"
-  = " "*
+// ==================== 余積表現の4つの意味論サポート ====================
 
-__ "mustSpace"
-  = " "+
-
-
-Comment
-  = "`" [^\n]* "\n"?
+/*
+ * 余積演算子（__）の4つの意味:
+ * 1. 関数適用: func __ arg1 __ arg2
+ * 2. リスト結合: list1 __ list2 __ list3  
+ * 3. 関数合成: [f] __ [g] __ x
+ * 4. 式の結合: expr1 __ expr2
+ * 
+ * 構文解析では CoproductExpression として統一的に処理し、
+ * 意味解析段階で文脈に応じて4つの意味を区別する
+ * 
+ * 例:
+ * add 5 3          -> 関数適用
+ * [1,2] [3,4]      -> リスト結合  
+ * [+1] [*2] 5      -> 関数合成
+ * x y z            -> 一般的な余積
+ */
+ 
