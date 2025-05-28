@@ -1,0 +1,82 @@
+` Sign言語サンプルコード - 数学関数ライブラリ
+
+` 基本的な数学関数
+increment:n?n+1
+decrement:n?n-1
+double:x?x*2
+square:x?x^2
+
+` 二項演算関数  
+add:x y?x+y
+subtract:x y?x-y
+multiply:x y?x*y
+divide:x y?x/y
+power:base exp?base^exp
+
+` 条件分岐を含む関数
+absolute:x?
+	x>=0:x
+	-x
+
+classify:n?
+	n=0:'zero'
+	n>0:'positive'
+	n<0:'negative'
+
+grade:score?
+	score>=90:'A'
+	score>=80:'B' 
+	score>=70:'C'
+	score>=60:'D'
+	'F'
+
+` 再帰関数
+#factorial:n?
+	n<=1:1
+	n*factorial(n-1)
+
+fibonacci:n?
+	n<=1:n
+	fibonacci(n-1)+fibonacci(n-2)
+
+` 高階関数（リスト処理）
+map:f list ~rest?
+	!list:_
+	@f list,map f rest~
+
+fold:f init list ~rest?
+	!list:init
+	fold f (@f init list) rest~
+
+` エクスポートされた関数
+#sum:list?fold [+] 0 list
+#product:list?fold [*] 1 list
+#length:list?fold [x y?y+1] 0 list
+
+` 実用的な関数
+max:x y?
+	x>y:x
+	y
+
+min:x y?
+	x<y:x  
+	y
+
+clamp:value low high?
+	value<low:low
+	value>high:high
+	value
+
+` ユーティリティ関数
+isEven:n?n%2=0
+isOdd:n?n%2=1
+isPrime:n?
+	n<=1:_
+	n=2:n
+	n%2=0:_
+	checkPrime n 3
+
+checkPrime:n divisor?
+	divisor*divisor>n:n
+	n%divisor=0:_
+	checkPrime n (divisor+2)
