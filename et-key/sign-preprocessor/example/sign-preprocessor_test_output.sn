@@ -3,25 +3,23 @@
 ` ######################################################################
 ` 1. 引数名の標準化と位置ベース変換
 ` 原始構文
-increment : _0 ?  _0 + 1
-add : _0 _1 ?  _0 + _1
+increment : _0 ? _0 + 1
+add : _0 _1 ? _0 + _1
 
-L : _0 ?  _0
-R : _0 ~_1 ?  _1
+L : _0 ? _0
+R : _0 ~_1 ? _1
 
-map : _0 _1 ~_2 ?  @_0 _1, map _0 _2~
+map : _0 _1 ~_2 ? @_0 _1 , map _0 _2~
 
-foldr : _0 _1 _2 ~_3 ?
-
- !l : i
- @f l foldr f i r~
-
+foldr : _0 _1 _2 ~_3 ? 
+	!_2 & _1 |
+	@_0 _2 foldr _0 _1 _3~
 ` ######################################################################
 ` 2. 部分適用と引数順序変換
 ` 原始構文
-twice : _0 ?  _0 _0
-flip : _0 _1 _2 ?  _0 _2 _1
-f : _0 _1 _2 ?  _0 * _1 + _2
+twice : _0 ? _0 _0
+flip : _0 _1 _2 ? _0 _2 _1
+f : _0 _1 _2 ? _0 * _1 + _2
 g : f 2 _ 3
 ` ↓動確用追加確認
 g2 : f _ 5 _
@@ -75,16 +73,16 @@ value6 : triple 7
 valid : in_range 42
 
 `期待される変換結果:
-`add5 : _0 ?  [+] _0 5
-`triple : _0 ?  _0 [*] 3
-`in_range : _0 ?  0 < _0 < 100
-`value5 : _0 ?  [+] _0 5] 10
-`value6 : _0 ?  _0 [*] 3] 7
-`valid : _0 ?  0 < _0 < 100] 42
+`add5 : _0 ? [+] _0 5
+`triple : _0 ? _0 [*] 3
+`in_range : _0 ? 0 < _0 < 100
+`value5 : [_0 ? [+] _0 5] 10
+`value6 : [_0 ? _0 [*] 3] 7
+`valid : [_0 ? 0 < _0 < 100] 42
 
 `テストケース4: 高階関数とリスト処理
-map_1 : [* 2,]
-filter : [> 5,]
+map_1 : [* 2 ,]
+filter : [> 5 ,]
 reduce : [+]
 
 doubled : map_1 1 2 3 4
@@ -98,8 +96,8 @@ sum : reduce 1 2 3 4
 
 `テストケース5: 複雑な組み合わせ
 average : [/] [+] _ (length _)
-square_sum : [+] ([^ 2,] _)
-apply_twice : _0 ?  _0 _0
+square_sum : [+] ([^ 2 ,] _)
+apply_twice : _0 ? _0 _0
 
 avg_value : average 1 2 3 4
 squares : square_sum 1 2 3
@@ -109,12 +107,12 @@ value7 : twice_inc 5
 `期待される変換結果:
 `avg_value : [/] [+] 1 2 3 4 (length 1 2 3 4)
 `squares : [+] ([^ 2,] 1 2 3)
-`twice_inc : _0 ?  _0 _0
-`value7 : _0 ?  f f] [+ 1] 5
+`twice_inc : f ? f f
+`value7 : [f ? f f] [+ 1] 5
 
 `テストケース6: エッジケース
-compose : _0 _1 ?  _0 _1 _
-identity : _0 ?  _0
+compose : _0 _1 ? _0 _1 _
+identity : _0 ? _0
 nop : _
 
 inc_then_double : compose mul inc
@@ -122,8 +120,8 @@ pass_through : identity 42
 empty : nop
 
 `期待される変換結果:
-`inc_then_double : _0 _1 ?  f _1 _] [*] [+ 1]
-`pass_through : _0 ?  x] 42
+`inc_then_double : [f g ? f g _] [*] [+ 1]
+`pass_through : [x ? x] 42
 `empty : _
 
 
@@ -143,45 +141,36 @@ empty : nop
 ` 5. ブロック構文による条件分岐（match case対応）
 ` ### 5.1 基本変換パターン
 ` 原始構文
-func : _0 ?
-
- condition1 : result1
- condition2 : result2
- condition3 : result3
- default_result
-
+func : _0 ? 
+	condition1 & result1 |
+	condition2 & result2 |
+	condition3 & result3 |
+	default_result
 ` ### 5.3 変換例
 ` #### 数値分類
 ` 原始構文
-classify : _0 ?
-
- n = 0 : `zero`
- n > 0 : `positive`
- n < 0 : `negative`
-
+classify : _0 ? 
+	n = 0 & `zero` |
+	n > 0 & `positive` |
+	n < 0 & `negative`
 ` #### 範囲チェック
 ` 原始構文
-grade : _0 ?
-
- score >= 90 : `A`
- score >= 80 : `B`
- score >= 70 : `C`
- score >= 60 : `D`
- `F`
-
+grade : _0 ? 
+	score >=  90 & `A` |
+	score >=  80 & `B` |
+	score >=  70 & `C` |
+	score >=  60 & `D` |
+	`F`
 ` #### 複数引数での条件分岐
 ` 原始構文
-compare : _0 _1 ?
-
- x > y : `greater`
- x = y : `equal`
- x < y : `less`
-
+compare : _0 _1 ? 
+	x > y & `greater` |
+	x = y & `equal` |
+	x < y & `less`
 ` #### 複雑な条件
 ` 原始構文
-access_check : _0 _1 ?
-
- user = `admin` : `full_access`
- role = `moderator` & user != `guest` : `moderate_access`
- user != _ : `basic_access`
- `no_access`
+access_check : _0 _1 ? 
+	user = `admin` & `full_access` |
+	_1 = `moderator` & user != `guest` & `moderate_access` |
+	user !=  _ & `basic_access` |
+	`no_access`

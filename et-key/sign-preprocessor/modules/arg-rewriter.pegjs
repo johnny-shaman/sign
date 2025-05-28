@@ -1,10 +1,12 @@
-// Sign言語 引数書き換えモジュール（超安全版）
-// 正規表現を最小限に抑えた実装
+// Sign言語 引数書き換えモジュール（改良版）
+// インデントブロック全体を処理する版
 
 Start = input:$(.*)  {
   
-  // 文字列を安全にトークン化して置換する関数
+  // 安全な文字列置換関数
   function safeTokenReplace(text, oldToken, newToken) {
+    if (!oldToken || oldToken === newToken) return text;
+    
     const tokens = [];
     let current = '';
     let inString = false;
@@ -48,20 +50,20 @@ Start = input:$(.*)  {
     return replacedTokens.join('');
   }
   
-  // 行ごとに処理
-  const lines = input.split('\n');
-  const processedLines = lines.map(line => {
+  // 関数ブロック全体を処理する関数
+  function processFunctionBlock(lines, startIndex) {
+    const functionLine = lines[startIndex];
     
-    // 関数定義の検出（シンプルなパターンマッチング）
-    const colonIndex = line.indexOf(':');
-    const questionIndex = line.indexOf('?');
+    // 関数定義の検出
+    const colonIndex = functionLine.indexOf(':');
+    const questionIndex = functionLine.indexOf('?');
     
     if (colonIndex === -1 || questionIndex === -1 || questionIndex <= colonIndex) {
-      return line; // 関数定義でない行はそのまま
+      return { processedLines: [functionLine], nextIndex: startIndex + 1 };
     }
     
     // 関数名部分（export prefix を含む）
-    const beforeColon = line.substring(0, colonIndex).trim();
+    const beforeColon = functionLine.substring(0, colonIndex).trim();
     let funcName = beforeColon;
     let exportPrefix = '';
     
@@ -71,14 +73,14 @@ Start = input:$(.*)  {
     }
     
     // 引数部分
-    const paramsPart = line.substring(colonIndex + 1, questionIndex).trim();
+    const paramsPart = functionLine.substring(colonIndex + 1, questionIndex).trim();
     if (paramsPart.length === 0) {
-      return line; // 引数がない場合はそのまま
+      return { processedLines: [functionLine], nextIndex: startIndex + 1 };
     }
     
-    // 本体部分
+    // 本体部分（同じ行にある場合）
     const bodyStartIndex = questionIndex + 1;
-    const bodyPart = line.substring(bodyStartIndex);
+    const samLineBody = functionLine.substring(bodyStartIndex).trim();
     
     // パラメータを解析
     const paramList = paramsPart.split(/\s+/).filter(p => p.length > 0);
@@ -96,15 +98,72 @@ Start = input:$(.*)  {
       newParams.push(isContinuous ? '~' + newParamName : newParamName);
     });
     
-    // 本体内の引数名を安全に置換
-    let newBody = bodyPart;
+    // 関数定義行の処理
+    let newSameLineBody = samLineBody;
     Object.keys(mapping).forEach(oldName => {
       const newName = mapping[oldName];
-      newBody = safeTokenReplace(newBody, oldName, newName);
+      newSameLineBody = safeTokenReplace(newSameLineBody, oldName, newName);
     });
     
-    return `${exportPrefix}${funcName} : ${newParams.join(' ')} ? ${newBody}`;
-  });
+    const processedFunctionLine = `${exportPrefix}${funcName} : ${newParams.join(' ')} ? ${newSameLineBody}`;
+    const result = [processedFunctionLine];
+    
+    // インデントブロックの処理
+    let currentIndex = startIndex + 1;
+    while (currentIndex < lines.length) {
+      const line = lines[currentIndex];
+      
+      // 空行はそのまま追加
+      if (line.trim() === '') {
+        result.push(line);
+        currentIndex++;
+        continue;
+      }
+      
+      // インデントのチェック（タブまたは空白で開始）
+      if (line.match(/^\s+/)) {
+        // インデントされた行なので、関数ブロックの一部として処理
+        let processedLine = line;
+        Object.keys(mapping).forEach(oldName => {
+          const newName = mapping[oldName];
+          processedLine = safeTokenReplace(processedLine, oldName, newName);
+        });
+        result.push(processedLine);
+        currentIndex++;
+      } else {
+        // インデントされていない行なので、関数ブロック終了
+        break;
+      }
+    }
+    
+    return { processedLines: result, nextIndex: currentIndex };
+  }
+  
+  // 行ごとに処理
+  const lines = input.split('\n');
+  const processedLines = [];
+  let i = 0;
+  
+  while (i < lines.length) {
+    const line = lines[i];
+    
+    // コメント行や空行はそのまま
+    if (line.trim() === '' || line.trim().startsWith('`')) {
+      processedLines.push(line);
+      i++;
+      continue;
+    }
+    
+    // 関数定義かチェック
+    if (line.includes(':') && line.includes('?')) {
+      const result = processFunctionBlock(lines, i);
+      processedLines.push(...result.processedLines);
+      i = result.nextIndex;
+    } else {
+      processedLines.push(line);
+      i++;
+    }
+  }
   
   return processedLines.join('\n');
 }
