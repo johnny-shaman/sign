@@ -1,0 +1,15 @@
+` Sign言語サンプルコード - 数学関数ライブラリ
+
+` 基本的な数学関数
+increment:n?n+1
+decrement:n?n-1
+double:x?x*2
+square:x?x^2
+
+` 二項演算関数  
+add:x y?x+y
+subtract:x y?x-y
+multiply:x y?x*y
+divide:x y?x/y
+power:base exp?base^exp
+

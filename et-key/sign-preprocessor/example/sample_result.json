@@ -1,0 +1,481 @@
+{
+  "success": true,
+  "originalCode": "` Sign言語サンプルコード - 数学関数ライブラリ\n\n` 基本的な数学関数\nincrement:n?n+1\ndecrement:n?n-1\ndouble:x?x*2\nsquare:x?x^2\n\n` 二項演算関数  \nadd:x y?x+y\nsubtract:x y?x-y\nmultiply:x y?x*y\ndivide:x y?x/y\npower:base exp?base^exp\n\n",
+  "preprocessedCode": "` Sign言語サンプルコード - 数学関数ライブラリ\n\n` 基本的な数学関数\nincrement : _0 ? _0 + 1\ndecrement : _0 ? _0 - 1\ndouble : _0 ? _0 * 2\nsquare : _0 ? _0 ^ 2\n\n` 二項演算関数  \nadd : _0 _1 ? _0 + _1\nsubtract : _0 _1 ? _0 - _1\nmultiply : _0 _1 ? _0 * _1\ndivide : _0 _1 ? _0 / _1\npower : _0 _1 ? _0 ^ _1\n\n",
+  "ast": {
+    "type": "Program",
+    "statements": [
+      {
+        "type": "Comment",
+        "content": " Sign言語サンプルコード - 数学関数ライブラリ"
+      },
+      {
+        "type": "Comment",
+        "content": " 基本的な数学関数"
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "increment"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "add",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Integer",
+          "value": 1,
+          "raw": "1"
+        }
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "decrement"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "sub",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Integer",
+          "value": 1,
+          "raw": "1"
+        }
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "double"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "mul",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Integer",
+          "value": 2,
+          "raw": "2"
+        }
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "square"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "pow",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Integer",
+          "value": 2,
+          "raw": "2"
+        }
+      },
+      {
+        "type": "Comment",
+        "content": " 二項演算関数  "
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "add"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            },
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_1"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "add",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      },
+      {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "subtract"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            },
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_1"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "sub",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      },
+      {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "multiply"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            },
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_1"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "mul",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      },
+      {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "divide"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            },
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_1"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "div",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      },
+      {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      {
+        "type": "Definition",
+        "identifier": {
+          "type": "Identifier",
+          "name": "power"
+        },
+        "value": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            },
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_1"
+              },
+              "continuous": false
+            }
+          ],
+          "body": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      },
+      {
+        "type": "BinaryOperation",
+        "operator": "pow",
+        "left": {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        "right": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      },
+      {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      }
+    ]
+  },
+  "error": null
+}
