@@ -1,5 +1,5 @@
-// Sign言語フォーマッター（カンマ修正版）
-// `,` 演算子の空白処理を確実に行う版
+// Sign言語フォーマッター（単項マイナス対応版）
+// `,` 演算子と単項マイナス `-` の正確な処理
 
 Start = input:$(.*)  {
   
@@ -33,8 +33,33 @@ Start = input:$(.*)  {
         continue;
       }
       
-      // 二項演算子のリスト（カンマを含む）
-      const binaryOps = ['+', '-', '*', '/', '%', '^', '=', '<', '>', '&', '|', ':', '?', ','];
+      // 単項マイナスの文脈検出
+      function isUnaryMinusContext() {
+        if (char !== '-') return false;
+        
+        // 次の文字が識別子（アルファベットまたはアンダースコア）でない場合は二項演算子
+        if (!/[a-zA-Z_]/.test(nextChar)) return false;
+        
+        // 単項マイナスの文脈パターン
+        const unaryContexts = [
+          // 1. 行頭または空白のみの後
+          () => i === 0 || /^\s*$/.test(formatted.split('\n').pop()),
+          
+          // 2. 制御構造の後（?、:、|、&の直後）
+          () => /[?:|&]\s*$/.test(formatted),
+          
+          // 3. 区切り文字の後（,、(の直後）
+          () => /[,(]\s*$/.test(formatted),
+          
+          // 4. 演算子の後（+、*、/、%、^、=、<、>の直後）
+          () => /[+*/%^=<>]\s*$/.test(formatted)
+        ];
+        
+        return unaryContexts.some(check => check());
+      }
+      
+      // 二項演算子のリスト（マイナスを除く）
+      const binaryOps = ['+', '*', '/', '%', '^', '=', '<', '>', '&', '|', ':', '?', ','];
       const compoundOps = ['<=', '>=', '!='];
       
       // 複合演算子のチェック
@@ -52,8 +77,35 @@ Start = input:$(.*)  {
         continue;
       }
       
-      // 単項演算子のチェック（カンマを特に重視）
-      if (binaryOps.includes(char)) {
+      // マイナス記号の特別処理
+      if (char === '-') {
+        if (isUnaryMinusContext()) {
+          // 単項マイナス: 前に空白があれば残し、後ろには空白を入れない
+          if (prevChar === ' ' || prevChar === '\t') {
+            formatted += char; // 前の空白は既にformattedに含まれている
+          } else {
+            formatted += char;
+          }
+        } else {
+          // 二項マイナス: 前後に空白を挿入
+          const needSpaceBefore = prevChar !== ' ' && prevChar !== '' && 
+                                 prevChar !== '\t' && prevChar !== '\n' &&
+                                 !['(', '[', '{'].includes(prevChar);
+          const needSpaceAfter = nextChar !== ' ' && nextChar !== '' && 
+                                nextChar !== '\t' && nextChar !== '\n' &&
+                                ![')', ']', '}'].includes(nextChar);
+          
+          if (needSpaceBefore) {
+            formatted += ' ';
+          }
+          formatted += char;
+          if (needSpaceAfter) {
+            formatted += ' ';
+          }
+        }
+      }
+      // その他の二項演算子の処理
+      else if (binaryOps.includes(char)) {
         // 前後に空白がない場合は挿入
         const needSpaceBefore = prevChar !== ' ' && prevChar !== '' && 
                                prevChar !== '\t' && prevChar !== '\n' &&
