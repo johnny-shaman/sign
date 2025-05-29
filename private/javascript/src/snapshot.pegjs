@@ -56,44 +56,25 @@ ParameterList =
     Parameter (__ Parameter)*
 
 Parameter = 
-    ContinuousSymbol identifier:Identifier { 
-        return { type: "Parameter", name: identifier, continuous: true }; 
-    }
-    / identifier:Identifier { 
-        return { type: "Parameter", name: identifier, continuous: false }; 
-    }
+    ContinuousSymbol Identifier
+    / Identifier
 
 ProductLevel = 
-    head:RangeLevel tail:(__ ProductSymbol __ elem:RangeLevel { return elem; })* {
-        return tail.length > 0 
-            ? { type: "ProductExpression", elements: [head, ...tail] }
-            : head;
-    }
+    RangeLevel (__ ProductSymbol __ RangeLevel)*
 
 RangeLevel = 
-    start:LogicalXorLevel __ RangeSymbol __ end:LogicalXorLevel {
-        return { type: "RangeExpression", start: start, end: end };
-    }
+    LogicalXorLevel __ RangeSymbol __ LogicalXorLevel
     / LogicalXorLevel
 
 // 優先順位4-6: 論理域
 LogicalXorLevel = 
-    left:LogicalOrLevel rest:(__ XorSymbol __ right:LogicalOrLevel { return right; })* {
-        return rest.reduce((acc, right) => 
-            ({ type: "BinaryOperation", operator: "xor", left: acc, right: right }), left);
-    }
+    LogicalOrLevel (__ XorSymbol __ LogicalOrLevel)*
 
 LogicalOrLevel = 
-    left:LogicalAndLevel rest:(__ OrSymbol __ right:LogicalAndLevel { return right; })* {
-        return rest.reduce((acc, right) => 
-            ({ type: "BinaryOperation", operator: "or", left: acc, right: right }), left);
-    }
+    LogicalAndLevel (__ OrSymbol __ LogicalAndLevel)*
 
 LogicalAndLevel = 
-    left:LogicalNotLevel rest:(__ AndSymbol __ right:LogicalNotLevel { return right; })* {
-        return rest.reduce((acc, right) => 
-            ({ type: "BinaryOperation", operator: "and", left: acc, right: right }), left);
-    }
+    LogicalNotLevel (__ AndSymbol __ LogicalNotLevel)*
 
 LogicalNotLevel = 
     NotSymbol operand:ComparisonLevel {
