@@ -19,7 +19,7 @@ Statement =
     / _ EOL { return null; }  // 空行も許可
 
 Comment = _ "`" content:[^\n\r`]* "`"? {
-    return { type: "Comment", content: content.join("") };
+    return null;  // ASTに含めない
 }
 
 // ==================== 優先順位階層（1-16） ====================
