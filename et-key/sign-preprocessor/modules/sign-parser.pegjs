@@ -46,12 +46,21 @@ OutputLevel =
 
 // 優先順位3: 構築域（Coproduct, Lambda, Product, Range）
 FunctionApplyLevel = 
-    left:(LambdaLevel / PointlessExpression / Unit / Identifier) rest:(__ right:ConcatListLevel { return right; })* {
+    // 第1パターン: 通常の関数適用
+    left:FunctionApplyTerm rest:(__ right:FunctionApplyTerm { return right; })* {
         return rest.length > 0
-            ? { type: "FunctionApplyExpression", left: left, right: rest }
+            ? { type: "FunctionApplyExpression", function: left, arguments: rest }
             : left;
     }
-    / ConcatListLevel
+// 関数適用で使える項目を統合
+FunctionApplyTerm = 
+    LambdaLevel 
+    / PointlessExpression 
+    / ResolveLevel  // InputLevel, GetLevel等を含む
+    / ProductLevel
+    / RangeLevel
+    / LogicalXorLevel
+    / PrimaryLevel
 
 ConcatListLevel = 
     left:(ProductLevel / Number / String / Character / Unit / Identifier) rest:(__ right:ListConstructLevel { return right; })* {
@@ -81,24 +90,37 @@ LambdaLevel =
     params:ParameterList __ LambdaSymbol BlockStart branches:ConditionalBranches {
         return { type: "LambdaExpression", parameters: params, body: { type: "ConditionalBlock", branches: branches } };
     }
-    / params:ParameterList __ LambdaSymbol __ body:ProductLevel {
+    / params:ParameterList __ LambdaSymbol __ body:LogicalOrLevel {  // ProductLevel → LogicalOrLevel
         return { type: "LambdaExpression", parameters: params, body: body };
     }
     / ProductLevel
 
 // 条件分岐ブロックの解析
 ConditionalBranches = 
-    first:ConditionalBranch rest:(BlockContinue branch:ConditionalBranch { return branch; })* {
-        return [first, ...rest];
+    branches:ConditionalBranchList {
+        return branches;
+    }
+
+ConditionalBranchList = 
+    first:ConditionalBranch rest:(BlockContinue OrSymbol branch:ConditionalBranch { return branch; })* 
+    lastDefault:(BlockContinue defaultBranch:DefaultBranch { return defaultBranch; })? {
+        const allBranches = [first, ...rest];
+        if (lastDefault) allBranches.push(lastDefault);
+        return allBranches;
     }
 
 ConditionalBranch = 
-    condition:FunctionApplyLevel __ DefineSymbol __ result:FunctionApplyLevel {
+    __ condition:ConditionalExpression __ AndSymbol __ result:FunctionApplyLevel {
         return { type: "ConditionalBranch", condition: condition, result: result };
     }
-    / defaultValue:FunctionApplyLevel {
-        return { type: "DefaultBranch", result: defaultValue };
+
+DefaultBranch = 
+    __ result:FunctionApplyLevel {
+        return { type: "DefaultBranch", result: result };
     }
+
+// 条件式専用のレベル（修正版）
+ConditionalExpression = LogicalOrLevel
 
 ParameterList = 
     first:Parameter rest:(__ p:Parameter { return p; })* {
@@ -181,7 +203,7 @@ AbsoluteLevel =
     }
     / ArithmeticAddLevel
 
-// 優先順位9: 加減算
+// 優先順位9: 加減算（既存のArithmeticAddLevelを修正）
 ArithmeticAddLevel = 
     left:ArithmeticMulLevel rest:(_ op:AdditiveOperator _ right:ArithmeticMulLevel 
         { return { operator: op, operand: right }; })* {
@@ -190,16 +212,35 @@ ArithmeticAddLevel =
     }
 
 AdditiveOperator = 
-    "+" { return "add"; }
-    / "-" { return "sub"; }
+    "+" !UnaryContext { return "add"; }
+    / "-" !UnaryContext { return "sub"; }
 
-// 優先順位10: 乗除算
+// 【新規追加】単項演算子のコンテキスト判定
+UnaryContext = _ (Identifier / Unit / "(" / "[" / "{")
+
+// 優先順位10: 乗除算（ArithmeticMulLevelを修正）
 ArithmeticMulLevel = 
-    left:PowerLevel rest:(_ op:MultiplicativeOperator _ right:PowerLevel 
+    left:UnaryLevel rest:(_ op:MultiplicativeOperator _ right:UnaryLevel 
         { return { operator: op, operand: right }; })* {
         return rest.reduce((acc, item) => 
             ({ type: "BinaryOperation", operator: item.operator, left: acc, right: item.operand }), left);
     }
+
+// 【新規追加】単項演算子レベル（数値用の+/-のみ）
+UnaryLevel = 
+    // 単項マイナス
+    "-" _ operand:UnaryLevel {
+        return { type: "UnaryOperation", operator: "unary_minus", operand: operand };
+    }
+    // 単項プラス
+    / "+" _ operand:UnaryLevel {
+        return { type: "UnaryOperation", operator: "unary_plus", operand: operand };
+    }
+    // 前置~演算子（連続リスト構築） - 追加
+    / ContinuousSymbol operand:UnaryLevel {
+        return { type: "UnaryOperation", operator: "continuous", operand: operand };
+    }
+    / PowerLevel
 
 MultiplicativeOperator = 
     "*" { return "mul"; }
@@ -239,12 +280,11 @@ GetLevel = GetRightExpression / GetLeftExpression / ImportLevel
 
 // 右単位元: key @ object（左結合）
 GetRightExpression = 
-    key:(Identifier / String / Integer) __ GetRightSymbol __ object:GetLeftExpression {
+    key:(Unit / Identifier / String / Integer) __ GetRightSymbol __ object:GetRightTerm {
         return { type: "GetRightExpression", key: key, object: object };
     }
-    / key:(Identifier / String / Integer) __ GetRightSymbol __ object:ImportLevel {
-        return { type: "GetRightExpression", key: key, object: object };
-    }
+
+GetRightTerm = GetLeftExpression / ImportLevel / PrimaryLevel
 
 // 左単位元: object ' key（左結合）
 GetLeftExpression = 
@@ -271,6 +311,7 @@ InputLevel =
 PrimaryLevel = 
     PointlessExpression
     / BlockExpression
+    / Unit  // 明示的に追加
     / Literal
     / Identifier
     / "(" _ expr:ExportLevel _ ")" { return expr; }
@@ -315,8 +356,8 @@ IndentBlock = BlockStart expr:ExportLevel {
     return { type: "IndentBlock", expression: expr }; 
 }
 
-BlockStart = EOL TAB+
-BlockContinue = EOL TAB+
+BlockStart = EOL TAB+ _
+BlockContinue = EOL TAB+ _
 
 // ==================== リテラル ====================
 
@@ -336,16 +377,14 @@ Unit = "_" {
 Number = Float / Integer / HexNumber / OctNumber / BinNumber
 
 Integer = 
-    sign:"-"? digits:UnsignedInteger {
-        const value = parseInt((sign || "") + digits);
-        return { type: "Integer", value: value, raw: (sign || "") + digits };
+    digits:UnsignedInteger {
+        return { type: "Integer", value: parseInt(digits), raw: digits };
     }
 
 UnsignedInteger = $([1-9] [0-9]*) / "0"
-
 Float = 
-    sign:"-"? intPart:[0-9]+ "." fracPart:[0-9]+ {
-        const raw = (sign || "") + intPart.join("") + "." + fracPart.join("");
+    intPart:[0-9]+ "." fracPart:[0-9]+ {
+        const raw = intPart.join("") + "." + fracPart.join("");
         return { type: "Float", value: parseFloat(raw), raw: raw };
     }
 
@@ -386,9 +425,10 @@ ExportSymbol = "#" &(Identifier __ ":") { return "export"; }
 OutputSymbol = "#" &(" ") { return "output"; }
 
 // ! 演算子（Not vs Factorial）
-NotSymbol = "!" &(!FactorialContext) { return "not"; }
+NotSymbol = "!" &(NotContext) { return "not"; }
 FactorialSymbol = "!" &(FactorialContext) { return "factorial"; }
-FactorialContext = (_ / EOL / EOF / ")" / "}" / "]" / ProductSymbol / RangeSymbol)
+NotContext = "_" / Identifier / "(" / "[" / "{" / !FactorialContext
+FactorialContext = " " / "\t" / EOL / EOF / ")" / "}" / "]" / ProductSymbol / RangeSymbol / DefineSymbol / OrSymbol / AndSymbol
 
 // ~ 演算子（Continuous vs Range vs Expand）
 ContinuousSymbol = "~" &(Identifier) { return "continuous"; }
@@ -397,9 +437,9 @@ ExpandSymbol = "~" &(ExpandContext) { return "expand"; }
 ExpandContext = (_ / EOL / EOF / ")" / "}" / "]" / ProductSymbol)
 
 // @ 演算子（Input vs GetRight vs Import）
-InputSymbol = "@" &(HexNumber / Identifier) !(" ") { return "input"; }
+InputSymbol = "@" &(Unit / Identifier) !(" ") { return "input"; }
 GetLeftSymbol = "'" { return "get_left"; }
-GetRightSymbol = "@" &(" ") { return "get_right"; }
+GetRightSymbol = "@" &(!" " Unit / Identifier) " " { return "get_right"; }
 ImportSymbol = "@" &(ImportContext) { return "import"; }
 ImportContext = (_ / EOL / EOF / ")" / "}" / "]")
 
