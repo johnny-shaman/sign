@@ -164,7 +164,8 @@ function processSignFile(inputFile, outputFile = null, preprocessedFile = null, 
       }
 
       // 最終JSON出力
-      const output = JSON.stringify(result, null, 2);
+      // const output = JSON.stringify(result, null, 2);  //originalCodeとpreprocessedCode出力Ver
+      const output = JSON.stringify(result.ast, null, 2);
 
       if (outputFile) {
         fs.writeFileSync(outputFile, output);

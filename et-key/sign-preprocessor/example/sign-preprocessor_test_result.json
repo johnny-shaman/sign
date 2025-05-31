@@ -1,0 +1,2551 @@
+{
+  "type": "Program",
+  "statements": [
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "increment"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "add",
+      "left": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "right": {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "add"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_1"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "arguments": [
+        {
+          "type": "UnaryOperation",
+          "operator": "unary_plus",
+          "operand": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Integer",
+      "value": 1,
+      "raw": "1"
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "L"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Integer",
+      "value": 0,
+      "raw": "0"
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "R"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_1"
+            },
+            "continuous": true
+          }
+        ],
+        "body": {
+          "type": "UnaryOperation",
+          "operator": "continuous",
+          "operand": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "Integer",
+      "value": 1,
+      "raw": "1"
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "map"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "LambdaExpression",
+          "parameters": [
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_0"
+              },
+              "continuous": false
+            },
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_1"
+              },
+              "continuous": false
+            },
+            {
+              "type": "Parameter",
+              "name": {
+                "type": "Identifier",
+                "name": "_2"
+              },
+              "continuous": true
+            }
+          ],
+          "body": {
+            "type": "InputExpression",
+            "address": {
+              "type": "Identifier",
+              "name": "_0"
+            }
+          }
+        },
+        "arguments": [
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "ProductExpression",
+        "elements": [
+          {
+            "type": "Integer",
+            "value": 1,
+            "raw": "1"
+          },
+          {
+            "type": "Identifier",
+            "name": "map"
+          }
+        ]
+      },
+      "arguments": [
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "arguments": [
+        {
+          "type": "UnaryOperation",
+          "operator": "continuous",
+          "operand": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "UnaryOperation",
+      "operator": "expand",
+      "operand": {
+        "type": "Integer",
+        "value": 2,
+        "raw": "2"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "foldr"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_1"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_2"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_3"
+            },
+            "continuous": true
+          }
+        ],
+        "body": {
+          "type": "IndentBlock",
+          "expression": {
+            "type": "UnaryOperation",
+            "operator": "not",
+            "operand": {
+              "type": "Unit",
+              "semantics": [
+                "empty_list",
+                "identity_morphism",
+                "unit_element"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "and",
+      "left": {
+        "type": "Integer",
+        "value": 2,
+        "raw": "2"
+      },
+      "right": {
+        "type": "Unit",
+        "semantics": [
+          "empty_list",
+          "identity_morphism",
+          "unit_element"
+        ]
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "FunctionApplyExpression",
+          "function": {
+            "type": "InputExpression",
+            "address": {
+              "type": "Identifier",
+              "name": "_0"
+            }
+          },
+          "arguments": [
+            {
+              "type": "Unit",
+              "semantics": [
+                "empty_list",
+                "identity_morphism",
+                "unit_element"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 2,
+        "raw": "2"
+      },
+      "arguments": [
+        {
+          "type": "Identifier",
+          "name": "foldr"
+        },
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "arguments": [
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      "arguments": [
+        {
+          "type": "UnaryOperation",
+          "operator": "continuous",
+          "operand": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "UnaryOperation",
+      "operator": "expand",
+      "operand": {
+        "type": "Integer",
+        "value": 3,
+        "raw": "3"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "twice"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "arguments": [
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Integer",
+      "value": 0,
+      "raw": "0"
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "flip"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_1"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_2"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "arguments": [
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 2,
+        "raw": "2"
+      },
+      "arguments": [
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Integer",
+      "value": 1,
+      "raw": "1"
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "_0"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_1"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_2"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "mul",
+      "left": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "right": {
+        "type": "Unit",
+        "semantics": [
+          "empty_list",
+          "identity_morphism",
+          "unit_element"
+        ]
+      }
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      "arguments": [
+        {
+          "type": "UnaryOperation",
+          "operator": "unary_plus",
+          "operand": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Integer",
+      "value": 2,
+      "raw": "2"
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "g"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "f"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          },
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          },
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "g2"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "f"
+        },
+        "arguments": [
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          },
+          {
+            "type": "Integer",
+            "value": 5,
+            "raw": "5"
+          },
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "add"
+      },
+      "value": [
+        "[",
+        " ",
+        {
+          "type": "OperatorFunction",
+          "operator": "add"
+        },
+        " ",
+        "]"
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "mul"
+      },
+      "value": [
+        "[",
+        " ",
+        {
+          "type": "OperatorFunction",
+          "operator": "mul"
+        },
+        " ",
+        "]"
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "sub"
+      },
+      "value": [
+        "[",
+        " ",
+        {
+          "type": "OperatorFunction",
+          "operator": "sub"
+        },
+        " ",
+        "]"
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "result1"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "add"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 5,
+            "raw": "5"
+          },
+          {
+            "type": "Integer",
+            "value": 7,
+            "raw": "7"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "result2"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "mul"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          },
+          {
+            "type": "Integer",
+            "value": 4,
+            "raw": "4"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "result3"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "sub"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 10,
+            "raw": "10"
+          },
+          {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "pow2"
+      },
+      "value": [
+        "[",
+        " ",
+        {
+          "type": "PartialApplication",
+          "operator": "pow",
+          "right": {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          }
+        },
+        "",
+        "]"
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "inc"
+      },
+      "value": [
+        "[",
+        " ",
+        {
+          "type": "PartialApplication",
+          "operator": "add",
+          "right": {
+            "type": "Integer",
+            "value": 1,
+            "raw": "1"
+          }
+        },
+        "",
+        "]"
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "half"
+      },
+      "value": [
+        "[",
+        " ",
+        {
+          "type": "PartialApplication",
+          "operator": "div",
+          "right": {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          }
+        },
+        "",
+        "]"
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "square_and_add_ten"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Block",
+          "bracket": "square",
+          "expression": {
+            "type": "Identifier",
+            "name": "pow2"
+          }
+        },
+        "arguments": [
+          [
+            "[",
+            " ",
+            {
+              "type": "PartialApplication",
+              "operator": "add",
+              "right": {
+                "type": "Integer",
+                "value": 10,
+                "raw": "10"
+              }
+            },
+            "",
+            "]"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "value1"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "inc"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 5,
+            "raw": "5"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "value2"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "pow2"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 4,
+            "raw": "4"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "value3"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "square_and_add_ten"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "value4"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Block",
+          "bracket": "square",
+          "expression": {
+            "type": "Identifier",
+            "name": "inc"
+          }
+        },
+        "arguments": [
+          {
+            "type": "Block",
+            "bracket": "square",
+            "expression": {
+              "type": "Identifier",
+              "name": "pow2"
+            }
+          },
+          {
+            "type": "Integer",
+            "value": 4,
+            "raw": "4"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "add_n"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": [
+          "[",
+          " ",
+          {
+            "type": "OperatorFunction",
+            "operator": "add"
+          },
+          " ",
+          "]"
+        ],
+        "arguments": [
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "mul_by"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        },
+        "arguments": [
+          [
+            "[",
+            " ",
+            {
+              "type": "OperatorFunction",
+              "operator": "mul"
+            },
+            " ",
+            "]"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "between"
+      },
+      "value": {
+        "type": "ChainedComparison",
+        "operands": [
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          },
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          },
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        ],
+        "operators": [
+          "less",
+          "less"
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "add5"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "add_n"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 5,
+            "raw": "5"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "triple"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "mul_by"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "in_range"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "between"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 0,
+            "raw": "0"
+          },
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          },
+          {
+            "type": "Integer",
+            "value": 100,
+            "raw": "100"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "value5"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "add5"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 10,
+            "raw": "10"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "value6"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "triple"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 7,
+            "raw": "7"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "valid"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "in_range"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 42,
+            "raw": "42"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "reduce"
+      },
+      "value": [
+        "[",
+        " ",
+        {
+          "type": "OperatorFunction",
+          "operator": "add"
+        },
+        " ",
+        "]"
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "doubled"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "map_1"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 1,
+            "raw": "1"
+          },
+          {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          },
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          },
+          {
+            "type": "Integer",
+            "value": 4,
+            "raw": "4"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "filtered"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "filter"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          },
+          {
+            "type": "Integer",
+            "value": 7,
+            "raw": "7"
+          },
+          {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          },
+          {
+            "type": "Integer",
+            "value": 9,
+            "raw": "9"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "sum"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "reduce"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 1,
+            "raw": "1"
+          },
+          {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          },
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          },
+          {
+            "type": "Integer",
+            "value": 4,
+            "raw": "4"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "average"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": [
+          "[",
+          " ",
+          {
+            "type": "OperatorFunction",
+            "operator": "div"
+          },
+          " ",
+          "]"
+        ],
+        "arguments": [
+          [
+            "[",
+            " ",
+            {
+              "type": "OperatorFunction",
+              "operator": "add"
+            },
+            " ",
+            "]"
+          ],
+          {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          },
+          {
+            "type": "Block",
+            "bracket": "paren",
+            "expression": {
+              "type": "FunctionApplyExpression",
+              "function": {
+                "type": "Identifier",
+                "name": "length"
+              },
+              "arguments": [
+                {
+                  "type": "Unit",
+                  "semantics": [
+                    "empty_list",
+                    "identity_morphism",
+                    "unit_element"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "apply_twice"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "arguments": [
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Integer",
+      "value": 0,
+      "raw": "0"
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "avg_value"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "average"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 1,
+            "raw": "1"
+          },
+          {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          },
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          },
+          {
+            "type": "Integer",
+            "value": 4,
+            "raw": "4"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "squares"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "square_sum"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 1,
+            "raw": "1"
+          },
+          {
+            "type": "Integer",
+            "value": 2,
+            "raw": "2"
+          },
+          {
+            "type": "Integer",
+            "value": 3,
+            "raw": "3"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "twice_inc"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "apply_twice"
+        },
+        "arguments": [
+          {
+            "type": "Identifier",
+            "name": "inc"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "value7"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "twice_inc"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 5,
+            "raw": "5"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "compose"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_1"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 0,
+        "raw": "0"
+      },
+      "arguments": [
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "FunctionApplyExpression",
+      "function": {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      "arguments": [
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "identity"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Integer",
+      "value": 0,
+      "raw": "0"
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "nop"
+      },
+      "value": {
+        "type": "Unit",
+        "semantics": [
+          "empty_list",
+          "identity_morphism",
+          "unit_element"
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "inc_then_double"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "compose"
+        },
+        "arguments": [
+          {
+            "type": "Identifier",
+            "name": "mul"
+          },
+          {
+            "type": "Identifier",
+            "name": "inc"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "pass_through"
+      },
+      "value": {
+        "type": "FunctionApplyExpression",
+        "function": {
+          "type": "Identifier",
+          "name": "identity"
+        },
+        "arguments": [
+          {
+            "type": "Integer",
+            "value": 42,
+            "raw": "42"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "empty"
+      },
+      "value": {
+        "type": "Identifier",
+        "name": "nop"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "classify"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "IndentBlock",
+          "expression": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            }
+          ],
+          "operators": [
+            "equal"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "zero"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            }
+          ],
+          "operators": [
+            "more"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "positive"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "and",
+      "left": {
+        "type": "ChainedComparison",
+        "operands": [
+          {
+            "type": "Integer",
+            "value": 0,
+            "raw": "0"
+          },
+          {
+            "type": "Integer",
+            "value": 0,
+            "raw": "0"
+          }
+        ],
+        "operators": [
+          "less"
+        ]
+      },
+      "right": {
+        "type": "String",
+        "value": "negative"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "grade"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "IndentBlock",
+          "expression": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "Integer",
+              "value": 90,
+              "raw": "90"
+            }
+          ],
+          "operators": [
+            "more_equal"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "A"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "Integer",
+              "value": 80,
+              "raw": "80"
+            }
+          ],
+          "operators": [
+            "more_equal"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "B"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "Integer",
+              "value": 70,
+              "raw": "70"
+            }
+          ],
+          "operators": [
+            "more_equal"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "C"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "Integer",
+              "value": 60,
+              "raw": "60"
+            }
+          ],
+          "operators": [
+            "more_equal"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "D"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "String",
+          "value": "F"
+        }
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "compare"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_1"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "IndentBlock",
+          "expression": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "ChainedComparison",
+      "operands": [
+        {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ],
+      "operators": [
+        "more"
+      ]
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "Integer",
+          "value": 1,
+          "raw": "1"
+        },
+        "right": {
+          "type": "String",
+          "value": "greater"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "ChainedComparison",
+      "operands": [
+        {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ],
+      "operators": [
+        "equal"
+      ]
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "Integer",
+          "value": 1,
+          "raw": "1"
+        },
+        "right": {
+          "type": "String",
+          "value": "equal"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "ChainedComparison",
+      "operands": [
+        {
+          "type": "Integer",
+          "value": 0,
+          "raw": "0"
+        },
+        {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      ],
+      "operators": [
+        "less"
+      ]
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "and",
+      "left": {
+        "type": "Integer",
+        "value": 1,
+        "raw": "1"
+      },
+      "right": {
+        "type": "String",
+        "value": "less"
+      }
+    },
+    {
+      "type": "Definition",
+      "identifier": {
+        "type": "Identifier",
+        "name": "access_check"
+      },
+      "value": {
+        "type": "LambdaExpression",
+        "parameters": [
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_0"
+            },
+            "continuous": false
+          },
+          {
+            "type": "Parameter",
+            "name": {
+              "type": "Identifier",
+              "name": "_1"
+            },
+            "continuous": false
+          }
+        ],
+        "body": {
+          "type": "IndentBlock",
+          "expression": {
+            "type": "Unit",
+            "semantics": [
+              "empty_list",
+              "identity_morphism",
+              "unit_element"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "String",
+              "value": "admin"
+            }
+          ],
+          "operators": [
+            "equal"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "full_access"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "and",
+      "left": {
+        "type": "ChainedComparison",
+        "operands": [
+          {
+            "type": "Integer",
+            "value": 1,
+            "raw": "1"
+          },
+          {
+            "type": "String",
+            "value": "moderator"
+          }
+        ],
+        "operators": [
+          "equal"
+        ]
+      },
+      "right": {
+        "type": "Unit",
+        "semantics": [
+          "empty_list",
+          "identity_morphism",
+          "unit_element"
+        ]
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "String",
+              "value": "guest"
+            }
+          ],
+          "operators": [
+            "not_equal"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "moderate_access"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "Unit",
+          "semantics": [
+            "empty_list",
+            "identity_morphism",
+            "unit_element"
+          ]
+        }
+      }
+    },
+    {
+      "type": "BinaryOperation",
+      "operator": "or",
+      "left": {
+        "type": "BinaryOperation",
+        "operator": "and",
+        "left": {
+          "type": "ChainedComparison",
+          "operands": [
+            {
+              "type": "Integer",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "Unit",
+              "semantics": [
+                "empty_list",
+                "identity_morphism",
+                "unit_element"
+              ]
+            }
+          ],
+          "operators": [
+            "not_equal"
+          ]
+        },
+        "right": {
+          "type": "String",
+          "value": "basic_access"
+        }
+      },
+      "right": {
+        "type": "IndentBlock",
+        "expression": {
+          "type": "String",
+          "value": "no_access"
+        }
+      }
+    }
+  ]
+}

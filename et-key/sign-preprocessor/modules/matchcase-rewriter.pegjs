@@ -93,7 +93,7 @@ Start = input:$(.*)  {
         // 最後の条件で、デフォルト値がない場合は "|" なし
         converted.push(`${indent}${item.condition} & ${item.result}`);
       } else {
-        converted.push(`${indent}${item.condition} & ${item.result} |`);
+        converted.push(`${indent}${item.condition} & ${item.result} | `);//行末尾スペース追加
       }
     });
     
