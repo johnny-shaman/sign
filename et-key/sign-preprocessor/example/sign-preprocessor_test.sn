@@ -82,8 +82,8 @@ valid : in_range 42
 `valid : [_0 ? 0 < _0 < 100] 42
 
 `テストケース4: 高階関数とリスト処理
-`map_1 : [* 2,]
-`filter : [> 5,]
+map_1 : [* 2,]
+filter : [> 5,]
 reduce : [+]
 
 doubled : map_1 1 2 3 4
@@ -97,7 +97,7 @@ sum : reduce 1 2 3 4
 
 `テストケース5: 複雑な組み合わせ
 average : [/] [+] _ (length _)
-`square_sum : [+] ([^ 2,] _)
+square_sum : [+] ([^ 2,] _)
 apply_twice : f ? f f
 
 avg_value : average 1 2 3 4
@@ -141,12 +141,12 @@ empty : nop
 ` ######################################################################
 ` 5. ブロック構文による条件分岐（match case対応）
 ` ### 5.1 基本変換パターン
-` 原始構文（構文解析エラーのため一旦コメント）
-` func : x ?
-` 	condition1 : result1
-` 	condition2 : result2
-` 	condition3 : result3
-` 	default_result
+` 原始構文
+func : x ?
+	condition1 : result1
+	condition2 : result2
+	condition3 : result3
+	default_result
 
 ` ### 5.3 変換例
 ` #### 数値分類

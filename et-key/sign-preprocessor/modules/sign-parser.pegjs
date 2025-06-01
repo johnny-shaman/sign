@@ -1,6 +1,13 @@
-// 完全なSign言語PEG.js構文解析仕様
-// 演算子記号表の優先順位1-16を完全実装
-// ポイントレス記法と余積表現の4つの意味を実装
+// Sign言語軽量PEG.js構文解析仕様（軽量化Ver）
+// プリプロセス済みコード専用パーサー
+// 
+// 設計方針:
+// - 6段階優先順位による高速化（16段階→6段階）
+// - 連鎖比較の特化最適化
+// - プリプロセス後の位置ベース引数(_0, _1)に最適化
+// - インデントブロック構文サポート
+// - Export定義機能の完全対応
+// - @演算子の文脈分離による曖昧性解決
 
 Start = program:Program { return program; }
 
@@ -14,181 +21,118 @@ Program = statements:(Statement _?)* {
 }
 
 Statement = 
-    ExportLevel 
+      ExportDefinition
+    / Definition 
+    / Lambda
     / Comment
-    / _ EOL { return null; }  // 空行も許可
+    / EmptyLine
 
-Comment = _ "`" content:[^\n\r`]* "`"? {
-    return null;  // ASTに含めない
-}
+Comment = "`" [^\n\r]* { return null; }
+EmptyLine = _ EOL { return null; }
 
-// ==================== 優先順位階層（1-16） ====================
+// ==================== 6段階優先順位（高速化済み） ====================
 
-// 優先順位1: Export（最低優先度）
-ExportLevel = 
-    ExportSymbol definition:DefineLevel {
-        return { type: "ExportExpression", definition: definition };
-    }
-    / DefineLevel
-
-// 優先順位2: Define + Output
-DefineLevel = 
-    identifier:Identifier __ DefineSymbol __ value:OutputLevel {
-        return { type: "Definition", identifier: identifier, value: value };
-    }
-    / OutputLevel
-
-OutputLevel = 
-    address:(HexNumber / Identifier) __ OutputSymbol __ value:FunctionApplyLevel {
-        return { type: "OutputExpression", address: address, value: value };
-    }
-    / FunctionApplyLevel
-
-// 優先順位3: 構築域（Coproduct, Lambda, Product, Range）
-FunctionApplyLevel = 
-    // 第1パターン: 通常の関数適用
-    left:FunctionApplyTerm rest:(__ right:FunctionApplyTerm { return right; })* {
-        return rest.length > 0
-            ? { type: "FunctionApplyExpression", function: left, arguments: rest }
-            : left;
-    }
-// 関数適用で使える項目を統合
-FunctionApplyTerm = 
-    LambdaLevel 
-    / PointlessExpression 
-    / ResolveLevel  // InputLevel, GetLevel等を含む
-    / ProductLevel
-    / RangeLevel
-    / LogicalXorLevel
-    / PrimaryLevel
-
-ConcatListLevel = 
-    left:(ProductLevel / Number / String / Character / Unit / Identifier) rest:(__ right:ListConstructLevel { return right; })* {
-        return rest.length > 0
-            ? { type: "ConcatListLevel", left: left, right: rest }
-            : left;
-    }
-    / ListConstructLevel
-
-ListConstructLevel = 
-    left:(Number / Character / Identifier) rest:(__ right:FunctionComposeLevel { return right; })* {
-        return rest.length > 0
-            ? { type: "ListConstructLevel", left: left, right: rest }
-            : left;
-    }
-    / FunctionComposeLevel
-
-FunctionComposeLevel = 
-    left:(LambdaLevel / PointlessExpression / Unit / Identifier) rest:(__ right:ProductLevel { return right; })* {
-        return rest.length > 0
-            ? { type: "ListConstructLevel", left: left, right: rest }
-            : left;
-    }
-    / LambdaLevel
-
-LambdaLevel = 
-    params:ParameterList __ LambdaSymbol BlockStart branches:ConditionalBranches {
-        return { type: "LambdaExpression", parameters: params, body: { type: "ConditionalBlock", branches: branches } };
-    }
-    / params:ParameterList __ LambdaSymbol __ body:LogicalOrLevel {  // ProductLevel → LogicalOrLevel
-        return { type: "LambdaExpression", parameters: params, body: body };
-    }
-    / ProductLevel
-
-// 条件分岐ブロックの解析
-ConditionalBranches = 
-    branches:ConditionalBranchList {
-        return branches;
+// 0. Export定義（#identifier : value 構文）
+ExportDefinition = 
+    "#" identifier:Identifier _ ":" _ value:Lambda {
+        return { 
+            type: "ExportDefinition", 
+            name: identifier.name, 
+            body: value,
+            exported: true
+        };
     }
 
-ConditionalBranchList = 
-    first:ConditionalBranch rest:(BlockContinue OrSymbol branch:ConditionalBranch { return branch; })* 
-    lastDefault:(BlockContinue defaultBranch:DefaultBranch { return defaultBranch; })? {
-        const allBranches = [first, ...rest];
-        if (lastDefault) allBranches.push(lastDefault);
-        return allBranches;
+// 1. 定義（最低優先度）
+Definition = 
+    identifier:Identifier _ ":" _ value:Lambda {
+        return { 
+            type: "FunctionDefinition", 
+            name: identifier.name, 
+            body: value 
+        };
     }
 
-ConditionalBranch = 
-    __ condition:ConditionalExpression __ AndSymbol __ result:FunctionApplyLevel {
-        return { type: "ConditionalBranch", condition: condition, result: result };
+// 2. ラムダ式（インデントブロック対応）
+Lambda = 
+    params:ParameterList _ "?" _ body:IndentedBody {
+        return { 
+            type: "LambdaExpression", 
+            parameters: params.map(p => p.name), 
+            body: body 
+        };
     }
+    / Logical
 
-DefaultBranch = 
-    __ result:FunctionApplyLevel {
-        return { type: "DefaultBranch", result: result };
-    }
-
-// 条件式専用のレベル（修正版）
-ConditionalExpression = LogicalOrLevel
+// インデントブロック対応（プリプロセス後の短絡評価チェーン用）
+IndentedBody = 
+    EOL TAB+ body:Logical { return body; }  // インデント後の本体
+    / body:Logical { return body; }         // 同一行の本体
 
 ParameterList = 
-    first:Parameter rest:(__ p:Parameter { return p; })* {
+    first:Parameter rest:(_ p:Parameter { return p; })* {
         return [first, ...rest];
     }
 
 Parameter = 
-    ContinuousSymbol identifier:Identifier { 
-        return { type: "Parameter", name: identifier, continuous: true }; 
-    }
-    / identifier:Identifier { 
-        return { type: "Parameter", name: identifier, continuous: false }; 
+    "~" name:PositionalId { return { type: "Parameter", name: name, continuous: true }; }
+    / name:PositionalId { return { type: "Parameter", name: name, continuous: false }; }
+
+// 位置ベース引数（プリプロセス後）と通常の識別子をサポート
+PositionalId = 
+    $("_" [0-9]+) { return text(); }  // _0, _1, _2 など
+    / RegularId
+
+RegularId = $([A-Za-z_] [0-9A-Za-z_]*) { return text(); }
+
+// 3. 論理演算（短絡評価チェーン）
+Logical = 
+    left:ComparisonChain rest:(_ op:LogicalOp _ right:ComparisonChain { return {op, right}; })* {
+        return rest.reduce((acc, item) => ({
+            type: "BinaryOperation", 
+            operator: item.op, 
+            left: acc, 
+            right: item.right
+        }), left);
     }
 
-ProductLevel = 
-    head:RangeLevel tail:(__ ProductSymbol __ elem:RangeLevel { return elem; })* {
-        return tail.length > 0 
-            ? { type: "ProductExpression", elements: [head, ...tail] }
-            : head;
-    }
+LogicalOp = 
+    "|" { return "or"; }
+    / "&" { return "and"; }
 
-RangeLevel = 
-    start:LogicalXorLevel __ RangeSymbol __ end:LogicalXorLevel {
-        return { type: "RangeExpression", start: start, end: end };
-    }
-    / LogicalXorLevel
-
-// 優先順位4-6: 論理域
-LogicalXorLevel = 
-    left:LogicalOrLevel rest:(__ XorSymbol __ right:LogicalOrLevel { return right; })* {
-        return rest.reduce((acc, right) => 
-            ({ type: "BinaryOperation", operator: "xor", left: acc, right: right }), left);
-    }
-
-LogicalOrLevel = 
-    left:LogicalAndLevel rest:(__ OrSymbol __ right:LogicalAndLevel { return right; })* {
-        return rest.reduce((acc, right) => 
-            ({ type: "BinaryOperation", operator: "or", left: acc, right: right }), left);
-    }
-
-LogicalAndLevel = 
-    left:LogicalNotLevel rest:(__ AndSymbol __ right:LogicalNotLevel { return right; })* {
-        return rest.reduce((acc, right) => 
-            ({ type: "BinaryOperation", operator: "and", left: acc, right: right }), left);
-    }
-
-LogicalNotLevel = 
-    NotSymbol operand:ComparisonLevel {
-        return { type: "UnaryOperation", operator: "not", operand: operand };
-    }
-    / ComparisonLevel
-
-// 優先順位7: 比較演算域（連鎖比較対応）
-ComparisonLevel = 
-    first:AbsoluteLevel rest:ComparisonChain* {
+// 4. 連鎖比較（Sign言語特有・最適化済み）
+// 3 < x = y < 20 のような連鎖比較を効率的に処理
+ComparisonChain = 
+    first:Arithmetic rest:ComparisonPart* {
         if (rest.length === 0) return first;
-        return { 
-            type: "ChainedComparison", 
-            operands: [first, ...rest.map(r => r.operand)], 
-            operators: rest.map(r => r.operator) 
+        
+        // 連鎖比較専用のAST構造を生成
+        const comparisons = [];
+        let current = first;
+        
+        for (let i = 0; i < rest.length; i++) {
+            comparisons.push({
+                type: "Comparison",
+                operator: rest[i].operator,
+                left: current,
+                right: rest[i].operand
+            });
+            current = rest[i].operand;
+        }
+        
+        return {
+            type: "ComparisonChain",
+            comparisons: comparisons,
+            finalValue: current,         // true時に返す最終値
+            failValue: { type: "Unit" }  // false時に返すUnit値
         };
     }
 
-ComparisonChain = __ op:ComparisonOperator __ operand:AbsoluteLevel {
+ComparisonPart = _ op:ComparisonOp _ operand:Arithmetic {
     return { operator: op, operand: operand };
 }
 
-ComparisonOperator = 
+ComparisonOp = 
     "<=" { return "less_equal"; }
     / ">=" { return "more_equal"; }
     / "!=" { return "not_equal"; }
@@ -196,302 +140,180 @@ ComparisonOperator =
     / ">" { return "more"; }
     / "=" { return "equal"; }
 
-// 優先順位8: 絶対値
-AbsoluteLevel = 
-    "|" _ expression:ArithmeticAddLevel _ "|" {
-        return { type: "UnaryOperation", operator: "abs", operand: expression };
-    }
-    / ArithmeticAddLevel
-
-// 優先順位9: 加減算（既存のArithmeticAddLevelを修正）
-ArithmeticAddLevel = 
-    left:ArithmeticMulLevel rest:(_ op:AdditiveOperator _ right:ArithmeticMulLevel 
-        { return { operator: op, operand: right }; })* {
-        return rest.reduce((acc, item) => 
-            ({ type: "BinaryOperation", operator: item.operator, left: acc, right: item.operand }), left);
+// 5. 算術演算・積・アクセス
+Arithmetic = 
+    left:Primary rest:(_ op:ArithmeticOp _ right:Primary { return {op, right}; })* {
+        return rest.reduce((acc, item) => ({
+            type: "BinaryOperation", 
+            operator: item.op, 
+            left: acc, 
+            right: item.right
+        }), left);
     }
 
-AdditiveOperator = 
-    "+" !UnaryContext { return "add"; }
-    / "-" !UnaryContext { return "sub"; }
+ArithmeticOp = 
+    "+" { return "add"; }
+    / "-" { return "sub"; }
+    / "*" { return "mul"; }
+    / "/" { return "div"; }
+    / "^" { return "pow"; }
+    / "%" { return "mod"; }
+    / "," { return "product"; }  // 積演算子（リスト構築）
+    / "@" { return "get"; }      // get演算子（構造アクセス）
 
-// 【新規追加】単項演算子のコンテキスト判定
-UnaryContext = _ (Identifier / Unit / "(" / "[" / "{")
+// 6. 一次式・関数適用（最高優先度）
+// 注意: FunctionApplicationを最優先にして(@_0 _1 _2)のような構文を正しく処理
+Primary = 
+      FunctionApplication  // 関数適用を最優先（@演算子の曖昧性解決）
+    / UnaryExpression      // 単項演算子（前置・後置）
+    / Atom               // 基本要素
 
-// 優先順位10: 乗除算（ArithmeticMulLevelを修正）
-ArithmeticMulLevel = 
-    left:UnaryLevel rest:(_ op:MultiplicativeOperator _ right:UnaryLevel 
-        { return { operator: op, operand: right }; })* {
-        return rest.reduce((acc, item) => 
-            ({ type: "BinaryOperation", operator: item.operator, left: acc, right: item.operand }), left);
+// 関数適用（関数部分と引数部分の両方で単項演算子を受け入れ）
+FunctionApplication = 
+    func:(UnaryExpression / Atom) args:(_ arg:(UnaryExpression / Atom) { return arg; })+ {
+        return { type: "FunctionApplication", function: func, arguments: args };
     }
 
-// 【新規追加】単項演算子レベル（数値用の+/-のみ）
-UnaryLevel = 
-    // 単項マイナス
-    "-" _ operand:UnaryLevel {
+// 単項演算子（前置・後置対応）
+UnaryExpression = 
+    // 前置演算子
+    "-" &([0-9] / Identifier) operand:Atom {  // 単項マイナス
         return { type: "UnaryOperation", operator: "unary_minus", operand: operand };
     }
-    // 単項プラス
-    / "+" _ operand:UnaryLevel {
+    / "+" &([0-9] / Identifier) operand:Atom {  // 単項プラス
         return { type: "UnaryOperation", operator: "unary_plus", operand: operand };
     }
-    // 前置~演算子（連続リスト構築） - 追加
-    / ContinuousSymbol operand:UnaryLevel {
-        return { type: "UnaryOperation", operator: "continuous", operand: operand };
+    / "@" &([0-9A-Fa-fx] / Identifier) &(!(" ")) operand:Atom {  // input前置演算子（空白なし）
+        return { type: "UnaryOperation", operator: "input", operand: operand };
     }
-    / PowerLevel
-
-MultiplicativeOperator = 
-    "*" { return "mul"; }
-    / "/" { return "div"; }
-    / "%" { return "mod"; }
-
-// 優先順位11: 冪乗（右結合）
-PowerLevel = 
-    base:FactorialLevel _ PowerSymbol _ exponent:PowerLevel {
-        return { type: "BinaryOperation", operator: "pow", left: base, right: exponent };
+    / "!" &(Atom) operand:Atom {  // not演算子
+        return { type: "UnaryOperation", operator: "not", operand: operand };
     }
-    / FactorialLevel
-
-// 優先順位12: 階乗
-FactorialLevel = 
-    operand:ResolveLevel FactorialSymbol {
-        return { type: "UnaryOperation", operator: "factorial", operand: operand };
-    }
-    / ResolveLevel
-
-// 優先順位13: 解決評価域（Expand, Address, Get）
-ResolveLevel = ExpandLevel
-
-ExpandLevel = 
-    operand:AddressLevel ExpandSymbol {
+    / "~" &(Atom) operand:Atom {  // expand前置演算子
         return { type: "UnaryOperation", operator: "expand", operand: operand };
     }
-    / AddressLevel
-
-AddressLevel = 
-    AddressSymbol operand:GetLevel {
+    / "$" &(Identifier) operand:Atom {  // address演算子
         return { type: "UnaryOperation", operator: "address", operand: operand };
     }
-    / GetLevel
-
-GetLevel = GetRightExpression / GetLeftExpression / ImportLevel
-
-// 右単位元: key @ object（左結合）
-GetRightExpression = 
-    key:(Unit / Identifier / String / Integer) __ GetRightSymbol __ object:GetRightTerm {
-        return { type: "GetRightExpression", key: key, object: object };
+    // 後置演算子
+    / operand:Atom "~" &(!([0-9A-Za-z_])) {  // expand後置演算子
+        return { type: "UnaryOperation", operator: "expand", operand: operand };
+    }
+    / operand:Atom "@" &(!([0-9A-Za-z_])) {  // import後置演算子
+        return { type: "UnaryOperation", operator: "import", operand: operand };
+    }
+    / operand:Atom "!" &(!([ 0-9A-Za-z_])) {  // factorial後置演算子
+        return { type: "UnaryOperation", operator: "factorial", operand: operand };
     }
 
-GetRightTerm = GetLeftExpression / ImportLevel / PrimaryLevel
-
-// 左単位元: object ' key（左結合）
-GetLeftExpression = 
-    object:ImportLevel rest:(__ GetLeftSymbol __ key:(Identifier / String / Integer) { return key; })+ {
-        return rest.reduce((acc, key) => 
-            ({ type: "GetLeftExpression", object: acc, key: key }), object);
-    }
-
-// 優先順位14: Import
-ImportLevel = 
-    module:InputLevel ImportSymbol {
-        return { type: "ImportExpression", module: module };
-    }
-    / InputLevel
-
-// 優先順位15: Input
-InputLevel = 
-    InputSymbol address:(HexNumber / Identifier) {
-        return { type: "InputExpression", address: address };
-    }
-    / PrimaryLevel
-
-// 優先順位16: ブロック・基本要素
-PrimaryLevel = 
+Atom = 
     PointlessExpression
-    / BlockExpression
-    / Unit  // 明示的に追加
+    / Block
     / Literal
     / Identifier
-    / "(" _ expr:ExportLevel _ ")" { return expr; }
 
 // ==================== ポイントレス記法 ====================
 
 PointlessExpression = 
-    ("[" _ content:PointlessContent _ "]")
-    / ("{" _ content:PointlessContent _ "}")
-    / ("(" _ content:PointlessContent _ ")") {
+    "[" _ content:PointlessContent _ "]" {
         return { type: "PointlessExpression", content: content };
     }
 
 PointlessContent = 
-    PartialApplication
-    / DirectFold
-
-PartialApplication = 
-    op:InfixOperator __ operand:PrimaryLiteral type:(flag:","? {return flag ? "DirectMap" : "PartialApplication"}) {
-        return { type, operator: op, right: operand };
+    // Map記法: [* 2,] のような演算子適用 
+    op:OperatorSymbol _ operand:Literal _ "," {
+        return { type: "MapOperation", operator: op, operand: operand };
     }
-    / operand:PrimaryLiteral __ op:InfixOperator type:(flag:","? {return flag ? "DirectMap" : "PartialApplication"}) {
-        return { type, operator: op, left: operand };
+    // 部分適用: [+ 2] または [2 +]
+    / op:OperatorSymbol _ operand:Literal {
+        return { type: "PartialApplication", operator: op, right: operand };
     }
-
-DirectFold = 
-    op:AnyOperator {
+    / operand:Literal _ op:OperatorSymbol {
+        return { type: "PartialApplication", operator: op, left: operand };
+    }
+    // 演算子の関数化: [+]
+    / op:OperatorSymbol {
         return { type: "OperatorFunction", operator: op };
     }
+    // 通常の式
+    / Lambda
 
-PrimaryLiteral = Literal / Identifier
+OperatorSymbol = 
+    "+" / "-" / "*" / "/" / "^" / "%" / "<" / ">" / "=" / "&" / "|" / "," / "@"
 
-// ==================== ブロック構築 ====================
+// ==================== ブロックとリテラル ====================
 
-BlockExpression = 
-    "(" _ expr:ExportLevel _ ")" { return { type: "Block", bracket: "paren", expression: expr }; }
-    / "{" _ expr:ExportLevel _ "}" { return { type: "Block", bracket: "brace", expression: expr }; }
-    / "[" _ expr:ExportLevel _ "]" { return { type: "Block", bracket: "square", expression: expr }; }
-    / IndentBlock
+Block = 
+    "(" _ expr:Lambda _ ")" { return expr; }
+    / "{" _ expr:Lambda _ "}" { return expr; }
 
-IndentBlock = BlockStart expr:ExportLevel { 
-    return { type: "IndentBlock", expression: expr }; 
-}
+Literal = Number / String / Character / Unit
 
-BlockStart = EOL TAB+ _
-BlockContinue = EOL TAB+ _
+// Unit値（空リスト・恒等射・単位元を表現）
+Unit = "_" !([0-9A-Za-z_]) { return { type: "Unit" }; }
 
-// ==================== リテラル ====================
-
-Literal = 
-    Unit
-    / Number
-    / String
-    / Character
-
-Unit = "_" { 
-    return { 
-        type: "Unit", 
-        semantics: ["empty_list", "identity_morphism", "unit_element"]
-    }; 
-}
-
-Number = Float / Integer / HexNumber / OctNumber / BinNumber
+Number = HexNumber / Float / Integer
 
 Integer = 
-    digits:UnsignedInteger {
-        return { type: "Integer", value: parseInt(digits), raw: digits };
+    sign:"-"? digits:$([0-9]+) {
+        return { type: "Literal", value: parseInt((sign || "") + digits), literalType: "integer" }; 
     }
 
-UnsignedInteger = $([1-9] [0-9]*) / "0"
 Float = 
-    intPart:[0-9]+ "." fracPart:[0-9]+ {
-        const raw = intPart.join("") + "." + fracPart.join("");
-        return { type: "Float", value: parseFloat(raw), raw: raw };
+    sign:"-"? intPart:$([0-9]+) "." fracPart:$([0-9]+) {
+        const raw = (sign || "") + intPart + "." + fracPart;
+        return { type: "Literal", value: parseFloat(raw), literalType: "float" }; 
     }
 
-HexNumber = $("0x" [0-9A-Fa-f]+) {
-    return { type: "HexNumber", value: parseInt(text(), 16), raw: text() };
-}
-
-OctNumber = $("0o" [0-7]+) {
-    return { type: "OctNumber", value: parseInt(text().slice(2), 8), raw: text() };
-}
-
-BinNumber = $("0b" [01]+) {
-    return { type: "BinNumber", value: parseInt(text().slice(2), 2), raw: text() };
-}
+// 16進数リテラル（ハードウェア操作用）
+HexNumber = 
+    "0x" digits:$([0-9A-Fa-f]+) {
+        return { type: "Literal", value: parseInt(digits, 16), literalType: "hex" };
+    }
 
 String = 
-    "`" content:[^`\n\r]* "`" {
-        return { type: "String", value: content.join("") };
+    "`" content:[^`\n\r]* "`" { 
+        return { type: "Literal", value: content.join(""), literalType: "string" }; 
     }
 
 Character = 
-    "\\" char:. {
-        return { type: "Character", value: char };
+    "\\" char:. { 
+        return { type: "Literal", value: char, literalType: "character" }; 
     }
 
 Identifier = 
-    $([A-Za-z_] [0-9A-Za-z_]*) {
-        return { type: "Identifier", name: text() };
-    }
+    name:RegularId { return { type: "Variable", name: name }; }
 
-// ==================== 演算子の位置区別実装 ====================
-
-// 余積演算子（空白演算子）- 優先順位3の重要な演算子
-CoproductSymbol = __ { return "coproduct"; }
-
-// # 演算子（Export vs Output）
-ExportSymbol = "#" &(Identifier __ ":") { return "export"; }
-OutputSymbol = "#" &(" ") { return "output"; }
-
-// ! 演算子（Not vs Factorial）
-NotSymbol = "!" &(NotContext) { return "not"; }
-FactorialSymbol = "!" &(FactorialContext) { return "factorial"; }
-NotContext = "_" / Identifier / "(" / "[" / "{" / !FactorialContext
-FactorialContext = " " / "\t" / EOL / EOF / ")" / "}" / "]" / ProductSymbol / RangeSymbol / DefineSymbol / OrSymbol / AndSymbol
-
-// ~ 演算子（Continuous vs Range vs Expand）
-ContinuousSymbol = "~" &(Identifier) { return "continuous"; }
-RangeSymbol = "~" &(" ") { return "range"; }
-ExpandSymbol = "~" &(ExpandContext) { return "expand"; }
-ExpandContext = (_ / EOL / EOF / ")" / "}" / "]" / ProductSymbol)
-
-// @ 演算子（Input vs GetRight vs Import）
-InputSymbol = "@" &(Unit / Identifier) !(" ") { return "input"; }
-GetLeftSymbol = "'" { return "get_left"; }
-GetRightSymbol = "@" &(!" " Unit / Identifier) " " { return "get_right"; }
-ImportSymbol = "@" &(ImportContext) { return "import"; }
-ImportContext = (_ / EOL / EOF / ")" / "}" / "]")
-
-// その他の基本演算子
-DefineSymbol = ":" { return "define"; }
-LambdaSymbol = "?" { return "lambda"; }
-ProductSymbol = "," { return "product"; }
-XorSymbol = ";" { return "xor"; }
-OrSymbol = "|" { return "or"; }
-AndSymbol = "&" { return "and"; }
-PowerSymbol = "^" { return "pow"; }
-AddressSymbol = "$" { return "address"; }
-
-// ==================== ポイントレス記法用演算子分類 ====================
-
-AnyOperator = 
-    InfixOperator / PrefixOperator / PostfixOperator
-
-InfixOperator = 
-    CoproductSymbol / DefineSymbol / ProductSymbol / RangeSymbol / XorSymbol / OrSymbol / AndSymbol
-    / ComparisonOperator / AdditiveOperator / MultiplicativeOperator / PowerSymbol / GetLeftSymbol / GetRightSymbol
-
-PrefixOperator = 
-    ExportSymbol / NotSymbol / ContinuousSymbol / AddressSymbol / InputSymbol
-
-PostfixOperator = 
-    FactorialSymbol / ExpandSymbol / ImportSymbol
-
-// ==================== 空白・制御文字 ====================
-
-_ = $(" "*) // 任意個の空白（トークン区切り）
-__ = $(" "+) // 1個以上の空白（優先順位3の余積演算子）
+// ==================== 空白・制御 ====================
 
 TAB = "\t"
+// 改行+インデントも空白として扱う（インデントブロック対応）
+_ = ([ \t] / (EOL TAB+))*
 EOL = "\n" / "\r\n" / "\r"
 EOF = !.
 
-// ==================== 余積表現の4つの意味論サポート ====================
-
 /*
- * 余積演算子（__）の4つの意味:
- * 1. 関数適用: func __ arg1 __ arg2
- * 2. リスト結合: list1 __ list2 __ list3  
- * 3. 関数合成: [f] __ [g] __ x
- * 4. 式の結合: expr1 __ expr2
+ * Sign言語軽量パーサー 軽量化Ver
  * 
- * 構文解析では CoproductExpression として統一的に処理し、
- * 意味解析段階で文脈に応じて4つの意味を区別する
+ * 主な最適化:
+ * 1. 6段階優先順位による大幅な処理速度向上（16段階→6段階）
+ * 2. Sign言語特有の連鎖比較の効率的処理
+ * 3. プリプロセス後の位置ベース引数に最適化
+ * 4. インデントブロック構文のサポート
+ * 5. 後置演算子の正しい処理順序
+ * 6. Export定義機能の完全対応
+ * 7. @演算子の文脈分離による曖昧性解決
+ * 8. コンパイラ向けに特化したAST構造
  * 
- * 例:
- * add 5 3          -> 関数適用
- * [1,2] [3,4]      -> リスト結合  
- * [+1] [*2] 5      -> 関数合成
- * x y z            -> 一般的な余積
+ * 対応する機能:
+ * - Export定義（#identifier : value）
+ * - 関数定義（位置ベース引数）
+ * - ラムダ式（インデントブロック対応）
+ * - 連鎖比較（3 < x = y < 20）
+ * - 短絡評価チェーン（condition & result | ...）
+ * - ポイントレス記法（[+], [+ 2], [* 2,]）
+ * - 前置・後置単項演算子
+ * - 16進数リテラル（ハードウェア操作用）
+ * - Unit値（空リスト・恒等射・単位元）
+ * 
  */
