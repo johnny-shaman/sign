@@ -21,7 +21,7 @@
                 let index = 0;
                 
                 // 引数部分を位置ベースに変換
-                const Params = params.map(o => o[o.name] ).join(' ');
+                const Params = params.map(o => o.paramForm ).join(' ');
 				const Body = body.flatMap(
                 	bt => params.filter(o => o.name === bt).length
 						? params.filter(o => o.name === bt).map(o => o[bt])
@@ -32,7 +32,10 @@
 
         Parameters = _0:Parameter _1:(_ p:Parameter { return p})*{
             return [_0, ..._1].map(
-				(o, i) => Object.assign(o, {[o.name] : `${o.continue}_${i}`})
+				(o, i) => Object.assign(o, {
+					[o.name] : `_${i}`,           // ボディ置換用（~なし）
+					paramForm: `${o.continue}_${i}` // パラメータリスト用（~あり）
+				})
 			);
 		}
 

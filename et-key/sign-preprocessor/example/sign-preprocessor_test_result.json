@@ -2,2548 +2,1847 @@
   "type": "Program",
   "statements": [
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "increment"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "increment",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          }
+          "_0"
         ],
         "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "add",
-      "left": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "right": {
-        "type": "Integer",
-        "value": 1,
-        "raw": "1"
-      }
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "add"
-      },
-      "value": {
-        "type": "LambdaExpression",
-        "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
+          "type": "BinaryOperation",
+          "operator": "add",
+          "left": {
+            "type": "Variable",
+            "name": "_0"
           },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_1"
-            },
-            "continuous": false
+          "right": {
+            "type": "Literal",
+            "value": 1,
+            "literalType": "integer"
           }
-        ],
-        "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
         }
       }
     },
     {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "arguments": [
-        {
-          "type": "UnaryOperation",
-          "operator": "unary_plus",
-          "operand": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "type": "Integer",
-      "value": 1,
-      "raw": "1"
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "L"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "add",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          }
+          "_0",
+          "_1"
         ],
         "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "Integer",
-      "value": 0,
-      "raw": "0"
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "R"
-      },
-      "value": {
-        "type": "LambdaExpression",
-        "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
+          "type": "BinaryOperation",
+          "operator": "add",
+          "left": {
+            "type": "Variable",
+            "name": "_0"
           },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_1"
-            },
-            "continuous": true
-          }
-        ],
-        "body": {
-          "type": "UnaryOperation",
-          "operator": "continuous",
-          "operand": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+          "right": {
+            "type": "Variable",
+            "name": "_1"
           }
         }
       }
     },
     {
-      "type": "Integer",
-      "value": 1,
-      "raw": "1"
+      "type": "FunctionDefinition",
+      "name": "L",
+      "body": {
+        "type": "LambdaExpression",
+        "parameters": [
+          "_0"
+        ],
+        "body": {
+          "type": "Variable",
+          "name": "_0"
+        }
+      }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "map"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
-        "function": {
-          "type": "LambdaExpression",
-          "parameters": [
-            {
-              "type": "Parameter",
-              "name": {
-                "type": "Identifier",
+      "type": "FunctionDefinition",
+      "name": "R",
+      "body": {
+        "type": "LambdaExpression",
+        "parameters": [
+          "_0",
+          "_1"
+        ],
+        "body": {
+          "type": "Variable",
+          "name": "_1"
+        }
+      }
+    },
+    {
+      "type": "FunctionDefinition",
+      "name": "map",
+      "body": {
+        "type": "LambdaExpression",
+        "parameters": [
+          "_0",
+          "_1",
+          "_2"
+        ],
+        "body": {
+          "type": "BinaryOperation",
+          "operator": "product",
+          "left": {
+            "type": "FunctionApplication",
+            "function": {
+              "type": "UnaryOperation",
+              "operator": "input",
+              "operand": {
+                "type": "Variable",
+                "name": "_0"
+              }
+            },
+            "arguments": [
+              {
+                "type": "Variable",
+                "name": "_1"
+              }
+            ]
+          },
+          "right": {
+            "type": "FunctionApplication",
+            "function": {
+              "type": "Variable",
+              "name": "map"
+            },
+            "arguments": [
+              {
+                "type": "Variable",
                 "name": "_0"
               },
-              "continuous": false
-            },
-            {
-              "type": "Parameter",
-              "name": {
-                "type": "Identifier",
-                "name": "_1"
-              },
-              "continuous": false
-            },
-            {
-              "type": "Parameter",
-              "name": {
-                "type": "Identifier",
-                "name": "_2"
-              },
-              "continuous": true
-            }
-          ],
-          "body": {
-            "type": "InputExpression",
-            "address": {
-              "type": "Identifier",
-              "name": "_0"
-            }
-          }
-        },
-        "arguments": [
-          {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "ProductExpression",
-        "elements": [
-          {
-            "type": "Integer",
-            "value": 1,
-            "raw": "1"
-          },
-          {
-            "type": "Identifier",
-            "name": "map"
-          }
-        ]
-      },
-      "arguments": [
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "arguments": [
-        {
-          "type": "UnaryOperation",
-          "operator": "continuous",
-          "operand": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
+              {
+                "type": "UnaryOperation",
+                "operator": "expand",
+                "operand": {
+                  "type": "Variable",
+                  "name": "_2"
+                }
+              }
             ]
           }
         }
-      ]
-    },
-    {
-      "type": "UnaryOperation",
-      "operator": "expand",
-      "operand": {
-        "type": "Integer",
-        "value": 2,
-        "raw": "2"
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "foldr"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "foldr",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_1"
-            },
-            "continuous": false
-          },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_2"
-            },
-            "continuous": false
-          },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_3"
-            },
-            "continuous": true
-          }
+          "_0",
+          "_1",
+          "_2",
+          "_3"
         ],
         "body": {
-          "type": "IndentBlock",
-          "expression": {
-            "type": "UnaryOperation",
-            "operator": "not",
-            "operand": {
-              "type": "Unit",
-              "semantics": [
-                "empty_list",
-                "identity_morphism",
-                "unit_element"
-              ]
+          "type": "BinaryOperation",
+          "operator": "or",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "and",
+            "left": {
+              "type": "UnaryOperation",
+              "operator": "not",
+              "operand": {
+                "type": "Variable",
+                "name": "_2"
+              }
+            },
+            "right": {
+              "type": "Variable",
+              "name": "_1"
             }
+          },
+          "right": {
+            "type": "FunctionApplication",
+            "function": {
+              "type": "UnaryOperation",
+              "operator": "input",
+              "operand": {
+                "type": "Variable",
+                "name": "_0"
+              }
+            },
+            "arguments": [
+              {
+                "type": "Variable",
+                "name": "_2"
+              },
+              {
+                "type": "Variable",
+                "name": "foldr"
+              },
+              {
+                "type": "Variable",
+                "name": "_0"
+              },
+              {
+                "type": "Variable",
+                "name": "_1"
+              },
+              {
+                "type": "UnaryOperation",
+                "operator": "expand",
+                "operand": {
+                  "type": "Variable",
+                  "name": "_3"
+                }
+              }
+            ]
           }
         }
       }
     },
     {
-      "type": "BinaryOperation",
-      "operator": "and",
-      "left": {
-        "type": "Integer",
-        "value": 2,
-        "raw": "2"
-      },
-      "right": {
-        "type": "Unit",
-        "semantics": [
-          "empty_list",
-          "identity_morphism",
-          "unit_element"
-        ]
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "Integer",
-        "value": 1,
-        "raw": "1"
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "twice",
+      "body": {
+        "type": "LambdaExpression",
+        "parameters": [
+          "_0"
+        ],
+        "body": {
+          "type": "FunctionApplication",
           "function": {
-            "type": "InputExpression",
-            "address": {
-              "type": "Identifier",
-              "name": "_0"
-            }
+            "type": "Variable",
+            "name": "_0"
           },
           "arguments": [
             {
-              "type": "Unit",
-              "semantics": [
-                "empty_list",
-                "identity_morphism",
-                "unit_element"
-              ]
+              "type": "Variable",
+              "name": "_0"
             }
           ]
         }
       }
     },
     {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 2,
-        "raw": "2"
-      },
-      "arguments": [
-        {
-          "type": "Identifier",
-          "name": "foldr"
-        },
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "arguments": [
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 1,
-        "raw": "1"
-      },
-      "arguments": [
-        {
-          "type": "UnaryOperation",
-          "operator": "continuous",
-          "operand": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "type": "UnaryOperation",
-      "operator": "expand",
-      "operand": {
-        "type": "Integer",
-        "value": 3,
-        "raw": "3"
-      }
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "twice"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "flip",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          }
+          "_0",
+          "_1",
+          "_2"
         ],
         "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "arguments": [
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Integer",
-      "value": 0,
-      "raw": "0"
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "flip"
-      },
-      "value": {
-        "type": "LambdaExpression",
-        "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
+          "type": "FunctionApplication",
+          "function": {
+            "type": "Variable",
+            "name": "_0"
           },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_1"
-            },
-            "continuous": false
-          },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
+          "arguments": [
+            {
+              "type": "Variable",
               "name": "_2"
             },
-            "continuous": false
-          }
-        ],
-        "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
+            {
+              "type": "Variable",
+              "name": "_1"
+            }
           ]
         }
       }
     },
     {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "arguments": [
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 2,
-        "raw": "2"
-      },
-      "arguments": [
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Integer",
-      "value": 1,
-      "raw": "1"
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "_0"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "_0",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_1"
-            },
-            "continuous": false
-          },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_2"
-            },
-            "continuous": false
-          }
+          "_0",
+          "_1",
+          "_2"
         ],
         "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "mul",
-      "left": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "right": {
-        "type": "Unit",
-        "semantics": [
-          "empty_list",
-          "identity_morphism",
-          "unit_element"
-        ]
-      }
-    },
-    {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 1,
-        "raw": "1"
-      },
-      "arguments": [
-        {
-          "type": "UnaryOperation",
-          "operator": "unary_plus",
-          "operand": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+          "type": "BinaryOperation",
+          "operator": "add",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "mul",
+            "left": {
+              "type": "Variable",
+              "name": "_0"
+            },
+            "right": {
+              "type": "Variable",
+              "name": "_1"
+            }
+          },
+          "right": {
+            "type": "Variable",
+            "name": "_2"
           }
         }
-      ]
+      }
     },
     {
-      "type": "Integer",
-      "value": 2,
-      "raw": "2"
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "g"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "g",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "f"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           },
           {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+            "type": "Unit"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "g2"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "g2",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "f"
         },
         "arguments": [
           {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+            "type": "Unit"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 5,
-            "raw": "5"
+            "literalType": "integer"
           },
           {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+            "type": "Unit"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "add"
-      },
-      "value": [
-        "[",
-        " ",
-        {
+      "type": "FunctionDefinition",
+      "name": "add",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
           "type": "OperatorFunction",
-          "operator": "add"
-        },
-        " ",
-        "]"
-      ]
+          "operator": "+"
+        }
+      }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "mul"
-      },
-      "value": [
-        "[",
-        " ",
-        {
+      "type": "FunctionDefinition",
+      "name": "mul",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
           "type": "OperatorFunction",
-          "operator": "mul"
-        },
-        " ",
-        "]"
-      ]
+          "operator": "*"
+        }
+      }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "sub"
-      },
-      "value": [
-        "[",
-        " ",
-        {
+      "type": "FunctionDefinition",
+      "name": "sub",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
           "type": "OperatorFunction",
-          "operator": "sub"
-        },
-        " ",
-        "]"
-      ]
+          "operator": "-"
+        }
+      }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "result1"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "result1",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "add"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 5,
-            "raw": "5"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 7,
-            "raw": "7"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "result2"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "result2",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "mul"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 4,
-            "raw": "4"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "result3"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "result3",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "sub"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 10,
-            "raw": "10"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "pow2"
-      },
-      "value": [
-        "[",
-        " ",
-        {
+      "type": "FunctionDefinition",
+      "name": "pow2",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
           "type": "PartialApplication",
-          "operator": "pow",
+          "operator": "^",
           "right": {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           }
-        },
-        "",
-        "]"
-      ]
+        }
+      }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "inc"
-      },
-      "value": [
-        "[",
-        " ",
-        {
+      "type": "FunctionDefinition",
+      "name": "inc",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
           "type": "PartialApplication",
-          "operator": "add",
+          "operator": "+",
           "right": {
-            "type": "Integer",
+            "type": "Literal",
             "value": 1,
-            "raw": "1"
+            "literalType": "integer"
           }
-        },
-        "",
-        "]"
-      ]
+        }
+      }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "half"
-      },
-      "value": [
-        "[",
-        " ",
-        {
+      "type": "FunctionDefinition",
+      "name": "half",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
           "type": "PartialApplication",
-          "operator": "div",
+          "operator": "/",
           "right": {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           }
-        },
-        "",
-        "]"
-      ]
+        }
+      }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "square_and_add_ten"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "square_and_add_ten",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Block",
-          "bracket": "square",
-          "expression": {
-            "type": "Identifier",
+          "type": "PointlessExpression",
+          "content": {
+            "type": "Variable",
             "name": "pow2"
           }
         },
         "arguments": [
-          [
-            "[",
-            " ",
-            {
+          {
+            "type": "PointlessExpression",
+            "content": {
               "type": "PartialApplication",
-              "operator": "add",
+              "operator": "+",
               "right": {
-                "type": "Integer",
+                "type": "Literal",
                 "value": 10,
-                "raw": "10"
+                "literalType": "integer"
               }
-            },
-            "",
-            "]"
-          ]
+            }
+          }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "value1"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "value1",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "inc"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 5,
-            "raw": "5"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "value2"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "value2",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "pow2"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 4,
-            "raw": "4"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "value3"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "value3",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "square_and_add_ten"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "value4"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "value4",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Block",
-          "bracket": "square",
-          "expression": {
-            "type": "Identifier",
+          "type": "PointlessExpression",
+          "content": {
+            "type": "Variable",
             "name": "inc"
           }
         },
         "arguments": [
           {
-            "type": "Block",
-            "bracket": "square",
-            "expression": {
-              "type": "Identifier",
+            "type": "PointlessExpression",
+            "content": {
+              "type": "Variable",
               "name": "pow2"
             }
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 4,
-            "raw": "4"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "add_n"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
-        "function": [
-          "[",
-          " ",
-          {
-            "type": "OperatorFunction",
-            "operator": "add"
-          },
-          " ",
-          "]"
-        ],
-        "arguments": [
-          {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "mul_by"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "add_n",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
+          "type": "PointlessExpression",
+          "content": {
+            "type": "OperatorFunction",
+            "operator": "+"
+          }
         },
         "arguments": [
-          [
-            "[",
-            " ",
-            {
-              "type": "OperatorFunction",
-              "operator": "mul"
-            },
-            " ",
-            "]"
-          ]
+          {
+            "type": "Unit"
+          }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "between"
-      },
-      "value": {
-        "type": "ChainedComparison",
-        "operands": [
+      "type": "FunctionDefinition",
+      "name": "mul_by",
+      "body": {
+        "type": "FunctionApplication",
+        "function": {
+          "type": "Unit"
+        },
+        "arguments": [
           {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+            "type": "PointlessExpression",
+            "content": {
+              "type": "OperatorFunction",
+              "operator": "*"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "FunctionDefinition",
+      "name": "between",
+      "body": {
+        "type": "ComparisonChain",
+        "comparisons": [
+          {
+            "type": "Comparison",
+            "operator": "less",
+            "left": {
+              "type": "Unit"
+            },
+            "right": {
+              "type": "Unit"
+            }
           },
           {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
-          },
-          {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+            "type": "Comparison",
+            "operator": "less",
+            "left": {
+              "type": "Unit"
+            },
+            "right": {
+              "type": "Unit"
+            }
           }
         ],
-        "operators": [
-          "less",
-          "less"
-        ]
+        "finalValue": {
+          "type": "Unit"
+        },
+        "failValue": {
+          "type": "Unit"
+        }
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "add5"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "add5",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "add_n"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 5,
-            "raw": "5"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "triple"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "triple",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "mul_by"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "in_range"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "in_range",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "between"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 0,
-            "raw": "0"
+            "literalType": "integer"
           },
           {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+            "type": "Unit"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 100,
-            "raw": "100"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "value5"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "value5",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "add5"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 10,
-            "raw": "10"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "value6"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "value6",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "triple"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 7,
-            "raw": "7"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "valid"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "valid",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "in_range"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 42,
-            "raw": "42"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "reduce"
-      },
-      "value": [
-        "[",
-        " ",
-        {
-          "type": "OperatorFunction",
-          "operator": "add"
-        },
-        " ",
-        "]"
-      ]
+      "type": "FunctionDefinition",
+      "name": "map_1",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
+          "type": "MapOperation",
+          "operator": "*",
+          "operand": {
+            "type": "Literal",
+            "value": 2,
+            "literalType": "integer"
+          }
+        }
+      }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "doubled"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "filter",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
+          "type": "MapOperation",
+          "operator": ">",
+          "operand": {
+            "type": "Literal",
+            "value": 5,
+            "literalType": "integer"
+          }
+        }
+      }
+    },
+    {
+      "type": "FunctionDefinition",
+      "name": "reduce",
+      "body": {
+        "type": "PointlessExpression",
+        "content": {
+          "type": "OperatorFunction",
+          "operator": "+"
+        }
+      }
+    },
+    {
+      "type": "FunctionDefinition",
+      "name": "doubled",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "map_1"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 1,
-            "raw": "1"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 4,
-            "raw": "4"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "filtered"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "filtered",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "filter"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 7,
-            "raw": "7"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 9,
-            "raw": "9"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "sum"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "sum",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "reduce"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 1,
-            "raw": "1"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 4,
-            "raw": "4"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "average"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
-        "function": [
-          "[",
-          " ",
-          {
+      "type": "FunctionDefinition",
+      "name": "average",
+      "body": {
+        "type": "FunctionApplication",
+        "function": {
+          "type": "PointlessExpression",
+          "content": {
             "type": "OperatorFunction",
-            "operator": "div"
-          },
-          " ",
-          "]"
-        ],
+            "operator": "/"
+          }
+        },
         "arguments": [
-          [
-            "[",
-            " ",
-            {
-              "type": "OperatorFunction",
-              "operator": "add"
-            },
-            " ",
-            "]"
-          ],
           {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+            "type": "PointlessExpression",
+            "content": {
+              "type": "OperatorFunction",
+              "operator": "+"
+            }
           },
           {
-            "type": "Block",
-            "bracket": "paren",
-            "expression": {
-              "type": "FunctionApplyExpression",
-              "function": {
-                "type": "Identifier",
-                "name": "length"
-              },
-              "arguments": [
-                {
-                  "type": "Unit",
-                  "semantics": [
-                    "empty_list",
-                    "identity_morphism",
-                    "unit_element"
-                  ]
-                }
-              ]
-            }
+            "type": "Unit"
+          },
+          {
+            "type": "FunctionApplication",
+            "function": {
+              "type": "Variable",
+              "name": "length"
+            },
+            "arguments": [
+              {
+                "type": "Unit"
+              }
+            ]
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "apply_twice"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "square_sum",
+      "body": {
+        "type": "FunctionApplication",
+        "function": {
+          "type": "PointlessExpression",
+          "content": {
+            "type": "OperatorFunction",
+            "operator": "+"
+          }
+        },
+        "arguments": [
+          {
+            "type": "FunctionApplication",
+            "function": {
+              "type": "PointlessExpression",
+              "content": {
+                "type": "MapOperation",
+                "operator": "^",
+                "operand": {
+                  "type": "Literal",
+                  "value": 2,
+                  "literalType": "integer"
+                }
+              }
+            },
+            "arguments": [
+              {
+                "type": "Unit"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "FunctionDefinition",
+      "name": "apply_twice",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          }
+          "_0"
         ],
         "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
+          "type": "FunctionApplication",
+          "function": {
+            "type": "Variable",
+            "name": "_0"
+          },
+          "arguments": [
+            {
+              "type": "Variable",
+              "name": "_0"
+            }
           ]
         }
       }
     },
     {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "arguments": [
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Integer",
-      "value": 0,
-      "raw": "0"
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "avg_value"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "avg_value",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "average"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 1,
-            "raw": "1"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 4,
-            "raw": "4"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "squares"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "squares",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "square_sum"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 1,
-            "raw": "1"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 2,
-            "raw": "2"
+            "literalType": "integer"
           },
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 3,
-            "raw": "3"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "twice_inc"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "twice_inc",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "apply_twice"
         },
         "arguments": [
           {
-            "type": "Identifier",
+            "type": "Variable",
             "name": "inc"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "value7"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "value7",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "twice_inc"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 5,
-            "raw": "5"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "compose"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "compose",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
+          "_0",
+          "_1"
+        ],
+        "body": {
+          "type": "FunctionApplication",
+          "function": {
+            "type": "Variable",
+            "name": "_0"
           },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
+          "arguments": [
+            {
+              "type": "Variable",
               "name": "_1"
             },
-            "continuous": false
-          }
-        ],
-        "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
+            {
+              "type": "Unit"
+            }
           ]
         }
       }
     },
     {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 0,
-        "raw": "0"
-      },
-      "arguments": [
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "FunctionApplyExpression",
-      "function": {
-        "type": "Integer",
-        "value": 1,
-        "raw": "1"
-      },
-      "arguments": [
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "identity"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "identity",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          }
+          "_0"
         ],
         "body": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
+          "type": "Variable",
+          "name": "_0"
         }
       }
     },
     {
-      "type": "Integer",
-      "value": 0,
-      "raw": "0"
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "nop"
-      },
-      "value": {
-        "type": "Unit",
-        "semantics": [
-          "empty_list",
-          "identity_morphism",
-          "unit_element"
-        ]
+      "type": "FunctionDefinition",
+      "name": "nop",
+      "body": {
+        "type": "Unit"
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "inc_then_double"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "inc_then_double",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "compose"
         },
         "arguments": [
           {
-            "type": "Identifier",
+            "type": "Variable",
             "name": "mul"
           },
           {
-            "type": "Identifier",
+            "type": "Variable",
             "name": "inc"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "pass_through"
-      },
-      "value": {
-        "type": "FunctionApplyExpression",
+      "type": "FunctionDefinition",
+      "name": "pass_through",
+      "body": {
+        "type": "FunctionApplication",
         "function": {
-          "type": "Identifier",
+          "type": "Variable",
           "name": "identity"
         },
         "arguments": [
           {
-            "type": "Integer",
+            "type": "Literal",
             "value": 42,
-            "raw": "42"
+            "literalType": "integer"
           }
         ]
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "empty"
-      },
-      "value": {
-        "type": "Identifier",
+      "type": "FunctionDefinition",
+      "name": "empty",
+      "body": {
+        "type": "Variable",
         "name": "nop"
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "classify"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "func",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          }
+          "_0"
         ],
         "body": {
-          "type": "IndentBlock",
-          "expression": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
+          "type": "BinaryOperation",
+          "operator": "or",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "and",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "or",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "and",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "or",
+                  "left": {
+                    "type": "BinaryOperation",
+                    "operator": "and",
+                    "left": {
+                      "type": "Variable",
+                      "name": "condition1"
+                    },
+                    "right": {
+                      "type": "Variable",
+                      "name": "result1"
+                    }
+                  },
+                  "right": {
+                    "type": "Variable",
+                    "name": "condition2"
+                  }
+                },
+                "right": {
+                  "type": "Variable",
+                  "name": "result2"
+                }
+              },
+              "right": {
+                "type": "Variable",
+                "name": "condition3"
+              }
             },
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
+            "right": {
+              "type": "Variable",
+              "name": "result3"
             }
-          ],
-          "operators": [
-            "equal"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "zero"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
-            },
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
-            }
-          ],
-          "operators": [
-            "more"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "positive"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "and",
-      "left": {
-        "type": "ChainedComparison",
-        "operands": [
-          {
-            "type": "Integer",
-            "value": 0,
-            "raw": "0"
           },
-          {
-            "type": "Integer",
-            "value": 0,
-            "raw": "0"
+          "right": {
+            "type": "Variable",
+            "name": "default_result"
           }
-        ],
-        "operators": [
-          "less"
-        ]
-      },
-      "right": {
-        "type": "String",
-        "value": "negative"
+        }
       }
     },
     {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "grade"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "classify",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          }
+          "_0"
         ],
         "body": {
-          "type": "IndentBlock",
-          "expression": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+          "type": "BinaryOperation",
+          "operator": "and",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "or",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "and",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "or",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "and",
+                  "left": {
+                    "type": "ComparisonChain",
+                    "comparisons": [
+                      {
+                        "type": "Comparison",
+                        "operator": "equal",
+                        "left": {
+                          "type": "Variable",
+                          "name": "_0"
+                        },
+                        "right": {
+                          "type": "Literal",
+                          "value": 0,
+                          "literalType": "integer"
+                        }
+                      }
+                    ],
+                    "finalValue": {
+                      "type": "Literal",
+                      "value": 0,
+                      "literalType": "integer"
+                    },
+                    "failValue": {
+                      "type": "Unit"
+                    }
+                  },
+                  "right": {
+                    "type": "Literal",
+                    "value": "zero",
+                    "literalType": "string"
+                  }
+                },
+                "right": {
+                  "type": "ComparisonChain",
+                  "comparisons": [
+                    {
+                      "type": "Comparison",
+                      "operator": "more",
+                      "left": {
+                        "type": "Variable",
+                        "name": "_0"
+                      },
+                      "right": {
+                        "type": "Literal",
+                        "value": 0,
+                        "literalType": "integer"
+                      }
+                    }
+                  ],
+                  "finalValue": {
+                    "type": "Literal",
+                    "value": 0,
+                    "literalType": "integer"
+                  },
+                  "failValue": {
+                    "type": "Unit"
+                  }
+                }
+              },
+              "right": {
+                "type": "Literal",
+                "value": "positive",
+                "literalType": "string"
+              }
+            },
+            "right": {
+              "type": "ComparisonChain",
+              "comparisons": [
+                {
+                  "type": "Comparison",
+                  "operator": "less",
+                  "left": {
+                    "type": "Variable",
+                    "name": "_0"
+                  },
+                  "right": {
+                    "type": "Literal",
+                    "value": 0,
+                    "literalType": "integer"
+                  }
+                }
+              ],
+              "finalValue": {
+                "type": "Literal",
+                "value": 0,
+                "literalType": "integer"
+              },
+              "failValue": {
+                "type": "Unit"
+              }
+            }
+          },
+          "right": {
+            "type": "Literal",
+            "value": "negative",
+            "literalType": "string"
           }
         }
       }
     },
     {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
-            },
-            {
-              "type": "Integer",
-              "value": 90,
-              "raw": "90"
-            }
-          ],
-          "operators": [
-            "more_equal"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "A"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
-            },
-            {
-              "type": "Integer",
-              "value": 80,
-              "raw": "80"
-            }
-          ],
-          "operators": [
-            "more_equal"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "B"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
-            },
-            {
-              "type": "Integer",
-              "value": 70,
-              "raw": "70"
-            }
-          ],
-          "operators": [
-            "more_equal"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "C"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
-            },
-            {
-              "type": "Integer",
-              "value": 60,
-              "raw": "60"
-            }
-          ],
-          "operators": [
-            "more_equal"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "D"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "String",
-          "value": "F"
-        }
-      }
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "compare"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "grade",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_1"
-            },
-            "continuous": false
-          }
+          "_0"
         ],
         "body": {
-          "type": "IndentBlock",
-          "expression": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
+          "type": "BinaryOperation",
+          "operator": "or",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "and",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "or",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "and",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "or",
+                  "left": {
+                    "type": "BinaryOperation",
+                    "operator": "and",
+                    "left": {
+                      "type": "BinaryOperation",
+                      "operator": "or",
+                      "left": {
+                        "type": "BinaryOperation",
+                        "operator": "and",
+                        "left": {
+                          "type": "ComparisonChain",
+                          "comparisons": [
+                            {
+                              "type": "Comparison",
+                              "operator": "more_equal",
+                              "left": {
+                                "type": "Variable",
+                                "name": "_0"
+                              },
+                              "right": {
+                                "type": "Literal",
+                                "value": 90,
+                                "literalType": "integer"
+                              }
+                            }
+                          ],
+                          "finalValue": {
+                            "type": "Literal",
+                            "value": 90,
+                            "literalType": "integer"
+                          },
+                          "failValue": {
+                            "type": "Unit"
+                          }
+                        },
+                        "right": {
+                          "type": "Literal",
+                          "value": "A",
+                          "literalType": "string"
+                        }
+                      },
+                      "right": {
+                        "type": "ComparisonChain",
+                        "comparisons": [
+                          {
+                            "type": "Comparison",
+                            "operator": "more_equal",
+                            "left": {
+                              "type": "Variable",
+                              "name": "_0"
+                            },
+                            "right": {
+                              "type": "Literal",
+                              "value": 80,
+                              "literalType": "integer"
+                            }
+                          }
+                        ],
+                        "finalValue": {
+                          "type": "Literal",
+                          "value": 80,
+                          "literalType": "integer"
+                        },
+                        "failValue": {
+                          "type": "Unit"
+                        }
+                      }
+                    },
+                    "right": {
+                      "type": "Literal",
+                      "value": "B",
+                      "literalType": "string"
+                    }
+                  },
+                  "right": {
+                    "type": "ComparisonChain",
+                    "comparisons": [
+                      {
+                        "type": "Comparison",
+                        "operator": "more_equal",
+                        "left": {
+                          "type": "Variable",
+                          "name": "_0"
+                        },
+                        "right": {
+                          "type": "Literal",
+                          "value": 70,
+                          "literalType": "integer"
+                        }
+                      }
+                    ],
+                    "finalValue": {
+                      "type": "Literal",
+                      "value": 70,
+                      "literalType": "integer"
+                    },
+                    "failValue": {
+                      "type": "Unit"
+                    }
+                  }
+                },
+                "right": {
+                  "type": "Literal",
+                  "value": "C",
+                  "literalType": "string"
+                }
+              },
+              "right": {
+                "type": "ComparisonChain",
+                "comparisons": [
+                  {
+                    "type": "Comparison",
+                    "operator": "more_equal",
+                    "left": {
+                      "type": "Variable",
+                      "name": "_0"
+                    },
+                    "right": {
+                      "type": "Literal",
+                      "value": 60,
+                      "literalType": "integer"
+                    }
+                  }
+                ],
+                "finalValue": {
+                  "type": "Literal",
+                  "value": 60,
+                  "literalType": "integer"
+                },
+                "failValue": {
+                  "type": "Unit"
+                }
+              }
+            },
+            "right": {
+              "type": "Literal",
+              "value": "D",
+              "literalType": "string"
+            }
+          },
+          "right": {
+            "type": "Literal",
+            "value": "F",
+            "literalType": "string"
           }
         }
       }
     },
     {
-      "type": "ChainedComparison",
-      "operands": [
-        {
-          "type": "Integer",
-          "value": 0,
-          "raw": "0"
-        },
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ],
-      "operators": [
-        "more"
-      ]
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "Integer",
-          "value": 1,
-          "raw": "1"
-        },
-        "right": {
-          "type": "String",
-          "value": "greater"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "ChainedComparison",
-      "operands": [
-        {
-          "type": "Integer",
-          "value": 0,
-          "raw": "0"
-        },
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ],
-      "operators": [
-        "equal"
-      ]
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "Integer",
-          "value": 1,
-          "raw": "1"
-        },
-        "right": {
-          "type": "String",
-          "value": "equal"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "ChainedComparison",
-      "operands": [
-        {
-          "type": "Integer",
-          "value": 0,
-          "raw": "0"
-        },
-        {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      ],
-      "operators": [
-        "less"
-      ]
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "and",
-      "left": {
-        "type": "Integer",
-        "value": 1,
-        "raw": "1"
-      },
-      "right": {
-        "type": "String",
-        "value": "less"
-      }
-    },
-    {
-      "type": "Definition",
-      "identifier": {
-        "type": "Identifier",
-        "name": "access_check"
-      },
-      "value": {
+      "type": "FunctionDefinition",
+      "name": "compare",
+      "body": {
         "type": "LambdaExpression",
         "parameters": [
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_0"
-            },
-            "continuous": false
-          },
-          {
-            "type": "Parameter",
-            "name": {
-              "type": "Identifier",
-              "name": "_1"
-            },
-            "continuous": false
-          }
+          "_0",
+          "_1"
         ],
         "body": {
-          "type": "IndentBlock",
-          "expression": {
-            "type": "Unit",
-            "semantics": [
-              "empty_list",
-              "identity_morphism",
-              "unit_element"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
+          "type": "BinaryOperation",
+          "operator": "and",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "or",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "and",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "or",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "and",
+                  "left": {
+                    "type": "ComparisonChain",
+                    "comparisons": [
+                      {
+                        "type": "Comparison",
+                        "operator": "more",
+                        "left": {
+                          "type": "Variable",
+                          "name": "_0"
+                        },
+                        "right": {
+                          "type": "Variable",
+                          "name": "_1"
+                        }
+                      }
+                    ],
+                    "finalValue": {
+                      "type": "Variable",
+                      "name": "_1"
+                    },
+                    "failValue": {
+                      "type": "Unit"
+                    }
+                  },
+                  "right": {
+                    "type": "Literal",
+                    "value": "greater",
+                    "literalType": "string"
+                  }
+                },
+                "right": {
+                  "type": "ComparisonChain",
+                  "comparisons": [
+                    {
+                      "type": "Comparison",
+                      "operator": "equal",
+                      "left": {
+                        "type": "Variable",
+                        "name": "_0"
+                      },
+                      "right": {
+                        "type": "Variable",
+                        "name": "_1"
+                      }
+                    }
+                  ],
+                  "finalValue": {
+                    "type": "Variable",
+                    "name": "_1"
+                  },
+                  "failValue": {
+                    "type": "Unit"
+                  }
+                }
+              },
+              "right": {
+                "type": "Literal",
+                "value": "equal",
+                "literalType": "string"
+              }
             },
-            {
-              "type": "String",
-              "value": "admin"
+            "right": {
+              "type": "ComparisonChain",
+              "comparisons": [
+                {
+                  "type": "Comparison",
+                  "operator": "less",
+                  "left": {
+                    "type": "Variable",
+                    "name": "_0"
+                  },
+                  "right": {
+                    "type": "Variable",
+                    "name": "_1"
+                  }
+                }
+              ],
+              "finalValue": {
+                "type": "Variable",
+                "name": "_1"
+              },
+              "failValue": {
+                "type": "Unit"
+              }
             }
-          ],
-          "operators": [
-            "equal"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "full_access"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "and",
-      "left": {
-        "type": "ChainedComparison",
-        "operands": [
-          {
-            "type": "Integer",
-            "value": 1,
-            "raw": "1"
           },
-          {
-            "type": "String",
-            "value": "moderator"
+          "right": {
+            "type": "Literal",
+            "value": "less",
+            "literalType": "string"
           }
+        }
+      }
+    },
+    {
+      "type": "FunctionDefinition",
+      "name": "access_check",
+      "body": {
+        "type": "LambdaExpression",
+        "parameters": [
+          "_0",
+          "_1"
         ],
-        "operators": [
-          "equal"
-        ]
-      },
-      "right": {
-        "type": "Unit",
-        "semantics": [
-          "empty_list",
-          "identity_morphism",
-          "unit_element"
-        ]
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
+        "body": {
+          "type": "BinaryOperation",
+          "operator": "or",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "and",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "or",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "and",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "and",
+                  "left": {
+                    "type": "BinaryOperation",
+                    "operator": "or",
+                    "left": {
+                      "type": "BinaryOperation",
+                      "operator": "and",
+                      "left": {
+                        "type": "ComparisonChain",
+                        "comparisons": [
+                          {
+                            "type": "Comparison",
+                            "operator": "equal",
+                            "left": {
+                              "type": "Variable",
+                              "name": "_0"
+                            },
+                            "right": {
+                              "type": "Literal",
+                              "value": "admin",
+                              "literalType": "string"
+                            }
+                          }
+                        ],
+                        "finalValue": {
+                          "type": "Literal",
+                          "value": "admin",
+                          "literalType": "string"
+                        },
+                        "failValue": {
+                          "type": "Unit"
+                        }
+                      },
+                      "right": {
+                        "type": "Literal",
+                        "value": "full_access",
+                        "literalType": "string"
+                      }
+                    },
+                    "right": {
+                      "type": "ComparisonChain",
+                      "comparisons": [
+                        {
+                          "type": "Comparison",
+                          "operator": "equal",
+                          "left": {
+                            "type": "Variable",
+                            "name": "_1"
+                          },
+                          "right": {
+                            "type": "Literal",
+                            "value": "moderator",
+                            "literalType": "string"
+                          }
+                        }
+                      ],
+                      "finalValue": {
+                        "type": "Literal",
+                        "value": "moderator",
+                        "literalType": "string"
+                      },
+                      "failValue": {
+                        "type": "Unit"
+                      }
+                    }
+                  },
+                  "right": {
+                    "type": "ComparisonChain",
+                    "comparisons": [
+                      {
+                        "type": "Comparison",
+                        "operator": "not_equal",
+                        "left": {
+                          "type": "Variable",
+                          "name": "_0"
+                        },
+                        "right": {
+                          "type": "Literal",
+                          "value": "guest",
+                          "literalType": "string"
+                        }
+                      }
+                    ],
+                    "finalValue": {
+                      "type": "Literal",
+                      "value": "guest",
+                      "literalType": "string"
+                    },
+                    "failValue": {
+                      "type": "Unit"
+                    }
+                  }
+                },
+                "right": {
+                  "type": "Literal",
+                  "value": "moderate_access",
+                  "literalType": "string"
+                }
+              },
+              "right": {
+                "type": "ComparisonChain",
+                "comparisons": [
+                  {
+                    "type": "Comparison",
+                    "operator": "not_equal",
+                    "left": {
+                      "type": "Variable",
+                      "name": "_0"
+                    },
+                    "right": {
+                      "type": "Unit"
+                    }
+                  }
+                ],
+                "finalValue": {
+                  "type": "Unit"
+                },
+                "failValue": {
+                  "type": "Unit"
+                }
+              }
             },
-            {
-              "type": "String",
-              "value": "guest"
+            "right": {
+              "type": "Literal",
+              "value": "basic_access",
+              "literalType": "string"
             }
-          ],
-          "operators": [
-            "not_equal"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "moderate_access"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "Unit",
-          "semantics": [
-            "empty_list",
-            "identity_morphism",
-            "unit_element"
-          ]
-        }
-      }
-    },
-    {
-      "type": "BinaryOperation",
-      "operator": "or",
-      "left": {
-        "type": "BinaryOperation",
-        "operator": "and",
-        "left": {
-          "type": "ChainedComparison",
-          "operands": [
-            {
-              "type": "Integer",
-              "value": 0,
-              "raw": "0"
-            },
-            {
-              "type": "Unit",
-              "semantics": [
-                "empty_list",
-                "identity_morphism",
-                "unit_element"
-              ]
-            }
-          ],
-          "operators": [
-            "not_equal"
-          ]
-        },
-        "right": {
-          "type": "String",
-          "value": "basic_access"
-        }
-      },
-      "right": {
-        "type": "IndentBlock",
-        "expression": {
-          "type": "String",
-          "value": "no_access"
+          },
+          "right": {
+            "type": "Literal",
+            "value": "no_access",
+            "literalType": "string"
+          }
         }
       }
     }
