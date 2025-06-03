@@ -29,7 +29,7 @@ We have created a new language that will revolutionize the future of programming
 
 ## Key Features
 
-1. **Unified Abstraction Model**
+1. **Unified Abstraction Model inspired　by Category Theory**
    - All concepts are unified as operators.
    - Enables advanced abstraction and flexible implementation.
    - Seamlessly fuses concepts of functions, pattern matching, and object-oriented programming.
@@ -44,7 +44,7 @@ We have created a new language that will revolutionize the future of programming
    `Lambda expression with pattern matching (generalized form)`
    `Default is written last, without : condition specification`
    [x ?
-     _ : _
+     !x : _
      x + 1
    ]
    ```
@@ -64,6 +64,8 @@ We have created a new language that will revolutionize the future of programming
        return x + 2
      }
    }
+
+   match(4)
    ```
 
    ```
