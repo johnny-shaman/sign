@@ -341,9 +341,9 @@ calc :
 
 （例）
 ```javascript
-#print : s ~t ?
-	0x40 # s
-	print t~
+#stream : s ~t ?
+	0xFF00 # s
+	output t~
 ```
 
 ## ` `	（余積　中置演算子） []({#　-（余積　中置演算子）})

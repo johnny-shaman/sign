@@ -1,146 +1,122 @@
-`Strings are enclosed in backQuotes`
-`Lines with only literals at the start or middle are not executed. Therefore, the line above is not executed.`
-`Even if a line contains only literals, if it's the final line of a function, it becomes the return value.`
+`Strings are defined by backQuort`
+`Start or middle lines containing only literals that don't make sense are not executed. Therefore, the line above is not executed.`
+`Even if a line contains only a literal, if it's the last line of a function, it will be returned as the result.`
 `Therefore, comments are written as strings.`
 
-`A newline is a postfix operator meaning "evaluate".`
+`Newline is a postfix operator that "evaluates".`
 `If you don't want a newline to represent evaluation, use a newline character.`
-`Indentation at the beginning of a line forms a block.`
+`Line-start indent forms a block.`
 
-`The normal evaluation strategy of this language is lazy evaluation.`
+`The typical evaluation strategy for this language is lazy evaluation.`
 
-`":" in English means "namely", so it's used as the assignment operator, while = is strictly a comparison operator.`
-`Just by looking below, it should be obvious that in this language, names become types.`
+`In English, ":" means "that is," so it's an assignment operator, while "=" remains purely a comparison operator.`
 
-x: -353.15134
-y: 4001.35364502
+x : -353.15134
+y : 4001.35364502
 
-Hello: `Hello`
-World: `World`
+Hello : `Hello`
+World : `World`
 
-`true is all valid values, false is 0 or a list of length 0`
+`'true' represents all valid values, while 'false' is an empty list or an unevaluated lambda expression.`
+`_ also retains its function as an id`
 
-yep: 1
-nop: 0
+yep : 0
+nop : _
 
-`An assignment operator not in a block is right-unitary.`
+`An assignment operator not within a block is a right identity element.`
 
-unit: none: []
+unit : none : []
 
-`The above is equivalent to the following syntax`
+`The above has the same meaning as the following syntax:`
 
-none: []
-unit: []
+none : []
+unit : []
 
-`In this language, both parentheses and indentation represent blocks, have local scope, and are recognized as being processed with priority.`
-`In other words, the scope of names is determined by blocks`
-`To avoid errors, the following is commented out`
-`	y: 1`
-`	n: 0`
+`Comparison operations have shorthands.`
 
-`The above is deleted when exiting the block, so it returns none (unit) along with a "y wasn't defined" error.`
-
-`[y = 1] = 0`
-
-`However, if written as follows, it can be accessed.`
-
-[
-	`y`: 1
-	`n`: 0
-] `y`
-
-`How to define lambda terms`
-`The basics of lambda terms use ?.`
-`Functions without assignment need to be enclosed in parentheses. This is because the start of parentheses means the creation of a stack.`
-
-[x y ? x ^ 2 + 2 * x * y + y ^ 2]
-
-`The above is equivalent to the following expression by factorization.`
-`By reinterpreting parentheses as the definition start of a block (stack), the priority of expressions can be expressed.`
-
-[x y ? (x + y) ^ 2]
-
-`Using point-free style and function composition, we can further simplify the description`
-`Point-free function descriptions are direct operator descriptions, so the type is self-evident.`
-`Once it becomes a function, the priority as an operator is lost, and function composition becomes left-unitary.`
-
-[+] [^ 2]
-
-`If you want to write [^2] with priority in point-free notation...`
-
-[^ 2] [+]
-
-`is the result.`
-
-`There are shorthands for comparison operations.`
-
-`[[x = y & y] = z]`
+`[[x = y & y] = z] & y`
 
 x = y = z
 
-`[[1 <= x & x] <= 9]`
+`[[1 <= x & x] <= 9] & x`
 
 1 <= x <= 9
 
-`If you don't want function application or composition, you can handle it by putting a comma immediately after the function to make it a direct product.`
+`Lambda term definition method`
+`The basis of lambda terms uses '?'.`
+`Functions without assignment must be enclosed in parentheses.`
+
+[x y ? x ^ 2 + 2 * x * y + y ^ 2]
+
+`Factoring the above shows that this expression is equivalent to the following.`
+`By reinterpreting parentheses purely as the start of a block definition, expression precedence can be expressed.`
+
+[x y ? (x + y) ^ 2]
+
+`Further simplification can be achieved using point-free style and function composition.`
+`Point-free function descriptions, being direct operator descriptions, have a self-evident type.`
+`Once a function is formed, it loses its operator precedence, and function composition becomes a left identity.`
+
+[+] [^ 2]
+
+`If you want to prioritize [^2] in point-free notation...`
+
+[^ 2] [+]
+
+`...it would be.`
+
+`If you don't want function application or composition, you can append a comma directly after the function to create a Cartesian product.`
+`Alternatively, you can use the '$' prefix operator before the function to obtain a temporary address.`
 
 [+ 2] 2 = 4
 [+ 2], 2 = [+ 2], 2
 
-`Lambda terms can also describe constant assignments and constant functions`
+`Example of passing a function as a Cartesian product`
 
-iterate3 : 1 ? 2 ? 3
+Filter : f x ~y ? f x , Filter f y~
+Filter [> 0], [-2 ~ 3]
 
-`It is evaluated when there is a space at the end.`
+`Example in the case of a function pointer`
 
-iterate3 = 1
-iterate3 = 2
-iterate3 = 3
-iterate3 = []
-iterate3 = []
+Filter : f x ~y ? @f x , Filter f y~
+Filter $[> 0] [-2 ~ 3]
 
-`Point-free notation of unary expressions takes arguments in the order of right, then left.`
-`The last argument of a function can be written before the function.`
-`If it's after :, [] can be omitted if the point-free notation is a unary expression.`
+`The very last argument of a function can also be written before the function.`
 
-result2 : - 1 3
-add : +
-exp : ^
+result2 : [-] 3 1
+add : [+]
+exp : [^]
 id : x ? x
 
-`The priority of function evaluation is lower than lambda definition.`
-`Function composition is left-unitary, but if you write normal function execution, it can be written as right-unitary.`
-`There is no difference by type of parentheses in this language.`
+`Function evaluation has lower precedence than lambda definition.`
+`Function composition is a left identity, but normal function execution can be written as a right identity.`
+`There is no distinction between bracket types in this language.`
+
+[+ 1] [* 2] 5 = [* 2]([+ 1] 5) = 12
 
 `The following functions as a function that returns the head.`
 
 [x ? x] 1 2 3 = 1
 [x ? x] 1, 2, 3 = 1
 
-[1 2 3] '0 = 1
-[1, 2, 3] '0 = 1
+[1 2 3] ' 0 = 1
+[1, 2, 3] ' 0 = 1
 
 `The following functions as a function that returns the tail.`
 
-[_ ~y ? y~] 1 2 3 = 2 3
-[_ ~y ? y~] 1, 2, 3 = 2 3
+[_ ~y ? y] 1 2 3 = 2 3
+[_ ~y ? y] 1, 2, 3 = 2 3
 
-[1 2 3] '1~ = 2 3
-[1, 2, 3] '1~ = 2 3
+[1 2 3] ' 1~ = 2 3
+[1, 2, 3] ' 1~ = 2 3
 
-`In this language, for those who really want to write types, you can enclose names in " for type annotation or type reading (not recommended)`
-`Why the type becomes automatically correct if the syntax is correct is self-evident in the following type annotation`
-`Because the type to which a function is applied is expressed as is, it becomes the same as the implementation.`
-`Of course, the type after a function is executed is automatically type-cast to the type after execution,`
-`This is related to the fact that type calculation is done later because it's lazy evaluation.`
-`As a result, the compiler or interpreter doesn't need to guarantee type safety.`
-`Arguments passed to higher-order functions need to be written separately whether to evaluate or not by direct product.`
+`Arguments passed to higher-order functions must be explicitly separated by Cartesian product to determine whether they are evaluated or not.`
 
-`match_case can be written using block syntax as follows.`
-`The block becomes guard notation.`
-`Blocked assignment operations are also this in nature`
-`If you assign the block itself or enclose it in parentheses for immediate generation, it's just like a normal function.`
-`When using lambda anonymously, it must be enclosed in parentheses.`
+`match_case can be written using block syntax as follows:`
+`The block serves as a guard notation.`
+`This is also the true nature of block-scoped assignment operators.`
+`If you assign the block itself or enclose it in parentheses for immediate generation, it's just like a regular function.`
+`When using lambdas anonymously, they must be enclosed in parentheses.`
 
 [x ?
 	x = 0 : 0
@@ -150,163 +126,121 @@ id : x ? x
 ] 3
 
 `The above is replaced by the following in preprocessing.`
+`Key points here...`
+`0 is true`
+`_ or an empty list, or an unevaluated function, is false`
 
-[
-	x ? 
-		x = 0 & [_ ? 0] ;
-		x > 0 & [_ ? `more`] ;
-		x < 0 & [_ ? `less`] ;
-		[_ ? `other_wise`]
+[x ?
+	x = 0 & 0 |
+	x > 0 & `more` |
+	x < 0 & `less` |
+	`other_wise`
 ] 3
 
 `Constructor-like description.`
-`It's also possible to assign dynamic key names, and in that case, ~ is used to forcibly extract values assigned to variables or arguments.`
+`Dynamic key names can also be assigned; in such cases, to force extraction of values assigned to variables or arguments, use the postfix '~'.`
 
 Person : name age etc x ?
 	name
 	age
-	~etc : x
+	etc~ : x
 
 john : Person `john` 18 `Like` `Sushi`
 
-john `name`
+`The 'get' operator treats 5 types equivalently: identifier, number, character, string, and type of type.`
 
-`Quote uses the following ident as a string as is.`
+john ' name = john ' `name`
 
-john 'name = john `name`
-
-`Create a copy of the person instance using the spread operator and overwrite values`
-
-person : Person [] [] [] []
-
-mary : 
-	~person
-		'name : `mary`
-		'age  : 16
-
-charie : 
-	~person
-		'name : `charie`
-		'age  : 24
-
-`From here on, we'll use the shorthand notation.`
-
-[
-	0   : `zero`
-	> 0 : `more`
-	< 0 : `less`
-	`other`
-] 3
-
-`Behavior like a ternary operator can also be defined as follows.`
-
-[
-	1 : `yep`
-	0 : `nop`
-] 1
-
-`This is also equivalent to match_case, and with this notation, if then can be reproduced`
-`If there's no otherwise description and it matches otherwise, it returns the passed value as is.`
+`This is also equivalent to match_case, and this notation can replicate 'if then'.`
+`If 'otherwise' is not specified and 'otherwise' is matched, it returns the passed value as is, following the identity law.`
 
 [> 3 : [+ 3]] 3 4 = 4
 
-`Data class-like descriptions are also shorthand for match_case.`
+`Data class-like description`
 
 Item :
 	name
+	duration
 	equip
 	use
 	effect
 
-medicalWeed :
-	Item
-		`medicalWeed`
-		[]
-		['medicalWeed], [- 1]
-		['HP], [+ 20]
+medicalWeed : Item
+	`medicalWeed`
+	1
+	_
+	[' amount] [- 1]
+	[' HP] [+ 20]
 
-lightningStaff :
-	Item
-		`lightningStaff`
-		['Atk], [+ 8]
-		['ThunderBolt]
-		['HP], [- 40]
+lightningStaff : Item
+	`lightningStaff`
+	50
+	[' Atk] [+ 8]
+	[' ThunderBolt]
+	[' HP] [- 40]
 
-`The so-called let ~ in is written as follows.`
-`It actually becomes the same as a monadic description.`
+`The so-called 'let ~ in' is also written as follows.`
 
 myValue :
 	3
 	[+ 4]
 	[* 2]
 
-`List definitions are basically comma-separated.`
-`"," in English represents "strong separation" and "direct product".`
-`" " is used for "direct sum".`
-`For scalar types of coproduct, commas can be omitted.`
-`It's also clear that lambda evaluation has lower priority than other expressions or terms.`
-`The way lists function as iterators is well understood by looking at the form where the head function is not omitted.`
-`It beautifully reproduces the fact that implementation is type.`
-`Similarly, it also shows that "," and " " are adjoint by the adjoint functor theorem.`
-`This coincides with the definition of a function that takes arguments as constants, but the constant function of arguments is treated as an iterator.`
-`By attaching the ~ operator to an iterator, it is iterated`
+`List definitions are generally comma-separated.`
+`"," in English denotes a "strong separator" or "Cartesian product."`
+`" " is used for "coproduct."`
+`In the case of coproducts of scalar types, the comma can be omitted.`
+`It's also clear why lambda evaluation has lower precedence than other expressions or terms.`
+`The way lists function as iterators is evident when observing their form without omitted head functions.`
+`It brilliantly reproduces the idea that implementation is type.`
+`Similarly, the adjoint functor theorem's adjoint relationship between "," and " " is also evident.`
 
 myPairs: 1 2 3 4 5
 myPairs0: [,] 1 2 3 4 5
 myPairs1: 1, 2, 3, 4, 5
-myPairs2: 1 ? 2 ? 3 ? 4 ? 5
 
-myPairs0 = myPairs = myPairs1 = [,] myPairs2~
+myPairs = myPairs0 = myPairs1
 
-`Therefore, higher-order descriptions can be done naturally, which is conceptually just replacing commas with some function and folding.`
-`Therefore, folding (foldL) is just passing a list to a two-argument function, which coincides with LISP.`
-`For beginners of this language or those who prioritize implementation, we are considering providing a library to make this description easier to understand with ordinary words.`
+`Lists allow range selection.`
+
+myPairs ' [1 ~ 3] = 2 3 4
+
+`Therefore, higher-order descriptions can also be naturally performed; conceptually, this simply involves replacing commas with some function and folding.`
+`Thus, folding (foldL) simply involves passing a list to a two-argument function, which aligns with LISP.`
 
 [[,],] myPairs = [1], [2], [3], [4], [5]
-[?] myPairs = 1 ? 2 ? 3 ? 4 ? 5
 [+] myPairs = 15
 
-`map is possible with this kind of description, but`
+`Map can be achieved with this kind of notation.`
 
 [* 2,] myPairs = 2 4 6 8 10
 
-`This is direct sum (array composition)`
+`A simple filter can be written as follows.`
+
+[> 2,] myPairs = 3 4 5
+
+`This is a coproduct (array concatenation).`
 
 r: [1 2] [3 4]
 
-`This is direct product (2D array)`
+`This is a Cartesian product (2D array).`
 
 s: [1 2],[3 4]
 
-`Expressions that look like dictionary types are the same as anonymous functions that perform match_case, and the type of parentheses doesn't matter, and can be defined with indentation.`
+`Dictionary type`
 `However, opening and closing parentheses must always be paired.`
 
 myGreet:
-	greet: 
+	greet:
 		hello: `hello,`
 		welcome: `welcome,`
-	world: ` world`
+	world : ` world`
 
-`The above myGreet is replaced by the following in preprocessing.`
+myGreet ' greet ' hello = `hello,`
 
-myGreet: ~a ?
-	a '0 = `greet` & 
-		a '1 = `hello` & `hello,` ;
-		a '1 = `welcome` & `welcome,` ;
-	a '0 = `world` & ` world`;
-	[]
-
-`Therefore, access will be by ident or string, or natural or hex as arguments.`
-
-myGreet 'greet 'hello = `hello,`
-
-myPairs '0 = 1
-
-myPairs '[1 ~ 3] = 2 3 4
-
-`By using block scope, you can directly write get within the block scope.`
-`Of course, this block syntax also has a return value at the end of the operation.`
-`This returns a direct sum if a direct sum of results is possible in the block scope.`
+`By using block scope, 'get' can be directly written within the block scope.`
+`This block syntax, of course, also returns a value upon completion of the operation.`
+`If a coproduct of results is possible within this block scope, it returns the coproduct.`
 
 myGreet
 	'greet
@@ -314,55 +248,57 @@ myGreet
 	'world
 = `welcome, world`
 
-`Value modification is possible`
+`Values can be modified.`
 
 myGreet
 	'greet
 		'welcome : `welcome to our `
 	'world : `metaverse!`
 
-`By inferring only primitive types, it is designed to solve actual type problems.`
-`All given names are definitions, and they are self-evident types, so names are types.`
+`By inferring only primitive types, the actual type problem is designed to be solved.`
+`All given names are definitions, and as they are self-evident types, the name *is* the type.`
 
-`The ~ operator can expand only match_case that mimics dictionary types on the target scope.`
-`If it's a prefix, it takes priority over other terms, and if it's a postfix, other terms take priority.`
+`The '~' operator can only expand match_case, which mimics a dictionary type, onto the target scope.`
+`If prefixed, it takes precedence over other terms; if postfixed, other terms take precedence.`
 
-~[
+[
 	y: 1
 	n: 0
-]
+]~
 
 y = 1
 
-`@ prefix operator is import. It can be specified from file names, and path specification is also possible`
-`Since match_case can be considered as a dictionary type, it can be expanded to one level up scope with the ~ operator, so import that can be used in the file is possible with ~@.`
+`The '@' postfix operator is for import. File names can be specified, and paths are also allowed.`
+`If match_case can be treated as a dictionary type, the '~' operator can expand it to the scope above, so '@~' also allows imports usable within the file.`
 
-@io
+io@
 	say Hello World
 
-`Since it's not an import on the file scope, the line below returns a Say is not defined error.`
+`Since this is not a file-scoped import, the line below will return a "Say is not defined" error.`
 
 say Hello World
 
-`Expand and use in file scope.`
+`Expand to file scope for use.`
 
-@Funnctor~
-@Monoid~
-@io~
+io@~
 
-say [ [* 4,] [+] [1 ~ 5] ]
+[* 4,] [+] [1 ~ 5] = 60
 
-`Any single character after \ is always one character value of character type.`
-`In the case of character concatenation, since it's decided that \ is followed by one character, if ident or string comes, it's simply regarded as string concatenation.`
-`Scalar value listing usually uses space or comma, but in the case of character literals and string literals,`
-`There are cases where concatenation can be expressed by direct description, so describe that pattern.`
-`A string is just a list of characters.`
-`However, practical character value notation, insertion of newlines, and`
+`A string is a list of characters.`
+`A string represents the concatenation of characters.`
+`Since a string is a list of characters, string concatenation has the same meaning as character concatenation.`
+
+`Any single character after a '\' is always treated as a single character type value.`
+`In the case of character concatenation, because it's fixed that '\' is followed by 1 character, if an ident or string appears, it's straightforwardly treated as string concatenation.`
+`Scalar values are usually listed using space or comma, but in the case of character and string literals,`
+`there are patterns where direct concatenation can represent concatenation, so those patterns are described.`
+`A string is still a list of characters.`
+`However, practical character value notation includes newline insertion or`
 
 M: \M
 
 My: M \y\ \D\o\m\e\s\t\i\c
-My = M \y \  \D \o \m \e \s \t \i \c = `My Domestic`
+My = M \y \ \D \o \m \e \s \t \i \c = `My Domestic`
 
 	`Hello ` `World!` = `Hello World!`
 	`Hello` \ `World!` = `Hello World!`
@@ -371,38 +307,31 @@ My = M \y \  \D \o \m \e \s \t \i \c = `My Domestic`
 	Hello \ My \ `World` \! = `Hello My Domestic World!`
 	`Hello` \!\ My World \! = `Hello! My Domestic World!`
 
-`Strings containing \ backslash can be defined. Be careful as it's not an escape sequence`
+`Strings containing '\' backslashes can be defined. Note that it's not an escape sequence.`
 
-`String definition containing back_quort treats back_quort as a character and handles it with string concatenation (coproduct)`
+`The definition of a string containing 'back_quort' treats 'back_quort' as a character and handles it with string concatenation (coproduct).`
 
 `Sign\s ` \` `define a string literal`
 
-`If you want to express a string containing a newline, it becomes a block-like writing.`
-`The reason is that " " means "list concatenation, and function composition, function application".`
-`If you want to include a newline.`
+`If you want to represent a string containing newlines, it will be written like a block.`
+`The reason is that " " means "list concatenation, function composition, and function application."`
+`If you want to include newlines.`
 
 HWinEnter :
- `Hello` \
- `World!`
+ `Hello` \
+ `World!`
 
-`"#" becomes an export prefix operator.`
-`Normal functions always return the value of the last line, and match_case returns the value or function corresponding to the specified value`
-`The entire file is also a function, but anything other than export, that is, shown by #, does not leave its own scope.`
+`"#" becomes the export prefix operator.`
+`Regular functions always return the value of the last line, and match_case returns a value or function corresponding to the specified value.`
+`The entire file is also a single function, but anything not indicated by 'export' (i.e., '#') will not leave its own scope.`
 
-#myDict : name value ? ~name : value
-#gets : name ? myDict '~name
+#myDict : name value ? name~ : value
+#gets : name ? myDict ' name~
 
-`Logical operators are short-circuit evaluated.`
+`Logical operators are short-circuited.`
 
 0 & `me` = 0
 1 & `me` = `me`
 
 0 | `me` = `me`
 1 | `me` = 1
-
-0 ; `me` = `me`
-1 ; `me` = 0
-
-`The following line is for compiler debugging`
-#`It:`\	`365` `is number of date at 1 year`
-\	4 + 5
