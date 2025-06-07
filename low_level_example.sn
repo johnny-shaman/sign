@@ -1,28 +1,14 @@
 
 
 `Point and write value
-	r0 : 0x0000
-	#r0 : 3
+	r0 : 0xFFFF
+	r0 # 3
 	r1  : @r0 * 2
 
-`Block exit and auto destruction at #0x0000
+`Block exit and auto destruction at \+
 	r0 : \+
-	#r0 : +
+	r0 # [+]
 	r1 : @r0 3 2
 
 `Block exit and auto destruction at #\+
-
-`top level export is not destruct it
-
-#\+ : +
-
-
-
-`It's not using a Pointer and Direct Addressing (IO Stream pattern with Direct Addressing)
-
-#IO: d a ?
-	@[a + 1] = 0 :
-		s != _ : [#a : d]
-		@a
-	@IO d a
 
