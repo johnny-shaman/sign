@@ -46,7 +46,3 @@ float : c ~s ?
 	c = \e : c , float s~
 	digit c , float s~
 
-	
-#Expression : c ~s ?
-	c = \# : `Export` Define s~
-	c = \: : 
