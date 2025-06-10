@@ -1,9 +1,8 @@
-# Sign Programming Language
+# Sign integrity generic notation
 
+Welcome to the Sign integrity generic notation Page!
 
-<picture>
-  <img src="./Sign_logo_dark.svg"  alt="Sign Logo" width="256" media="(prefers-color-scheme:dark)" />
-</picture>
+  <img src="./Sign_logo_dark.svg"  alt="Sign Logo" width="256" />
 
 
 ## manifesto
