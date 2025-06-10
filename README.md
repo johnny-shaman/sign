@@ -2,8 +2,7 @@
 
 
 <picture>
-  <source src="./Sign_logo_dark.svg" media="(prefers-color-scheme:dark)" />
-  <img src="./Sign_logo.svg" alt="Sign Logo" width="256"/>
+  <img src="./Sign_logo_dark.svg"  alt="Sign Logo" width="256" media="(prefers-color-scheme:dark)" />
 </picture>
 
 
