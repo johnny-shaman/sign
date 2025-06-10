@@ -1,5 +1,12 @@
 # Sign Programming Language
 
+
+<picture>
+  <source src="./Sign_logo_dark.svg" media="(prefers-color-scheme:dark)" />
+  <img src="./Sign_logo.svg" alt="Sign Logo" width="256"/>
+</picture>
+
+
 ## manifesto
   [Our Manifesto](./manifesto.md)
   [日本語版はこちら](./manifesto.ja-jp.md)
