@@ -2,8 +2,7 @@
 
 Welcome to the Sign integrity generic notation Page!
 
-  <img src="./Sign_logo_dark.svg"  alt="Sign Logo" width="256" />
-
+<img src="./Sign_logo_dark.svg"  alt="Sign Logo" width="256" />
 
 ## manifesto
   [Our Manifesto](./manifesto.md)
@@ -20,3 +19,6 @@ Welcome to the Sign integrity generic notation Page!
 ## License
   [Language-License](./License/sign-language-license.md)
   [日本語はこちら](./License/sign-language-license-ja.md)
+
+
+<img src="./wave.svg"  alt="wave" width="75%" />
