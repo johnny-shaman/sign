@@ -88,7 +88,7 @@ ComparisonChain = __ ComparisonOperator __ AbsoluteLevel
 
 // 優先順位8: 絶対値
 AbsoluteLevel = 
-    __ "|" ArithmeticAddLevel "|" __
+    "|" ArithmeticAddLevel "|"
     / ArithmeticAddLevel
 
 // 優先順位9: 加減算
