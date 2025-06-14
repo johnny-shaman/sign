@@ -5,6 +5,9 @@
 // 文字列
 // 中置#演算子（標準出力のため、0x1 # output の形式は動確済み）
 
+// 演算モジュールのインポート
+const StringOperations = require('./operations/string-operations');
+
 class SignStackCompiler {
     constructor() {
         // スタックマシン状態
@@ -16,6 +19,9 @@ class SignStackCompiler {
 
         // 出力コード
         this.assembly = [];
+
+        // 演算モジュール
+        this.stringOps = new StringOperations(this);
     }
 
     // メインコンパイル関数
@@ -264,7 +270,7 @@ class SignStackCompiler {
         console.log(`🔧 Generating: ${instr.type} ${instr.operator || instr.value || ''}`);
         switch (instr.type) {
             case 'PUSH':
-                this.generatePush(instr.value, 'literal');
+                this.generatePush(instr.value, 'literal', instr.valueType);
                 break;
 
             case 'PUSH_UNIT':
@@ -298,7 +304,7 @@ class SignStackCompiler {
     }
 
     // 値プッシュ
-    generatePush(value, type = 'literal') {
+    generatePush(value, type = 'literal', valueType = 'integer') {
         const reg = this.getNextDataReg();
         if (typeof value === 'number') {
             this.assembly.push(`# push literal ${value}`);
@@ -309,7 +315,11 @@ class SignStackCompiler {
             this.assembly.push(`    adr ${reg}, string_${stringIndex}`);
         }
         this.dataStack.push(reg);
-        this.operandInfo.push({ type: type, value: value });
+        this.operandInfo.push({
+            type: type,
+            value: value,
+            valueType: valueType
+        });
     }
 
     // Unit値プッシュ
@@ -335,9 +345,15 @@ class SignStackCompiler {
         } else {
             // 通常の変数名（関数名）→ 関数呼び出しとして処理
             this.assembly.push(`# 関数参照: ${varName} (引数なし関数呼び出し)`);
+
+            // データスタックのx8を一時保存（Output用のファイルディスクリプタ保護）
+            this.assembly.push(`    mov x16, x8               // 一時保存`);
+
             this.assembly.push(`    bl ${varName}`);
             this.assembly.push(`# store function result`);
             this.assembly.push(`    mov ${reg}, x0`);
+
+            this.assembly.push(`    mov x8, x16               // ファイルディスクリプタ復元`);
         }
         this.dataStack.push(reg);
         this.operandInfo.push({ type: type, value: varName });
@@ -449,12 +465,27 @@ class SignStackCompiler {
             return this.generateComparison(operator);
         }
 
+        // スタック状態とオペランド情報の取得
         if (this.dataStack.length < 2) {
             throw new Error(`演算子 ${operator} には2つの値が必要です (現在のスタック: ${this.dataStack.length})`);
         }
 
+        if (this.operandInfo.length < 2) {
+            throw new Error(`オペランド情報が不足しています (現在: ${this.operandInfo.length})`);
+        }
+
+        // 先にオペランド情報を取得（スタック操作前）
+        const rightInfo = this.operandInfo.pop();
+        const leftInfo = this.operandInfo.pop();
+
         const right = this.dataStack.pop(); // 右オペランド
         const left = this.dataStack.pop();  // 左オペランド
+
+
+        // 文字列演算の判定
+        if (this.stringOps.isStringOperation(leftInfo, rightInfo)) {
+            return this.stringOps.generateStringOperation(operator, left, right, leftInfo, rightInfo);
+        }
 
         // 結果は左オペランドのレジスタに格納（レジスタ効率化）
         switch (operator) {
