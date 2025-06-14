@@ -90,6 +90,9 @@ node .\compiler\run-test.js
 # 3. 最終コンパイル
 .\compiler\asm_compile.bat
 
+# 4. 動作確認
+.\compiler\run_output.bat
+
 ```
 
 ## 📋 プリプロセッシング処理段階

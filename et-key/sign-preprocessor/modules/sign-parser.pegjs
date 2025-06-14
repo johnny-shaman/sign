@@ -23,6 +23,7 @@ Program = statements:(Statement _?)* {
 Statement = 
       ExportDefinition
     / Definition 
+    / OutputStatement
     / Lambda
     / Comment
     / EmptyLine
@@ -30,7 +31,17 @@ Statement =
 Comment = "`" [^\n\r]* { return null; }
 EmptyLine = _ EOL { return null; }
 
-// ==================== 6段階優先順位（高速化済み） ====================
+// Output文（トップレベル実行）
+OutputStatement = 
+    address:(HexNumber / Identifier) _ OutputSymbol _ value:Logical {
+        return { 
+            type: "OutputStatement", 
+            address: address, 
+            value: value 
+        };
+    }
+
+// ==================== 7階優先順位（高速化済み） ====================
 
 // 0. Export定義（#identifier : value 構文）
 ExportDefinition = 
@@ -142,7 +153,7 @@ ComparisonOp =
 
 // 5. 算術演算・積・アクセス
 Arithmetic = 
-    left:Primary rest:(_ op:ArithmeticOp _ right:Primary { return {op, right}; })* {
+    left:OutputOperation rest:(_ op:ArithmeticOp _ right:OutputOperation { return {op, right}; })* {
         return rest.reduce((acc, item) => ({
             type: "BinaryOperation", 
             operator: item.op, 
@@ -150,6 +161,32 @@ Arithmetic =
             right: item.right
         }), left);
     }
+
+OutputOperation = 
+    address:(HexNumber / Identifier) _ OutputSymbol _ value:Primary {
+        return { 
+            type: "OutputOperation", 
+            address: address, 
+            value: value 
+        };
+    }
+    / Primary
+
+// 6. 一次式・関数適用（最高優先度） 
+Primary = 
+    left:PrimaryExpression rest:(_ op:ArithmeticOp _ right:PrimaryExpression { return {op, right}; })* {
+         return rest.reduce((acc, item) => ({
+            type: "BinaryOperation", 
+            operator: item.op, 
+            left: acc, 
+            right: item.right
+        }), left);
+    }
+
+PrimaryExpression = 
+      FunctionApplication  // 関数適用を最優先（@演算子の曖昧性解決）
+    / UnaryExpression      // 単項演算子（前置・後置）
+    / Atom               // 基本要素
 
 ArithmeticOp = 
     "+" { return "add"; }
@@ -161,12 +198,8 @@ ArithmeticOp =
     / "," { return "product"; }  // 積演算子（リスト構築）
     / "@" { return "get"; }      // get演算子（構造アクセス）
 
-// 6. 一次式・関数適用（最高優先度）
-// 注意: FunctionApplicationを最優先にして(@_0 _1 _2)のような構文を正しく処理
-Primary = 
-      FunctionApplication  // 関数適用を最優先（@演算子の曖昧性解決）
-    / UnaryExpression      // 単項演算子（前置・後置）
-    / Atom               // 基本要素
+// OutputSymbolの定義確認（既存）
+OutputSymbol = "#"
 
 // 関数適用（関数部分と引数部分の両方で単項演算子を受け入れ）
 FunctionApplication = 
