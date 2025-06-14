@@ -1,267 +1,211 @@
-# Sign言語プリプロセッサ
+# Sign言語プリプロセッサ～コンパイラ
 
-Sign言語コードの段階的変換を行うモジュール化されたプリプロセッサです。
+Sign言語コードの前処理からARM64アセンブリコンパイルまでを行う統合開発環境です。
 
-## 特徴
+## 🌟 特徴
 
+- **段階的プリプロセッシング**: フォーマット → 引数書き換え → matchcase変換
 - **モジュール化設計**: 各処理段階が独立したPEGモジュール
-- **段階的変換**: メモリ効率を重視したテキスト→テキスト変換
+- **完全な構文解析**: Sign言語専用の高速パーサー (16段階→6段階優先順位)
+- **ARM64ネイティブコンパイル**: スタックマシンベースのコンパイラ
 - **デバッグ支援**: 各段階の中間結果を保存・確認可能
-- **パフォーマンス監視**: 実行時間とメモリ使用量の追跡
 
-## インストール
-
-```bash
-npm install
-npm run build
-```
-
-## ディレクトリ構造
+## 📂 ディレクトリ構造
 
 ```
 sign-preprocessor/
-├── modules/                    # PEGモジュール群
-│   ├── formatter.pegjs         # フォーマット整形
-│   ├── sign-parser.pegjs       # 構文解析
-│   ├── arg-rewriter.pegjs      # 引数書き換え
-│   └── matchcase-rewriter.pegjs # matchcase変換
-├── test/                       # テストファイル
-│   ├── test-formatter.js
-│   └── test-integration.js
-├── sign-preprocessor.js        # メイン統合処理
+├── sign-preprocessor.js       # メイン統合処理 (プリプロセス + 構文解析)
+├── modules/                   # PEGモジュール群
+│   ├── formatter.pegjs        # フォーマット整形
+│   ├── arg-rewriter.pegjs     # 引数名→位置ベース変換 
+│   ├── matchcase-rewriter.pegjs # matchcase→短絡評価変換
+│   └── sign-parser.pegjs      # Sign言語構文解析器
+├── compiler/                  # コンパイラ部分
+│   ├── run-test.js           # メイン実行スクリプト
+│   ├── sign-stack-compiler.js # AArch64コンパイラ本体
+│   ├── test-input.json       # テスト用JSON入力
+│   ├── output.s              # 生成されたアセンブリファイル
+│   └── asm_compile.bat       # 最終コンパイルバッチ
+├── example/                   # サンプルコードと変換結果
+├── test/                      # 単体テスト
 └── README.md
 ```
 
-## 使用方法
+## 🚀 使用方法
 
-### 1. プログラムから使用
+### 1. プリプロセッシング + 構文解析
 
-```javascript
-const { SignPreprocessor } = require('./sign-preprocessor');
-
-// プリプロセッサのインスタンス作成
-const preprocessor = new SignPreprocessor({
-  debugMode: true,
-  enablePerformanceMonitoring: true
-});
-
-// Sign言語コード
-const signCode = `
-add:x y?x+y
-multiply|factor:n?[*n,]
-`;
-
-// フォーマット処理
-const formatted = preprocessor.format(signCode);
-console.log('フォーマット後:');
-console.log(formatted);
-// 出力: add : x y ? x + y
-//      multiply | factor : n ? [* n,]
-
-// 構文解析
-const ast = preprocessor.parse(formatted);
-console.log('AST:');
-console.log(JSON.stringify(ast, null, 2));
-
-// 完全なプリプロセッシング
-const processed = preprocessor.preprocess(signCode);
-console.log('最終結果:');
-console.log(processed);
-```
-
-### 2. コマンドラインから使用
+Sign言語ソースコードをプリプロセスしてJSON ASTに変換：
 
 ```bash
-# 基本的な使用
-node sign-preprocessor.js input.sign output.sign
+# 基本的な変換 (JSON出力)
+node sign-preprocessor.js input.sn output.json
 
-# フォーマットのみ
-node sign-preprocessor.js input.sign output.sign --format-only
+# プリプロセス結果も保存
+node sign-preprocessor.js input.sn output.json preprocessed.sn
 
-# 構文解析のみ（JSON出力）
-node sign-preprocessor.js input.sign output.json --parse-only
+# プリプロセッサのみ実行
+node sign-preprocessor.js input.sn null preprocessed.sn
 
-# デバッグモード + パフォーマンス監視
-node sign-preprocessor.js input.sign output.sign --debug --performance
+# デバッグモード
+node sign-preprocessor.js input.sn output.json preprocessed.sn --debug
 ```
 
-### 3. 便利関数を使用
+### 2. アセンブリコード生成
 
-```javascript
-const { formatSignCode, parseSignCode } = require('./sign-preprocessor');
+JSON ASTからARM64アセンブリコードを生成：
 
-// 簡単なフォーマット
-const formatted = formatSignCode('add:x y?x+y');
-
-// フォーマット + 構文解析
-const { formatted, parsed } = parseSignCode('add:x y?x+y');
+```bash
+cd compiler
+node run-test.js
 ```
 
-## 各モジュールの詳細
+**前提条件**: `test-input.json` に有効なSign言語ASTが必要
+**出力**: `output.s` (ARM64アセンブリファイル)
 
-### フォーマッターモジュール
+### 3. 最終コンパイル
 
-**役割**: 演算子の前後に適切な空白を自動挿入
+WSLを使用してARM64実行ファイルを生成：
 
-```javascript
+```bash
+cd compiler
+asm_compile.bat
+```
+
+**前提条件**: 
+- WSL環境
+- ARM64クロスコンパイラ (`aarch64-linux-gnu-as`, `aarch64-linux-gnu-ld`)
+
+**出力**: `output` (ARM64実行ファイル)
+
+## 🔄 完全なワークフロー例
+
+```bash
+# 1. Sign言語コードをプリプロセス + JSON変換(compiler直下に直接出力Ver)
+node sign-preprocessor.js .\example\test-input.sn .\compiler\test-input.json .\example\test-input_preprocessed.sn 
+
+# 2. アセンブリ生成
+node .\compiler\run-test.js  
+
+# 3. 最終コンパイル
+.\compiler\asm_compile.bat
+
+# 4. 動作確認
+.\compiler\run_output.bat
+
+```
+
+## 📋 プリプロセッシング処理段階
+
+### 1. フォーマッター (`formatter.pegjs`)
+演算子の前後に適切な空白を自動挿入
+```sign
 // 入力
-const input = 'add:x y?x+y*z';
+add:x y?x+y
 
 // 出力  
-const output = 'add : x y ? x + y * z';
+add : x y ? x + y
 ```
 
-**特徴**:
-- 文字列リテラル内の演算子は保護
-- インデントブロックの構造を保持
-- コメントの内容を変更しない
-
-### 構文解析モジュール
-
-**役割**: フォーマット済みコードをAST（抽象構文木）に変換
-
-```javascript
+### 2. 引数書き換え (`arg-rewriter.pegjs`)
+引数名を位置ベース(`_0`, `_1`)に変換
+```sign
 // 入力
-const input = 'add : x y ? x + y';
+add : x y ? x + y
 
-// 出力（AST）
-const output = {
-  "type": "Program",
-  "statements": [
-    {
-      "type": "Definition",
-      "identifier": { "type": "Identifier", "name": "add" },
-      "value": {
-        "type": "LambdaExpression",
-        "parameters": [
-          { "type": "Parameter", "name": "x", "continuous": false },
-          { "type": "Parameter", "name": "y", "continuous": false }
-        ],
-        "body": {
-          "type": "BinaryOperation",
-          "operator": "add",
-          "left": { "type": "Identifier", "name": "x" },
-          "right": { "type": "Identifier", "name": "y" }
-        }
-      }
-    }
-  ]
-};
+// 出力
+add : _0 _1 ? _0 + _1
 ```
 
-## テスト
+### 3. matchcase書き換え (`matchcase-rewriter.pegjs`)
+条件分岐を短絡評価チェーンに変換
+```sign
+// 入力
+classify : _0 ?
+    _0 = 0 : 'zero'
+    _0 > 0 : 'positive'
+    _0 < 0 : 'negative'
+
+// 出力
+classify : _0 ?
+    _0 = 0 & 'zero' |
+    _0 > 0 & 'positive' |
+    _0 < 0 & 'negative'
+```
+
+### 4. 構文解析 (`sign-parser.pegjs`)
+プリプロセス済みコードをJSONのASTに変換
+
+## 🧪 テスト
 
 ```bash
 # 全テスト実行
 npm test
 
-# フォーマッターテストのみ
-npm run test:formatter
+# 個別モジュールテスト
+npm run test:arg-rewriter
+npm run test:matchcase
 
-# 構文解析テストのみ  
-npm run test:parser
-
-# 統合テスト
-npm run test:integration
+# 統合デモ
+npm run demo
 ```
 
-## 今後の拡張予定
+## ⚙️ コンパイラ詳細
 
-### 1. 引数書き換えモジュール
+### Sign Stack Compiler
 
-```javascript
-// 入力
-const input = `
-increment : n ? n + 1
-add : x y ? x + y
-`;
+**アーキテクチャ**: ARM64 (AArch64)
+**設計**: データスタック + コールスタック分離
+- データスタック: X8-X15レジスタ
+- コールスタック: 標準SPベーススタック
+- Unit値処理: XZRレジスタ使用
 
-// 出力
-const output = `
-increment : _0 ? _0 + 1
-add : _0 _1 ? _0 + _1
-`;
-```
+**対応機能**:
+- ✅ 基本算術演算 (`+`, `-`, `*`, `/`, `%`)
+- ✅ 関数定義・呼び出し
+- ✅ Unit値処理
+- ✅ 安全除算 (ゼロ除算対策)
+- 🚧 ポイントレス記法 (Phase 4予定)
+- 🚧 高階関数 (Phase 5予定)
 
-### 2. matchcase書き換えモジュール
+## 🔧 環境要件
 
-```javascript
-// 入力
-const input = `
-classify : x ?
-    x = 0 : 'zero'
-    x > 0 : 'positive'  
-    x < 0 : 'negative'
-`;
+### 開発環境
+- Node.js 12+
+- npm
 
-// 出力
-const output = `
-classify : x ?
-    x = 0 & 'zero' |
-    x > 0 & 'positive' |
-    x < 0 & 'negative'
-`;
-```
+### コンパイル環境 (Windows)
+- WSL (Windows Subsystem for Linux)
+- ARM64クロスコンパイラ:
+  ```bash
+  sudo apt-get install gcc-aarch64-linux-gnu
+  ```
 
-## デバッグ機能
+## 🐛 トラブルシューティング
 
-### 中間結果の確認
+### よくある問題
 
-```javascript
-const preprocessor = new SignPreprocessor({
-  preserveIntermediateResults: true
-});
+1. **WSLコンパイルエラー**
+   ```
+   aarch64-linux-gnu-as: command not found
+   ```
+   **解決**: ARM64クロスコンパイラをインストール
 
-const result = preprocessor.preprocess(code);
+2. **プリプロセッシングエラー**
+   ```
+   構文解析エラー: Unexpected character
+   ```
+   **解決**: Sign言語の構文を確認、文字列リテラルは`` ` ``で囲む
 
-// 各段階の結果を確認
-const intermediates = preprocessor.getIntermediateResults();
-intermediates.forEach(stage => {
-  console.log(`=== ${stage.stage} ===`);
-  console.log('入力:', stage.input);
-  console.log('出力:', stage.output);
-});
-```
+3. **アセンブリ生成エラー**
+   ```
+   test-input.json not found
+   ```
+   **解決**: 有効なJSONファイルが必要
 
-### パフォーマンス監視
+## 📚 関連リンク
 
-```javascript
-const preprocessor = new SignPreprocessor({
-  enablePerformanceMonitoring: true
-});
-
-const result = preprocessor.preprocess(largeCode);
-
-// パフォーマンスデータを確認
-const perfData = preprocessor.getPerformanceData();
-console.log('実行時間:', perfData.format.duration, 'ms');
-console.log('メモリ使用量:', perfData.format.memoryDelta, 'bytes');
-```
-
-## エラーハンドリング
-
-```javascript
-try {
-  const result = preprocessor.preprocess(code);
-} catch (error) {
-  if (error.message.includes('フォーマット処理エラー')) {
-    console.log('フォーマット段階でエラーが発生しました');
-  } else if (error.message.includes('構文解析エラー')) {
-    console.log('構文解析段階でエラーが発生しました');
-    console.log('エラー位置:', error.location);
-  }
-}
-```
-## 貢献
-
-1. このリポジトリをフォーク
-2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add amazing feature'`)
-4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
-5. プルリクエストを作成
-
-## 関連リンク
-
-- [Sign言語仕様書](./docs/sign-language-spec.md)
+- [Sign言語仕様書](./reference/Sign_reference_ja-jp.md)
+- [コンパイラ設計資料](./reference/Hint/)
 - [PEG.js公式ドキュメント](https://pegjs.org/documentation)
-- [プリプロセッサ設計資料](./docs/preprocessor-design.md)
+
