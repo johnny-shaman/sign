@@ -1,0 +1,109 @@
+
+` ###############################################
+` # Phase 1
+` ###############################################
+
+divide_test : x y ? x / y
+multi_op : a b c ? ( a + b ) - ( a * c )
+
+` ###############################################
+` # Phase 2-1
+` ###############################################
+
+` Unit値基本処理テスト
+
+` テスト1: Unit値を返すだけの定数（引数無しラムダはNG）
+return_unit : _
+
+` テスト2: identity関数（引数をそのまま返す）
+identity_unit : x ? x
+
+` テスト4: 数値とUnit値の混在
+mixed_test : x y ? x
+
+
+` 実際の使用例（後でテスト可能）
+
+` Unit値が返される
+test1 : return_unit
+
+` 42が返される  
+test2 : identity_unit 42
+
+` Unit値が返される
+test3 : identity_unit _
+
+` 10が返される
+test5 : mixed_test 10 _
+
+` Unit値が返される
+test6 : mixed_test _ 20
+
+` ###############################################
+` # Phase 2-2
+` ###############################################
+
+` 文字列実装後の比較テストケース
+grade : score ?
+	score >= 90 : `A`
+	80 <= score : `B`
+	score >= 70 : `C`
+	`F`
+
+status : user ?
+	user = `admin` : `full_access`
+	user = `user` : `basic_access`
+	`no_access`
+
+` 基本的な比較演算テスト
+compare_test : x y ?
+	x < y : `x is less than y`
+	x = y : `x equals y`  
+	x > y : `x is greater than y`
+	`comparison failed`
+
+` 実用的な最大値関数
+max_value : x y ?
+	x > y : x
+	y
+
+` 絶対値関数（Sign言語仕様書の例）
+absolute : x ?
+	x >= 0 : x
+	-x
+
+` 成績判定関数
+grade : score ?
+	score >= 90 : `A`
+	score >= 80 : `B`
+	score >= 70 : `C`
+	score >= 60 : `D`
+	`F`
+
+` 範囲チェック関数
+in_range : x ?
+	1 <= x <= 100 : x
+	_
+
+` 三値比較関数
+three_way_compare : x y ?
+	x < y : -1
+	x = y : 0
+	x > y : 1
+
+` Sign言語の比較演算特性テスト
+` （比較演算自体が値を返す特性を活用）
+` x>0がtrueならxを返し、それが<100と比較される
+comparison_chain_test : x ?
+	x > 0 & x < 100 : x
+	_
+
+` 複雑な条件の例
+access_level : user role ?
+	user = `admin` : `full_access`
+	role = `moderator` & user != `guest` : `moderate_access`
+	user != _ : `basic_access`
+	`no_access`
+
+
+

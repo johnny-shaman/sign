@@ -3,185 +3,133 @@
   "statements": [
     {
       "type": "FunctionDefinition",
-      "name": "divide_test",
-      "body": {
-        "type": "LambdaExpression",
-        "parameters": [
-          "_0",
-          "_1"
-        ],
-        "body": {
-          "type": "BinaryOperation",
-          "operator": "div",
-          "left": {
-            "type": "Variable",
-            "name": "_0"
-          },
-          "right": {
-            "type": "Variable",
-            "name": "_1"
-          }
-        }
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "multi_op",
-      "body": {
-        "type": "LambdaExpression",
-        "parameters": [
-          "_0",
-          "_1",
-          "_2"
-        ],
-        "body": {
-          "type": "BinaryOperation",
-          "operator": "sub",
-          "left": {
-            "type": "BinaryOperation",
-            "operator": "add",
-            "left": {
-              "type": "Variable",
-              "name": "_0"
-            },
-            "right": {
-              "type": "Variable",
-              "name": "_1"
-            }
-          },
-          "right": {
-            "type": "BinaryOperation",
-            "operator": "mul",
-            "left": {
-              "type": "Variable",
-              "name": "_0"
-            },
-            "right": {
-              "type": "Variable",
-              "name": "_2"
-            }
-          }
-        }
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "return_unit",
-      "body": {
-        "type": "Unit"
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "identity_unit",
+      "name": "grade",
       "body": {
         "type": "LambdaExpression",
         "parameters": [
           "_0"
         ],
         "body": {
-          "type": "Variable",
-          "name": "_0"
-        }
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "mixed_test",
-      "body": {
-        "type": "LambdaExpression",
-        "parameters": [
-          "_0",
-          "_1"
-        ],
-        "body": {
-          "type": "Variable",
-          "name": "_0"
-        }
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "test1",
-      "body": {
-        "type": "Variable",
-        "name": "return_unit"
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "test2",
-      "body": {
-        "type": "FunctionApplication",
-        "function": {
-          "type": "Variable",
-          "name": "identity_unit"
-        },
-        "arguments": [
-          {
-            "type": "Literal",
-            "value": 42,
-            "literalType": "integer"
-          }
-        ]
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "test3",
-      "body": {
-        "type": "FunctionApplication",
-        "function": {
-          "type": "Variable",
-          "name": "identity_unit"
-        },
-        "arguments": [
-          {
-            "type": "Unit"
-          }
-        ]
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "test5",
-      "body": {
-        "type": "FunctionApplication",
-        "function": {
-          "type": "Variable",
-          "name": "mixed_test"
-        },
-        "arguments": [
-          {
-            "type": "Literal",
-            "value": 10,
-            "literalType": "integer"
+          "type": "BinaryOperation",
+          "operator": "or",
+          "left": {
+            "type": "BinaryOperation",
+            "operator": "and",
+            "left": {
+              "type": "BinaryOperation",
+              "operator": "or",
+              "left": {
+                "type": "BinaryOperation",
+                "operator": "and",
+                "left": {
+                  "type": "BinaryOperation",
+                  "operator": "or",
+                  "left": {
+                    "type": "BinaryOperation",
+                    "operator": "and",
+                    "left": {
+                      "type": "ComparisonChain",
+                      "comparisons": [
+                        {
+                          "type": "Comparison",
+                          "operator": "more_equal",
+                          "left": {
+                            "type": "Variable",
+                            "name": "_0"
+                          },
+                          "right": {
+                            "type": "Literal",
+                            "value": 90,
+                            "literalType": "integer"
+                          }
+                        }
+                      ],
+                      "finalValue": {
+                        "type": "Literal",
+                        "value": 90,
+                        "literalType": "integer"
+                      },
+                      "failValue": {
+                        "type": "Unit"
+                      }
+                    },
+                    "right": {
+                      "type": "Literal",
+                      "value": "A",
+                      "literalType": "string"
+                    }
+                  },
+                  "right": {
+                    "type": "ComparisonChain",
+                    "comparisons": [
+                      {
+                        "type": "Comparison",
+                        "operator": "less_equal",
+                        "left": {
+                          "type": "Literal",
+                          "value": 80,
+                          "literalType": "integer"
+                        },
+                        "right": {
+                          "type": "Variable",
+                          "name": "_0"
+                        }
+                      }
+                    ],
+                    "finalValue": {
+                      "type": "Variable",
+                      "name": "_0"
+                    },
+                    "failValue": {
+                      "type": "Unit"
+                    }
+                  }
+                },
+                "right": {
+                  "type": "Literal",
+                  "value": "B",
+                  "literalType": "string"
+                }
+              },
+              "right": {
+                "type": "ComparisonChain",
+                "comparisons": [
+                  {
+                    "type": "Comparison",
+                    "operator": "more_equal",
+                    "left": {
+                      "type": "Variable",
+                      "name": "_0"
+                    },
+                    "right": {
+                      "type": "Literal",
+                      "value": 70,
+                      "literalType": "integer"
+                    }
+                  }
+                ],
+                "finalValue": {
+                  "type": "Literal",
+                  "value": 70,
+                  "literalType": "integer"
+                },
+                "failValue": {
+                  "type": "Unit"
+                }
+              }
+            },
+            "right": {
+              "type": "Literal",
+              "value": "C",
+              "literalType": "string"
+            }
           },
-          {
-            "type": "Unit"
-          }
-        ]
-      }
-    },
-    {
-      "type": "FunctionDefinition",
-      "name": "test6",
-      "body": {
-        "type": "FunctionApplication",
-        "function": {
-          "type": "Variable",
-          "name": "mixed_test"
-        },
-        "arguments": [
-          {
-            "type": "Unit"
-          },
-          {
+          "right": {
             "type": "Literal",
-            "value": 20,
-            "literalType": "integer"
+            "value": "F",
+            "literalType": "string"
           }
-        ]
+        }
       }
     }
   ]
