@@ -4,6 +4,7 @@
 // 比較演算（= <= >= !=）
 // 文字列
 // 中置#演算子（標準出力のため、0x1 # output の形式は動確済み）
+// 関数複数回呼び出し対応
 
 // 演算モジュールのインポート
 const StringOperations = require('./operations/string-operations');
@@ -71,13 +72,24 @@ class SignStackCompiler {
     compileTopLevelStatement(stmt) {
         if (stmt.type === 'FunctionApplication') {
             this.assembly.push('# Top-level function application');
-            this.compileFunctionApplication(stmt);
-            this.generateStackMachineCode();
+            this.compileStandaloneFunctionApplication(stmt);
         } else if (stmt.type === 'OutputStatement') {
             this.compileOutputStatement(stmt);
         } else {
             console.log(`Unknown top-level statement: ${stmt.type}`);
         }
+    }
+
+    // スタンドアロン関数適用（スタック状態を独立管理）
+    compileStandaloneFunctionApplication(stmt) {
+        // スタック状態を完全にリセット
+        this.dataStack = [];
+        this.outputQueue = [];
+        this.operandInfo = [];
+        
+        // 関数適用をコンパイル
+        this.compileFunctionApplication(stmt);
+        this.generateStackMachineCode();
     }
 
     // 関数コンパイル
@@ -87,11 +99,10 @@ class SignStackCompiler {
         // 関数ラベル
         this.assembly.push(`${funcDef.name}:`);
 
-        // スタック状態リセット
+        // 関数専用のスタック状態リセット 
         this.dataStack = [];
         this.outputQueue = [];
         this.operandInfo = [];
-        // 文字列テーブルはグローバルなのでリセットしない
 
         // 関数本体をコンパイル
         if (funcDef.body.type === 'LambdaExpression') {
