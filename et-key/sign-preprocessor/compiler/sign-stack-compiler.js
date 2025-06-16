@@ -4,6 +4,7 @@
 // 比較演算（= <= >= !=）
 // 文字列
 // 中置#演算子（標準出力のため、0x1 # output の形式は動確済み）
+// 関数複数回呼び出し対応
 
 // 演算モジュールのインポート
 const StringOperations = require('./operations/string-operations');
@@ -71,13 +72,24 @@ class SignStackCompiler {
     compileTopLevelStatement(stmt) {
         if (stmt.type === 'FunctionApplication') {
             this.assembly.push('# Top-level function application');
-            this.compileFunctionApplication(stmt);
-            this.generateStackMachineCode();
+            this.compileStandaloneFunctionApplication(stmt);
         } else if (stmt.type === 'OutputStatement') {
             this.compileOutputStatement(stmt);
         } else {
             console.log(`Unknown top-level statement: ${stmt.type}`);
         }
+    }
+
+    // スタンドアロン関数適用（スタック状態を独立管理）
+    compileStandaloneFunctionApplication(stmt) {
+        // スタック状態を完全にリセット
+        this.dataStack = [];
+        this.outputQueue = [];
+        this.operandInfo = [];
+
+        // 関数適用をコンパイル
+        this.compileFunctionApplication(stmt);
+        this.generateStackMachineCode();
     }
 
     // 関数コンパイル
@@ -87,11 +99,10 @@ class SignStackCompiler {
         // 関数ラベル
         this.assembly.push(`${funcDef.name}:`);
 
-        // スタック状態リセット
+        // 関数専用のスタック状態リセット 
         this.dataStack = [];
         this.outputQueue = [];
         this.operandInfo = [];
-        // 文字列テーブルはグローバルなのでリセットしない
 
         // 関数本体をコンパイル
         if (funcDef.body.type === 'LambdaExpression') {
@@ -363,6 +374,9 @@ class SignStackCompiler {
     generateFunctionCall(functionName, argCount) {
         this.assembly.push(`# 関数呼び出し: ${functionName} (引数${argCount}個)`);
 
+        // x8レジスタ保護（ファイルディスクリプタ保護）
+        this.assembly.push(`    mov x16, x8               // x8保存`)
+
         // 引数をスタックから取り出し（後入れ先出しなので逆順）
         const args = [];
         for (let i = 0; i < Math.min(argCount, 4); i++) {
@@ -394,11 +408,21 @@ class SignStackCompiler {
         this.assembly.push(`# call function`);
         this.assembly.push(`    bl ${functionName}`);
 
+        // x8レジスタ復元
+        this.assembly.push(`    mov x8, x16               // x8復元`);
+
         // 戻り値はx0に入る（これをデータスタックに保存）
         const resultReg = this.getNextDataReg();
         this.assembly.push(`# store return value`);
         this.assembly.push(`    mov ${resultReg}, x0`);
         this.dataStack.push(resultReg);
+
+        // operandInfo を正しく更新
+        this.operandInfo.push({
+            type: 'variable',
+            value: `${functionName}_result`,
+            valueType: 'string' // test関数は文字列を返すと仮定
+        });
     }
 
     // Output操作生成（新規実装）
@@ -450,6 +474,7 @@ class SignStackCompiler {
         // Sign言語仕様準拠の戻り値処理
         const resultReg = this.getNextDataReg();
         this.assembly.push(`    csel ${resultReg}, x0, xzr, ge // success: bytes written, fail: Unit`);
+        this.assembly.push(`    // Note: x8 may be modified by syscall but will be reset for next output`);
         this.dataStack.push(resultReg);
         this.operandInfo.push({ type: 'computed', value: 'output_result' });
     }

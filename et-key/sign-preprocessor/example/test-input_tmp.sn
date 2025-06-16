@@ -1,10 +1,25 @@
 ` ###############################################
 ` # テスト用print関数
 ` ###############################################
+` 関数呼び出し・直接出力
+ret_test : str ? str
+0x1 # `string `
+0x1 # (ret_test `test OK`)
+
+` print関数化（改行は外付）
 print : str ?
 	0x1 # str
 
 print ( `hello` + `\n` )
+print ( `world` + `\n` )
+
+
+` println関数化（改行含む）※実装途中
+println : str ?
+	0x1 # ( str + `\n` )
+	
+println `Hello Wolrd!`
+
 
 
 
