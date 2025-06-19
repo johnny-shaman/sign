@@ -12,9 +12,9 @@
 | 1 | `#` | prefix | export | Hashtag (public/discoverable) | Make name discoverable from outside |
 | 2 | `:` | infix | define | That is (identification) | Bind left-hand name to right-hand value |
 | 3 | `#` | infix | output | Hashtag (association) | Associate data with address |
-| 4 | ` ` | infix | construct | Coproduct (concatenation) | Function application |
-| 5 | ` ` | infix | push | Coproduct (concatenation) | Add to list |
-| 6 | ` ` | infix | construct | Coproduct (concatenation) | Left-associative list construction |
+| 4 | ` ` | infix | push | Coproduct (concatenation) | Add to list |
+| 5 | ` ` | infix | construct | Coproduct (concatenation) | Left-associative list construction |
+| 6 | ` ` | infix | apply | Coproduct (concatenation) | Function application |
 | 7 | ` ` | infix | compose | Coproduct (concatenation) | Left-associative function composition |
 | 7 | ` ` | infix | concat | Coproduct (concatenation) | List concatenation |
 | 8 | `?` | infix | lambda | Question (what to do?) | Function definition |

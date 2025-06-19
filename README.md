@@ -20,5 +20,3 @@ Welcome to the Sign integrity generic notation Page!
   [Language-License](./License/sign-language-license.md)
   [日本語はこちら](./License/sign-language-license-ja.md)
 
-
-<img src="./wave.svg"  alt="wave" width="75%" />
