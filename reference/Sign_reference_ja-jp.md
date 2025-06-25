@@ -544,7 +544,7 @@ tail : x ~y ? y
 （例２　リストの長さを返す関数を、\~ 後置演算子と一緒に使って書く）
 ```javascript
 length : [x y ~z ?
-y = _ : x
+	y = _ : x
 	length x + 1, z~
 ] 0
 ```
