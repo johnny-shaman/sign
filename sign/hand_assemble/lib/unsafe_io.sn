@@ -1,0 +1,122 @@
+`=== ファイルスコープでの定数・状態管理 ===
+BUFFER_SIZE : 4096
+AT_FDCWD : 0xFFFFFFFF9C  
+` STDIN : 0
+` STDOUT : 1
+` STDERR : 2
+
+`共有状態（ファイルスコープ変数）
+fd_storage : 0
+size_storage : 0  
+buffer_storage : alloc_buffer BUFFER_SIZE
+
+`=== システムコール基盤（Sign記述不可。レジスタ操作はコンパイラが処理） ===
+syscall : num arg0 arg1 arg2 arg3 arg4 arg5 ? _ 
+`	0x8 # num ,
+`	0x0 # arg0 ,
+`	0x1 # arg1 ,
+`	0x2 # arg2 ,
+`	0x3 # arg3 ,
+`	0x4 # arg4 ,
+`	0x5 # arg5 ,
+`	@0xFFFFFFFF 
+
+`=== 基本I/O操作（アセンブリ対応、エラー値込み） ===
+`ファイルオープン（openat システムコール） # AT_FDCWD, O_RDONLY 
+open_file : filename ? 
+	syscall 56 AT_FDCWD filename 0 0 _ _ 
+
+`ファイルクローズ（close システムコール）
+close_file : fd ? 
+	syscall 57 fd _ _ _ _ _ 
+
+`ファイル読み込み（read システムコール + バッファ管理）
+read_data : fd addr size ? 
+	syscall 63 fd addr size _ _ _ 
+
+`ファイル書き込み（write システムコール）
+write_data : fd data_addr size ? 
+	syscall 64 fd data_addr size _ _ _ 
+
+`=== メモリ管理（アドレス直接操作） ===
+alloc_buffer : size ? @0x1F - size & 0x1F # [@0x1F - size] & [@0x1F - size]
+
+`=== エラーチェック（比較演算の特性活用） ===
+`比較演算：真なら値、偽なら_ を返す特性を活用
+is_valid : [>= 0]
+
+`=== 安全操作（ポイントフリー記法） ===
+safe_open : filename ? [ open_file filename ] is_valid
+safe_read : fd addr size ? [ read_data fd addr size ] is_valid
+safe_write : fd addr size ? [ write_data fd addr size ] is_valid
+safe_close : fd ? [ close_file fd ] is_valid
+
+`=== ファイル読み込み（積演算子による段階別処理） ===
+`処理手順：
+`1. safe_open filename で安全にファイルを開く（失敗時は_）
+`2. 成功したfdをfd_storageに保存し、そのfdを返す
+`3. 保存されたfdでバッファに読み込み、読み込みバイト数をsize_storageに保存
+`4. ファイルを安全にクローズ
+`5. 最終的にバッファアドレスを返す
+`返り値：[fd値, 読み込みサイズ, クローズ結果, バッファアドレス] のリスト
+read_file : filename ?
+	$fd_storage # [ safe_open filename ],
+	$size_storage # [ safe_read @$fd_storage buffer_storage BUFFER_SIZE ],
+	safe_close @$fd_storage,
+	buffer_storage
+
+`=== ファイル書き込み（積演算子による段階別処理） ===
+`処理手順：
+`1. safe_open filename で安全にファイルを開く（失敗時は_）
+`2. 成功したfdをfd_storageに保存し、そのfdを返す
+`3. 保存されたfdで指定データを書き込み、書き込みバイト数をsize_storageに保存
+`4. ファイルを安全にクローズ
+`5. 最終的に書き込みバイト数を返す
+`返り値：[fd値, 書き込みサイズ, クローズ結果, 実際の書き込みサイズ] のリスト
+write_file : filename data_addr data_size ?
+	$fd_storage # [ safe_open filename ],
+	$size_storage # [ safe_write @$fd_storage data_addr data_size ],
+	safe_close @$fd_storage,
+	@$size_storage
+
+`=== エラーハンドリング付きラッパー関数 ===
+`処理手順：
+`1. 基本関数（read_file/write_file）を実行してリスト結果を取得
+`2. リストの各要素（0:fd, 1:処理結果, 2:クローズ結果, 3:最終値）をチェック
+`3. 全ての段階が成功（_でない）場合のみ最終値を返す
+`4. いずれかの段階で失敗（_）があれば、エラーメッセージを返す
+safe_read_file : filename ?
+	[&] [[[read_file filename] '],] 0 1 2 3  `全段階成功確認
+	 | `読み込み失敗`
+
+safe_write_file : filename data_addr data_size ?
+	[&] [[[write_file filename data_addr data_size] '],] 0 1 2 3  `全段階成功確認
+	 | `書き込み失敗`
+
+`=== 実用例とテストデータ ===
+hello_message : `Hello, Sign Language!\n`
+message_size : 21
+test_filename : `test.txt`
+
+`基本的な使用例（段階別結果取得）
+#write_result : write_file test_filename hello_message message_size
+#read_result : read_file test_filename
+
+`エラーハンドリング付き使用例
+#safe_write_result : safe_write_file test_filename hello_message message_size
+#safe_read_result : safe_read_file test_filename
+
+`結果の各段階確認例
+`check_write_stages : write_result ?
+`	write_result ' 0 , `open結果（fd値）
+`	write_result ' 1 , `write結果（書き込みサイズ）
+`	write_result ' 2 , `close結果（クローズ結果）
+`	write_result ' 3  `最終結果（実際の書き込みサイズ）
+
+`最終結果のみ取得する場合
+get_buffer : read_file test_filename ' 3  `バッファアドレスのみ
+get_write_size : write_file test_filename hello_message message_size ' 3  `書き込みサイズのみ
+
+`=== システム終了 ===
+exit_success : `コンパイラがsys_exit(0)に変換`
+exit_error : `コンパイラがsys_exit(1)に変換`
