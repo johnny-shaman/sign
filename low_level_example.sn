@@ -1,14 +1,16 @@
 
 
 `Point and write value
-	r0 : 0xFFFF
-	r0 # 3
-	r1  : @r0 * 2
+
+r0 : 0xFFFF
+r0 # 3
+r1  : @r0 * 2
 
 `Block exit and auto destruction at \+
-	r0 : \+
-	r0 # [+]
-	r1 : @r0 3 2
+
+r0 : \+
+r0 # [+]
+r1 : @r0 3 2
 
 `Block exit and auto destruction at #\+
 
