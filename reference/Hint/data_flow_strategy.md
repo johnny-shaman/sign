@@ -28,9 +28,11 @@ Sign言語では、あらゆるプログラム処理が以下の4段階のデー
 
 **Sign言語での表現**:
 ```sign
-# 入力段階の例
-input_data : @0x1000        # ハードウェアポートからの入力
-file_data : read `file.txt` # ファイルからの入力
+` 入力段階の例
+` ハードウェアポートからの入力
+input_data : @0x1000
+` ファイルからの入力
+file_data : read `file.txt`
 ```
 
 ### 2.2 メモリ段階
@@ -45,10 +47,13 @@ file_data : read `file.txt` # ファイルからの入力
 
 **Sign言語での表現**:
 ```sign
-# メモリ段階の例
-buffer : 0x8000       # メモリ領域の割り当て
-@buffer # input_data  # データの格納
-data_structure : parse_into_structure input_data  # 構造化
+` メモリ段階の例
+` メモリ領域の割り当て
+buffer : 0x8000
+` データの格納
+@buffer # input_data
+` 構造化
+data_structure : parse_into_structure input_data
 ```
 
 ### 2.3 処理段階
@@ -63,10 +68,13 @@ data_structure : parse_into_structure input_data  # 構造化
 
 **Sign言語での表現**:
 ```sign
-# 処理段階の例
-filtered_data : data_structure ' valid_items  # フィルタリング
-processed : [* 2,] filtered_data              # 一括処理
-analyzed : analyze processed                  # 高度な処理
+` 処理段階の例
+` フィルタリング
+filtered_data : data_structure ' valid_items
+` 一括処理
+processed : [* 2,] filtered_data
+` 高度な処理
+analyzed : analyze processed
 ```
 
 ### 2.4 出力段階
@@ -81,9 +89,11 @@ analyzed : analyze processed                  # 高度な処理
 
 **Sign言語での表現**:
 ```sign
-# 出力段階の例
-0x2000 # processed    # ハードウェアポートへの出力
-write `result.txt` analyzed  # ファイルへの書き込み
+` 出力段階の例
+` ハードウェアポートへの出力
+0x2000 # processed
+` ファイルへの書き込み
+write `result.txt` analyzed
 ```
 
 ## 3. マルチコア環境でのデータフロー
@@ -122,57 +132,57 @@ Sign言語の基本データフローは、マルチコア環境において自�
 
 ```sign
 process_data : ?
-  # 入力段階
-  input_data : @0x1000
-  
-  # メモリ段階
-  structured_data : parse input_data
-  
-  # 処理段階
-  processed : transform structured_data
-  
-  # 出力段階
-  0x2000 # processed
+` 入力段階
+	input_data : @0x1000
+` メモリ段階
+	structured_data : parse input_data
+` 処理段階
+	processed : transform structured_data
+` 出力段階
+	0x2000 # processed
 ```
 
 ### 4.2 マルチコア環境でのデータフロー
 
 ```sign
-# IOコア担当
+` IOコア担当
 input_handler : ?
-  loop :
-    # 入力段階
-    raw_data : @0x1000
-    # バッファに格納して次段階に渡す
-    input_buffer # raw_data
+	loop :
+` 入力段階
+		raw_data : @0x1000
+` バッファに格納して次段階に渡す
+		input_buffer # raw_data
 
-# メモリコア担当
+` メモリコア担当
 memory_handler : ?
-  loop :
-    # メモリ段階
-    raw_data : @input_buffer
-    !raw_data : continue  # データがなければスキップ
-    structured : parse raw_data
-    # 処理用バッファに格納
-    process_buffer # structured
+	loop :
+` メモリ段階
+		raw_data : @input_buffer
+` データがなければスキップ
+		!raw_data : continue
+		structured : parse raw_data
+` 処理用バッファに格納
+		process_buffer # structured
 
-# 処理コア担当
+` 処理コア担当
 processing_handler : ?
-  loop :
-    # 処理段階
-    data : @process_buffer
-    !data : continue  # データがなければスキップ
-    result : process data
-    # 出力用バッファに格納
-    output_buffer # result
+	loop :
+` 処理段階
+		data : @process_buffer
+` データがなければスキップ
+		!data : continue
+		result : process data
+` 出力用バッファに格納
+		output_buffer # result
 
 # IOコア担当
 output_handler : ?
-  loop :
-    # 出力段階
-    result : @output_buffer
-    !result : continue  # データがなければスキップ
-    0x2000 # result
+	loop :
+` 出力段階
+		result : @output_buffer
+` データがなければスキップ
+		!result : continue
+		0x2000 # result
 ```
 
 ### 4.3 パイプラインパラレリズム
@@ -180,13 +190,13 @@ output_handler : ?
 基本データフローは自然なパイプラインパラレリズムを形成します：
 
 ```sign
-# パイプライン処理の抽象化
+` パイプライン処理の抽象化
 pipeline : input_fn memory_fn process_fn output_fn data ?
-  # 各段階を関数として抽象化
-  stage1 : @input_fn data
-  stage2 : @memory_fn stage1
-  stage3 : @process_fn stage2
-  @output_fn stage3
+` 各段階を関数として抽象化
+	stage1 : @input_fn data
+	stage2 : @memory_fn stage1
+	stage3 : @process_fn stage2
+	@output_fn stage3
 ```
 
 ## 5. 利点と特徴
@@ -230,16 +240,15 @@ pipeline : input_fn memory_fn process_fn output_fn data ?
 データフローの効率を最大化するには、適切なバッファ設計が重要です：
 
 ```sign
-# バッファサイズの最適化
+` バッファサイズの最適化
 optimize_buffers : ?
-  # 入力速度とメモリ速度の比率に基づくバッファサイズ調整
-  input_buffer_size : calculate_optimal_size input_rate memory_rate
-  # 処理速度と出力速度の比率に基づくバッファサイズ調整
-  output_buffer_size : calculate_optimal_size process_rate output_rate
-  
-  # バッファの割り当て
-  allocate_buffer `input` input_buffer_size
-  allocate_buffer `output` output_buffer_size
+` 入力速度とメモリ速度の比率に基づくバッファサイズ調整
+	input_buffer_size : calculate_optimal_size input_rate memory_rate
+` 処理速度と出力速度の比率に基づくバッファサイズ調整
+	output_buffer_size : calculate_optimal_size process_rate output_rate
+` バッファの割り当て
+	allocate_buffer `input` input_buffer_size
+	allocate_buffer `output` output_buffer_size
 ```
 
 ### 6.2 非同期処理とイベント駆動
@@ -247,19 +256,19 @@ optimize_buffers : ?
 効率的なデータフローのためには、非同期処理とイベント駆動メカニズムの導入が効果的です：
 
 ```sign
-# イベント駆動型データフロー
+` イベント駆動型データフロー
 on_data_available : handler ?
-  # データ到着時にハンドラを呼び出す
-  register_event input_port handler
-  
-# 非同期処理チェーン
+` データ到着時にハンドラを呼び出す
+	register_event input_port handler
+
+` 非同期処理チェーン
 async_pipeline : ?
-  on_data_available input_port [data ?
-    # 入力段階（非同期）
-    processed : process data
-    # 出力が準備できたら次のステージへ
-    notify output_ready processed
-  ]
+	on_data_available input_port [data ?
+` 入力段階（非同期）
+		processed : process data
+` 出力が準備できたら次のステージへ
+		notify output_ready processed
+	]
 ```
 
 ### 6.3 フィードバック制御
@@ -267,22 +276,20 @@ async_pipeline : ?
 データフローの最適化には、フィードバック制御メカニズムの導入も効果的です：
 
 ```sign
-# フィードバック制御によるフロー調整
+` フィードバック制御によるフロー調整
 flow_control : ?
-  loop :
-    # 各バッファの充填率を監視
-    input_fill : measure_buffer input_buffer
-    output_fill : measure_buffer output_buffer
-    
-    # 入力バッファが満杯に近づいたら入力速度を低下
-    input_fill > 0.8 : throttle_input 0.7
-    # 入力バッファに余裕があれば入力速度を上昇
-    input_fill < 0.3 : throttle_input 1.2
-    
-    # 出力バッファが満杯に近づいたら処理速度を低下
-    output_fill > 0.8 : throttle_processing 0.7
-    # 出力バッファに余裕があれば処理速度を上昇
-    output_fill < 0.3 : throttle_processing 1.2
+	loop :
+` 各バッファの充填率を監視
+		input_fill : measure_buffer input_buffer
+		output_fill : measure_buffer output_buffer
+` 入力バッファが満杯に近づいたら入力速度を低下
+		input_fill > 0.8 : throttle_input 0.7
+` 入力バッファに余裕があれば入力速度を上昇
+		input_fill < 0.3 : throttle_input 1.2
+` 出力バッファが満杯に近づいたら処理速度を低下
+		output_fill > 0.8 : throttle_processing 0.7
+` 出力バッファに余裕があれば処理速度を上昇
+		output_fill < 0.3 : throttle_processing 1.2
 ```
 
 ## 7. 結論

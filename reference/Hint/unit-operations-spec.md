@@ -114,23 +114,30 @@ X : _ → X  // 定義演算子の右辺がUnitの場合、左辺をそのまま
 ### 5.1 Unitを用いた条件分岐
 
 ```
+` xが正ならxを返し、そうでなければUnitを返す
 isPositive : x ?
-    x > 0 & x    // xが正ならxを返し、そうでなければUnitを返す
+	x > 0 & x
 
-// 使用例
-result : isPositive -5 | `負またはゼロ`  // 「負またはゼロ」が返る
-result : isPositive 10 | `負またはゼロ`  // 10が返る
+` 使用例
+`「負またはゼロ」が返る
+result : isPositive -5 | `負またはゼロ`
+
+` 10が返る
+result : isPositive 10 | `負またはゼロ`
 ```
 
 ### 5.2 Unitを用いた部分適用
 
 ```
 add : x y ? x + y
-addSomething : add _  // yに何かが入るまで待機するラムダ
+` yに何かが入るまで待機するラムダ
+addSomething : add _
 
-// 使用例
-addFive : addSomething 5  // 結果は「5を加える」関数
-addFive 3  // 結果は8
+` 使用例
+` 結果は「5を加える」関数
+addFive : addSomething 5
+` 結果は8
+addFive 3
 ```
 
 ## 6. 設計原則

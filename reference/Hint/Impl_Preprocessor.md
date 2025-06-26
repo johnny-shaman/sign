@@ -80,7 +80,7 @@ Sign言語の比較多項式は、単純な比較の連鎖ではなく、それ�
 ### 基本変換ルール
 
 ```sign
-`原式
+`原始構文
 3 < x = y < 20
 
 `変換後
@@ -88,7 +88,7 @@ Sign言語の比較多項式は、単純な比較の連鎖ではなく、それ�
 ```
 
 ```sign
-`原式
+`原始構文
 1 <= x <= 100
 
 `変換後
@@ -104,17 +104,17 @@ Sign言語のブロック構文による条件分岐は、一時変数を使わ�
 ```
 `原始構文
 func : x ?
-    condition1 : result1
-    condition2 : result2
-    condition3 : result3
-    default_result
+	condition1 : result1
+	condition2 : result2
+	condition3 : result3
+	default_result
 
 `変換後
 func : _0 ?
-    condition1 & result1 |
-    condition2 & result2 |
-    condition3 & result3 |
-    default_result
+	condition1 & result1 |
+	condition2 & result2 |
+	condition3 & result3 |
+	default_result
 ```
 
 ### 5.2 Sign言語の短絡評価特性の活用
@@ -129,64 +129,64 @@ func : _0 ?
 ```
 `原始構文
 classify : n ?
-    n = 0 : `zero`
-    n > 0 : `positive`
-    n < 0 : `negative`
+	n = 0 : `zero`
+	n > 0 : `positive`
+	n < 0 : `negative`
 
 `変換後
 classify : _0 ?
-    _0 = 0 & `zero` |
-    _0 > 0 & `positive` |
-    _0 < 0 & `negative`
+	_0 = 0 & `zero` |
+	_0 > 0 & `positive` |
+	_0 < 0 & `negative`
 ```
 
 #### 範囲チェック
 ```
 `原始構文
 grade : score ?
-    score >= 90 : `A`
-    score >= 80 : `B`
-    score >= 70 : `C`
-    score >= 60 : `D`
-    `F`
+	score >= 90 : `A`
+	score >= 80 : `B`
+	score >= 70 : `C`
+	score >= 60 : `D`
+	`F`
 
 `変換後
 grade : _0 ?
-    _0 >= 90 & `A` |
-    _0 >= 80 & `B` |
-    _0 >= 70 & `C` |
-    _0 >= 60 & `D` |
-    `F`
+	_0 >= 90 & `A` |
+	_0 >= 80 & `B` |
+	_0 >= 70 & `C` |
+	_0 >= 60 & `D` |
+	`F`
 ```
 
 #### 複数引数での条件分岐
 ```
 `原始構文
 compare : x y ?
-    x > y : `greater`
-    x = y : `equal`
-    x < y : `less`
+	x > y : `greater`
+	x = y : `equal`
+	x < y : `less`
 
 `変換後
 compare : _0 _1 ?
-    _0 > _1 & `greater` |
-    _0 = _1 & `equal` |
-    _0 < _1 & `less`
+	_0 > _1 & `greater` |
+	_0 = _1 & `equal` |
+	_0 < _1 & `less`
 ```
 
 #### 複雑な条件
 ```
 `原始構文
 access_check : user role ?
-    user = `admin` : `full_access`
-    role = `moderator` & user != `guest` : `moderate_access`
-    user != _ : `basic_access`
-    `no_access`
+	user = `admin` : `full_access`
+	role = `moderator` & user != `guest` : `moderate_access`
+	user != _ : `basic_access`
+	`no_access`
 
 `変換後
 access_check : _0 _1 ?
-    _0 = `admin` & `full_access` |
-    _1 = `moderator` & _0 != `guest` & `moderate_access` |
-    _0 != _ & `basic_access` |
-    `no_access`
+	_0 = `admin` & `full_access` |
+	_1 = `moderator` & _0 != `guest` & `moderate_access` |
+	_0 != _ & `basic_access` |
+	`no_access`
 ```
