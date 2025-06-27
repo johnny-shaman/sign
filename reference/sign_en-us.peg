@@ -1,0 +1,297 @@
+// Complete Sign language PEG.js syntax analysis specification
+// Full implementation of operator symbol table priority 1-16
+// Implementation of pointfree notation and four meanings of coproduct expression
+
+Start = Program
+
+// ==================== Program Structure ====================
+
+Program = (Statement _?)*
+
+Statement = 
+    ExportLevel 
+    / Comment
+    / EOL
+
+Comment = "`" [^\n\r`]* "`"?
+
+// ==================== Priority Hierarchy (1-16) ====================
+
+// Priority 1: Export (lowest priority)
+ExportLevel = 
+    ExportSymbol DefineLevel
+    / DefineLevel
+
+// Priority 2: Define + Output
+DefineLevel = 
+    Identifier __ DefineSymbol __ OutputLevel
+    / OutputLevel
+
+OutputLevel = 
+    (HexNumber / AddressSymbol? Identifier) __ OutputSymbol __ FunctionApplyLevel
+    / FunctionApplyLevel
+
+// Priority 3: Construction Domain (Coproduct, Lambda, Product, Range)
+
+ListConstructLevel = 
+    (Number / Character / Identifier) (__ FunctionApplyLevel)*
+    / FunctionApplyLevel
+
+FunctionApplyLevel = 
+    (LambdaLevel / PointlessExpression / Unit / Identifier) (__ (FunctionComposeLevel / ConcatListLevel))*
+    / FunctionComposeLevel
+    / ConcatListLevel
+
+FunctionComposeLevel = 
+    (LambdaLevel / PointlessExpression / Unit / Identifier) (__ LambdaLevel)*
+    / LambdaLevel
+
+ConcatListLevel = 
+    (ProductLevel / Number / String / Character / Unit / Identifier) (__ LambdaLevel)*
+    / LambdaLevel
+
+LambdaLevel = 
+    ParameterList __ LambdaSymbol __ ProductLevel
+    / ProductLevel
+
+ParameterList = 
+    Parameter (__ Parameter)*
+
+Parameter = 
+    ContinuousSymbol Identifier
+    / Identifier
+
+ProductLevel = 
+    RangeLevel (__ ProductSymbol __ RangeLevel)*
+
+RangeLevel = 
+    LogicalXorLevel __ RangeSymbol __ LogicalXorLevel
+    / LogicalXorLevel
+
+// Priority 4-6: Logical Domain
+LogicalXorLevel = 
+    LogicalOrLevel (__ XorSymbol __ LogicalOrLevel)*
+
+LogicalOrLevel = 
+    LogicalAndLevel (__ OrSymbol __ LogicalAndLevel)*
+
+LogicalAndLevel = 
+    LogicalNotLevel (__ AndSymbol __ LogicalNotLevel)*
+
+LogicalNotLevel = 
+    NotSymbol ComparisonLevel
+    / ComparisonLevel
+
+// Priority 7: Comparison Operation Domain (supports comparison chaining)
+ComparisonLevel = 
+    AbsoluteLevel ComparisonChain*
+
+ComparisonChain = __ ComparisonOperator __ AbsoluteLevel 
+
+// Priority 8: Absolute Value
+AbsoluteLevel = 
+    "|" ArithmeticAddLevel "|"
+    / ArithmeticAddLevel
+
+// Priority 9: Addition and Subtraction
+ArithmeticAddLevel = 
+    ArithmeticMulLevel (_ AdditiveOperator _ ArithmeticMulLevel)*
+
+// Priority 10: Multiplication and Division
+ArithmeticMulLevel = 
+    PowerLevel (_ MultiplicativeOperator _ PowerLevel)*
+
+// Priority 11: Exponentiation (right associative)
+PowerLevel = 
+    FactorialLevel (_ PowerSymbol _ PowerLevel)*
+    / FactorialLevel
+
+// Priority 12: Factorial
+FactorialLevel = 
+    ResolveLevel FactorialSymbol
+    / ResolveLevel
+
+// Priority 13: Resolution Evaluation Domain (Expand, Address, Get)
+ResolveLevel = ExpandLevel
+
+ExpandLevel = 
+    AddressLevel ExpandSymbol
+    / AddressLevel
+
+AddressLevel = 
+    AddressSymbol GetLevel
+    / GetLevel
+
+GetLevel = GetRightExpression / GetLeftExpression / ImportLevel
+
+// Right identity: key @ object (left associative)
+GetRightExpression = 
+    (Identifier / String / Integer) __ GetRightSymbol __ GetLeftExpression
+    / (Identifier / String / Integer) __ GetRightSymbol __ ImportLevel
+
+// Left identity: object "'" key (left associative)
+GetLeftExpression = 
+    ImportLevel (__ GetLeftSymbol __ (Identifier / String / Integer))+
+
+// Priority 14: Import
+ImportLevel = 
+    InputLevel ImportSymbol
+    / InputLevel
+
+// Priority 15: Input
+InputLevel = 
+    InputSymbol (HexNumber / Identifier)
+    / PrimaryLevel
+
+// Priority 16: Block and Basic Elements
+PrimaryLevel = 
+    PointlessExpression
+    / BlockExpression
+    / Literal
+    / Identifier
+
+// ==================== Pointfree Notation ====================
+
+PointlessExpression = 
+    ("[" _ PointlessContent _ "]")
+    / ("{" _ PointlessContent _ "}")
+    / ("(" _ PointlessContent _ ")")
+
+PointlessContent = 
+    PartialApplication
+    / DirectFold
+
+PartialApplication = 
+    InfixOperator __ PrimaryLiteral _ ","?
+    / PrimaryLiteral __ InfixOperator _ ","?
+    / PrefixOperator
+    / ("_" PostfixOperator)
+DirectFold = 
+    InfixOperator
+
+PrimaryLiteral = Literal / Identifier
+
+// ==================== Block Construction ====================
+
+BlockExpression = 
+    ("(" _ ExportLevel _ ")")
+    / ("{" _ ExportLevel _ "}")
+    / ("[" _ ExportLevel _ "]")
+    / IndentBlock
+
+IndentBlock = BlockStart ExportLevel
+
+BlockStart = $(EOL TAB+)
+
+// ==================== Literals ====================
+
+Literal = 
+    Unit
+    / Number
+    / String
+    / Character
+
+Unit = "_"
+
+Number = Float / Integer / HexNumber / OctNumber / BinNumber
+
+Integer = "-"? UnsignedInteger
+
+UnsignedInteger = $([1-9] [0-9]*) / "0"
+
+Float = "-"? [0-9]+ "." [0-9]+
+
+HexNumber = $("0x" [0-9A-Fa-f]+)
+
+OctNumber = $("0o" [0-7]+)
+
+BinNumber = $("0b" [01]+)
+
+String =
+    "`" [^`\n\r]* "`"
+
+Character = 
+    "\\" .
+
+Identifier = 
+    $([A-Za-z_] [0-9A-Za-z_]*)
+
+// ==================== Operator Position Distinction Implementation ====================
+
+
+// # operator (Export vs Output)
+ExportSymbol = "#"
+OutputSymbol = "#"
+
+// ! operator (Not vs Factorial)
+NotSymbol = "!"
+FactorialSymbol = "!"
+
+// ~ operator (Continuous vs Range vs Expand)
+ContinuousSymbol = $"~"
+RangeSymbol = $"~"
+ExpandSymbol = $"~"
+
+// @ operator (Input vs GetRight vs Import)
+InputSymbol = "@"
+GetLeftSymbol = "'"
+GetRightSymbol = "@"
+ImportSymbol = "@"
+
+// Other basic operators
+DefineSymbol = ":"
+LambdaSymbol = "?"
+ProductSymbol = ","
+XorSymbol = ";"
+OrSymbol = "|"
+AndSymbol = "&"
+
+ComparisonOperator = "<=" / ">=" / "!=" / "<" / ">" / "="
+AdditiveOperator = "+" / "-"
+MultiplicativeOperator = "*" / "/" / "%"
+PowerSymbol = "^"
+
+AddressSymbol = "$"
+
+// ==================== Operator Classification for Pointfree Notation ====================
+
+AnyOperator = 
+    InfixOperator / PrefixOperator / PostfixOperator
+
+InfixOperator = 
+    DefineSymbol / ProductSymbol / RangeSymbol / XorSymbol / OrSymbol / AndSymbol
+    / ComparisonOperator / AdditiveOperator / MultiplicativeOperator / PowerSymbol / GetLeftSymbol / GetRightSymbol
+
+PrefixOperator = 
+    ExportSymbol / NotSymbol / ContinuousSymbol / AddressSymbol / InputSymbol
+
+PostfixOperator = 
+    FactorialSymbol / ExpandSymbol / ImportSymbol
+
+// ==================== Whitespace and Control Characters ====================
+
+_ = $(" "*) // Any number of spaces (token delimiter)
+__ = $(" "+) // One or more spaces (priority 3 coproduct operator)
+
+TAB = "\t"
+EOL = "\n" / "\r\n" / "\r"
+EOF = !.
+
+// ==================== Four Semantic Meanings of Coproduct Expression Support ====================
+
+/*
+ * Four meanings of the coproduct operator (__):
+ * 1. Function application: func __ arg1 __ arg2
+ * 2. List concatenation: list1 __ list2 __ list3  
+ * 3. Function composition: [f] __ [g] __ x
+ * 4. Expression concatenation: expr1 __ expr2
+ * 
+ * In syntax analysis, they are uniformly processed as CoproductExpression,
+ * and the four meanings are distinguished according to context during semantic analysis
+ * 
+ * Examples:
+ * add 5 3          -> Function application
+ * [1,2] [3,4]      -> List concatenation  
+ * [+1] [*2] 5      -> Function composition
+ * x y z            -> General coproduct
+ */
