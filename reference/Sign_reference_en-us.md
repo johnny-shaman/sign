@@ -89,6 +89,7 @@ Literals are as follows:
   * Unsigned integers
   * Signed integers
   * Floating-point numbers
+  * Fractions
   * Hexadecimal numbers
   * Octal numbers
   * Binary numbers
@@ -234,7 +235,7 @@ However, most operators can be properly inserted with spaces through input compl
   * `?`	(lambda construction infix operator *)
   * `,`	(product infix operator *)
   * `~`	(range list construction infix operator)
-  * `~`	( list construction chain prefix operator)
+  * `~`	(continuous list construction prefix operator)
 
 * Logical area
   * Logical OR
@@ -246,7 +247,7 @@ However, most operators can be properly inserted with spaces through input compl
     * `!`	(not prefix operator)
 
 * Comparison operation area
-  * Comparison operators have no precedence
+  * Comparison operators have no precedence among themselves and are left identity
     * `<`	(less infix operator)
     * `<=`	(less equal infix operator)
     * `=`	(equal infix operator)
@@ -325,8 +326,8 @@ calc :
 		sub : \-
 	multiply :
 		mul : \*
-		div : \/
-		mod : \%
+		div : /
+		mod : %
 ```
 
 ## `#`	(output infix operator) []({#-number(output-infix-operator)})
@@ -335,15 +336,18 @@ It's possible to get specific IO addresses or memory addresses. The type is as f
 
 `[Identifier or hexadecimal] # expression`
 
-(Recursive function defining a print function using an address for a system call)
+The result of the operation returns an address when output is successful, and Unit when it fails.
+This is a specification to align with Input as a dual.
+
+(Example)
 ```javascript
-#print : s ~t ?
-	0x40 # s
-	print t~
+#stream : s ~t ?
+	0xFF00 # s
+	output t~
 ```
 
 ## ` `	(coproduct infix operator) []({#-space(coproduct-infix-operator)})
-The coproduct in this language is defined as **concating lists** or **applying a function**.
+The coproduct in this language is defined as **adding to lists**, **concatenating lists**, **function composition**, and **function application**.
 The act of separating tokens with spaces represents an operation.
 However, it's more rational for the system to understand coproduct as a simple token delimiter.
 In this language, it's important to remember that coproduct and product form clean pairs.
@@ -357,12 +361,13 @@ The operator takes the following types, and their behaviors are listed below:
 * Anything that's not a function is made into a list
 * Combines strings or tuple lists
 * Dictionary type combination is also possible, but be careful about value overwriting
-* Note that the coproduct of function application has higher operator precedence
+* Note that the coproduct of function application has higher operator precedence (due to the specification of resolving function evaluation through currying)
 
 (Example)
 ```javascript
 [1 2 3] = 1,2,3
-1,2,3 4,5,6 = 1,2,3,4,5,6
+1,2,3 4,5,6 = 1,2,3,4,5,6 = [1 2 3 4 5 6]
+
 `hello` \  `world!` = `hello world!`
 
 sign : `Sign!`
@@ -521,7 +526,7 @@ It's also easy to use when getting a specific range from a list.
 [\a ~ \z]
 ```
 
-## `~`	(list construction chain prefix operator) []({#-tilde(list-construction-chain-prefix-operator)})
+## `~`	(continuous list construction prefix operator) []({#-tilde(continuous-list-construction-prefix-operator)})
 
 Note that `~` has different meanings as prefix, postfix, and infix!
 
@@ -530,7 +535,6 @@ The `~` prefix operator can be thought of as "enclosing the rest of the argument
 The type is as follows:
 
 `~[Identifier] ? [Expression]`
-`~[Expression<Stream>]`
 
 (Example 1: Function that returns the rest as a list except for the beginning)
 ```javascript
@@ -539,7 +543,7 @@ tail : x ~y ? y
 (Example 2: Writing a function that returns the length of a list, using the \~ postfix operator)
 ```javascript
 length : [x y ~z ?
-y = _ : x
+	y = _ : x
 	length x + 1, z~
 ] 0
 ```
@@ -549,7 +553,7 @@ y = _ : x
 From here, we'll explain the operators for specific operational operations.
 
 `;` is an infix operator for exclusive logical OR.
-In Sign, since numeric 0 or an empty list is false, there is no explicit boolean.
+In Sign, since an empty list is false, there is no explicit boolean.
 This operator is purely for logical operations.
 All logical operations are short-circuit evaluated.
 
@@ -803,6 +807,12 @@ The type is as follows:
 `@[Hexadecimal]`
 `@[Identifier → Hexadecimal]`
 
+The return value as a result of the operation becomes a raw stream, so it is used in combination with other operations and functions.
+
+(Example)
+```
+getStream : ~@0x8000
+```
 
 ## About Block Construction []({#about-block-construction})
 
@@ -811,11 +821,11 @@ The block construction prefix operator is the construction of blocks by indentat
 (Example: After the tab, the newline becomes the same as the expression enclosed in parentheses)
 ```javascript
 [x y ?
-	x = y = _ & [_] |
+	x = y = _ & `Nothing` |
 	x + y
 ]
 
-[x y ? [x = y = _ & [_]] | [x + y]]
+[x y ? [[x = y = _ & `Nothing`] | [x + y]]]
 ```
 The following inline block construction with parentheses has the same meaning, so it's omitted.
 
