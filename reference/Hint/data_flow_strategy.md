@@ -131,58 +131,54 @@ Sign言語の基本データフローは、マルチコア環境において自�
 ### 4.1 シングルスレッド環境でのデータフロー
 
 ```sign
+` 入力⇒メモリ⇒処理⇒出力の一連のデータフロー
+` 入力段階: ハードウェアポートからデータ取得
+` メモリ段階: データの解析と構造化
+` 処理段階: データの変換処理
+` 出力段階: 処理結果をハードウェアポートに送信
 process_data : ?
-` 入力段階
-	input_data : @0x1000
-` メモリ段階
-	structured_data : parse input_data
-` 処理段階
-	processed : transform structured_data
-` 出力段階
-	0x2000 # processed
+	0x2000 # transform parse @0x1000
 ```
 
 ### 4.2 マルチコア環境でのデータフロー
 
 ```sign
 ` IOコア担当
+` 入力段階: ハードウェアポートからデータ取得
+` バッファに格納して次段階に渡す
 input_handler : ?
 	loop :
-` 入力段階
-		raw_data : @0x1000
-` バッファに格納して次段階に渡す
-		input_buffer # raw_data
+		input_buffer # @0x1000
 
 ` メモリコア担当
+` メモリ段階: 入力バッファからデータ取得
+` データがなければスキップ（Unitの場合は&演算で短絡評価）
+` データの解析・構造化を行い処理用バッファに格納
 memory_handler : ?
 	loop :
-` メモリ段階
-		raw_data : @input_buffer
-` データがなければスキップ
-		!raw_data : continue
-		structured : parse raw_data
-` 処理用バッファに格納
-		process_buffer # structured
+		@input_buffer & [data ?
+			process_buffer # parse data
+		]
 
 ` 処理コア担当
+` 処理段階: 処理用バッファからデータ取得
+` データがなければスキップ（Unitの場合は&演算で短絡評価）
+` データの変換処理を行い出力用バッファに格納
 processing_handler : ?
 	loop :
-` 処理段階
-		data : @process_buffer
-` データがなければスキップ
-		!data : continue
-		result : process data
-` 出力用バッファに格納
-		output_buffer # result
+		@process_buffer & [data ?
+			output_buffer # process data
+		]
 
-# IOコア担当
+` 出力コア担当
+` 出力段階: 出力用バッファからデータ取得
+` データがなければスキップ（Unitの場合は&演算で短絡評価）
+` 処理結果をハードウェアポートに送信
 output_handler : ?
 	loop :
-` 出力段階
-		result : @output_buffer
-` データがなければスキップ
-		!result : continue
-		0x2000 # result
+		@output_buffer & [result ?
+			0x2000 # result
+		]
 ```
 
 ### 4.3 パイプラインパラレリズム
@@ -191,12 +187,15 @@ output_handler : ?
 
 ```sign
 ` パイプライン処理の抽象化
+` 各段階を関数として抽象化し、データを順次処理
+` 入力⇒メモリ⇒処理⇒出力の順で関数合成実行
 pipeline : input_fn memory_fn process_fn output_fn data ?
-` 各段階を関数として抽象化
-	stage1 : @input_fn data
-	stage2 : @memory_fn stage1
-	stage3 : @process_fn stage2
-	@output_fn stage3
+	@output_fn @process_fn @memory_fn @input_fn data
+
+` または関数合成演算子を使用（Sign言語の自然な表現）
+` MAP演算子(,)により各段階を連鎖実行
+pipeline_natural : input_fn memory_fn process_fn output_fn ?
+	[output_fn,] [process_fn,] [memory_fn,] [input_fn,]
 ```
 
 ## 5. 利点と特徴
@@ -240,15 +239,13 @@ pipeline : input_fn memory_fn process_fn output_fn data ?
 データフローの効率を最大化するには、適切なバッファ設計が重要です：
 
 ```sign
-` バッファサイズの最適化
 optimize_buffers : ?
 ` 入力速度とメモリ速度の比率に基づくバッファサイズ調整
-	input_buffer_size : calculate_optimal_size input_rate memory_rate
+` 直接計算結果をバッファ割り当て関数に渡す
+	allocate_buffer `input` calculate_optimal_size input_rate memory_rate
 ` 処理速度と出力速度の比率に基づくバッファサイズ調整
-	output_buffer_size : calculate_optimal_size process_rate output_rate
-` バッファの割り当て
-	allocate_buffer `input` input_buffer_size
-	allocate_buffer `output` output_buffer_size
+` 直接計算結果をバッファ割り当て関数に渡す
+	allocate_buffer `output` calculate_optimal_size process_rate output_rate
 ```
 
 ### 6.2 非同期処理とイベント駆動
@@ -257,17 +254,16 @@ optimize_buffers : ?
 
 ```sign
 ` イベント駆動型データフロー
-on_data_available : handler ?
 ` データ到着時にハンドラを呼び出す
+on_data_available : handler ?
 	register_event input_port handler
 
 ` 非同期処理チェーン
 async_pipeline : ?
 	on_data_available input_port [data ?
-` 入力段階（非同期）
-		processed : process data
-` 出力が準備できたら次のステージへ
-		notify output_ready processed
+` 入力段階（非同期）: データ処理を直接実行
+` 出力が準備できたら次のステージへ通知
+		notify output_ready process data
 	]
 ```
 
@@ -276,20 +272,17 @@ async_pipeline : ?
 データフローの最適化には、フィードバック制御メカニズムの導入も効果的です：
 
 ```sign
-` フィードバック制御によるフロー調整
 flow_control : ?
 	loop :
-` 各バッファの充填率を監視
-		input_fill : measure_buffer input_buffer
-		output_fill : measure_buffer output_buffer
+` 各バッファの充填率を監視し、直接制御関数に渡す
 ` 入力バッファが満杯に近づいたら入力速度を低下
-		input_fill > 0.8 : throttle_input 0.7
+		measure_buffer input_buffer > 0.8 : throttle_input 0.7
 ` 入力バッファに余裕があれば入力速度を上昇
-		input_fill < 0.3 : throttle_input 1.2
+		measure_buffer input_buffer < 0.3 : throttle_input 1.2
 ` 出力バッファが満杯に近づいたら処理速度を低下
-		output_fill > 0.8 : throttle_processing 0.7
+		measure_buffer output_buffer > 0.8 : throttle_processing 0.7
 ` 出力バッファに余裕があれば処理速度を上昇
-		output_fill < 0.3 : throttle_processing 1.2
+		measure_buffer output_buffer < 0.3 : throttle_processing 1.2
 ```
 
 ## 7. 結論
