@@ -34,20 +34,19 @@ OutputLevel =
 // Priority 3: Construction Domain (Coproduct, Lambda, Product, Range)
 
 ListConstructLevel = 
-    (Number / Character / Identifier) (__ FunctionApplyLevel)*
+    (Number / Character / Identifier) (__ ConcatListLevel)*
+    / ConcatListLevel
+
+ConcatListLevel = 
+    (ProductLevel / Number / String / Character / Unit / Identifier) (__ FunctionApplyLevel)*
     / FunctionApplyLevel
 
 FunctionApplyLevel = 
-    (LambdaLevel / PointlessExpression / Unit / Identifier) (__ (FunctionComposeLevel / ConcatListLevel))*
+    (LambdaLevel / PointlessExpression / Unit / Identifier) (__ FunctionComposeLevel)*
     / FunctionComposeLevel
-    / ConcatListLevel
 
 FunctionComposeLevel = 
     (LambdaLevel / PointlessExpression / Unit / Identifier) (__ LambdaLevel)*
-    / LambdaLevel
-
-ConcatListLevel = 
-    (ProductLevel / Number / String / Character / Unit / Identifier) (__ LambdaLevel)*
     / LambdaLevel
 
 LambdaLevel = 
