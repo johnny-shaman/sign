@@ -8,8 +8,8 @@ It is designed to be used in various Anyone, such as data validation, integrity 
 <img src="./Sign_logo_dark.svg"  alt="Sign Logo" width="256" />
 
 ## Manifesto
-  [Our Manifesto](./documents/en-us/manifesto.en-us.md)
-  [日本語版はこちら](./documents/ja-jp/manifesto.ja-jp.md)
+  [Our Manifesto](./documents/manifesto/manifesto.en-us.md)
+  [日本語版はこちら](./documents/manifesto/manifesto.ja-jp.md)
 
 ## Example
   [language example](./documents/en-us/example.en-us.sn)
