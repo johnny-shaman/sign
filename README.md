@@ -2,21 +2,28 @@
 
 Welcome to the Sign integrity generic notation Page!
 
+This is a language for expressing the integrity of data in a generic way.
+It is designed to be used in various Anyone, such as data validation, integrity checks, and more.
+
 <img src="./Sign_logo_dark.svg"  alt="Sign Logo" width="256" />
 
-## manifesto
-  [Our Manifesto](./manifesto.md)
-  [日本語版はこちら](./manifesto.ja-jp.md)
+## Manifesto
+  [Our Manifesto](./documents/en-us/manifesto.en-us.md)
+  [日本語版はこちら](./documents/ja-jp/manifesto.ja-jp.md)
 
-## example
-  [language example](./example.sn)
-  [日本語はこちら](./example.ja-jp.sn)
+## Example
+  [language example](./documents/en-us/example.en-us.sn)
+  [日本語はこちら](./documents/ja-jp/example.ja-jp.sn)
 
-## reference
-  [language reference](./reference/Sign_reference_en-us.md)
-  [日本語はこちら](./reference/Sign_reference_ja-jp.md)
+## Reference
+  [language reference](./documents/en-us/Sign_reference_en-us.md)
+  [日本語はこちら](./documents/ja-jp/Sign_reference_ja-jp.md)
+
+## Specification
+  [language specification](./documents/en-us/specification/)
+  [日本語はこちら](./documents/ja-jp/specification/)
 
 ## License
-  [Language-License](./License/sign-language-license.md)
-  [日本語はこちら](./License/sign-language-license-ja.md)
+  [Language-License](./documents/License/sign-language-license.en-us.md)
+  [日本語はこちら](./documents/License/sign-language-license.ja-jp.md)
 
