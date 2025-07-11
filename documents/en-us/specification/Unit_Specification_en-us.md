@@ -13,7 +13,7 @@ The Unit value (`_`) in Sign language is a core concept in the language design a
 - **Function identity element**: `F _ = F` (in the categories of arithmetic and logic, passing Unit as an argument returns the function itself)
 - **Duality**: It is both a value and a function simultaneously
 - **Logical evaluation**: `_` evaluates to false
-- **Address**: `$_ = 0x0` (Unit's address value is 0)
+- **Address**: `$_ = _` (Unit's address value is Unit)
 - **Input**: `@_ = _` (absorbing element behavior)
 - **Output**: `$_ # X` behaves like file movement to /dev/null
 

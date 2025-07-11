@@ -847,3 +847,43 @@ typeCase : x ?
 Arbitrary type definitions are basically not recommended features.
 It's better to specify the range of lists or directly describe the behavior for the target value.
 Reason: It can lead to excessive abstraction (interpreted as it being the language's responsibility to ensure abstraction as a structure)
+
+# Operator Overloading
+
+For symbols enclosed in `"`, Sign can describe such behaviors.
+Also, since macros can output variable code that should be executed at that time, they should be used carefully.
+
+The following is an example of overloading & as an operator for bit operations.
+
+```
+`Set the filename as bit.sn
+`bitAnd
+#"&&" : "infixL" "Assembly for bitand conforming to Sign's function conventions here"
+
+```
+
+When using within a block
+
+```
+	bit.sn@
+	0b1100 && 0b1010 = 0b1000
+
+`Cannot be used once you exit the imported block.
+
+0b1100 && 0b1010 = !_
+
+```
+
+When using anywhere within the import destination file regardless of blocks
+
+```
+By adding ~ at the end, imported items can be used anywhere in the file.
+bit.sn@~
+0b1100 && 0b1010 = 0b1000
+
+[
+	x y ?
+		x != y : x && y
+] 0b1100 0b1010 = 0b1000
+	
+```
