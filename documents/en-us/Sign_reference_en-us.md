@@ -829,52 +829,104 @@ The block construction prefix operator is the construction of blocks by indentat
 ```
 The following inline block construction with parentheses has the same meaning, so it's omitted.
 
-# Type Description []({#type-description})
+Here's the English translation:
 
-Parts enclosed in `"` are treated as type definitions and acquisitions.
+# About Metaprogramming
+
+In Sign, functionality for metaprogramming is provided.
+Metaprogramming is an auxiliary feature of Sign, and is used particularly for type definitions and operator overloading.
+Sections enclosed in `"` are considered metaprogramming declarations.
+Reserved words exist within declarations.
+
+## About Reserved Words in Metaprogramming Declarations
+The following reserved words exist for defining operators.
+These reserved words are only valid within metaprogramming declarations and cannot be used in normal code.
+
+* `Prefix`		(prefix operator)
+* `Infix`		(infix operator without identity element)
+* `InfixL`		(infix operator with left identity element)
+* `InfixR`		(infix operator with right identity element)
+* `Postfix`		(postfix operator)
+* `Number`		(number type)
+* `UInt`		(unsigned integer type)
+* `Int`			(signed integer type)
+* `Float`		(floating-point type)
+* `Hex`			(hexadecimal type)
+* `Oct`			(octal type)
+* `Bin`			(binary type)
+* `String`		(string type)
+* `Address`		(address type)
+* `Function`	(function type)
+* `Char`		(character type)
+* `List`		(list type)
+* `Dict`		(dictionary type)
+
+## About Types
+In Sign, metaprogramming functionality exists for defining types.
 ```
-"f" : "Number" "Number" "Number"
+"f : Number Number Number"
 f : x y ? x + y
 ```
 
-Type-based branching
+Note that there is also a notation method using concrete values for types.
+In this case, it is recommended to use identity elements and such for clarity.
+
+```
+"f : 0 0 0"
+```
+
+Type branching
 ```
 typeCase : x ?
-  "x" = "Number" : x * 2
-  "x" = "String" : x
+	"x = 0" : x * 2
+	"x = ``" : x
 ```
 
-Arbitrary type definitions are basically not recommended features.
-It's better to specify the range of lists or directly describe the behavior for the target value.
-Reason: It can lead to excessive abstraction (interpreted as it being the language's responsibility to ensure abstraction as a structure)
+Arbitrary type definitions and match_case by type are basically deprecated features
+It is better to describe list range specifications and behavior for target values rather than types
+Reason: Because it becomes a contributing factor to excessive abstraction (goes against the language philosophy that ensuring abstraction as structure is the language's responsibility)
 
-# Operator Overloading
+# Operator Definition and Overloading
 
-For symbols enclosed in `"`, Sign can describe such behaviors.
-Also, since macros can output variable code that should be executed at that time, they should be used carefully.
+For symbols enclosed in `"`, Sign can describe such behavior.
+Also, since macros can output variable code that should be executed at that time, use them carefully.
 
 The following is an example of overloading & as an operator for bit operations.
 
 ```
-`Set the filename as bit.sn
+`Set the filename as bit.sn.
 `bitAnd
-#"&&" : "infixL" "Assembly for bitand conforming to Sign's function conventions here"
+`The definition of operator precedence and position is described using reserved words for operator definition.
+`The implementation definition of the operator is described in Sign language or assembly language.
+
+"
+	InfixL $ && '
+
+	&& : x y ?
+		unsafe@
+			r0 # x
+			r1 # y
+			r0 # and r0 r1
+"
+
+`Finally, export it.
+#"&&"
 
 ```
 
 When using within a block
 
 ```
-	bit.sn@
+bit.sn@
 	0b1100 && 0b1010 = 0b1000
 
-`Cannot be used once you exit the imported block.
+`Once you exit the imported block, it cannot be used.
 
-0b1100 && 0b1010 = !_
+0b1100 && 0b1010 = _
 
 ```
 
-When using anywhere within the import destination file regardless of blocks
+When using anywhere in the file regardless of blocks at the import destination
 
 ```
 By adding ~ at the end, imported items can be used anywhere in the file.
