@@ -77,11 +77,11 @@ module.exports = {
 
   toPrefix (op) {
     if (this.precedence.prefix[op] || this.precedence.surrounding.prefix[op]) {
-      return `${op}_`;
+      return `[${op}_]`;
     } else if (this.precedence.infix[op]) {
-      return op;
+      return `[${op}]`;
     } else if (this.precedence.postfix[op] || this.precedence.surrounding.postfix[op]) {
-      return `_${op}`;
+      return `[_${op}]`;
     } else {
       return undefined;
     }

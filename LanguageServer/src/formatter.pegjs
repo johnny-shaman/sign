@@ -3,6 +3,7 @@
         Token = 
             String     { return text(); }
             / Character { return text(); }
+            / Number     { return text(); }
             / op:InfixOperator   { return ` ${op} `; }
             / _
             / Any         { return text(); }
@@ -33,4 +34,8 @@
             / "'"   // get
 
         Any = $.
-		_ = [ ] {return ""}
+        _ = [ ] {return " "} // whitespace
+        Number = 
+            $([0])
+            / $([-]?[0-9]*[.]?[0-9]+)
+            / $([-]?([0-9]{1,3})([,]?[0-9]{3})*[.]?[0-9]*)
