@@ -40,9 +40,6 @@ string : c ~s ? c = \` , s~
 uint : c ~s ? nzero c , digits s~
 int : c ~s ? [c = \- | nzero c] , uint s~
 
-float : c ~s ?
-	c = \- : c , float s~
-	c = \. : c , float s~
-	c = \e : c , float s~
-	digit c , float s~
+float : c ~s ? int c , [c = \. , digits s] , [c = \e , [c = \- | nzero c] , digits s]~
 
+operator : c ? \  < c < \0 | \9 < c < \A | \Z < c < \\ | \\ < c < \a | \z < c <= \~
