@@ -1,0 +1,15 @@
+#count : [
+	c x y ~z ?
+		x = y : count (c + 1) x z~
+		x != y : count c x z~
+		!z : c
+] 0
+
+#once : [
+	c x y ~z ?
+		1 < c  : _
+		x = y : once (c + 1) x z~
+		x != y : once c x z~
+		!z : !_
+] 0
+
