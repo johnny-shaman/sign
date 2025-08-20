@@ -66,11 +66,8 @@ classify : x ?
 
 #### パターンB: 純粋な一般処理のみ
 ```sign
-` ✅ 正常：一般処理のみのブロック（自動的にリスト化）
-process_steps : data ?
-	step1 data
-	step2 result
-	step3 final
+` ✅ 正常：一般処理のみ
+process_steps : data ? step1 step2 step3 data
 ```
 
 #### パターンC: 適切な階層化による混在（参考例）
@@ -182,22 +179,6 @@ helper_data : precomputed_expensive_operation
 process_function : input ?
 	transform input config_value helper_data
 ```
-
-### 5.2 使用時の注意点
-
-**但し、原則的な関数型プログラミングに反するという事を念頭に置いてください。**
-
-- **グローバル状態の導入**: ファイルスコープ変数は実質的にグローバル変数
-- **テストの困難さ**: 外部状態に依存するため単体テストが複雑化
-- **並列実行の制約**: 共有状態により競合状態のリスクが発生
-
-### 5.3 適切な使用場面
-
-以下の場合にのみファイルスコープを検討してください：
-
-- 設定値やコンフィギュレーション
-- 計算コストの高い初期化が必要な定数
-- プログラム全体で共有される不変データ
 
 ## 6. get演算子依存の回避
 
