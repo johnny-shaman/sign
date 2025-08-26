@@ -76,19 +76,24 @@ class SignParser {
       step++;
       console.log('\n変換ステップ ' + step + ':');
       
+      // 同一優先順位内での完全処理
       for (let priority = 24; priority >= 1; priority--) {
-        const newText = this.transformByPriority(text, priority);
-        if (newText !== text) {
-          console.log('  優先順位' + priority + ': ' + text + ' → ' + newText);
-          text = newText;
-          break;
+        let priorityChanged = true;
+        while (priorityChanged) {
+          const newText = this.transformByPriority(text, priority);
+          priorityChanged = (newText !== text);
+          if (priorityChanged) {
+            console.log('  優先順位' + priority + ': ' + text + ' → ' + newText);
+            text = newText;
+          }
         }
       }
       
     } while (text !== previousText && step < 20);
     
     console.log('\n--- Step 3: トークン復元 ---');
-    text = this.restoreTokens(text);
+    // 段階的復元：保護されたトークンも再帰処理
+    text = this.restoreTokensRecursively(text);
     console.log('最終結果:', text);
     
     return text;
@@ -240,70 +245,85 @@ class SignParser {
       return newText.includes('[' + operator.symbol + '_]') && 
              oldText.includes('[' + operator.symbol + '_]');
     }
+    // 後置演算子の無限ループもチェック
+    if (operator.type === 'postfix') {
+      return newText.includes('[_' + operator.symbol + ']') && 
+             oldText.includes('[_' + operator.symbol + ']');
+    }
     return false;
   }
   
   isFullyTransformed(text) {
-    if (/^__\w+_\d+__$/.test(text.trim())) {
+    // より厳密な変換完了判定
+    const trimmed = text.trim();
+    
+    // 保護トークンのみの場合は完了
+    if (/^__\w+_\d+__$/.test(trimmed)) {
       return true;
     }
     
-    const trimmed = text.trim();
+    // 完全に変換された式の形式チェック
     if (trimmed.startsWith('([') && trimmed.endsWith(')')) {
-      let depth = 0;
-      let inBracket = false;
-      
-      for (let i = 0; i < trimmed.length; i++) {
-        const char = trimmed[i];
-        if (char === '(' && !inBracket) depth++;
-        if (char === ')' && !inBracket) depth--;
-        if (char === '[') inBracket = true;
-        if (char === ']') inBracket = false;
-        
-        if (depth === 0 && i < trimmed.length - 1) {
-          const remaining = trimmed.substring(i + 1).trim();
-          if (remaining.length > 0) {
-            console.log('      複数式検出: "' + remaining + '"');
-            return false;
-          }
-        }
+      // 複数式の検出
+      if (this.hasMultipleExpressions(trimmed)) {
+        return false;
       }
-      
+      // 未処理演算子の検出
       return !this.hasUnprocessedOperators(trimmed);
+    }
+    
+    // 単純なリテラルや識別子は完了
+    if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(trimmed) || 
+        /^-?\d+(\.\d+)?$/.test(trimmed) ||
+        /^0[xob][A-Fa-f0-9]+$/.test(trimmed)) {
+      return true;
     }
     
     return false;
   }
 
+  hasMultipleExpressions(text) {
+    let depth = 0;
+    let inBracket = false;
+    
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (char === '(' && !inBracket) depth++;
+      if (char === ')' && !inBracket) depth--;
+      if (char === '[') inBracket = true;
+      if (char === ']') inBracket = false;
+      
+      if (depth === 0 && i < text.length - 1) {
+        const remaining = text.substring(i + 1).trim();
+        if (remaining.length > 0) {
+          console.log('      複数式検出: "' + remaining + '"');
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   hasUnprocessedOperators(text) {
-    const operators = [
-      { symbol: '+', priority: 15 },
-      { symbol: '-', priority: 15 },
-      { symbol: '*', priority: 16 },
-      { symbol: '/', priority: 16 },
-      { symbol: '%', priority: 16 },
-      { symbol: '^', priority: 17 },
-      { symbol: '=', priority: 14 },
-      { symbol: '<', priority: 14 },
-      { symbol: '>', priority: 14 },
-      { symbol: '&', priority: 12 },
-      { symbol: '|', priority: 11 },
-      { symbol: ';', priority: 11 },
-      { symbol: ':', priority: 2 },
-      { symbol: '?', priority: 7 }
+    // より包括的な未処理演算子検出
+    const operatorPatterns = [
+      ' \\+ ', ' - ', ' \\* ', ' / ', ' % ', ' \\^ ',
+      ' = ', ' < ', ' > ', ' <= ', ' >= ', ' != ',
+      ' & ', ' \\| ', ' ; ', ' : ', ' \\? ',
+      ' \\\' ', ' @ ', '\\$', '!', '~'
     ];
     
-    for (const op of operators) {
-      if (text.includes('[' + op.symbol + ']') || 
-          text.includes('[' + op.symbol + '_]') || 
-          text.includes('[_' + op.symbol + ']')) {
-        continue;
-      }
-      
-      const spacePattern = ' ' + op.symbol + ' ';
-      if (text.includes(spacePattern)) {
-        console.log('      未処理演算子発見: ' + op.symbol + ' in "' + text + '"');
-        return true;
+    for (const pattern of operatorPatterns) {
+      const regex = new RegExp(pattern);
+      if (regex.test(text)) {
+        // 既に変換済みでないかチェック
+        const symbol = pattern.replace(/[\s\\]/g, '');
+        if (!text.includes('[' + symbol + ']') && 
+            !text.includes('[' + symbol + '_]') && 
+            !text.includes('[_' + symbol + ']')) {
+          console.log('      未処理演算子発見: ' + symbol + ' in "' + text + '"');
+          return true;
+        }
       }
     }
     return false;
@@ -476,14 +496,27 @@ class SignParser {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-  restoreTokens(text) {
+  restoreTokensRecursively(text) {
+    return this.restoreTokens(text, true);
+  }
+  
+  restoreTokens(text, recursive = false) {
     // 絶対値処理済みのトークンは復元しない（既に処理済み）
     let restored = text.replace(/__inline_(\d+)__/g, (match, index) => {
       const content = this.protectedTokens.inline[parseInt(index)];
       if (content && content.startsWith('|_| ')) {
         return match; // 絶対値は既に処理済みなので復元しない
       }
-      return content !== undefined ? '[' + content + ']' : match;
+      if (content !== undefined) {
+        if (recursive) {
+          // 保護されたトークンも再帰的に構文解析
+          const parsedContent = this.parseProtectedContent(content);
+          return '[' + parsedContent + ']';
+        } else {
+          return '[' + content + ']';
+        }
+      }
+      return match;
     });
     
     restored = restored.replace(/__string_(\d+)__/g, (match, index) => {
@@ -497,6 +530,28 @@ class SignParser {
     });
     
     return restored;
+  }
+  
+  parseProtectedContent(content) {
+    // 保護されたトークンの内部を段階的に解析
+    let step = 0;
+    let text = content;
+    let previousText;
+    
+    do {
+      previousText = text;
+      for (let priority = 24; priority >= 1; priority--) {
+        let priorityChanged = true;
+        while (priorityChanged) {
+          const newText = this.transformByPriority(text, priority);
+          priorityChanged = (newText !== text);
+          text = newText;
+        }
+      }
+      step++;
+    } while (text !== previousText && step < 10);
+    
+    return text;
   }
 }
 
@@ -693,6 +748,7 @@ const testCases = [
     
     try {
       const result = parser.parse(testCase);
+      console.log('✅ テストケース: ' + testCase);
       console.log('✅ 最終結果: ' + result);
     } catch (error) {
       console.log('❌ エラー: ' + error.message);
