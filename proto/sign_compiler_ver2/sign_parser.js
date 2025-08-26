@@ -64,7 +64,11 @@ class SignParser {
     console.log('\n--- Step 1: トークン保護 ---');
     text = this.protectTokens(text);
     console.log('保護後:', text);
-    
+
+    console.log('\n--- Step 1.5: 囲み記法処理 ---');
+    text = this.processEnclosures(text);
+    console.log('囲み処理後:', text);
+
     console.log('\n--- Step 2: 段階的変換 ---');
     let previousText;
     do {
@@ -93,6 +97,7 @@ class SignParser {
   protectTokens(text) {
     text = this.protectStrings(text);
     text = this.protectChars(text);
+    text = this.protectAbsoluteValues(text);
     text = this.protectInlineBlocks(text);
     return text;
   }
@@ -105,6 +110,41 @@ class SignParser {
       console.log('文字列保護: "' + match + '" -> __string_' + index + '__ (内容: "' + content + '")');
       return '__string_' + index + '__';
     });
+  }
+
+  protectAbsoluteValues(text) {
+    let result = text;
+    const regex = /\|([^|]+)\|/g;
+    return result.replace(regex, (match, content) => {
+      if (this.isAbsoluteValueContext(match, result)) {
+        const index = this.protectedTokens.inline.length;
+        this.protectedTokens.inline.push('|_| ' + content.trim());
+        console.log('絶対値保護: "' + match + '" -> __inline_' + index + '__');
+        return '__inline_' + index + '__';
+      }
+      return match;
+    });
+  }
+
+  isAbsoluteValueContext(match, text) {
+    const index = text.indexOf(match);
+    if (index === -1) return false;
+    
+    // OR演算子の文脈（前後に空白）でないかチェック
+    const before = index > 0 ? text[index - 1] : '';
+    const after = index + match.length < text.length ? text[index + match.length] : '';
+    
+    // 前後に空白がある場合はOR演算子の可能性が高い
+    const hasSpaceBefore = /\s/.test(before);
+    const hasSpaceAfter = /\s/.test(after);
+    
+    if (hasSpaceBefore && hasSpaceAfter) {
+      // ただし、明らかに式が囲まれている場合は絶対値
+      const content = match.slice(1, -1).trim();
+      return content.includes('+') || content.includes('-') || content.includes('*') || content.includes('/');
+    }
+    
+    return true; // デフォルトは絶対値として扱う
   }
 
   protectChars(text) {
@@ -159,6 +199,18 @@ class SignParser {
     return result;
   }
 
+  processEnclosures(text) {
+    // 保護された絶対値を処理
+    return text.replace(/__inline_(\d+)__/g, (match, index) => {
+      const content = this.protectedTokens.inline[parseInt(index)];
+      if (content && content.startsWith('|_| ')) {
+        const innerExpr = content.substring(4); // '|_| 'を除去
+        return '([|_|] ' + innerExpr + ')';
+      }
+      return match;
+    });
+  }
+
   transformByPriority(text, priority) {
     if (!this.operatorPriority[priority]) {
       return text;
@@ -171,13 +223,26 @@ class SignParser {
     for (const operator of this.operatorPriority[priority]) {
       const newText = this.transformOperator(text, operator);
       if (newText !== text) {
+        // 無限ループ防止：同じ変換を繰り返さない
+        if (this.isInfiniteLoop(text, newText, operator)) {
+          continue;
+        }
         return newText;
       }
     }
     
     return text;
   }
-
+  
+  isInfiniteLoop(oldText, newText, operator) {
+    // 前置演算子で同じパターンが既に変換済みかチェック
+    if (operator.type === 'prefix') {
+      return newText.includes('[' + operator.symbol + '_]') && 
+             oldText.includes('[' + operator.symbol + '_]');
+    }
+    return false;
+  }
+  
   isFullyTransformed(text) {
     if (/^__\w+_\d+__$/.test(text.trim())) {
       return true;
@@ -241,7 +306,6 @@ class SignParser {
         return true;
       }
     }
-    
     return false;
   }
 
@@ -266,7 +330,7 @@ class SignParser {
 
   transformInfixOperator(text, operator) {
     const symbol = this.escapeRegex(operator.symbol);
-    const operandPattern = '([\\w\\d_]+|__\\w+_\\d+__|\\([^()]*\\)|\\([^()]*\\([^()]*\\)[^()]*\\))';
+    const operandPattern = '([\\w\\d_]+(?:\\.[\\d]+)?|__\\w+_\\d+__|\\([^()]*\\)|\\([^()]*\\([^()]*\\)[^()]*\\))';
     const pattern = operandPattern + '\\s+' + symbol + '\\s+' + operandPattern;
     const regex = new RegExp(pattern);
     
@@ -290,7 +354,7 @@ class SignParser {
     }
     
     const symbol = this.escapeRegex(operator.symbol);
-    const operandPattern = '([\\w\\d_]+|__\\w+_\\d+__|\\([^()]*\\)|\\([^()]*\\([^()]*\\)[^()]*\\))';
+    const operandPattern = '([\\w\\d_]+(?:\\.[\\d]+)?|__\\w+_\\d+__|\\([^()]*\\)|\\([^()]*\\([^()]*\\)[^()]*\\))';
     const pattern = operandPattern + '\\s+' + symbol + '\\s+' + operandPattern;
     const regex = new RegExp(pattern);
     
@@ -413,14 +477,13 @@ class SignParser {
   }
 
   restoreTokens(text) {
-    let restored = text;
-    
-    restored = restored.replace(/__inline_(\d+)__/g, (match, index) => {
+    // 絶対値処理済みのトークンは復元しない（既に処理済み）
+    let restored = text.replace(/__inline_(\d+)__/g, (match, index) => {
       const content = this.protectedTokens.inline[parseInt(index)];
-      if (content !== undefined) {
-        return '[' + content + ']';
+      if (content && content.startsWith('|_| ')) {
+        return match; // 絶対値は既に処理済みなので復元しない
       }
-      return match;
+      return content !== undefined ? '[' + content + ']' : match;
     });
     
     restored = restored.replace(/__string_(\d+)__/g, (match, index) => {
@@ -457,7 +520,7 @@ function runTests() {
     'f : x ? x + 1',
     'add : x y ? x + y'
   ];
-*/
+
 
   const testCases = [
   // === 基本定義（優先順位2） ===
@@ -466,7 +529,7 @@ function runTests() {
   '#x : 42',                     // エクスポート定義
   '#pi : 3.14',                  // エクスポートされた定数
 ];
-/*
+*/
 const testCases = [
   // === 基本リテラル ===
   '42',                          // 整数
@@ -621,7 +684,7 @@ const testCases = [
   'stream : @0xFF00',            // ハードウェア入力
   'output : 0xFF01 # result',    // ハードウェア出力
 ];
-*/
+
 
   testCases.forEach((testCase, index) => {
     console.log('\n' + '='.repeat(60));
