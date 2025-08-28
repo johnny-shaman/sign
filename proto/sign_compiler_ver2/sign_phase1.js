@@ -12,9 +12,10 @@
 //
 // 変更: __string[0]__ → STRING_0
 //       __chr[1]__    → CHAR_1  
-//       __inline[2]__ → INLINE_2
-//       __block[3]__  → BLOCK_3
-//       __abs[4]__  → ABS_4
+//       __number[2]__ → NUMBER_2
+//       __inline[3]__ → INLINE_3
+//       __block[4]__  → BLOCK_4
+//       __abs[5]__  → ABS_5
 
 const fs = require('fs');
 
@@ -24,6 +25,7 @@ class SignConverter {
         this.counters = {
             string: 0,
             char: 0,
+            number: 0,
             inline: 0,
             block: 0,
             abs: 0
@@ -35,11 +37,14 @@ class SignConverter {
      */
     convert(source) {
         this.protectedItems = [];
-        this.counters = { string: 0, char: 0, inline: 0, block: 0, abs: 0 };
+        this.counters = { string: 0, char: 0, number: 0, inline: 0, block: 0, abs: 0 };
 
         // コメント行削除
         let result = this.removeComments(source);
         console.log('=== コメント削除完了 ===');
+
+        // 段階1: 数値保護（最優先 - 他の処理との干渉回避）
+        result = this.protectNumbers(result);
 
         // 段階1: 最内側から最外側へ保護（干渉回避順序）
         result = this.protectInlineBlocks(result);
@@ -67,6 +72,54 @@ class SignConverter {
             return !trimmed.startsWith('`');
         });
         return nonCommentLines.join('\n');
+    }
+
+    /**
+     * 数値保護: 全数値形式 → NUMBER_N
+     */
+    protectNumbers(source) {
+        let result = source;
+        
+        // 数値パターンを優先順位順に処理（長いパターンを先に）
+        const patterns = [
+            {
+                name: '16進数',
+                regex: /0x[0-9A-Fa-f]+/g
+            },
+            {
+                name: '8進数', 
+                regex: /0o[0-7]+/g
+            },
+            {
+                name: '2進数',
+                regex: /0b[01]+/g
+            },
+            {
+                name: '浮動小数点数',
+                regex: /-?\d+\.\d+(?:[eE][+-]?\d+)?/g
+            },
+            {
+                name: '整数',
+                regex: /\b-?\d+\b/g  // 単語境界で数値を限定
+            }
+        ];
+        
+        for (const pattern of patterns) {
+            result = result.replace(pattern.regex, (match) => {
+                const placeholder = `NUMBER_${this.counters.number}`;
+                this.protectedItems.push({
+                    placeholder: placeholder,
+                    content: match,
+                    original: match,
+                    type: 'number'
+                });
+                console.log(`数値保護: "${match}" → ${placeholder} (${pattern.name})`);
+                this.counters.number++;
+                return placeholder;
+            });
+        }
+        
+        return result;
     }
 
     /**
@@ -290,7 +343,7 @@ class SignConverter {
     validate() {
         console.log('\n=== 保護処理検証 ===');
 
-        const types = ['string', 'character', 'inline_block', 'indent_block', 'absolute_value'];
+        const types = ['string', 'character', 'number', 'inline_block', 'indent_block', 'absolute_value'];
         types.forEach(type => {
             const count = this.protectedItems.filter(item => item.type === type).length;
             console.log(`${type}: ${count}個`);
