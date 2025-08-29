@@ -116,8 +116,8 @@ class SignPhase2 {
     processAllOperators(source) {
         let result = source;
 
-        // 高優先順位から低優先順位へ（16→1）
-        const priorities = Object.keys(this.operators).sort((a, b) => b - a);
+        // 低優先順位から高優先順位へ（1→16）
+        const priorities = Object.keys(this.operators).sort((a, b) => a - b);
 
         for (const priority of priorities) {
             console.log(`  優先順位${priority}処理中...`);
