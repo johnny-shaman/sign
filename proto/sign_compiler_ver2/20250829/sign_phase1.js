@@ -96,11 +96,11 @@ class SignConverter {
             },
             {
                 name: '浮動小数点数',
-                regex: /-?\d+\.\d+(?:[eE][+-]?\d+)?/g
+                regex: /(?<![A-Za-z_])-?\d+\.\d+(?:[eE][+-]?\d+)?(?![A-Za-z_])/g
             },
             {
                 name: '整数',
-                regex: /\b-?\d+\b/g  // 単語境界で数値を限定
+                regex: /(?<![A-Za-z_])-?\d+(?![A-Za-z_])/g
             }
         ];
         

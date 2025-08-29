@@ -5,17 +5,17 @@
 // - 優先順位16: 乗除演算 (*, /, %)
 // - 優先順位15: 加減演算 (+, -)  
 // - 優先順位14: 比較演算 (<, <=, =, >=, >, !=)
+// - 優先順位12-11: 論理演算 (&, |, ;)
 // - 優先順位2:  定義演算 (:)
-// - 優先順位1:  エクスポート (#前置)
 //
 // 【未実装演算子レベル】
 // - 優先順位25: ブロック制御 (フェーズ1で保護済み)
 // - 優先順位24-17: import(@後置), input(@前置), get(', @中置), address($), expand(~後置)
 // - 優先順位13: 論理否定 (!前置)
-// - 優先順位12-11: 論理演算 (&, |, ;)
 // - 優先順位18: 階乗 (!後置)  
 // - 優先順位20-19: 絶対値, expand(~後置)
 // - 優先順位10-3: ラムダ(?), 積(,), 範囲(~中置), 連続(~前置), 余積( )
+// - 優先順位1:  エクスポート (#前置)
 //
 // 【設計方針】
 // - 方式A: 設計書準拠の段階的再帰処理
@@ -48,6 +48,16 @@ class SignPhase2 {
                 { symbol: '<', type: 'infix' },
                 { symbol: '>', type: 'infix' },
                 { symbol: '=', type: 'infix' }
+            ],
+            13: [
+                { symbol: '!', type: 'prefix' }   // not (論理否定)
+            ],
+            12: [
+                { symbol: '&', type: 'infix' }    // and (論理積)
+            ],
+            11: [
+                { symbol: '|', type: 'infix' },   // or (論理和)
+                { symbol: ';', type: 'infix' }    // xor (排他的論理和)
             ],
             2: [
                 { symbol: ':', type: 'infix' }
@@ -106,8 +116,8 @@ class SignPhase2 {
     processAllOperators(source) {
         let result = source;
 
-        // 高優先順位から低優先順位へ（16→1）
-        const priorities = Object.keys(this.operators).sort((a, b) => b - a);
+        // 低優先順位から高優先順位へ（1→16）
+        const priorities = Object.keys(this.operators).sort((a, b) => a - b);
 
         for (const priority of priorities) {
             console.log(`  優先順位${priority}処理中...`);
@@ -166,7 +176,7 @@ class SignPhase2 {
         // 中置演算子のパターン: 識別子/数値/プレースホルダー 演算子 識別子/数値/プレースホルダー
         // 数値は既に保護済みのため、単純なパターンで処理可能
         const pattern = new RegExp(
-            `(\\w+|[A-Z]+_\\d+)\\s+${escapedSymbol}\\s+(\\w+|[A-Z]+_\\d+)`, 
+            `(\\w+|[A-Z]+_\\d+)\\s+${escapedSymbol}\\s+(\\w+|[A-Z]+_\\d+)`,
             'g'
         );
 
@@ -184,7 +194,7 @@ class SignPhase2 {
 
         // 前置演算子のパターン: 行頭の演算子
         const pattern = new RegExp(
-            `^${escapedSymbol}(\\w+|[A-Z]+_\\d+)`, 
+            `^${escapedSymbol}(\\w+|[A-Z]+_\\d+)`,
             'gm'
         );
 
@@ -202,7 +212,7 @@ class SignPhase2 {
 
         // 後置演算子のパターン
         const pattern = new RegExp(
-            `(\\w+|[A-Z]+_\\d+)${escapedSymbol}`, 
+            `(\\w+|[A-Z]+_\\d+)${escapedSymbol}`,
             'g'
         );
 
