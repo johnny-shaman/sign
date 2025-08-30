@@ -1,13 +1,19 @@
 // phases/phase2.js
-// Phase2: コメントと空行を削除、カッコの統一
+// Phase2: コメントと空行を削除、改行コードとカッコの統一
 
 /**
- * Phase2のコメントと空行を削除、カッコの統一を実行
+ * Phase2のコメントと空行を削除、改行コードとカッコの統一を実行
  * @param {string} input - 入力されたSign言語のコード
  * @returns {string} - 前処理後のコード
  */
 function phase2(input) {
-    const lines = input.split('\n');
+    const lines =
+        // 改行コードLFに統一
+        // CRLF(\r\n)を先にLF(\n)に変換し、その後CR(\r)をLF(\n)に変換
+        input.replace(/\r\n/gm, '\n')
+            .replace(/\r/gm, '\n')
+            // １行ごとに分割
+            .split('\n');
     const processedLines = [];
 
     for (let line of lines) {
