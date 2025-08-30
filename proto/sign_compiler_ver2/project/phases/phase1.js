@@ -1,80 +1,15 @@
 // phases/phase1.js
-// Phase1: 前処理（コメントと空白行の削除、カッコの統一）
+// Phase1: 文字列と文字トークンにカッコ付け
 
 /**
- * Phase1の前処理を実行
- * @param {string} input - 入力されたSign言語のコード
- * @returns {string} - 前処理後のコード
+ * Phase1の文字列と文字トークンにカッコ付け処理を実行
+ * @param {string} input - Phase1で処理されたコード
+ * @returns {string} - トークンにカッコを付けたコード
  */
 function phase1(input) {
-    const lines = input.split('\n');
-    const processedLines = [];
-    
-    for (let line of lines) {
-        // 1. コメント行の削除（行頭が`で始まる行）
-        if (line.trim().startsWith('`')) {
-            continue; // コメント行をスキップ
-        }
-        
-        // 2. 空白行の削除（空行、タブのみ、スペースのみの行）
-        if (line.trim() === '') {
-            continue; // 空白行をスキップ
-        }
-        
-        // 3. カッコの統一（文字列内は除く）
-        const unifiedLine = unifyBrackets(line);
-        processedLines.push(unifiedLine);
-    }
-    
-    return processedLines.join('\n');
-}
-
-/**
- * カッコを()に統一する（文字列内は除く）
- * @param {string} line - 処理対象の行
- * @returns {string} - カッコを統一した行
- */
-function unifyBrackets(line) {
-    let result = '';
-    let inString = false;
-    let stringChar = null;
-    let i = 0;
-    
-    while (i < line.length) {
-        const char = line[i];
-        
-        // 文字列の開始・終了判定
-        if (char === '`' && !inString) {
-            inString = true;
-            stringChar = '`';
-            result += char;
-        } else if (char === '`' && inString && stringChar === '`') {
-            inString = false;
-            stringChar = null;
-            result += char;
-        } else if (!inString) {
-            // 文字列外でのカッコ統一
-            switch (char) {
-                case '[':
-                case '{':
-                    result += '(';
-                    break;
-                case ']':
-                case '}':
-                    result += ')';
-                    break;
-                default:
-                    result += char;
-                    break;
-            }
-        } else {
-            // 文字列内ではそのまま
-            result += char;
-        }
-        i++;
-    }
-    
-    return result;
+    return input
+    .replace(/((?!^[`].*)(`[^`\r\n]*`))|\\./gm, '[$&]')
+    .replace(/\\[\r\n]{1,2}/g, '[$&]');
 }
 
 module.exports = { phase1 };
