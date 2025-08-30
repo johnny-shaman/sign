@@ -1,0 +1,27 @@
+`文字列と文字のテスト`
+Hello : `Hello World`
+backslash : `Sign\s language`
+unclosedString : `これは閉じられない文字列
+char1 : \M
+char2 : \n
+char3 : \\
+`char4 : \` のようなエッジケースは実用性が低く複雑化要因のため除外
+HelloWorld : `Hello` \
+ `	World`
+`文字列結合テスト（設計書の例）`
+My : \M \y \  \D \o \m \e \s \t \i \c
+`コメント1
+test : 100 + 5! * -3.14
+`コメント2`
+x :
+	v : -3
+	f : y ?
+		y = 0 : x ' v
+		y = 1 : y
+abs2 : ||123| - 5.1|
+f 1 2
+char01 : \M
+`インラインブロックの完全テスト`
+func1 : [+ 1]
+func2 : (x y ? x + y)
+func3 : {a, b, c}
