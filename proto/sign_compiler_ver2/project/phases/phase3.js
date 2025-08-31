@@ -7,39 +7,38 @@
  * @returns {string} - ブロック構文をカッコ付けしたコード
  */
 function phase3(input) {
-    return input
-        // Step1: ブロック開始行（: または ? で終わる行）の後にインデントがある場合の処理
-        .replace(/^(\s*)(.+[:?])\s*\n(\t+.+(?:\n\t+.+)*)/gm, function(match, leadingSpace, blockStart, indentedContent) {
-            // インデントされた内容を処理
-            const processedContent = processIndentedBlock(indentedContent);
-            return `${leadingSpace}${blockStart}\n${processedContent}`;
-        })
-        // Step2: 処理されたブロックを [] で囲む
-        .replace(/^(\s*)(.+[:?])\n(\s*\([^)]+\)(?:\s+\([^)]+\))*)/gm, '$1$2 [$3]')
-        // Step3: 余分な空白を整理
-        .replace(/\[\s+/g, '[')
-        .replace(/\s+\]/g, ']')
-        .replace(/\)\s+\(/g, ') (');
-}
 
-/**
- * インデントされたブロック内容を処理する
- * @param {string} indentedContent - インデントされたブロック内容
- * @returns {string} - 処理済みの内容
- */
-function processIndentedBlock(indentedContent) {
-    // 各行を処理
-    const lines = indentedContent.split('\n');
-    const processedLines = lines.map(line => {
-        // タブを除去してから () で囲む
-        const content = line.replace(/^\t+/, '');
-        if (content.trim()) {
-            return `(${content})`;
-        }
-        return '';
-    }).filter(line => line); // 空行を除去
+    let result = input
+        // ステップ①: タブ付き行にカッコを追加
+        // タブの後に識別子がある行を検出し、カッコで囲む
+        .replace(/^(\t+)(.*)/gm, '$1[$2]')
 
-    return processedLines.join(' ');
+        // ステップ②: ブロック1階層目の開始・終了カッコ
+        // : または ? の後の改行+タブを検出してブロック開始
+        .replace(/([:\?])\s*$(?=\n\t)/gm, '$&\ [')
+        // 改行+タブ以外またはファイル末尾でブロック終了を検出
+        .replace(/^(\t.*$)(?=\n[^\t]|\Z)/gm, '$&]')
+        // ステップ③: 行頭タブを1つ削除
+        .replace(/^\t/gm, '');
+        // ステップ④~⑦: 階層処理のループ
+    let compareText;
+    do {
+        compareText = result;
+
+        // ステップ⑤: ブロックn階層目の処理
+        // :] または ?] の後の改行+タブを検出
+        result = result
+            .replace(/([:\?])\]\s*\n(?=\t)/gm, '$1][\n')
+            // 改行+タブ以外またはファイル末尾でブロック終了を検出
+            .replace(/^(\t.*$)(?=\n[^\t]|\Z)/gm, '$&]')
+            // ステップ⑥: 行頭タブを1つ削除（③と同じ）
+            .replace(/^\t/gm, '');
+
+        // ステップ⑦: 差分比較
+    } while (result !== compareText);
+
+    // ステップ⑧: 改行+[の削除
+    return result.replace(/\n\[/g, '[');
 }
 
 module.exports = { phase3 };

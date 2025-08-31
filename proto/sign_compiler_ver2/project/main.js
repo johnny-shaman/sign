@@ -71,8 +71,8 @@ function main() {
 
     console.log('\nPhase1完了');
 
-    // Phase2: コメントと空行を削除、カッコの統一
-    console.log('Phase2: コメントと空行を削除、カッコの統一を実行中...');
+    // Phase2: コメントと空行を削除、改行コードとカッコの統一
+    console.log('Phase2: コメントと空行を削除、改行コードとカッコの統一を実行中...');
     const phase2Result = phase2(phase1Result);
 
     // Phase2の結果をファイルに保存
