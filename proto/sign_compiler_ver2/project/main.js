@@ -4,10 +4,11 @@
 const fs = require('fs');
 const path = require('path');
 
-// Phase1-3のインポート
+// Phase1-4のインポート
 const { phase1 } = require('./phases/phase1.js');
 const { phase2 } = require('./phases/phase2.js');
 const { phase3 } = require('./phases/phase3.js');
+const { phase4 } = require('./phases/phase4.js');
 
 /**
  * ファイルを読み込む
@@ -86,8 +87,9 @@ function main() {
 
     console.log('\nPhase2完了');
 
-    // Phase3: ブロック構文を判定し、カッコ付けを行う
-    console.log('Phase3: ブロック構文を判定し、カッコ付けを実行中...');
+/*
+    // Phase3: 絶対値囲みの前後にカッコ付けを行う
+    console.log('Phase3: 絶対値囲みの前後にカッコ付けを実行中...');
     const phase3Result = phase3(phase2Result);
 
     // Phase3の結果をファイルに保存
@@ -100,6 +102,23 @@ function main() {
     console.log('-'.repeat(30));
 
     console.log('\nPhase3完了');
+*/
+
+    // Phase4: ブロック構文を判定し、カッコ付けを行う
+    console.log('Phase4: ブロック構文を判定し、カッコ付けを実行中...');
+    const phase4Result = phase4(phase2Result);      //ph3コメントアウトのためph2の結果入力
+//    const phase4Result = phase4(phase3Result);
+    
+    // Phase4の結果をファイルに保存
+    writeFile('./output/phase4_result.sn', phase4Result);
+
+    // Phase4の結果をログ出力
+    console.log('Phase4の結果:');
+    console.log('-'.repeat(30));
+    console.log(phase4Result);
+    console.log('-'.repeat(30));
+
+    console.log('\nPhase4完了');
     console.log('='.repeat(50));
 }
 
