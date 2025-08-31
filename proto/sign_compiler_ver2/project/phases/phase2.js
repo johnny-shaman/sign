@@ -9,9 +9,8 @@
 function phase2(input) {
     const lines =
         // 改行コードLFに統一
-        // CRLF(\r\n)を先にLF(\n)に変換し、その後CR(\r)をLF(\n)に変換
-        input.replace(/\r\n/gm, '\n')
-            .replace(/\r/gm, '\n')
+        // CRLF(\r\n)またはCR(\r)をLF(\n)に変換
+        input.replace(/(\r\n)|(\r)|(\n)/g, '\n')
             // １行ごとに分割
             .split('\n');
     const processedLines = [];
