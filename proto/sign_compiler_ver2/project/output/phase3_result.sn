@@ -27,4 +27,5 @@ abc d e f
 |abc + |def - ghi||
 ||abc + def| - ghi|
 ||abc + |def|| - ghi|
-|abc + ||def| - ghi||[|||abc| + def| - ghi|][|abc + |def - |ghi|||]
+|abc + ||def| - ghi||
+f : [[|||abc| + def| - ghi|][|abc + |def - |ghi|||]
