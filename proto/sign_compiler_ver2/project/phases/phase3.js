@@ -8,8 +8,14 @@
  */
 function phase3(input) {
     return input
-        .replace(/((?<= )[|]|[|](?=[\w]))(?!\ )/g, '[$&')
-        .replace(/(?<! )((?<=[\w])[|](?=|\s)|[|](?=[\s])|[|](?=$))/g, '$&]');
+        .replace(
+            /(?<=[ \t])[|]+(?=[\S])/g,
+            m => m.replace(/[|]/g, '[$&')
+        )
+        .replace(
+            /(?<=\S)[|]+(?=\s|$)/g,
+            m => m.replace(/[|]/g, '$&]')
+        );
 }
 
 module.exports = { phase3 };
