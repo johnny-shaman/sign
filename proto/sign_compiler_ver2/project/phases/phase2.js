@@ -7,12 +7,11 @@
  * @returns {string} - 前処理後のコード
  */
 function phase2(input) {
-    const lines =
-        // 改行コードLFに統一
-        // CRLF(\r\n)またはCR(\r)をLF(\n)に変換
-        input.replace(/(\r\n)|(\r)|(\n)/g, '\n')
-            // １行ごとに分割
-            .split('\n');
+        // 改行コードLFに統一し、CRLF(\r\n)またはCR(\r)をLF(\n)に変換後、１行ごとに分割
+    const lines = input
+        .replace(/(\r\n)|[\r\n]/g, '\n')
+        .split('\n');
+
     const processedLines = [];
 
     for (let line of lines) {
