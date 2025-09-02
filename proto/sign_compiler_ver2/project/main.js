@@ -9,6 +9,7 @@ const { phase1 } = require('./phases/phase1.js');
 const { phase2 } = require('./phases/phase2.js');
 const { phase3 } = require('./phases/phase3.js');
 const { phase4 } = require('./phases/phase4.js');
+const { phase5 } = require('./phases/phase5.js');
 
 /**
  * ファイルを読み込む
@@ -87,7 +88,6 @@ function main() {
 
     console.log('\nPhase2完了');
 
-/*
     // Phase3: 絶対値囲みの前後にカッコ付けを行う
     console.log('Phase3: 絶対値囲みの前後にカッコ付けを実行中...');
     const phase3Result = phase3(phase2Result);
@@ -102,12 +102,10 @@ function main() {
     console.log('-'.repeat(30));
 
     console.log('\nPhase3完了');
-*/
 
     // Phase4: ブロック構文を判定し、カッコ付けを行う
     console.log('Phase4: ブロック構文を判定し、カッコ付けを実行中...');
-    const phase4Result = phase4(phase2Result);      //ph3コメントアウトのためph2の結果入力
-//    const phase4Result = phase4(phase3Result);
+    const phase4Result = phase4(phase3Result);
     
     // Phase4の結果をファイルに保存
     writeFile('./output/phase4_result.sn', phase4Result);
@@ -120,6 +118,22 @@ function main() {
 
     console.log('\nPhase4完了');
     console.log('='.repeat(50));
+
+    // Phase5: 多項式を二項演算の組に直すために、優先順位に従ってカッコ付けを行う
+    console.log('Phase5: 多項式を二項演算の組に直すために、優先順位に従ってカッコ付けを実行中...');
+    const phase5Result = phase5(phase4Result);
+
+    // Phase5の結果をファイルに保存
+    writeFile('./output/phase5_result.sn', phase5Result);
+
+    // Phase5の結果をログ出力
+    console.log('Phase5の結果:');
+    console.log('-'.repeat(30));
+    console.log(phase5Result);
+    console.log('-'.repeat(30));
+
+    console.log('\nPhase5完了');
+
 }
 
 // スクリプトが直接実行された場合にメイン処理を実行
