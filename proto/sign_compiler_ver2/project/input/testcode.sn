@@ -27,7 +27,7 @@ char01 : \M
 func1 : [+ 1]
 func2 : (x y ? x + y)
 func3 : {a, b, c}
-
+\( \) \{ \} \[ \]
 abc | def
 abc d e f
 |abc|

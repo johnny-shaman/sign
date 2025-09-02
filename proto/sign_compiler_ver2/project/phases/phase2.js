@@ -7,27 +7,28 @@
  * @returns {string} - 前処理後のコード
  */
 
-function phase2(input) {
-        // 改行コードLFに統一し、CRLF(\r\n)またはCR(\r)をLF(\n)に変換後、１行ごとに分割
+function phase2 (input) {
     return input
-        .split('\n')
+        .split('\n') //行で分割して配列化
         .map(
-            line => line && line
+                    // バリデーション
+            line => line && line 
+                // コメントか空行なら空文字列にする
                 .replace(/^((`[\s\S]*)|\n)$/gm, '')
+                // カッコ統一のための置換処理
                 .replace(
-                    /([^`]+)|(`[^`\r\n]*`)/g,
-                    (m, c1, c2) => (
+                    /([^`]+)|`[^`\r\n]*`/g,
+                    (m, c1) => (
                         c1
                         ? c1
-                            .replace(/([({])/g, '[')
-                            .replace(/([)}])/g, ']')
-                        : c2
+                            .replace(/(?<!\\)([({])/g, '[')
+                            .replace(/(?<!\\)([)}])/g, ']')
+                        : m
                     )
                 )
         )
         .filter( line => !!line )
         .join('\n');
-
 }
 
 module.exports = { phase2 };
