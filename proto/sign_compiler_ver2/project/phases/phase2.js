@@ -8,7 +8,38 @@
  */
 function phase2(input) {
         // 改行コードLFに統一し、CRLF(\r\n)またはCR(\r)をLF(\n)に変換後、１行ごとに分割
-    const lines = input
+    return input
+        .replace(/(\r\n)|[\r\n]/g, '\n')
+        .split('\n')
+        .filter(
+            line => (
+                !line.startsWith('`') 
+                || line.trim.apply().length
+            )
+        )
+        .map(
+            line => line.replace(
+                /([^`]+)|(`[^`\r\n]*`)/g,
+                (m, c1, c2) => {
+                    switch(!!c1.length) {
+                        case true : return c1.replace(
+                            /([(){}])/g,
+                            m => {
+                                switch (m) {
+                                    case '(': case '{': return '['
+                                    case ')': case '}': return '['
+                                }
+                            }
+                        )
+                        default : return c2;
+                    }
+                }
+            )
+        )
+        .join('\n');
+
+    //＝＝＝＝＝＝＝＝＝＝＝以下はデッドコードだがバックアップ目的＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+    const lins = input
         .replace(/(\r\n)|[\r\n]/g, '\n')
         .split('\n');
 
@@ -31,13 +62,20 @@ function phase2(input) {
     }
 
     return processedLines.join('\n');
+
+    //＝＝＝＝＝＝＝＝＝＝＝バックアップ目的デッドコードはここまで＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
 }
+
+//＝＝＝＝＝＝＝＝＝＝＝以下はデッドコードだがバックアップ目的＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 /**
  * カッコを[]統一する（文字列内は除く）
  * @param {string} line - 処理対象の行
  * @returns {string} - カッコを統一した行
  */
+
+//
 function unifyBrackets(line) {
     let result = '';
     let inString = false;
@@ -80,5 +118,7 @@ function unifyBrackets(line) {
 
     return result;
 }
+
+//＝＝＝＝＝＝＝＝＝＝＝バックアップ目的デッドコードはここまで＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 module.exports = { phase2 };
