@@ -14,15 +14,15 @@ function phase2(input) {
         .filter(
             line => (
                 !line.startsWith('`') 
-                || line.trim.apply().length
+                || !!line.trim().length
             )
         )
         .map(
             line => line.replace(
                 /([^`]+)|(`[^`\r\n]*`)/g,
                 (m, c1, c2) => {
-                    switch(!!c1.length) {
-                        case true : return c1.replace(
+                    return (
+                        c1 ? c1.replace(
                             /([(){}])/g,
                             m => {
                                 switch (m) {
@@ -31,8 +31,8 @@ function phase2(input) {
                                 }
                             }
                         )
-                        default : return c2;
-                    }
+                        : c2
+                    )
                 }
             )
         )
