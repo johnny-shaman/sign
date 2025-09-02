@@ -27,7 +27,7 @@ function phase2(input) {
                             m => {
                                 switch (m) {
                                     case '(': case '{': return '['
-                                    case ')': case '}': return '['
+                                    case ')': case '}': return ']'
                                 }
                             }
                         )
