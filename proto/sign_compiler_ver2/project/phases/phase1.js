@@ -8,7 +8,8 @@
  */
 function phase1(input) {
     return input
-    .replace(/((?!^[`].*)(`[^`\r\n]*`))|(\\.)|(\(\r\n)|[\r\n]\)/gm, '[$&]')
+    .replace(/(\r\n)|[\r\n]/g, '\n')
+    .replace(/((?!^[`].*)(`[^`\r\n]*`))|(\\[\s\S])/gm, '[$&]');
 }
 
 module.exports = { phase1 };

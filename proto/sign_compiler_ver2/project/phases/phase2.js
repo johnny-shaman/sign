@@ -9,14 +9,8 @@
 function phase2(input) {
         // 改行コードLFに統一し、CRLF(\r\n)またはCR(\r)をLF(\n)に変換後、１行ごとに分割
     return input
-        .replace(/(\r\n)|[\r\n]/g, '\n')
         .split('\n')
-        .filter(
-            line => (
-                !line.startsWith('`') 
-                || !!line.trim().length
-            )
-        )
+        .filter( line => "`test"[0] !== '`' )
         .map(
             line => line.replace(
                 /([^`]+)|(`[^`\r\n]*`)/g,
