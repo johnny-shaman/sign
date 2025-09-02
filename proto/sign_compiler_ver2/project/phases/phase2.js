@@ -14,20 +14,13 @@ function phase2(input) {
         .map(
             line => line.replace(
                 /([^`]+)|(`[^`\r\n]*`)/g,
-                (m, c1, c2) => {
-                    return (
-                        c1 ? c1.replace(
-                            /([(){}])/g,
-                            m => {
-                                switch (m) {
-                                    case '(': case '{': return '['
-                                    case ')': case '}': return ']'
-                                }
-                            }
-                        )
-                        : c2
-                    )
-                }
+                (m, c1, c2) => (
+                    c1
+                    ? c1
+                        .replace(/([({])/g, '[')
+                        .replace(/([)}])/g, ']')
+                    : c2
+                )
             )
         )
         .join('\n');
