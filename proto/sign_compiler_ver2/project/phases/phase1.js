@@ -9,7 +9,7 @@
 function phase1(input) {
     return input
     .replace(/((?!^[`].*)(`[^`\r\n]*`))|\\./gm, '[$&]')
-    .replace(/\\(\r\n)|[\r\n]/g, '[$&]');
+    .replace(/(\r\n)|[\r\n]/g, '[$&]');
 }
 
 module.exports = { phase1 };
