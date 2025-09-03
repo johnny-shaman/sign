@@ -32,7 +32,7 @@ function phase4(input) {
         // 3. 行頭タブを1つ削除
         .replace(/^\t/gm, '');
     // 4. 階層処理のループ
-    let compareText;
+    //let compareText;
     do {
         compareText = result;
 
