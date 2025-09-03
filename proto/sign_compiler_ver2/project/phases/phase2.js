@@ -27,6 +27,7 @@ function phase2 (input) {
                     )
                 )
         )
+        .filter( line => !!line )
         .join('\n');
 }
 
