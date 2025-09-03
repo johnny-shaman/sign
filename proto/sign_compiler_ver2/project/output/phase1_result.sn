@@ -6,8 +6,8 @@ char1 : [\M]
 char2 : [\n]
 char3 : [\\]
 `char4 : [\`] のようなエッジケースは実用性が低く複雑化要因のため除外
-HelloWorld : [`Hello`] \
- [`	World`]
+HelloWorld : [`Hello`] [\
+] [`	World`]
 `文字列結合テスト（設計書の例）`
 My : [\M] [\y] [\ ] [\D] [\o] [\m] [\e] [\s] [\t] [\i] [\c]
 `コメント1
@@ -27,7 +27,7 @@ char01 : [\M]
 func1 : [+ 1]
 func2 : (x y ? x + y)
 func3 : {a, b, c}
-
+[\(] [\)] [\{] [\}] [\[] [\]]
 abc | def
 abc d e f
 |abc|

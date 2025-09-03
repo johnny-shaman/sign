@@ -8,6 +8,15 @@
  */
 function phase4(input) {
 
+    return input
+    .replace(/([:?] *)([\r\n])([\t])/g, '$1 [\n$3')
+    .replace(
+        /(\t+)([ \S]+)/g,
+        m => m[m.length - 1] === ']'
+        ? `[${m}`
+        : `[${m}]`
+    )
+
     let result = input
         // 1. タブ付き行にカッコを追加
         // タブの後に識別子がある行を検出し、カッコで囲む
