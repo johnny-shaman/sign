@@ -9,10 +9,29 @@
 function phase4(input) {
 
     return input
+    //ブロック開始[
     .replace(/([:?] *)([\r\n])([\t])/g, '$1 [\n$3')
+    //各ブロック要素開始[終了]（ネスト除く）
     .replace(/(?!\t+[ \S]+\[)(\t+)([ \S]+)/g, '$1[$2]')
+    //各ブロック要素開始[（ネストのみ）
     .replace(/(\t+)([ \S]+)(\[)/g, '$1[$2$3')
-    .replace(/([\r\n]\t+[ \S]+)+/g, '$&\n]')
+    //大外ブロック終了]　改行あり
+    //.replace(/([\r\n]\t+[ \S]+)+/g, '$&\n]')
+    //大外ブロック終了]　改行なし
+    .replace(/([\r\n]\t+[ \S]+)+/g, '$&]')
+    //追加　ブロック終了]
+        .split('\n') //行で分割して配列化
+        .map((line, index, array) => {
+            const currentLevel = (line.match(/^(\t*)/) || ['', ''])[1].length;
+            const nextLine = array[index + 1];
+            const nextLevel = nextLine ? (nextLine.match(/^(\t*)/) || ['', ''])[1].length : 0;
+            const levelDiff = currentLevel - nextLevel;
+            
+            return line + (levelDiff > 0 ? ']'.repeat(levelDiff) : '');
+        })
+        .join('\n')
+    //追加　改行タブ削除
+        .replace(/([\r\n][\t]+)/g, '');
 
     //=========================デッドコード===========================
 
