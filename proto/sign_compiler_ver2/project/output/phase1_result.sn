@@ -31,16 +31,7 @@ func3 : {a, b, c}
 abc | def
 abc d e f
 |abc|
-|abc - def|
-|abc d e f|
-|abc + def - ghi|
-||abc| + def - ghi|
-|abc + |def| - ghi|
-|abc + def - |ghi||
-|abc + |def - ghi||
-||abc + def| - ghi|
-||abc + |def|| - ghi|
-|abc + ||def| - ghi||
+
 f :
 	|||abc| + def| - ghi|
 	|abc + |def - |ghi|||
