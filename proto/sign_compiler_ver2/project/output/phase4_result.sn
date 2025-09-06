@@ -19,4 +19,5 @@ func3 : [a, b, c]
 abc | def
 abc d e f
 |abc|]
-f : [[[|[|[|abc|] + def|] - ghi|][[|abc + [|def - [|ghi|]|]|]]]
+f : [[[|[|[|abc|] + def|] - ghi|]][[|abc + [|def - [|ghi|]|]|]]]]
+y : [[a : -3][b : 5 + 7]]

@@ -12,11 +12,13 @@ function phase4(input) {
     //ブロック開始[
     .replace(/([:?] *)([\r\n])([\t])/g, '$1 [\n$3')
     //各ブロック要素開始[終了]（ネスト除く）
-    .replace(/(?!\t+[ \S]+\[)(\t+)([ \S]+)/g, '$1[$2]')
-    //各ブロック要素開始[（ネストのみ）
-    .replace(/(\t+)([ \S]+)(\[)/g, '$1[$2$3')
+    // .replace(/(?!\t+[ \S]+\[)(\t+)([ \S]+)/g, '$1[$2]')  //絶対値行を抽出しないため下記に修正
+    .replace(/(?!\t+[ \S]+\[(?!\|))(\t+)([ \S]+)/g, '$1[$2]')
+    //各ブロック要素開始[（ネストのみ）  //意図しない絶対値行を抽出するため下記に修正
+    // .replace(/(\t+)([ \S]+)(\[)/g, '$1[$2$3')
+    .replace(/(\t+)([ \S]+)(\[)(?!\|)/g, '$1[$2$3')
     //大外ブロック終了]　改行あり
-    //.replace(/([\r\n]\t+[ \S]+)+/g, '$&\n]')
+    // .replace(/([\r\n]\t+[ \S]+)+/g, '$&\n]')
     //大外ブロック終了]　改行なし
     .replace(/([\r\n]\t+[ \S]+)+/g, '$&]')
     //追加　ブロック終了]
@@ -27,6 +29,11 @@ function phase4(input) {
             const nextLevel = nextLine ? (nextLine.match(/^(\t*)/) || ['', ''])[1].length : 0;
             const levelDiff = currentLevel - nextLevel;
             
+            // 次の行がブロック外の場合はカッコを付けない
+            if (!nextLine) {
+                return line;
+            }
+
             return line + (levelDiff > 0 ? ']'.repeat(levelDiff) : '');
         })
         .join('\n')
