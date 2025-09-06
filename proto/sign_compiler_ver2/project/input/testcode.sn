@@ -18,7 +18,9 @@ x :
 	f : y ?
 		y = 0 : x ' v
 		y = 1 : y
-	f : 10
+	w : 10
+	s : `hello	` \
+	 `	world`
 
 abs2 : ||123| - 5.1|
 f 1 2
@@ -26,12 +28,21 @@ char01 : \M
 `インラインブロックの完全テスト`
 func1 : [+ 1]
 func2 : (x y ? x + y)
-func3 : {a, b, c}
-\( \) \{ \} \[ \]
+func3 : {a, b, c} \( \) \{ \} \[ \]
+
 abc | def
 abc d e f
-|abc|
 
-f :
+	|abc|
+	|abc - def|
+	|abc d e f|
+	|abc + def - ghi|
+	||abc| + def - ghi|
+	|abc + |def| - ghi|
+	|abc + def - |ghi||
+	|abc + |def - ghi||
+	||abc + def| - ghi|
+	||abc + |def|| - ghi|
+	|abc + ||def| - ghi||
 	|||abc| + def| - ghi|
 	|abc + |def - |ghi|||
