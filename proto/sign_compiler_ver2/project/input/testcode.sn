@@ -35,3 +35,7 @@ abc d e f
 f :
 	|||abc| + def| - ghi|
 	|abc + |def - |ghi|||
+
+y :
+	a : -3
+	b : 5 + 7
