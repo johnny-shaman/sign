@@ -32,6 +32,7 @@ unit : none : []
 none : []
 unit : []
 
+
 `Comparison operations have shorthands.`
 
 `[[x = y & y] = z] & y`
@@ -42,11 +43,13 @@ x = y = z
 
 1 <= x <= 9
 
+
 `Lambda term definition method`
 `The basis of lambda terms uses '?'.`
 `Functions without assignment must be enclosed in parentheses.`
 
 [x y ? x ^ 2 + 2 * x * y + y ^ 2]
+
 
 `Factoring the above shows that this expression is equivalent to the following.`
 `By reinterpreting parentheses purely as the start of a block definition, expression precedence can be expressed.`
@@ -65,21 +68,25 @@ x = y = z
 
 `...it would be.`
 
+
 `If you don't want function application or composition, you can append a comma directly after the function to create a Cartesian product.`
 `Alternatively, you can use the '$' prefix operator before the function to obtain a temporary address.`
 
 [+ 2] 2 = 4
 [+ 2], 2 = [+ 2], 2
 
+
 `Example of passing a function as a Cartesian product`
 
 Filter : f x ~y ? f x , Filter f y~
 Filter [> 0], [-2 ~ 3]
 
+
 `Example in the case of a function pointer`
 
 Filter : f x ~y ? @f x , Filter f y~
 Filter $[> 0] [-2 ~ 3]
+
 
 `The very last argument of a function can also be written before the function.`
 
@@ -87,6 +94,7 @@ result2 : [-] 3 1
 add : [+]
 exp : [^]
 id : x ? x
+
 
 `Function evaluation has lower precedence than lambda definition.`
 `Function composition is a left identity, but normal function execution can be written as a right identity.`
@@ -102,6 +110,7 @@ id : x ? x
 [1 2 3] ' 0 = 1
 [1, 2, 3] ' 0 = 1
 
+
 `The following functions as a function that returns the tail.`
 
 [_ ~y ? y] 1 2 3 = 2 3
@@ -109,6 +118,7 @@ id : x ? x
 
 [1 2 3] ' 1~ = 2 3
 [1, 2, 3] ' 1~ = 2 3
+
 
 `Arguments passed to higher-order functions must be explicitly separated by Cartesian product to determine whether they are evaluated or not.`
 
@@ -138,12 +148,12 @@ id : x ? x
 ] 3
 
 `Constructor-like description.`
-`Dynamic key names can also be assigned; in such cases, to force extraction of values assigned to variables or arguments, use the postfix '~'.`
+`Dynamic key names can also be assigned; in such cases, to force extraction of values assigned to variables or arguments, use prefix @ and prefix $.`
 
 Person : name age etc x ?
 	name
 	age
-	etc~ : x
+	@$etc : x
 
 john : Person `john` 18 `Like` `Sushi`
 
@@ -155,6 +165,7 @@ john ' name = john ' `name`
 `If 'otherwise' is not specified and 'otherwise' is matched, it returns the passed value as is, following the identity law.`
 
 [> 3 : [+ 3]] 3 4 = 4
+
 
 `Data class-like description`
 
@@ -179,12 +190,14 @@ lightningStaff : Item
 	[' ThunderBolt]
 	[' HP] [- 40]
 
+
 `The so-called 'let ~ in' is also written as follows.`
 
 myValue :
 	3
 	[+ 4]
 	[* 2]
+
 
 `List definitions are generally comma-separated.`
 `"," in English denotes a "strong separator" or "Cartesian product."`
@@ -219,24 +232,29 @@ myPairs ' [1 ~ 3] = 2 3 4
 
 [> 2,] myPairs = 3 4 5
 
+
 `This is a coproduct (array concatenation).`
 
 r: [1 2] [3 4]
+
 
 `This is a Cartesian product (2D array).`
 
 s: [1 2],[3 4]
 
+
 `Dictionary type`
 `However, opening and closing parentheses must always be paired.`
 
 myGreet:
-	greet:
+	greet: 
 		hello: `hello,`
 		welcome: `welcome,`
 	world : ` world`
 
+
 myGreet ' greet ' hello = `hello,`
+
 
 `By using block scope, 'get' can be directly written within the block scope.`
 `This block syntax, of course, also returns a value upon completion of the operation.`
@@ -248,6 +266,7 @@ myGreet
 	'world
 = `welcome, world`
 
+
 `Values can be modified.`
 
 myGreet
@@ -255,8 +274,10 @@ myGreet
 		'welcome : `welcome to our `
 	'world : `metaverse!`
 
+
 `By inferring only primitive types, the actual type problem is designed to be solved.`
 `All given names are definitions, and as they are self-evident types, the name *is* the type.`
+
 
 `The '~' operator can only expand match_case, which mimics a dictionary type, onto the target scope.`
 `If prefixed, it takes precedence over other terms; if postfixed, other terms take precedence.`
@@ -268,6 +289,7 @@ myGreet
 
 y = 1
 
+
 `The '@' postfix operator is for import. File names can be specified, and paths are also allowed.`
 `If match_case can be treated as a dictionary type, the '~' operator can expand it to the scope above, so '@~' also allows imports usable within the file.`
 
@@ -277,6 +299,7 @@ io@
 `Since this is not a file-scoped import, the line below will return a "Say is not defined" error.`
 
 say Hello World
+
 
 `Expand to file scope for use.`
 
@@ -298,7 +321,7 @@ io@~
 M: \M
 
 My: M \y\ \D\o\m\e\s\t\i\c
-My = M \y \ \D \o \m \e \s \t \i \c = `My Domestic`
+My = M \y \  \D \o \m \e \s \t \i \c = `My Domestic`
 
 	`Hello ` `World!` = `Hello World!`
 	`Hello` \ `World!` = `Hello World!`
@@ -307,7 +330,7 @@ My = M \y \ \D \o \m \e \s \t \i \c = `My Domestic`
 	Hello \ My \ `World` \! = `Hello My Domestic World!`
 	`Hello` \!\ My World \! = `Hello! My Domestic World!`
 
-`Strings containing '\' backslashes can be defined. Note that it's not an escape sequence.`
+`Strings containing `\ backslashes can be defined. Note that it's not an escape sequence.`
 
 `The definition of a string containing 'back_quort' treats 'back_quort' as a character and handles it with string concatenation (coproduct).`
 
@@ -318,8 +341,9 @@ My = M \y \ \D \o \m \e \s \t \i \c = `My Domestic`
 `If you want to include newlines.`
 
 HWinEnter :
- `Hello` \
- `World!`
+ `Hello` \
+ `World!`
+
 
 `"#" becomes the export prefix operator.`
 `Regular functions always return the value of the last line, and match_case returns a value or function corresponding to the specified value.`
@@ -327,6 +351,7 @@ HWinEnter :
 
 #myDict : name value ? name~ : value
 #gets : name ? myDict ' name~
+
 
 `Logical operators are short-circuited.`
 

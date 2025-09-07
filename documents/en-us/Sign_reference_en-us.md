@@ -54,14 +54,15 @@ The following summarizes its features:
 * There are no reserved words used for control
 * There are no control statements; all calculations always return an answer
 * Block syntax is formed by indentation using tab characters
-* Spaces are considered as operators, but in implementation, they can be treated as delimiters for literals
-* Infix operators generally require spaces before and after them, but when an expression can be interpreted as an infix operator, spaces are automatically inserted
+* Spaces are considered as operators for examination, but may be treated as delimiters for literals
+* When function composition is performed by spaces, it has left identity
 * Prefix and postfix operators must not have spaces between them and their target literals
+* Infix operators generally require spaces before and after them, but when they can be interpreted as infix operators, spaces are automatically inserted
 * Lines with only literals without meaning are never executed
 * Code files have local scope, and scopes are not contaminated unless import or export is used
-* empty lists, and unexecuted lambda terms are false. Everything else is true, so the boolean type is never explicitly specified
-* All logical operations are short-circuit evaluated
-* Bit operations exist for optimization. Therefore, there are no operators or functions that directly represent bit operations
+* Empty lists and unevaluated lambda terms are false. Everything else is true, so the boolean type is never explicitly specified
+* Logical operations are basically short-circuit evaluated
+* Bit operations exist for optimization. Therefore, operators or functions that directly represent bit operations are subject to additional implementation
 * Lists of arguments passed to functions are lists
 * All objects to be calculated are lists
 * The Sign source code itself is also a list
@@ -218,23 +219,28 @@ Normally used in the sense of Null, and also used in the sense of false. Details
 # Operators []({#operators})
 
 Operators are of the following types, and since explaining from the lower priority areas is considered to speak of derivation by basic functions, they are explained in order from the low priority areas.
-However, the grandchild level in the bullet points has the same operator precedence.
-Infix operators are principally left identities and need spaces at both ends. (Those that should be noted as right identities have a * mark at the back.)
-However, most operators can be properly inserted with spaces through input completion. (Those where input completion space insertion does not work have an ✕ mark at the back.)
+However, **the grandchild level in the bullet points has the same operator precedence**.
+Infix operators are principally left identities and need spaces at both ends.
+(Those that should be noted as right identities have right added at the back.)
+
+Most operators can have spaces properly inserted before and after them through input completion functionality.
+(Those where input completion space insertion does not work have an ✕ mark at the back.)
+
+(During syntax parsing, operators that can be understood by simple type combinations alone have a ＼ mark attached.)
 
 * Export area
   * `#`	(export prefix operator)
 
 * Definition, output area
-  * `:`	(define infix operator *)　
-  * `#`	(output infix operator *)
+  * `:`	(define infix operator right)　
+  * `#`	(output infix operator right)
   
 
 * Construction area
-  * ` `	(coproduct infix operator)
-  * `?`	(lambda construction infix operator *)
-  * `,`	(product infix operator *)
-  * `~`	(range list construction infix operator)
+  * ` `	(coproduct infix operator　＼)
+  * `?`	(lambda construction infix operator right)
+  * `,`	(product infix operator right)
+  * `~`	(range list construction infix operator　✕)
   * `~`	(continuous list construction prefix operator)
 
 * Logical area
@@ -267,7 +273,7 @@ However, most operators can be properly inserted with spaces through input compl
     * `%`	(modulus infix operator)
 
   * Exponentiation
-    * `^`	(power infix operator *)
+    * `^`	(power infix operator right)
 
   * Factorial
     * `!`	(factorial postfix operator)
@@ -276,7 +282,7 @@ However, most operators can be properly inserted with spaces through input compl
   * `~`	(expansion postfix operator)
   * `$`	(address acquisition prefix operator)
   * `'`	(get infix operator)
-  * `@`	(get infix operator *)
+  * `@`	(get infix operator right　✕)
   * `
   `	(evaluation postfix operator)
 
@@ -374,6 +380,7 @@ sign : `Sign!`
 hello : `Hello ` 
 hello sign = `Hello Sign!`
 ```
+
 `[Function] [Expression]`
 
 `[Identifier → Function] [Expression]`
@@ -510,11 +517,13 @@ F [* 2] , 1 , 2 , 3
 ## `~`	(range list construction infix operator) []({#-tilde(range-list-construction-infix-operator)})
 
 Note that `~` has different meanings as prefix, postfix, and infix!
-
-The `~` infix operator can abstractly handle ranges, such as range specification. The type is as follows:
+The `~` infix operator must be surrounded by parentheses before and after!
+The `~` infix operator can handle ranges. The type is as follows:
 
 `[Character] ~ [Character]`
 `[Number] ~ [Number]`
+`[Adress] ~ [Adress]`
+
 
 Be careful as the range list construction operator has low precedence.
 It's also easy to use when getting a specific range from a list.
@@ -524,6 +533,14 @@ It's also easy to use when getting a specific range from a list.
 [1 ~ 10]
 [* 2,] [1 ~ 10] ' [3 ~ 5] = 8 , 10 , 12
 [\a ~ \z]
+```
+
+Note that range specification with 3 terms is also possible, where the range specification uses the next value - initial value as the step value.
+
+（例）
+```javascript
+[2 ~ 4 ~ 10] = 2 , 4 , 6 , 8 , 10
+[1 ~ 3 ~ 10] = 1 , 3 , 5 , 7 , 9
 ```
 
 ## `~`	(continuous list construction prefix operator) []({#-tilde(continuous-list-construction-prefix-operator)})
@@ -829,8 +846,6 @@ The block construction prefix operator is the construction of blocks by indentat
 ```
 The following inline block construction with parentheses has the same meaning, so it's omitted.
 
-Here's the English translation:
-
 # About Metaprogramming
 
 In Sign, functionality for metaprogramming is provided.
@@ -841,6 +856,7 @@ Reserved words exist within declarations.
 ## About Reserved Words in Metaprogramming Declarations
 The following reserved words exist for defining operators.
 These reserved words are only valid within metaprogramming declarations and cannot be used in normal code.
+
 
 * `Prefix`		(prefix operator)
 * `Infix`		(infix operator without identity element)
@@ -891,7 +907,7 @@ Reason: Because it becomes a contributing factor to excessive abstraction (goes 
 For symbols enclosed in `"`, Sign can describe such behavior.
 Also, since macros can output variable code that should be executed at that time, use them carefully.
 
-The following is an example of overloading & as an operator for bit operations.
+The following is an example of defining && as an operator for bit operations.
 
 ```
 `Set the filename as bit.sn.
@@ -900,9 +916,7 @@ The following is an example of overloading & as an operator for bit operations.
 `The implementation definition of the operator is described in Sign language or assembly language.
 
 "
-	InfixL $ && '
-
-	&& : x y ?
+	infixL && : x y ?
 		unsafe@
 			r0 # x
 			r1 # y
