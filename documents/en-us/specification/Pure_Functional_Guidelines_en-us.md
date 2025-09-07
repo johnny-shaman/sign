@@ -66,11 +66,8 @@ classify : x ?
 
 #### Pattern B: Pure general processing only
 ```sign
-` ✅ Valid: Block with general processing only (automatically converted to list)
-process_steps : data ?
-	step1 data
-	step2 result
-	step3 final
+` ✅ Valid: General processing only
+process_steps : data ? step1 step2 step3 data
 ```
 
 #### Pattern C: Proper hierarchical mixing (reference example)
@@ -182,22 +179,6 @@ helper_data : precomputed_expensive_operation
 process_function : input ?
 	transform input config_value helper_data
 ```
-
-### 5.2 Considerations for Use
-
-**However, please keep in mind that this goes against fundamental functional programming principles.**
-
-- **Introduction of global state**: File scope variables are essentially global variables
-- **Testing difficulties**: Unit testing becomes complex due to dependency on external state
-- **Parallel execution constraints**: Risk of race conditions due to shared state
-
-### 5.3 Appropriate Use Cases
-
-Consider file scope only in the following cases:
-
-- Configuration values or configurations
-- Constants that require computationally expensive initialization
-- Immutable data shared across the entire program
 
 ## 6. Avoiding get Operator Dependency
 

@@ -1,332 +1,267 @@
-# Sign Language Unit (`_`) Specification
+# Sign Language Unit (`_`) Specification: Bialgebraic Foundation
 
 ## 1. Introduction
 
-The Unit value (`_`) in Sign language is a core concept that forms the foundation of the language design, possessing mathematically consistent properties. This document provides comprehensive coverage from theoretical foundations to implementation details of Unit.
+The Unit value (`_`) in Sign language is a core concept that forms the foundation of the language design, possessing mathematically consistent properties as the unit element of bialgebra. This document provides comprehensive coverage from the category-theoretic foundation to implementation details of Unit.
 
-## 2. Mathematical Foundations of Unit
+## 2. Mathematical Foundation as Bialgebra
 
 ### 2.1 Basic Properties
 
+- **Unit element of bialgebra**: Unit element of both list structure (coalgebra) and function composition (algebra)
 - **Value property**: `_ = []` (equivalent to empty list)
-- **Left identity**: `_ X = X` (applying Unit from the left returns the argument unchanged)
-- **Function identity**: `F _ = F` (in arithmetic and logical categories, passing Unit as an argument returns the function itself)
-- **Duality**: Functions as both a value and a function simultaneously
-- **Logical evaluation**: `_` evaluates to false
-- **Address**: `$_ = 0x0` (Unit's address value is 0)
-- **Input**: `@_ = _` (absorbing element behavior)
-- **Output**: `$_ # X` behaves like file movement to /dev/null
+- **Function property**: Functions as identity morphism
+- **Logical evaluation**: `_` evaluates to false (incidental property)
+- **Important distinction**: `_ ≠ 0` (clearly different from numeric zero)
 
-### 2.2 Category-Theoretic Background
+### 2.2 Definition of Bialgebraic Structure
 
-In category theory, Unit plays the role of identity morphism and natural transformation:
+The list structure in Sign language forms a bialgebra `(List, unit, join, extract, duplicate)`:
 
-- **Identity morphism**: Functions as `_ : X → X`
-- **Natural transformation**: Neutral transformation in function composition
-- **Partial application transformer**: Unit position indicates order transformation
+**Algebraic structure (Monad)**:
+- `unit : A → List A` where `unit(x) = [x]`
+- `join : List(List A) → List A` where `join([[a₁, a₂], [b₁, b₂]]) = [a₁, a₂, b₁, b₂]`
+
+**Coalgebraic structure (Comonad)**:
+- `extract : List A → A` where `extract([x]) = x`, `extract([]) = _`
+- `duplicate : List A → List(List A)` where `duplicate([a, b]) = [[a], [b]]`, `duplicate([]) = [[]]`
+
+### 2.3 Category-Theoretic Proof: `_` as Bialgebraic Unit Element
+
+**Theorem**: `_` is the unit element of bialgebra `(List, unit, join, extract, duplicate)`
+
+**Proof**:
+
+#### Proof of Monad Unit Element
+```
+_ >>= f = f(_) = f([])     // left unit law
+m >>= (\x → _) = _         // right unit law
+
+Examples:
+_ >>= [+ 2] = [+ 2](_) = [+ 2]
+[1,2,3] >>= (\x → _) = _
+```
+
+#### Proof of Comonad Unit Element
+```
+extract(_) = extract([]) = _           // extraction law
+duplicate(_) = duplicate([]) = [[]] = [_]   // duplication law
+```
+
+#### Verification of Bialgebraic Compatibility Conditions
+```
+extract ∘ unit = id:
+extract(unit(_)) = extract([_]) = _ = id(_) ✓
+
+duplicate ∘ unit = unit ∘ unit:
+duplicate(unit(_)) = duplicate([_]) = [[_]]
+unit(unit(_)) = unit([_]) = [[_]] ✓
+```
 
 ## 3. Complete Specification of Unit Operations
 
-### 3.1 Interaction Between Logical Operators and Unit
+### 3.1 Operations in Function Context
 
-Logical operators are based on short-circuit evaluation, and their interaction with Unit is defined as follows:
-
-#### 3.1.1 Logical AND (`&`)
-
+#### 3.1.1 Interaction with Arithmetic Operators
 ```
-` If Unit is the left operand, return Unit (_) (short-circuit evaluation)
-_ & X
-`→ _
+`Generate partial application as unit element of functions
+_ + X → [+ X]
+X + _ → [X +]
 
-` If Unit is the right operand, return Unit (_) (evaluate up to right operand)
-X & _
-`→ _
-
-` If left operand is true, return the value of the right operand
-true_value & X
-`→ X
+`Similarly for other operators
+_ - X → [- X]    X - _ → [X -]
+_ * X → [* X]    X * _ → [X *]
+_ / X → [/ X]    X / _ → [X /]
+_ % X → [% X]    X % _ → [X %]
+_ ^ X → [^ X]    X ^ _ → [X ^]
 ```
 
-#### 3.1.2 Logical OR (`|`)
-
+#### 3.1.2 Interaction with Comparison Operators
 ```
-` If Unit is the left operand, evaluate the right operand
-_ | X
-`→ X
-
-` If left operand is true, return the left operand (short-circuit evaluation)
-X | _
-`→ X
-
-` If left operand is false, evaluate the right operand
-false_value | X
-`→ X
+`Generate comparison functions as unit element of functions
+_ < X → [< X]    X < _ → [X <]
+_ <= X → [<= X]  X <= _ → [X <=]
+_ = X → [= X]    X = _ → [X =]
+_ >= X → [>= X]  X >= _ → [X >=]
+_ > X → [> X]    X > _ → [X >]
+_ != X → [!= X]  X != _ → [X !=]
 ```
 
-#### 3.1.3 Exclusive OR (`;`)
-
+#### 3.1.3 Function Application
 ```
-` Exclusive OR with Unit always returns the other value
-_ ; X
-`→ X
+`Functions as identity morphism
+_ X → [X]
 
-` Exclusive OR with Unit always returns the other value
-X ; _
-`→ X
+`Returns identity morphism when applied to function
+F _ → F
 ```
 
-#### 3.1.4 Negation (`!`)
+### 3.2 Operations in List Context
 
+#### 3.2.1 List Concatenation
 ```
-` Negation of Unit (treated as false) returns a non-Unit value (treated as true)
-!_
-```
+`Unit element as empty list
+_ [X] → [X]
+[X] _ → [X]
 
-### 3.2 Interaction Between Arithmetic/Comparison Operators and Unit
-
-In interactions with operators other than Unit, partially applied lambda expressions are returned:
-
-#### 3.2.1 Arithmetic Operators (`+`, `-`, `*`, `/`, `%`, `^`)
-
-```
-` "If Unit is replaced, add X" lambda is returned
-_ + X
-` →[y ? y + X]
-
-` "If Unit is replaced, add to X" lambda is returned
-X + _
-` →[y ? X + y]
+`Explicit arithmetic operations between lists result in type error
+[_] + [X] → TypeError
+[A] * [B] → TypeError
 ```
 
-Similarly:
+#### 3.2.2 List Operations
 ```
-_ - X
-` → [y ? y - X]
-X - _
-` → [y ? X - y]
-_ * X
-` → [y ? y * X]
-X * _
-` → [y ? X * y]
-_ / X
-` → [y ? y / X]
-X / _
-` → [y ? X / y]
-_ % X
-` → [y ? y % X]
-X % _
-` → [y ? X % y]
-_ ^ X
-` → [y ? y ^ X]
-X ^ _
-` → [y ? X ^ y]
+`Map of empty list is empty list
+map f _ → _
+
+`Fold of empty list is initial value
+fold f init _ → init
 ```
 
-#### 3.2.2 Comparison Operators (`<`, `<=`, `=`, `>=`, `>`, `!=`)
+### 3.3 Operations in Logical Context
 
+In logical operations, incidentally functions as `false`:
+
+#### 3.3.1 Logical AND (`&`)
 ```
-` "If Unit is replaced, compare with <X" lambda is returned
-_ < X
-` → [y ? y < X]  
-
-` "If Unit is replaced, compare X<" lambda is returned
-X < _
-` → [y ? X < y]
+_ & X → _    `short-circuit evaluation
+X & _ → _    `evaluate up to right operand
 ```
 
-Similarly:
+#### 3.3.2 Logical OR (`|`)
 ```
-_ <= X
-` → [y ? y <= X]
-X <= _
-` → [y ? X <= y]
-_ = X
-` → [y ? y = X]
-X = _
-` → [y ? X = y]
-_ >= X
-` → [y ? y >= X]
-X >= _
-` → [y ? X >= y]
-_ > X
-` → [y ? y > X]
-X > _
-` → [y ? X > y]
-_ != X
-` → [y ? y != X]
-X != _
-` → [y ? X != y]
+_ | X → X    `evaluate right operand since left operand is false
+X | _ → X    `short-circuit evaluation if left operand is true
 ```
 
-### 3.3 Interaction Between Function Application and Unit
-
+#### 3.3.3 Exclusive OR (`;`)
 ```
-` Unit behaves as left identity
-_ X
-` → X
-
-` Applying Unit to a function returns the function itself
-F _
-` → F
+_ ; X → X
+X ; _ → X
 ```
 
-## 4. Optimal Implementation on ARM64
+#### 3.3.4 Negation (`!`)
+```
+!_ → true equivalent
+```
 
-### 4.1 Unit Value Representation
+### 3.4 Address/Input-Output Operations
 
-- **Dedicated xZR usage**: Use xZR as Unit representation register (always holds zero)
-- **Callee-saved**: Maintain consistency across functions
+```
+`Reference to Unit itself
+$_ → _
 
-### 4.2 Empty Stack Processing Using Conditional Instructions
+`Input from Unit is absorbed
+@_ → _
+
+`Output to Unit is nullified (/dev/null equivalent)
+_ # X → _
+```
+
+## 4. Distributive Laws of Bialgebra
+
+The functionalization of operators in Sign language is expressed as distributive laws of bialgebra:
+
+```
+`Distributive law: (f ⊗ g)(unit(x)) = unit(f(x)) ⊗ unit(g(x))
+(+ ⊗ *)(unit(x)) = unit(+(x)) ⊗ unit(*(x))
+
+Examples:
+_ + 3 → [+ 3]    `generates unit(+(3))
+_ * 5 → [* 5]    `generates unit(*(5))
+```
+
+This distributive law derives natural functionalization and partial application of operators from the bialgebraic structure.
+
+## 5. Optimal Implementation on ARM64
+
+### 5.1 Unit Value Representation
+
+- **NULL pointer usage**: Represent Unit value as NULL pointer
+- **Conditional instruction utilization**: Optimize Unit judgment with AArch64 conditional instructions
+- **Register optimization**: Utilize characteristics of xZR register
+
+### 5.2 Bialgebraic Operation Optimization
 
 ```assembly
-// Efficient empty stack POP using conditional instructions
-cmp sp, xZR              // Check stack boundary
-csel x0, xZR, x0, eq     // If empty, Unit; otherwise stack value
-cbnz sp, .pop_value      // Branch only if actual POP operation is needed
-.continue:
-// Continue processing
+// Implementation example of _ + X
+cmp x0, #0               // Unit judgment
+b.eq .generate_partial   // Generate partial application if Unit
+// Normal addition processing
 
-.pop_value:
-ldr x0, [sp], #8         // Actual POP operation
-b .continue
-```
-
-### 4.3 Efficient Processing of Unit Functions (Empty Function Pointers)
-
-```assembly
-// Function pointer processing using conditional instructions
-cmp x9, #0               // Check if function pointer is NULL
-csel x16, x30, x9, eq    // If NULL, x30 (link register); otherwise function pointer
-blr x16                  // Conditional call (essentially NOP if NULL)
-```
-
-### 4.4 Implementation of Partial Application and Order Transformation
-
-```assembly
-// Compilation result of myFunc _ 4 (order transformation)
-// 1. Capture fixed argument
-mov w8, #4               // Load fixed argument (4)
-str w8, [x28]            // Save to closure environment
-
-// 2. Generate transformed function
-adr x9, .Ltransformed    // Address of transformed function
-mov x0, x9               // Set function pointer as return value
-ret
-
-// 3. Implementation of transformed function
-.Ltransformed:
-ldr w1, [x28]            // Get fixed argument (4)
-mov w9, w0               // Save newly provided argument
-mov w0, w9               // Set as first argument (order transformation)
-bl myFunc                // Call original function
+.generate_partial:
+adr x1, .add_closure     // Address of [+ X] closure
+mov x0, x1               // Return function pointer
 ret
 ```
 
-### 4.5 Optimization Benefits of Conditional Instructions
+### 5.3 Optimization Using Conditional Instructions
 
-1. **Avoiding branch misprediction**: Prevents pipeline stalls
-2. **Instruction count reduction**: More efficient execution paths
-3. **Instruction-level parallelism**: Can execute in parallel with other instructions
-4. **Efficiency on modern processors**: High performance on latest ARM64 processors
-
-### 4.6 Optimization Patterns
-
-- **Conditional selection (CSEL)**: Optimal for Unit/value selection
-- **Conditional increment (CINC)**: Counter operation optimization
-- **Conditional set (CSET)**: Flag-based computation optimization
-- **Conditional data processing (CCMP)**: Efficient handling of compound conditions
-
-## 5. Practical Examples and Applications
-
-### 5.1 Conditional Branching Using Unit
-
-```sign
-` Return x if x is positive, otherwise return Unit
-isPositive : x ? x > 0
-
-` Usage examples
-` Returns "negative or zero"
-result : isPositive -5 | `negative or zero`
-
-` Returns 10
-result : isPositive 10 | `negative or zero`
+```assembly
+// Integration of Unit judgment and processing
+cmp x0, #0               // Unit judgment
+csel x1, xZR, x0, eq     // xZR if Unit, x0 otherwise
+cbnz x1, .normal_process // Normal processing
+// Unit-specific processing
 ```
 
-### 5.2 Partial Application Using Unit
+## 6. Practical Examples and Applications
+
+### 6.1 Function Composition Utilizing Bialgebraic Properties
 
 ```sign
-add : x y ? x + y
-` Lambda that waits for something to be input to y
-addSomething : add _
+`Bialgebraic representation of map operation
+map_double : [* 2,]
+result : map_double [1, 2, 3, 4]  `→ [2, 4, 6, 8]
 
-` Usage examples
-` Result is "add 5" function
-addFive : addSomething 5
-` Result is 8
-addFive 3
+`Chain of partial applications
+
+`Function composition
+add_then_multiply : [+] [* 2]
+
+result : add_then_multiply 3 5  `→ (5 + 3) * 2 = 16
 ```
 
-### 5.3 Argument Order Transformation
+### 6.2 Conditional Branching Using Unit
 
 ```sign
-` Example of order transformation through partial application
-myFunc : x y z ? x * y + z
+`Utilizing logical properties of Unit
+safe_divide : x y ?
+    y = 0 & _ | [x / y]
 
-` Specifying _ in the 2nd argument position transforms argument order
-partialFunc : myFunc _ 4 7  `Fix y=4, z=7
-
-` On call: partialFunc 3 is equivalent to myFunc 3 4 7
-result : partialFunc 3  `Result is 3 * 4 + 7 = 19
+result : safe_divide 10 0   `→ _ (Unit)
+result : safe_divide 10 2   `→ [5] (result list)
 ```
 
-## 6. Handling Unevaluated Lambdas
-
-### 6.1 Evaluation in Logical Context
-
-- Unexecuted lambda terms evaluate to false
-- In other contexts, they are treated as normal lambdas
-
-### 6.2 Function Existence Checking
+### 6.3 Natural Transformation of Bialgebra
 
 ```sign
-` Existence check using address operator
-$func & `exists` | `does not exist`
+`Unit as natural transformation
+natural_transform : f list ?
+    f _ ` list  `processing for empty case
+    f list      `normal processing
+
+example : natural_transform [* 2,] 1, 2, 3
 ```
 
-### 6.3 Type Checking
+## 7. Design Principles and Theoretical Significance
 
-```sign
-` Function determination through type checking
-"f" = "?" & `is a function` | `is not a function`
-```
+### 7.1 Consistency as Bialgebraic Unit Element
 
-## 7. Compiler Static Optimization Strategies
+1. **Algebraic consistency**: Unit element of function composition satisfying monad laws
+2. **Coalgebraic consistency**: Unit element of list structure satisfying comonad laws
+3. **Bialgebraic compatibility**: Preserves interaction between algebra and coalgebra
+4. **Natural transformation property**: Provides natural transformation between functions and lists
 
-1. **Flow analysis**: Static tracking of stack state and function pointer state
-2. **Redundant check elimination**: Remove checks when state is statically known
-3. **Inlining**: Inline expansion of small functions or Unit functions
-4. **Loop optimization**: Loop conversion of recursive functions
-5. **Register allocation**: Efficient management of Unit-dedicated and general registers
+### 7.2 Integration with Implementation Efficiency
 
-## 8. Design Principles
+- **Theoretical purity**: Design based on deep mathematical foundation
+- **Implementation efficiency**: Highly efficient machine code generation on ARM64
+- **Type safety**: Compile-time verification of bialgebraic structure
+- **Optimization capability**: Automatic optimization utilizing bialgebraic properties
 
-The Unit operation design in Sign language is based on the following principles:
+## 8. Conclusion
 
-1. **Consistency**: Unit provides a consistent way to represent "no value yet" or "invalid value"
-2. **Natural short-circuit evaluation**: Provides semantically correct short-circuit evaluation in logical operations
-3. **Partial application extension**: Extends the partial application mechanism by returning lambdas even for arithmetic and comparison operators
-4. **Error avoidance**: Enables flexible programming by returning Unit or lambdas rather than generating runtime errors
+The Unit (`_`) in Sign language is not merely a "convenient symbol" but a foundational language element with deep mathematical structure as the unit element of bialgebra. By functioning as the unit element of both monads and comonads, it enables unified representation of functional programming and list processing, providing the theoretical foundation for "invisible strong typing" and "zero-cost abstraction".
 
-## 9. Integration of Theory and Implementation
-
-The Unit design in Sign language brilliantly integrates deep mathematical foundations with efficient implementation:
-
-- **Category-theoretic foundation**: Unit concept functions as identity morphism and natural transformation
-- **Functional paradigm**: Partial application and composition are naturally expressed
-- **Exception-free design**: All operations have mathematically consistent results
-- **Execution efficiency**: Maintains theoretical beauty while enabling highly efficient code generation
-
-Sign language achieves both theoretical purity and practical efficiency through the concepts of "invisible strong typing" and "Unit". By leveraging ARM64 architecture's conditional instructions, Unit processing—a core feature of Sign language—can be maximally optimized.
-
-This implementation approach gives Sign language tremendous potential as a language that is not only theoretically beautiful but also operates with high efficiency in actual computing environments.
+This bialgebraic design realizes Sign language as theoretically beautiful, implementation-efficient, and intuitively accessible to programmers.

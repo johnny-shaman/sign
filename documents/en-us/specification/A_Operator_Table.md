@@ -1,9 +1,16 @@
 # Sign Language Operator Symbol Table (Priority Order)
 
 ## Basic Principles
+- Prefix operators must be placed immediately before the target value (must not be separated from the target value by spaces)
+- Postfix operators must be placed immediately after the target value (must not be separated from the target value by spaces)
+- Infix operators must be placed between target values and separated by spaces
 - Expression using only operators without reserved words
 - Alignment between natural meaning of symbols and operational meaning
 - Arranged from lowest priority (evaluated later) to highest priority
+- Coproduct operators can be considered as simple delimiters, and all spaces can be regarded as coproduct operators
+- The reason spaces can be regarded as delimiters is that the priority with product operators can be appropriately determined in subsequent processing
+- Line breaks can also be considered as operators, in which case their function has the meaning of evaluation on a line-by-line basis
+- The meaning of line breaks can be replaced with either `|`, `,`, or ` ` (space)
 
 ## Complete Operator List
 
@@ -12,11 +19,11 @@
 | 1 | `#` | prefix | export | Hashtag (public/discoverable) | Make name discoverable from outside |
 | 2 | `:` | infixR | define | That is (identification) | Bind left-hand name to right-hand value |
 | 3 | `#` | infix | output | Hashtag (association) | Associate data with address |
-| 4 | ` ` | infix | push | Coproduct (concatenation) | Add to list |
-| 4 | ` ` | infix | concat | Coproduct (concatenation) | List concatenation |
-| 4 | ` ` | infix | construct | Coproduct (concatenation) | Left-associative list construction |
-| 5 | ` ` | infix | apply | Coproduct (concatenation) | Function application |
-| 6 | ` ` | infix | compose | Coproduct (concatenation) | Left-associative function composition |
+| 4 | ` ` | infix | apply | Coproduct (concatenation) | Function application |
+| 5 | ` ` | infix | compose | Coproduct (concatenation) | Left-associative function composition |
+| 6 | ` ` | infix | push | Coproduct (concatenation) | Add to list |
+| 6 | ` ` | infix | concat | Coproduct (concatenation) | List concatenation |
+| 6 | ` ` | infix | construct | Coproduct (concatenation) | Left-associative list construction |
 | 7 | `?` | infixR | lambda | Question (what to do?) | Function definition |
 | 8 | `,` | infixR | product | Product (structural assembly) | List construction |
 | 9 |  `~` | infix | range | Around (range vicinity) | Range list construction |
@@ -52,6 +59,8 @@
 | 25 | `\t` | prefix | indent | Indent | Indented block construction |
 
 ※Conditional branching is only represented by match_case expressions using function block syntax.
+※When you want to perform function composition with right associativity, use parentheses to make it explicit.
+
 
 ## Special Symbols
 

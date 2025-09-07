@@ -2,19 +2,19 @@
 
 ## 1. The Essence of "Invisible Strong Static Typing"
 
-Sign language realizes the seemingly contradictory characteristic of being "strongly statically typed yet typeless." This is an innovative approach in language design:
+Sign language's type system adopts a different approach from conventional programming languages. In particular, the concept of "invisible strong static typing" aims to ensure type safety without making programmers conscious of the existence of types.
+The essence of this type is guaranteed as follows:
 
-- **Strong static typing aspect**: All values have clear types, and type mismatches are detected at compile time
-- **Typeless aspect**: Programmers do not need to explicitly declare types and can code without being conscious of types
-
-This duality is realized through a "list-based unified data model." Since all computational objects are unified under the concept of lists, the existence of types is not made apparent on the surface.
+- **Name = Type**: The name of an identifier itself expresses the type, making explicit type declarations unnecessary
+- **Value = Type**: Values themselves have types, and type mismatches are detected at compile time
+- **Syntax = Type**: The language syntax guarantees types, allowing programmers to code without being conscious of types
 
 ## 2. List-Based Unified Data Model
 
 Sign language's type system is built around the unified concept of lists:
 
 - **Strings** = List of characters ("lists of characters are treated as strings")
-- **Boolean evaluation** = Pattern matching of values ("empty lists and unexecuted lambda terms are false")
+- **Boolean evaluation** = Pattern matching of values ("empty lists and unevaluated lambda terms are false")
 - **Functions** = List of operations, or functionalization of operators
 - **Collections** = List of values, or list of key-value pairs
 
@@ -38,8 +38,8 @@ Comparison operations in Sign language have the characteristic of returning conc
 ### 4.1 Basic Principle
 
 - When a comparison condition evaluates to `true`, the comparison operation returns **the value of the variable term**
-  - Usually the value of the right side (especially variables) is returned
-  - When the right side is a constant literal, the variable value on the left side is returned
+  - Usually the value of the left side (especially variables) is returned
+  - When the left side is a constant literal, the variable value on the right side is returned
   - Essentially, it returns the variable that is "meaningful as a value" in the comparison
 - When a comparison condition evaluates to `false`, the comparison operation returns **Unit (`_`)**
 - This mechanism allows conditional branching to be treated directly as values without boolean conversion
