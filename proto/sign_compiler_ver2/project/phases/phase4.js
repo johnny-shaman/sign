@@ -9,7 +9,7 @@
 
 function phase4(input) {
 
-    return input.replace(/^([\s\S]+)(\n)(\t+[\s\S]+)(\n)/gm, console.log);
+    return input.replace(/^([\s\S]+)(\n)((\t+[\s\S]+))+(\n)/gm, console.log);
 
     return input
     .replace(/^(\t*)((\w+[ ,]?)+)([:?] *)$/gm, '$& [')
