@@ -13,7 +13,7 @@ function phase3(input) {
             m => m.replace(/[|]/g, '[$&')
         )
         .replace(
-            /(?<=\S)[|]+(?=\s|$)/g,
+            /(?<=\S)[|]+(?=\s|$)/gm,
             m => m.replace(/[|]/g, '$&]')
         );
 }

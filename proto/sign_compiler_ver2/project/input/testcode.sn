@@ -18,6 +18,8 @@ x :
 	f : y ?
 		y = 0 : x ' v
 		y = 1 : y
+		y = 2 : `Hello	world` \
+		 `better	world	on Sign`
 	w : 10
 	s : `hello	` \
 	 `	world`
@@ -33,9 +35,9 @@ func3 : {a, b, c} \( \) \{ \} \[ \]
 abc | def
 abc d e f
 
-	|abc|
-	|abc - def|
-	|abc d e f|
+	|abc| + def
+	|abc - def| * ghi
+	xyz + |abc d e f|
 	|abc + def - ghi|
 	||abc| + def - ghi|
 	|abc + |def| - ghi|
@@ -46,3 +48,4 @@ abc d e f
 	|abc + ||def| - ghi||
 	|||abc| + def| - ghi|
 	|abc + |def - |ghi|||
+	|abc + |def - |ghi||| - 34
