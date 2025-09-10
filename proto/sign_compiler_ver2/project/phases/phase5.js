@@ -10,23 +10,14 @@
 
 function phase5(input) {
     // 左単位元の中置演算子のみを抽出（優先順位の高い順）
-    const leftAssociativeOperators = [
-        "'",           // 22. 取得
-        "\\*",         // 16. 乗算
-        "/",           // 16. 除算
-        "%",           // 16. 剰余
-        "\\+",         // 15. 加算
-        "-",           // 15. 減算
-        "<",           // 14. より小さい
-        "<=",          // 14. 以下
-        "=",           // 14. 等しい
-        ">=",          // 14. 以上
-        ">",           // 14. より大きい
-        "!=",          // 14. 等しくない
-        "&",           // 12. 論理積
-        ";",           // 11. 排他的論理和
-        "\\|",         // 11. 論理和
-        "~"            // 9. 範囲リスト構築
+    const OperatorList = [
+        {'^': { precedence: 17, associativity: 'right' }},   // 冪乗
+        {'/': { precedence: 16, associativity: 'left' }},   // 除算
+        {'*': { precedence: 16, associativity: 'left' }},   // 乗算
+        {'-': { precedence: 15, associativity: 'left' }},   // 減算
+        {'+': { precedence: 15, associativity: 'left' }},   // 加算
+        {'?': { precedence: 7, associativity: 'right' }},   // ラムダ構築  
+        {':': { precedence: 2, associativity: 'right' }},   // 定義
     ];
 
     let result = input;
@@ -98,3 +89,4 @@ function processOperator(text, operator) {
 }
 
 module.exports = { phase5 };
+

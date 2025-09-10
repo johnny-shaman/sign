@@ -1,17 +1,34 @@
-// phases/phase1.js
-// Phase1:改行コード統一、文字列と文字トークンにカッコ付け
+// phases/phase2.js
+// Phase1: コメントを削除、改行コードとカッコの統一
 
 /**
- * 改行コード統一後、文字列と文字トークンにカッコ付け処理を実行
- * @param {string} input - Phase1で処理されるコード
- * @returns {string} - トークンにカッコを付けたコード
+ * Phase2のコメントと空行を削除、改行コードとカッコの統一を実行
+ * @param {string} input - 入力されたSign言語のコード
+ * @returns {string} - 前処理後のコード
  */
 
-function phase1(input) {
+function phase2 (input) {
     return input
-    .replace(/(\r\n)|[\r\n]/g, '\n')
-    .replace(/((?!^[`].*)(`[^`\r\n]*`))|(\\[\s\S])/gm, '[$&]')
-    .replace(/(\[\\\n\])\t+/g, '$1')
+        .replace(/(\r\n)|[\r\n]/g, '\n') //改行コード統一
+        .split('\n') //行で分割して配列化
+        .map(
+                    // バリデーション
+            line => line && line 
+                // コメントなら空行にする
+                .replace(/^((`[\s\S]*))$/gm, '\n')
+                // カッコ統一のための置換処理
+                .replace(
+                    /([^`]+)|`[^`\r\n]*`/g,
+                    (m, c1) => (
+                        c1
+                        ? c1
+                            .replace(/(?<!\\)([({])/g, '[')
+                            .replace(/(?<!\\)([)}])/g, ']')
+                        : m
+                    )
+                )
+        )
+        .join('\n');
 }
 
-module.exports = { phase1 };
+module.exports = { phase2 };
