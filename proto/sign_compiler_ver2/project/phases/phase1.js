@@ -1,4 +1,4 @@
-// phases/phase2.js
+// phases/phase1.js
 // Phase1: コメントを削除、改行コードとカッコの統一
 
 /**

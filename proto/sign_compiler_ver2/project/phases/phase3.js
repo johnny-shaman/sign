@@ -1,5 +1,5 @@
-// phases/phase4.js
-// Phase4: ブロック構文を判定し、カッコ付けを行う
+// phases/phase3.js
+// Phase3: ブロック構文を判定し、カッコ付けを行う
 
 /**
  * Phase3のブロック構文判定とカッコ付け処理を実行
@@ -7,12 +7,16 @@
  * @returns {string} - ブロック構文をカッコ付けしたコード
  */
 
+
+
 function phase3(input) {
 
-    return input.replace(/^(((\[\s*\n)(^\s+.*\n)*(\]\n))|(([\w ]*[:?] *\n)(^\s+.*\n)*\n))/gm,
+    return input
+    .replace(/^((([\w\s]*[:?] *)+\n)(^\t+[^\[\]\n\r]*\n)*)/gm,
         m => m
-        .replace(/[?:]\s*(?=\n)/g, '$& [')
-    );
+        .replace(/[?:](?=\s*\n)/g, '$& [')
+        .replace(/^(\t+)([^\[\]\n\r]*)(\n)/gm, '$1[$2]$3')
+    )
 
     return input
     .replace(/^(\t*)((\w+[ ,]?)+)([:?] *)$/gm, '$& [')
