@@ -12,10 +12,11 @@
 function phase3(input) {
 
     return input
-    .replace(/^((([\w\s]*[:?] *)+\n)(^\t+[^\[\]\n\r]*\n)*)/gm,
+    .replace(/^(((.+[:?] *)+\n)(^\t+.*\n)+)/gm,
         m => m
-        .replace(/[?:](?=\s*\n)/g, '$& [')
-        .replace(/^(\t+)([^\[\]\n\r]*)(\n)/gm, '$1[$2]$3')
+        .replace(/((\w+ )+)([?:])(?:\s*\n)(((^\t+).*\n)+)/g, '$1$3 [\n$4]\n')
+        .replace(/^(\t+).*)(\n)/gm, '$1[$2]$3')
+        
     )
 
     return input

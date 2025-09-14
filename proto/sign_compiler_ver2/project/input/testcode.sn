@@ -14,6 +14,11 @@ My : \M \y \  \D \o \m \e \s \t \i \c
 test : 100 + 5! * -3.14
 `コメント2`
 
+myConstructor : myX myY myZ ?
+	myX
+	myY
+	myZ
+
 [
 	x y ?
 		x < 3 : y
