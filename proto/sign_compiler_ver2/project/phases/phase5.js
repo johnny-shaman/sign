@@ -42,16 +42,48 @@ function phase5(input) {
         for (const token of reversedTokens) {
             console.log(`処理中のトークン: ${token}`);
 
-            // 5-3-1. オペランドの場合（数値、識別子）
+            // 5-3-1. 逆順での開きカッコ処理（元の ']'）
+            if (token === ']') {
+                operatorStack.push(token);
+                console.log(`開きカッコプッシュ: ${token}, Stack: [${operatorStack.join(', ')}]`);
+                continue;
+            }
+
+            // 5-3-2. 逆順での閉じカッコ処理（元の '[' と '[|'）
+            if (token === '[' || token === '[|') {
+                // 対応する開きカッコが見つかるまでスタックからポップ
+                while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== ']' && operatorStack[operatorStack.length - 1] !== '|]') {
+                    const poppedOperator = operatorStack.pop();
+                    outputQueue.push(poppedOperator);
+                    console.log(`カッコ内演算子ポップ: ${poppedOperator}, Queue: [${outputQueue.join(', ')}]`);
+                }
+
+                // 対応する開きカッコの処理
+                if (operatorStack.length > 0) {
+                    const poppedBracket = operatorStack.pop();
+
+                    if (poppedBracket === ']') {
+                        // 通常のカッコは削除（出力キューには送らない）
+                        console.log(`対応する開きカッコ削除: ${poppedBracket}, Stack: [${operatorStack.join(', ')}]`);
+                    } else if (poppedBracket === '|]') {
+                        // 絶対値は演算子として出力キューに送る
+                        outputQueue.push('|_|');  // 絶対値演算子として
+                        console.log(`絶対値演算子追加: |_|, Queue: [${outputQueue.join(', ')}]`);
+                    }
+                }
+                continue;
+            }
+
+            // 5-3-3. オペランドの場合（数値、識別子）
             // - 直接outputQueueに追加
             // - 例: "123", "variable"
-            if (!isOperator(token)) {
+            if (!isOperator(token) && token !== '[' && token !== ']' && token !== '[|' && token !== '|]') {
                 outputQueue.push(token);
                 console.log(`オペランド追加: ${token}, Queue: [${outputQueue.join(', ')}]`);
                 continue;
             }
 
-            // 5-3-2. 演算子の場合
+            // 5-3-4. 通常の演算子の場合
             // - while文でスタックから条件に合う演算子をポップ
             // - shouldPopOperator判定（反転された結合性で判定）:
             //   A. スタックトップの優先度 > 現在の演算子の優先度
@@ -172,16 +204,17 @@ function createReversedPrecedenceTable() {
  * @returns {Array} トークンの配列
  */
 function tokenize(text) {
-    const regex = /\[\||\|\]|[\[\]]|[^ \t\[\]|]+/g;
+    const regex = /\[[a-zA-Z0-9_\s,~]+\]|\[\`[^`]*\`\]|\[\||\|\]|[\[\]]|[^ \t\[\]|]+/g;
     /*
     正規表現の構成要素:
-    1. \[\|            - 絶対値開始記号 [| を個別トークンとして認識
-    2. \|\]            - 絶対値終了記号 |] を個別トークンとして認識
-    3. [\[\]]          - 通常のカッコ [ または ] を個別トークンとして認識
-    4. [^ \t\[\]|]+    - 以下以外の連続する文字をトークンとして認識:
-                         スペース（ ）/タブ（\t）/角カッコ（[ ]）/パイプ（|）
-    注意: より具体的なパターン（1-3）を先に記述することで、
-          意図しないマッチを防いでいる
+     \[[a-zA-Z0-9_\s,]+\]| - カッコ内「識別子、空白、コメント、積、中置~のみ」一つのトークンとして認識
+     \[\`[^`]*\`\]        - 文字列[``]を個別トークンとして認識
+     \[\|                 - 絶対値開始記号 [| を個別トークンとして認識
+     \|\]                 - 絶対値終了記号 |] を個別トークンとして認識
+     [\[\]]               - 通常のカッコ [ または ] を個別トークンとして認識
+     [^ \t\[\]|]+         - 以下以外の連続する文字をトークンとして認識:
+                             スペース（ ）/タブ（\t）/角カッコ（[ ]）/パイプ（|）
+    注意: より具体的なパターンを先に記述することで、意図しないマッチを防いでいる
     */
     return text.match(regex) || [];
 }
@@ -206,6 +239,8 @@ function isOperator(token) {
  * @returns {boolean} ポップすべきならtrue、そうでなければfalse
  */
 function shouldPopOperator(stackTop, current, precedenceTable) {
+    // カッコと絶対値は最低優先度として扱う
+    if (stackTop === ']' || stackTop === '|]') return false;
     const stackInfo = precedenceTable[stackTop];
     const currentInfo = precedenceTable[current];
 
@@ -231,9 +266,20 @@ function buildPrefixExpression(prefixTokens) {
         console.log(`buildPrefix処理中: ${token}, スタック: [${stack.join(', ')}]`);
 
         if (!isOperator(token)) {
-            // オペランドはそのままスタックにプッシュ
-            stack.push(token);
-            console.log(`オペランドプッシュ: ${token}`);
+            // 絶対値演算子の特別処理（単項演算子）
+            if (token === '|_|') {
+                if (stack.length < 1) {
+                    throw new Error(`絶対値演算子 ${token} に対する被演算子が不足しています`);
+                }
+                const arg = stack.pop();
+                const expression = `[[|_|] ${arg}]`;
+                stack.push(expression);
+                console.log(`絶対値処理: ${token}, 結果: ${expression}`);
+            } else {
+                // オペランドはそのままスタックにプッシュ
+                stack.push(token);
+                console.log(`オペランドプッシュ: ${token}`);
+            }
         } else {
             // 演算子が来たら直前の2要素をpopして [[op] arg1 arg2] を構築
             if (stack.length < 2) {
@@ -258,7 +304,7 @@ function buildPrefixExpression(prefixTokens) {
 
 
 //test実行
-phase5(require('fs').readFileSync('./input/testcode_tmp.sn', 'utf8'));
+console.log(phase5(require('fs').readFileSync('./input/testcode_tmp.sn', 'utf8')));
 
 module.exports = { phase5 };
 
