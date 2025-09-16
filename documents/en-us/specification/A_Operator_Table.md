@@ -52,11 +52,17 @@
 | 22 | `'` | infix | get | Possessive ('s with s omitted) | Get value from structure |
 | 22 | `@` | infixR | get | At (at ~) | Get value from structure |
 | 23 | `@` | prefix | input | At (at ~) | Get data from address |
-| 24 | `@` | postfix | import | At (from ~) | Get from file |
-| 25 | `(...)` | enclosure | block | Block | Inline block construction |
-| 25 | `{...}` | enclosure | block | Block | Inline block construction |
-| 25 | `[...]` | enclosure | block | Block | Inline block construction |
-| 25 | `\t` | prefix | indent | Indent | Indented block construction |
+| 24 | `<<` | infix | shift Left | shift Left | Bit Shift to Left |
+| 24 | `>>` | infix | shift right | shift right | Bit Shift to right |
+| 25 | `\|\|` | infix | bit or | bit or | bit or |
+| 26 | `;;` | infix | bit xor | bit xor | bit xor |
+| 27 | `&&` | infix | bit and | bit and | bit and |
+| 28 | `!!` | prefix | bit not | bit flip | bit not |
+| 29 | `@` | postfix | import | At (from ~) | Get from file |
+| 30 | `(...)` | enclosure | block | Block | Inline block construction |
+| 30 | `{...}` | enclosure | block | Block | Inline block construction |
+| 30 | `[...]` | enclosure | block | Block | Inline block construction |
+| 30 | `\t` | prefix | indent | Indent | Indented block construction |
 
 ※Conditional branching is only represented by match_case expressions using function block syntax.
 ※When you want to perform function composition with right associativity, use parentheses to make it explicit.
