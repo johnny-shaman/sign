@@ -23,5 +23,4 @@
 | リストの反転 | `!list` | `![1 2 3]` | `[3 2 1]` |
 | 範囲リスト構築 | `[start ~ end]` | `[1 ~ 5]` | `[1 2 3 4 5]` |
 | 写像関数 | `[pointfree,] list or stream` | `[* 2,] [1 2 3]` | `[2 4 6]` |
-| フィルタ関数 | `[predicate,] list or stream` | `[% 2,] [1 2 3 4]` | `[1 3]` |
-| 折り畳み関数 | `[pointfree] list or stream` | `[+] [1 2 3 4]` | `10` |
+| 畳み込み関数 | `[pointfree] list or stream` | `[+] [1 2 3 4]` | `10` |
