@@ -68,7 +68,7 @@ const OperatorSemantics = {
         literal_list : 'push_left',
         list_literal : 'push_right',
         literal_literal : 'product',
-        '?' : 'lambda',
+        '?' : 'lambda_construct',
         ',' : 'product',
         '~' : 'range',
         '|' : 'or',
@@ -105,4 +105,64 @@ const OperatorSemantics = {
     }
 };
 
-module.exports = OperatorSemantics;
+const OperatorPriority = {
+    prefix : {
+        '#' : 1,
+        '~' : 10,
+        '!' : 14,
+        '$' : 22,
+        '@' : 24,
+        '!!' : 29,
+        '\t' : 31
+    },
+    infix : {
+        ':' : 2,
+        '#' : 3,
+        lambda_list : 4,
+        lambda_lambda : 5,
+        list_list : 6,
+        literal_list : 6,
+        list_literal : 6,
+        literal_literal : 8,
+        '?' : 7,
+        ',' : 8,
+        '~' : 9,
+        '|' : 11,
+        ';' : 12,
+        '&' : 13,
+        '<' : 15,
+        '<=' : 15,
+        '=' : 15,
+        '==' : 15,
+        '>=' : 15,
+        '>' : 15,
+        '!=' : 15,
+        '+' : 16,
+        '-' : 16,
+        '*' : 17,
+        '/' : 17,
+        '%' : 17,
+        '^' : 18,
+        "'": 23,
+        '@': 23,
+        '<<': 25,
+        '>>': 25,
+        '||': 26,
+        ';;': 27,
+        '&&': 28
+    },
+    postfix : {
+        '!' : 19,
+        '~' : 21,
+        '@' : 30
+    },
+    surround : {
+        '|_|' : 20
+    }
+};
+
+module.exports = {
+    OperatorSemantics,
+    OperatorPrecedence
+};
+
