@@ -14,8 +14,12 @@ function phase3(input) {
     return input
     .replace(/^(((.+[:?] *)+\n)(^\t+.*\n)+)/gm,
         m0 => m0
-        .replace(/\t+([\s\S]+)([\s\S]) *\n/gm,
-            (m1, _, g) => g.includes(/[?:\\]/) ? `[${m1}` : `[${m1}]`
+        .replace(/\t+( ?)([\s\S]+)([\s\S]) *\n/gm,
+            (m1, a, _, b) => b.includes(/[?:\\]/)
+                ? `[${m1}`
+                : a === ' '
+                    ? `${m1}]`
+                    : `[${m1}]`
         )
         .replace(/((\w+ )+)([?:])(?:\s*\n)(((^\t+).*\n)+)/g, '$1$3 [\n$4]\n')
         .replace(/^(\t+).*)(\n)/gm, '$1[$2]$3')
