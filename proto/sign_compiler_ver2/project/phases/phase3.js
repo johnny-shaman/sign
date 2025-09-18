@@ -10,25 +10,29 @@
 
 
 function phase3(input) {
-
-    return input
-    .replace(/^(((.+[:?] *)+\n)(^\t+.*\n)+)/gm,
+    let result = input.replace(
+        /^(((.+[:?] *)+\n)(^\t+.*\n)+)/gm,
         m0 => m0
-        .replace(/(\t*)( ?)([ \t\S]+)([?:\\]?)/g,
-            (m1, g1, g2, g3, g4) => (g4 === ':') || (g4 === '?')
-                ? g1.length
-                    ? `${g1}[${g2}${g3}${g4}[`
-                    : `${m1}[`
-                : g4 === '\\'
-                    ? `${g1}[${g2}${g3}${g4}`
-                    : g[2] === ' '
-                        ? `${m1}]`
-                        : `[${m1}]`
-        )        
+        .replace(/(\t*)( ?)([ \t\S]+)([?:] *\n|\\\n|\n)/g,
+            (m1, g1, g2, g3, g4) => {
+                switch (true) {
+                    case /[?:] *\n/.test(g4) :
+                        return `${g1}[${g2}${g3}${g4.replace(/\n/g, '')} [ \n`
+                    case /\\\n/.test(g4) :
+                        return `${g1}[${g2}${g3}${g4}`
+                    case !!g2.length :
+                        return `${g2}${g3}${g4}]`
+                    default : return `${g1}[${g2}${g3}]\n`
+                }
+            }
+        )
     )
 
+    console.log(result);
+    return result;
+}
     //=========================デッドコード===========================
-
+/*
     let result = input
         // 1. タブ付き行にカッコを追加
         // タブの後に識別子がある行を検出し、カッコで囲む
@@ -138,5 +142,6 @@ function phase3ed(input) {
     //=========================デッドコード===========================
 
 }
+*/
 
 module.exports = { phase3 };

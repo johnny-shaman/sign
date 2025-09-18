@@ -7,7 +7,7 @@
  * @returns {string} - 前処理後のコード
  */
 
-function phase2 (input) {
+function phase1 (input) {
     return input
         .replace(/(\r\n)|[\r\n]/g, '\n') //改行コード統一
         .split('\n') //行で分割して配列化
@@ -31,4 +31,4 @@ function phase2 (input) {
         .join('\n');
 }
 
-module.exports = { phase2 };
+module.exports = { phase1 };
