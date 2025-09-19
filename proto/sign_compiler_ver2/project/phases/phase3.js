@@ -17,11 +17,11 @@ function phase3(input) {
             (m1, g1, g2, g3, g4) => {
                 switch (true) {
                     case /[?:] *\n/.test(g4) :
-                        return `${g1}[${g2}${g3}${g4.replace(/\n/g, '')} [ \n`
-                    case /\\\n/.test(g4) :
-                        return `${g1}[${g2}${g3}${g4}`
-                    case !!g2.length :
-                        return `${g2}${g3}${g4}]`
+                        return `${g1}[${g3}${g4.replace(/\n/g, '')} [ \n`
+                    case !!g2.length && g4 === '\\\n' :
+                        return `${g2}${g3}${g4}`
+                    case !g2.length &&  g4 === '\\\n' :
+                        return `${g1}[${g3}${g4}`
                     default : return `${g1}[${g2}${g3}]\n`
                 }
             }
