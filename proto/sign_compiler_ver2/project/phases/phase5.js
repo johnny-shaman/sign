@@ -8,6 +8,17 @@
  */
 function phase5(input) {
     // =================================================================
+    // 文字・文字列保護による前処理
+    // =================================================================
+    
+    const protection = protectLiterals(input);
+    const protectedInput = protection.protectedText;
+    const charMap = protection.charMap;
+    const stringMap = protection.stringMap;
+
+    console.log('Phase5 保護処理後:', protectedInput);
+
+    // =================================================================
     // 逆順処理による前置記法への直接変換
     // =================================================================
 
@@ -16,7 +27,7 @@ function phase5(input) {
     const precedenceTable = createReversedPrecedenceTable();
 
     // 改行で分割して各行を独立処理
-    const lines = input.split(/\r?\n/);
+    const lines = protectedInput.split(/\r?\n/);
     const processedLines = lines.map(line => {
         if (!line.trim()) return line; // 空行はそのまま
 
@@ -26,6 +37,13 @@ function phase5(input) {
 
         // 3. 各行で操車場アルゴリズムを適用
         if (tokens.length <= 1) return line; // 単一トークンはそのまま
+
+        // ★ 演算子が含まれていない場合は元のまま返す
+        const hasOperator = tokens.some(token => isOperator(token));
+        if (!hasOperator) {
+            console.log(`演算子なし、スキップ: ${line}`);
+            return line;
+        }
 
         // 前置記法変換のための前処理（各行）
         // - tokens配列を逆順にする: tokens.reverse()
@@ -115,7 +133,6 @@ function phase5(input) {
         outputQueue.reverse();
         console.log(`前置記法完成: [${outputQueue.join(', ')}]`);
 
-
         // =================================================================
         // 最終整形（Sign言語形式）
         // =================================================================
@@ -131,7 +148,15 @@ function phase5(input) {
     });
 
     // 4. 処理済みの行を改行で再結合
-    return processedLines.join('\n');
+    let result = processedLines.join('\n');
+
+    // =================================================================
+    // 保護解除処理
+    // =================================================================
+
+    result = restoreLiterals(result, charMap, stringMap);
+    console.log('Phase5 保護解除後:', result);
+    return result;
 
 
 }
@@ -204,11 +229,13 @@ function createReversedPrecedenceTable() {
  * @returns {Array} トークンの配列
  */
 function tokenize(text) {
-    const regex = /\[[a-zA-Z0-9_\s,~]+\]|\[\`[^`]*\`\]|\[\||\|\]|[\[\]]|[^ \t\[\]|]+/g;
+    const regex = /\{[^{}]*\}|\[[a-zA-Z0-9_\s,~]+\]|\[`[^`\r\n]*`\]|\[\\[\s\S]\]|\[\||\|\]|[\[\]]|[^ \t\[\]|]+/g;
     /*
     正規表現の構成要素:
+     \{[^{}]*\}           - {}で囲まれた部分を一つのトークンとして認識（リスト保護用）
      \[[a-zA-Z0-9_\s,]+\]| - カッコ内「識別子、空白、コメント、積、中置~のみ」一つのトークンとして認識
-     \[\`[^`]*\`\]        - 文字列[``]を個別トークンとして認識
+     \[`[^`\r\n]*`\]      - 文字列[``]を個別トークンとして認識
+     \[\\[\s\S]\]         - 文字[\]を個別トークンとして認識
      \[\|                 - 絶対値開始記号 [| を個別トークンとして認識
      \|\]                 - 絶対値終了記号 |] を個別トークンとして認識
      [\[\]]               - 通常のカッコ [ または ] を個別トークンとして認識
@@ -302,9 +329,63 @@ function buildPrefixExpression(prefixTokens) {
     return stack[0];
 }
 
+/**
+ * 文字・文字列リテラルを一時的に置換して保護する
+ * @param {string} input - 保護対象の文字列
+ * @returns {Object} 保護処理結果 {protectedText, charMap, stringMap}
+ */
+function protectLiterals(input) {
+    let protectedInput = input;
+    const charMap = [];
+    const stringMap = [];
+    let charIndex = 0;
+    let stringIndex = 0;
+
+    // 1. 文字リテラル（\+任意の1文字）を一時的に置換
+    protectedInput = protectedInput.replace(/\\[\s\S]/g, (match) => {
+        charMap[charIndex] = match;
+        return `__CHAR_${charIndex++}__`;
+    });
+
+    // 2. 文字列リテラル（`...`）を一時的に置換
+    protectedInput = protectedInput.replace(/`[^`\r\n]*`/g, (match) => {
+        stringMap[stringIndex] = match;
+        return `__STRING_${stringIndex++}__`;
+    });
+
+    return {
+        protectedText: protectedInput,
+        charMap: charMap,
+        stringMap: stringMap
+    };
+}
+
+/**
+ * 保護されたリテラルを元に戻す
+ * @param {string} input - 復元対象の文字列
+ * @param {Array} charMap - 文字リテラルのマップ
+ * @param {Array} stringMap - 文字列リテラルのマップ
+ * @returns {string} 復元後の文字列
+ */
+function restoreLiterals(input, charMap, stringMap) {
+    let result = input;
+
+    // 文字トークンを元に戻す
+    result = result.replace(/__CHAR_(\d+)__/g, (match, index) => {
+        return charMap[index] || match;
+    });
+
+    // 文字列トークンを元に戻す
+    result = result.replace(/__STRING_(\d+)__/g, (match, index) => {
+        return stringMap[index] || match;
+    });
+
+    return result;
+}
+
 
 //test実行
-console.log(phase5(require('fs').readFileSync('./input/testcode_tmp.sn', 'utf8')));
+// console.log(phase5(require('fs').readFileSync('./input/testcode_tmp.sn', 'utf8')));
 
 module.exports = { phase5 };
 
