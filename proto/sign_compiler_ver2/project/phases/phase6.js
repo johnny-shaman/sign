@@ -1,5 +1,5 @@
 // phases/phase6.js
-// Phase6: 単項演算子（前置・後置）をラムダ記法に変換する
+// Phase6: 単項演算子（前置・後置）をラムダ記法に変換し、{}保護を[]に復元する
 
 /**
  * 単項演算子を前置記法に変換
@@ -19,10 +19,12 @@ function phase6(input) {
         .replace(
             /([a-zA-Z0-9_]+|\[[^\]]*\])([!~@])(?=\s|$)/g,
             '[[_$2] $1]'
-        );
+        )
+        // {}保護を[]に復元
+        .replace(/\{([^{}]*)\}/g, '[$1]');
 }
 
 //test実行
-console.log(phase6(require('fs').readFileSync('./input/testcode_tmp.sn', 'utf8')));
+//console.log(phase6(require('fs').readFileSync('./input/testcode_tmp.sn', 'utf8')));
 
 module.exports = { phase6 };
