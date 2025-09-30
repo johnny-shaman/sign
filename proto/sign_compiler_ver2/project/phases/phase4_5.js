@@ -16,7 +16,7 @@ function phase4_5(input) {
     const charMap = protection.charMap;
     const stringMap = protection.stringMap;
 
-    console.log('保護処理後:', protectedInput);
+    // console.log('保護処理後:', protectedInput);
 
     // =================================================================
     // 真の文境界での分割と処理
@@ -36,13 +36,13 @@ function phase4_5(input) {
 
         // 既にカッコで囲まれている場合はそのまま
         if (content.match(/^\s*[\[\{\(].*[\]\}\)]\s*$/)) {
-            console.log(`既にカッコで囲まれている、スキップ: ${line}`);
+            // console.log(`既にカッコで囲まれている、スキップ: ${line}`);
             return line;
         }
 
         // トークン化（phase5から流用）
         const tokens = tokenize(content);
-        console.log('トークン化結果:', tokens);
+        // console.log('トークン化結果:', tokens);
 
         // 単一トークンまたは空の場合はそのまま
         if (tokens.length <= 1) return line;
@@ -60,7 +60,7 @@ function phase4_5(input) {
                 if (consecutiveIdentifiers.length >= 2) {
                     const listExpression = `{${consecutiveIdentifiers.join(' ')}}`;
                     resultTokens.push(listExpression);
-                    console.log(`連続識別子をリスト化: ${consecutiveIdentifiers.join(' ')} → ${listExpression}`);
+                    // console.log(`連続識別子をリスト化: ${consecutiveIdentifiers.join(' ')} → ${listExpression}`);
                 } else if (consecutiveIdentifiers.length === 1) {
                     resultTokens.push(consecutiveIdentifiers[0]);
                 }
@@ -73,14 +73,14 @@ function phase4_5(input) {
         if (consecutiveIdentifiers.length >= 2) {
             const listExpression = `{${consecutiveIdentifiers.join(' ')}}`;
             resultTokens.push(listExpression);
-            console.log(`最後の連続識別子をリスト化: ${consecutiveIdentifiers.join(' ')} → ${listExpression}`);
+            // console.log(`最後の連続識別子をリスト化: ${consecutiveIdentifiers.join(' ')} → ${listExpression}`);
         } else if (consecutiveIdentifiers.length === 1) {
             resultTokens.push(consecutiveIdentifiers[0]);
         }
 
         // 変換済みトークンを結合
         const finalExpression = resultTokens.join(' ');
-        console.log(`最終結果: ${content} → ${finalExpression}`);
+        // console.log(`最終結果: ${content} → ${finalExpression}`);
         return indent + finalExpression;
     });
 
@@ -92,7 +92,7 @@ function phase4_5(input) {
     // =================================================================
 
     result = restoreLiterals(result, charMap, stringMap);
-    console.log('保護解除後:', result);
+    // console.log('保護解除後:', result);
     return result;
 }
 
@@ -121,6 +121,7 @@ const OperatorList = [
     { '&': { precedence: 12, associativity: 'left' } },   // 論理積
     { ';': { precedence: 11, associativity: 'left' } },   // 排他的論理和
     { '|': { precedence: 11, associativity: 'left' } },   // 論理和
+    { ',': { precedence: 8, associativity: 'right' } },   // 積
     { '?': { precedence: 7, associativity: 'right' } },   // ラムダ構築
     { '#': { precedence: 3, associativity: 'right' } },   // output（中置演算子）
     { ':': { precedence: 2, associativity: 'right' } },   // 定義
