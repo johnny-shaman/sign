@@ -67,7 +67,7 @@ function phase6(input) {
     result = restoreLiterals(result, charMap, stringMap);
     
     // {}保護を[]に復元
-    result = result.replace(/\{([^{}]*)\}/g, '[$1]');
+    // result = result.replace(/\{([^{}]*)\}/g, '[$1]');
     
     return result;
 }

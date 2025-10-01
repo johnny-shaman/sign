@@ -10,7 +10,7 @@ function phase5(input) {
     // =================================================================
     // 文字・文字列保護による前処理
     // =================================================================
-    
+
     const protection = protectLiterals(input);
     const protectedInput = protection.protectedText;
     const charMap = protection.charMap;
@@ -192,19 +192,24 @@ function createPrecedenceTable() {
  * @returns {Array} トークンの配列
  */
 function tokenize(text) {
-    const regex = /\{[^{}]*\}|\[[a-zA-Z0-9_\s,~]+\]|\[`[^`\r\n]*`\]|\[\\[\s\S]\]|\[\||\|\]|[\[\]]|[^ \t\[\]|]+/g;
+    const regex = /\([^)]*\)|\{[^{}]*\}|\[[a-zA-Z0-9_\s,~]+\]|\[`[^`\r\n]*`\]|\[\\[\s\S]\]|\[\||\|\]|[\[\]]|[^ \t\[\]|{}()]+/g;
     /*
     正規表現の構成要素:
-     \{[^{}]*\}           - {}で囲まれた部分を一つのトークンとして認識（リスト保護用）
-     \[[a-zA-Z0-9_\s,]+\]| - カッコ内「識別子、空白、コメント、積、中置~のみ」一つのトークンとして認識
+     \([^)]*\)            - ()で囲まれた部分を一つのトークンとして認識（中に{}を含んでもOK、ネストなし）
+     \{[^{}]*\}           - {}で囲まれた部分を一つのトークンとして認識（ネストなし）
+     \[[a-zA-Z0-9_\s,~]+\] - カッコ内「識別子、空白、コメント、積、中置~のみ」一つのトークンとして認識
      \[`[^`\r\n]*`\]      - 文字列[``]を個別トークンとして認識
      \[\\[\s\S]\]         - 文字[\]を個別トークンとして認識
      \[\|                 - 絶対値開始記号 [| を個別トークンとして認識
      \|\]                 - 絶対値終了記号 |] を個別トークンとして認識
      [\[\]]               - 通常のカッコ [ または ] を個別トークンとして認識
-     [^ \t\[\]|]+         - 以下以外の連続する文字をトークンとして認識:
-                             スペース（ ）/タブ（\t）/角カッコ（[ ]）/パイプ（|）
-    注意: より具体的なパターンを先に記述することで、意図しないマッチを防いでいる
+     [^ \t\[\]|{}()]+     - 以下以外の連続する文字をトークンとして認識:
+                             スペース（ ）/タブ（\t）/角カッコ（[ ]）/パイプ（|）/波括弧（{ }）/丸括弧（( )）
+    
+    制限事項: 
+     - ()の中に{}を含めることは可能（例: ([-] {3 1})）
+     - {}のネスト（例: {[-] {3 1}}）には対応できません
+     - 完全なネスト対応が必要な場合は手動パース実装が必要です
     */
     return text.match(regex) || [];
 }
@@ -231,7 +236,7 @@ function isOperator(token) {
 function shouldPopOperator(stackTop, current, precedenceTable) {
     // カッコはポップ条件から除外
     if (stackTop === '[' || stackTop === '[|') return false;
-    
+
     const stackInfo = precedenceTable[stackTop];
     const currentInfo = precedenceTable[current];
 
@@ -272,6 +277,7 @@ function buildPrefixFromPostfix(postfixTokens) {
             // 演算子が来たら2要素をpopして [[op] arg1 arg2] を構築
             // 後置記法では arg1 arg2 op なので、スタックからpopすると arg2, arg1 の順
             if (stack.length < 2) {
+                console.log(`token: ${token}, stack: ${stack}`);
                 throw new Error(`演算子 ${token} に対する被演算子が不足しています`);
             }
 
