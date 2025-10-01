@@ -55,7 +55,8 @@ function main_tmp() {
     console.log('Sign言語パーサーを開始します...');
 
     // 入力ファイルの読み込み
-    const inputPath = './input/testcode_tmp.sn';
+    // const inputPath = './input/testcode_tmp.sn';
+    const inputPath = './input/testcode_all.sn';
     const inputContent = readFile(inputPath);
 
     console.log('入力ファイル読み込み完了:', inputPath);
@@ -64,6 +65,9 @@ function main_tmp() {
     // Phase1: コメントを削除、改行コードとカッコの統一
     console.log('Phase1: コメントを削除、改行コードとカッコの統一 を実行中...');
     const phase1Result = phase1(inputContent);
+
+    // Phase1の結果をファイルに保存
+    writeFile('./output/phase1_result_tmp.sn', phase1Result);
 
     // Phase2: 絶対値囲みの前後にカッコ付けを行う
 

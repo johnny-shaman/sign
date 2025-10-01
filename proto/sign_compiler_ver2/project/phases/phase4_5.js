@@ -35,10 +35,10 @@ function phase4_5(input) {
         const content = line.substring(indent.length);
 
         // 既にカッコで囲まれている場合はそのまま
-        if (content.match(/^\s*[\[\{\(].*[\]\}\)]\s*$/)) {
-            // console.log(`既にカッコで囲まれている、スキップ: ${line}`);
-            return line;
-        }
+        // if (content.match(/^\s*[\[\{\(].*[\]\}\)]\s*$/)) {
+            //console.log(`既にカッコで囲まれている、スキップ: ${line}`);
+            //return line;
+        // }
 
         // トークン化（phase5から流用）
         const tokens = tokenize(content);
@@ -52,7 +52,7 @@ function phase4_5(input) {
         let consecutiveIdentifiers = [];
 
         for (const token of tokens) {
-            if (!isOperator(token)) {
+            if (!isDelimiter(token)) {
                 // 識別子の場合、連続区間に追加
                 consecutiveIdentifiers.push(token);
             } else {
@@ -94,6 +94,16 @@ function phase4_5(input) {
     result = restoreLiterals(result, charMap, stringMap);
     // console.log('保護解除後:', result);
     return result;
+}
+
+/**
+ * トークンが連続識別子の区切りとなる要素かを判定
+ * （演算子、またはブロック/リスト構造）
+ * @param {string} token - 判定対象のトークン
+ * @returns {boolean} 区切りとなる要素ならtrue
+ */
+function isDelimiter(token) {
+    return isOperator(token) || token === '[' || token === ']';
 }
 
 ///////////////////////////////////////////////////////////////////////////////

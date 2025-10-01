@@ -15,7 +15,7 @@ function phase1 (input) {
                     // バリデーション
             line => line && line 
                 // コメントなら空行にする
-                .replace(/^((`[\s\S]*))$/gm, '\n')
+                .replace(/^((`[\s\S]*))$/gm, '')
                 // カッコ統一のための置換処理
                 .replace(
                     /([^`]+)|`[^`\r\n]*`/g,
