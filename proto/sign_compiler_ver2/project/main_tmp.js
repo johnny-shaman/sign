@@ -11,6 +11,7 @@ const { phase2 } = require('./phases/phase2.js');
 const { phase3 } = require('./phases/phase3.js');
 const { phase4 } = require('./phases/phase4.js');
 const { phase4_5 } = require('./phases/phase4_5.js');
+const { phase4_6 } = require('./phases/phase4_6.js');
 const { phase5 } = require('./phases/phase5.js');
 const { phase6 } = require('./phases/phase6.js');
 
@@ -55,7 +56,8 @@ function main_tmp() {
     console.log('Sign言語パーサーを開始します...');
 
     // 入力ファイルの読み込み
-    const inputPath = './input/testcode_tmp.sn';
+    // const inputPath = './input/testcode_tmp.sn';
+    const inputPath = './input/testcode_all.sn';
     const inputContent = readFile(inputPath);
 
     console.log('入力ファイル読み込み完了:', inputPath);
@@ -65,24 +67,44 @@ function main_tmp() {
     console.log('Phase1: コメントを削除、改行コードとカッコの統一 を実行中...');
     const phase1Result = phase1(inputContent);
 
+    // Phase1の結果をファイルに保存
+    writeFile('./output/phase1_result_tmp.sn', phase1Result);
+
     // Phase2: 絶対値囲みの前後にカッコ付けを行う
 
-    // Phase3: ブロック構文を判定し、カッコ付けを行う
-    
-    // Phase4: 改行コード統一後、文字列と文字トークンにカッコ付け処理
-    console.log('Phase4: 改行コード統一後、文字列と文字トークンにカッコ付け処理 を実行中...');
-    const phase4Result = phase4(phase1Result);
 
     // Phase4_5: リストにカッコ付け処理
     console.log('Phase4_5: リストにカッコ付け処理 を実行中...');
-    const phase4_5Result = phase4_5(phase4Result);
+    const phase4_5Result = phase4_5(phase1Result);
 
     // Phase4_5の結果をファイルに保存
     writeFile('./output/phase4_5_result_tmp.sn', phase4_5Result);
 
+    // Phase4_6: ポイントフリー記法と引数の組み合わせを{}で囲う
+    console.log('Phase4_6: ポイントフリー記法と引数の組み合わせを()で囲う を実行中...');
+    const phase4_6Result = phase4_6(phase4_5Result);
+
+    // Phase4_6の結果をファイルに保存
+    writeFile('./output/phase4_6_result_tmp.sn', phase4_6Result);
+
+    // Phase3: ブロック構文を判定し、カッコ付けを行う
+    console.log('Phase3: ブロック構文を判定し、カッコ付けを実行中...');
+    const phase3Result = phase3(phase4_6Result);
+
+    // Phase3の結果をファイルに保存
+    writeFile('./output/phase3_result_tmp.sn', phase3Result);
+
+    // Phase4: 改行コード統一後、文字列と文字トークンにカッコ付け処理
+    console.log('Phase4: 改行コード統一後、文字列と文字トークンにカッコ付け処理 を実行中...');
+    const phase4Result = phase4(phase3Result);
+
+    // Phase4の結果をファイルに保存
+    writeFile('./output/phase4_result_tmp.sn', phase4Result);
+
+
     // Phase5: 多項式を二項演算の組・前置記法に変換
     console.log('Phase5: 多項式を二項演算の組・前置記法に変換 を実行中...');
-    const phase5Result = phase5(phase4_5Result);
+    const phase5Result = phase5(phase4Result);
 
     // Phase5の結果をファイルに保存
     writeFile('./output/phase5_result_tmp.sn', phase5Result);

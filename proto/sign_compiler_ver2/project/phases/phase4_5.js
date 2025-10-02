@@ -16,7 +16,7 @@ function phase4_5(input) {
     const charMap = protection.charMap;
     const stringMap = protection.stringMap;
 
-    console.log('保護処理後:', protectedInput);
+    // console.log('保護処理後:', protectedInput);
 
     // =================================================================
     // 真の文境界での分割と処理
@@ -35,14 +35,14 @@ function phase4_5(input) {
         const content = line.substring(indent.length);
 
         // 既にカッコで囲まれている場合はそのまま
-        if (content.match(/^\s*[\[\{\(].*[\]\}\)]\s*$/)) {
-            console.log(`既にカッコで囲まれている、スキップ: ${line}`);
-            return line;
-        }
+        // if (content.match(/^\s*[\[\{\(].*[\]\}\)]\s*$/)) {
+            //console.log(`既にカッコで囲まれている、スキップ: ${line}`);
+            //return line;
+        // }
 
         // トークン化（phase5から流用）
         const tokens = tokenize(content);
-        console.log('トークン化結果:', tokens);
+        // console.log('トークン化結果:', tokens);
 
         // 単一トークンまたは空の場合はそのまま
         if (tokens.length <= 1) return line;
@@ -52,7 +52,7 @@ function phase4_5(input) {
         let consecutiveIdentifiers = [];
 
         for (const token of tokens) {
-            if (!isOperator(token)) {
+            if (!isDelimiter(token)) {
                 // 識別子の場合、連続区間に追加
                 consecutiveIdentifiers.push(token);
             } else {
@@ -60,7 +60,7 @@ function phase4_5(input) {
                 if (consecutiveIdentifiers.length >= 2) {
                     const listExpression = `{${consecutiveIdentifiers.join(' ')}}`;
                     resultTokens.push(listExpression);
-                    console.log(`連続識別子をリスト化: ${consecutiveIdentifiers.join(' ')} → ${listExpression}`);
+                    // console.log(`連続識別子をリスト化: ${consecutiveIdentifiers.join(' ')} → ${listExpression}`);
                 } else if (consecutiveIdentifiers.length === 1) {
                     resultTokens.push(consecutiveIdentifiers[0]);
                 }
@@ -73,14 +73,14 @@ function phase4_5(input) {
         if (consecutiveIdentifiers.length >= 2) {
             const listExpression = `{${consecutiveIdentifiers.join(' ')}}`;
             resultTokens.push(listExpression);
-            console.log(`最後の連続識別子をリスト化: ${consecutiveIdentifiers.join(' ')} → ${listExpression}`);
+            // console.log(`最後の連続識別子をリスト化: ${consecutiveIdentifiers.join(' ')} → ${listExpression}`);
         } else if (consecutiveIdentifiers.length === 1) {
             resultTokens.push(consecutiveIdentifiers[0]);
         }
 
         // 変換済みトークンを結合
         const finalExpression = resultTokens.join(' ');
-        console.log(`最終結果: ${content} → ${finalExpression}`);
+        // console.log(`最終結果: ${content} → ${finalExpression}`);
         return indent + finalExpression;
     });
 
@@ -92,8 +92,18 @@ function phase4_5(input) {
     // =================================================================
 
     result = restoreLiterals(result, charMap, stringMap);
-    console.log('保護解除後:', result);
+    // console.log('保護解除後:', result);
     return result;
+}
+
+/**
+ * トークンが連続識別子の区切りとなる要素かを判定
+ * （演算子、またはブロック/リスト構造）
+ * @param {string} token - 判定対象のトークン
+ * @returns {boolean} 区切りとなる要素ならtrue
+ */
+function isDelimiter(token) {
+    return isOperator(token) || token === '[' || token === ']';
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -121,6 +131,7 @@ const OperatorList = [
     { '&': { precedence: 12, associativity: 'left' } },   // 論理積
     { ';': { precedence: 11, associativity: 'left' } },   // 排他的論理和
     { '|': { precedence: 11, associativity: 'left' } },   // 論理和
+    { ',': { precedence: 8, associativity: 'right' } },   // 積
     { '?': { precedence: 7, associativity: 'right' } },   // ラムダ構築
     { '#': { precedence: 3, associativity: 'right' } },   // output（中置演算子）
     { ':': { precedence: 2, associativity: 'right' } },   // 定義
@@ -145,24 +156,28 @@ function createPrecedenceTable() {
 /**
  * 入力文字列を空白で分割してトークン配列を作成
  * 初期版では純粋な中置記法のみ対応（ブロック構文は後の実装で追加）
- * ※phase5と同一の関数
  * @param {string} text - トークン化対象の文字列
  * @returns {Array} トークンの配列
  */
 function tokenize(text) {
-    const regex = /\{[^{}]*\}|\[[a-zA-Z0-9_\s,~]+\]|\[`[^`\r\n]*`\]|\[\\[\s\S]\]|\[\||\|\]|[\[\]]|[^ \t\[\]|]+/g;
+    const regex = /\([^)]*\)|\{[^{}]*\}|\[[a-zA-Z0-9_\s,~]+\]|\[`[^`\r\n]*`\]|\[\\[\s\S]\]|\[\||\|\]|[\[\]]|[^ \t\[\]|{}()]+/g;
     /*
     正規表現の構成要素:
-     \{[^{}]*\}           - {}で囲まれた部分を一つのトークンとして認識（リスト保護用）
-     \[[a-zA-Z0-9_\s,]+\]| - カッコ内「識別子、空白、コメント、積、中置~のみ」一つのトークンとして認識
+     \([^)]*\)            - ()で囲まれた部分を一つのトークンとして認識（中に{}を含んでもOK、ネストなし）
+     \{[^{}]*\}           - {}で囲まれた部分を一つのトークンとして認識（ネストなし）
+     \[[a-zA-Z0-9_\s,~]+\] - カッコ内「識別子、空白、コメント、積、中置~のみ」一つのトークンとして認識
      \[`[^`\r\n]*`\]      - 文字列[``]を個別トークンとして認識
      \[\\[\s\S]\]         - 文字[\]を個別トークンとして認識
      \[\|                 - 絶対値開始記号 [| を個別トークンとして認識
      \|\]                 - 絶対値終了記号 |] を個別トークンとして認識
      [\[\]]               - 通常のカッコ [ または ] を個別トークンとして認識
-     [^ \t\[\]|]+         - 以下以外の連続する文字をトークンとして認識:
-                             スペース（ ）/タブ（\t）/角カッコ（[ ]）/パイプ（|）
-    注意: より具体的なパターンを先に記述することで、意図しないマッチを防いでいる
+     [^ \t\[\]|{}()]+     - 以下以外の連続する文字をトークンとして認識:
+                             スペース（ ）/タブ（\t）/角カッコ（[ ]）/パイプ（|）/波括弧（{ }）/丸括弧（( )）
+    
+    制限事項: 
+     - ()の中に{}を含めることは可能（例: ([-] {3 1})）
+     - {}のネスト（例: {[-] {3 1}}）には対応できません
+     - 完全なネスト対応が必要な場合は手動パース実装が必要です
     */
     return text.match(regex) || [];
 }

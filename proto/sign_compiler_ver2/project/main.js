@@ -58,8 +58,8 @@ function main() {
     console.log('入力ファイル読み込み完了:', inputPath);
     console.log('='.repeat(50));
 
-    // Phase1: 文字列と文字トークンにカッコ付け
-    console.log('Phase1: 文字列と文字トークンにカッコ付けを実行中...');
+    // Phase1: コメントを削除、改行コードとカッコの統一
+    console.log('Phase1: コメントを削除、改行コードとカッコの統一 を実行中...');
     const phase1Result = phase1(inputContent);
 
     // Phase1の結果をファイルに保存
@@ -73,8 +73,8 @@ function main() {
 
     console.log('\nPhase1完了');
 
-    // Phase2: コメントと空行を削除、改行コードとカッコの統一
-    console.log('Phase2: コメントと空行を削除、改行コードとカッコの統一を実行中...');
+    // Phase2: 絶対値囲みの前後にカッコ付けを行う
+    console.log('Phase2: 絶対値囲みの前後にカッコ付けを実行中...');
     const phase2Result = phase2(phase1Result);
 
     // Phase2の結果をファイルに保存
@@ -88,8 +88,8 @@ function main() {
 
     console.log('\nPhase2完了');
 
-    // Phase3: 絶対値囲みの前後にカッコ付けを行う
-    console.log('Phase3: 絶対値囲みの前後にカッコ付けを実行中...');
+    // Phase3: ブロック構文を判定し、カッコ付けを行う
+    console.log('Phase3: ブロック構文を判定し、カッコ付けを実行中...');
     const phase3Result = phase3(phase2Result);
 
     // Phase3の結果をファイルに保存
@@ -103,8 +103,8 @@ function main() {
 
     console.log('\nPhase3完了');
 
-    // Phase4: ブロック構文を判定し、カッコ付けを行う
-    console.log('Phase4: ブロック構文を判定し、カッコ付けを実行中...');
+    // Phase4: 改行コード統一後、文字列と文字トークンにカッコ付け処理
+    console.log('Phase4: 改行コード統一後、文字列と文字トークンにカッコ付け処理を実行中...');
     const phase4Result = phase4(phase3Result);
     
     // Phase4の結果をファイルに保存
