@@ -9,9 +9,9 @@ module.exports = code => code
     .replace(/\\\r/g, '\\\n')
     .split('\r')
     .map(
-        line => line.match(/^\t+/gm)
+        line => line.match(/^\t+/gm) // If in block code, do not split
             ? line
-            : line
+            : line // Split by spaces except in strings and escaped characters
                 .replace(/( )|(\\[\s\S])|(`[^`\n\r]+`)/g, '\x1F$2$3')
                 .replace(/^\x1F+/gm, '')
                 .replace(/[\x1F]{2,}/g, '\x1F')
