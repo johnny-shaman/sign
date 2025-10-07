@@ -61,11 +61,3 @@ abc d e f
 	|||abc| + def| - ghi|
 	|abc + |def - |ghi|||
 	|abc + |def - |ghi||| - 34
-
-
-[
-	[x y] ? [
-		[x > 1] : 3
-		[x > 1] : 3
-	]
-]
