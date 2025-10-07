@@ -2,8 +2,8 @@
 'use strict';
 
 const preprocess = code => code
-  .replace(/^`[^\r\n]*`?$/gm, '')                                  // Remove comment lines (改行を含まない)
-  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '');  // Remove Control Characters
+  .replace(/^`[^\r\n]*$/gm, '')                                   // Remove comment lines (改行を含まない)
+  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, ''); // Remove Control Characters
 
 
 const tokenize = code => code
@@ -13,7 +13,7 @@ const tokenize = code => code
   .split('\r')                                                    // Split by \r
   .map(
     line => line.match(/^\t/gm)                                   // If in block or \n code
-      ? [ tokenize( line.replace(/^\t/gm, '') ) ]                 // in block recursive tokenize without leading tabs
+      ? tokenize( line.replace(/^\t/gm, '') )                     // in block recursive tokenize without leading tabs
       : line                                                      // Else Split by spaces except in strings and escaped characters
         .replace(/( )|(\\[\s\S])|(`[^`\n\r]+`)/g, '\x1F$2$3')     // And replace spaces with \x1F except in strings and escaped characters
         .replace(/^\x1F+/gm, '')                                  // And remove leading \x1F
