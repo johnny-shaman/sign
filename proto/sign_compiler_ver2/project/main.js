@@ -47,7 +47,7 @@ function main() {
     console.log('Sign言語パーサーを開始します...');
 
     // 入力ファイルの読み込み
-    const inputPath = './input/testcode_all.sn';
+    const inputPath = './input/testcode.sn';
     const inputContent = readFile(inputPath);
     console.log(inputContent);
 
