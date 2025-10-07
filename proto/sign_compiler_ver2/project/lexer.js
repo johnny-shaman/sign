@@ -11,14 +11,17 @@ const tokenize = code => code
   .replace(/\r(\t+)/g, '\n$1')                                    // Next line starts with tabs, it is a code block, so convert \r to \n
   .replace(/\\\r/g, '\\\n')                                       // If \r is escaped, convert to \n
   .split('\r')                                                    // Split by \r
+  .map(block => [block])                                          // Wrap each block in an array
   .map(
-    line => line.match(/^\t/gm)                                   // If in block or \n code
+    block => block.map(
+      line => line.match(/^\t/gm)                                 // If in block
       ? tokenize( line.replace(/^\t/gm, '') )                     // in block recursive tokenize without leading tabs
       : line                                                      // Else Split by spaces except in strings and escaped characters
         .replace(/( )|(\\[\s\S])|(`[^`\n\r]+`)/g, '\x1F$2$3')     // And replace spaces with \x1F except in strings and escaped characters
         .replace(/^\x1F+/gm, '')                                  // And remove leading \x1F
         .replace(/[\x1F]{2,}/g, '\x1F')                           // And replace multiple \x1F with single \x1F
         .split('\x1F')                                            // And split by \x1F
+    )
   );
 
 module.exports = code => tokenize(preprocess(code));
