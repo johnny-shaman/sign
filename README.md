@@ -1,11 +1,11 @@
 # Sign integrity generic notation
 
+<img src="./Sign_logo.svg"  alt="Sign Logo" style="display:block; width:128px; margin:1.62%;"/>
+
 Welcome to the Sign integrity generic notation Page!
 
 This is a language for expressing the integrity of data in a generic way.
 It is designed to be used in various Anyone, such as data validation, integrity checks, and more.
-
-<img src="./Sign_logo.svg"  alt="Sign Logo" width="256" />
 
 ## Manifesto
   [Our Manifesto](./documents/manifesto/manifesto.en-us.md)
