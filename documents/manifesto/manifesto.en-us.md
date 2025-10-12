@@ -1,136 +1,125 @@
-# Manifesto for a Sign Programming Language - Unified Abstraction and Expressiveness
+# Programming Language Sign - Unified Abstraction and Expressiveness
 
-## Introduction
+<img src="../../Sign_logo.svg"  alt="Sign Logo" style="display:block; width:128px; margin:1.62%;"/>
 
-We have created a new language that will revolutionize the future of programming. This language pursues expressiveness and flexibility to the extreme, aiming to maximize programmers' creativity based on a consistent design philosophy. Its unique design, free from reserved words, realizes ultimate freedom and extensibility. Furthermore, by treating lambda expressions, pattern matching, and the concept of traits in a unified manner, it enables unprecedented expressiveness and abstraction.
+## Mathematics is a language. Therefore, it should be expressible in a form everyone can understand.
 
-## Our Philosophy
+Programming should be an art.  
+It should pursue beauty, not complexity.  
+It should grant freedom, not impose constraints.
 
-1. **Expressiveness Brings Freedom**
-   - Provides syntax that can intuitively express advanced concepts.
-   - Allows programmers to directly reflect their thoughts in code.
+---
 
-2. **Flexibility Nurtures Creativity**
-   - Supports various programming paradigms, enabling the selection of the optimal approach for each problem.
-   - Facilitates metaprogramming and DSL creation, enhancing the language's extensibility.
+## Design Philosophy
 
-3. **Simplicity is the Ultimate Sophistication**
-   - Pursues inherently simple design rather than hiding complexity.
-   - Adopts language structures that can express much with few concepts.
+**Invisible Strength**  
+The type system exists but doesn't intrude. Safety is guaranteed but never gets in your way.
 
-4. **Consistency Deepens Understanding**
-   - Adopts consistent rules and structures throughout the language.
-   - Embodies a design philosophy that, once learned, can be applied widely.
+**Zero-Cost Abstraction**  
+Beautiful theory becomes fast code directly. Abstraction comes at no cost.
 
-5. **Types are Part of Expression**
-   - Views the type system as part of expression, not as a constraint.
-   - Guarantees types when syntax is accurate.
-   - Accurately expresses programmers' intentions through a flexible type system.
+**Unified Model**  
+Everything is a list. Everything is a function. Minimal concepts to learn, infinite expressiveness.
 
-## Key Features
+**No Reserved Words**  
+Symbols tell the whole story. Freedom to extend the language. Freedom to express domains.
 
-1. **Unified Abstraction Model inspired　by Category Theory**
-   - All concepts are unified as operators.
-   - Enables advanced abstraction and flexible implementation.
-   - Seamlessly fuses concepts of functions, pattern matching, and object-oriented programming.
-   - Allows for highly flexible design, improving code reusability.
-   - Eases the learning curve and facilitates transition between different paradigms.
+**Power of Purity**  
+Side effects are explicit, expression through function composition. Code becomes proof.
 
-   Example of abstraction:
-   ```
-   `Lambda expressions use the ? constructor`
-   [x ? x + 1]
+---
 
-   `Lambda expression with pattern matching (generalized form)`
-   `Default is written last, without : condition specification`
-   [x ?
-     !x : _
-     x + 1
-   ]
-   ```
+## Innovation
 
-2. **Innovative Syntax Without Reserved Words**
-   - All language structures are expressed with conventional symbols.
-   - Greatly enhances language extensibility, facilitating domain-specific expressions.
+### Category-Theoretic Foundation
+```sign
+`Unit is the unit element of a bialgebra`
 
-   Example:
-   ```
-   // if-else syntax in conventional languages
-   function match(x) {
-     if (x > 3) {
-       return x * 2
-     }
-     else {
-       return x + 2
-     }
-   }
+`Partial application`
+_ + 3 → [+ 3]
 
-   match(4)
-   ```
+`Logical unit element: false`
+_ & x → _
+```
 
-   ```
-   `Equivalent expression in our language`
-   
-   [x ? 
-     x > 3 : x * 2
-     x + 2
-   ] 4
-   ```
+### List Unification Model
+```sign
+`String = List of characters`
+`Function = List of operations`
+`Everything is a list, everything is a function`
 
-3. **Innovative and Flexible Type System**
-   - Supports untyped descriptions on Sign unsafeVM
-   - Reduces redundant type declarations through type inference
-   - Utilizes advantages of static typing when necessary
+`map`
+[* 2,] 1 2 3 4 = 2 4 6 8
 
-4. **Powerful Point-free Style**
-   - Naturally expresses function composition and partial application
-   - Automatically interprets as lambda expressions when necessary arguments are not provided to operators
-   - Example: `[+ 2] 3 = [+] 2 3 = [3 +] 2 = 3 + 2`
+`fold`
+[+] 1 2 3 4 = 10
+```
 
-5. **Metaprogramming and DSL Support**
-   - Extremely easy language extension and DSL creation due to the absence of reserved words
-   - Freely define domain-specific operators and syntax
-   - Greatly enhances DSL expressiveness through the unified abstraction model
-   - Seamlessly integrates characters and strings without escape sequences
+### Value-Returning Comparison Operations
+```sign
+`Returns value if condition is met, Unit otherwise`
 
-6. **Efficient Concurrent Processing**
-   - Native support for lightweight threads and asynchronous programming
-   - Safe concurrent programming model preventing data races
+`If x is negative, return absolute value of x`
+x < 0 : -x
 
-## Advantages of the Unified Abstraction Model
+`Range checking becomes natural`
+0 <= x <= 100
+```
 
-1. **Consistency**: Unifying concepts of lambda expressions, pattern matching, and traits increases overall language consistency.
+### Point-Free at its Peak
+```sign
+`Operators become functions, functions compose as written`
 
-2. **Expressiveness**: Complex concepts can be concisely expressed with the same syntax, improving code readability and maintainability.
+[+ 2] [* 3] 5 = 21
+[>= 0,] [-5 0 5] = [_ 0 5]
+```
 
-3. **Flexibility**: Seamlessly combine different programming paradigms, allowing selection of the optimal approach for each problem.
+---
 
-4. **Extensibility**: Introduce new abstractions and design patterns while maintaining consistency with basic language concepts.
+## Concise Conditional Branching
 
-5. **Ease of Learning**: Once basic concepts are learned, they can be applied in various contexts, facilitating language acquisition.
+**Conventional languages:**
+```javascript
+function fibonacci(n) {
+  switch (n) {
+    case 0: case 1:
+      return n
+    default:
+      return fibonacci(n - 1) + fibonacci(n - 2);
+  }
+}
+```
 
-## Advantages of Design Without Reserved Words
+**Sign:**
+```sign
+fibonacci : n ?
+  n <= 1 : n
+  fibonacci [n - 1] + fibonacci [n - 2]
+```
 
-1. **Infinite Extensibility**: No need to worry about conflicts with existing reserved words when introducing new concepts or syntax.
+---
 
-2. **Ease of DSL Creation**: Define new syntax for domain-specific languages in complete alignment with the basic language syntax.
+## Our Promise
 
-3. **Ease of Internationalization**: Programming expressions based on various natural languages are possible due to the absence of reserved words.
+- **Shatter the learning curve** - Express more with fewer concepts
+- **Never compromise on performance** - Abstraction becomes optimal code directly
+- **Hide the safety** - Type safety guaranteed, type declarations unnecessary
+- **Embed extensibility** - The language itself is a meta-language
+- **Pursue beauty** - Code is written to be read
 
-4. **Gentle Learning Curve**: Focus on mastering basic language concepts without the need to memorize reserved words.
+---
 
-## Balance of Safety and Performance
+## In Closing
 
-Our language design carefully considers the balance between safety and performance:
+Programming liberated from the curse of reserved words.  
+Expressiveness freed from the constraints of type systems.  
+Perfect fusion of mathematical beauty and execution efficiency.
 
-- **Intelligent Optimization**: The compiler analyzes context and generates optimal code without compromising safety.
-- **Selectable Safety Levels**: Developers can choose safety levels as needed, flexibly specifying areas requiring high safety and areas prioritizing performance.
-- **Gradual Type Checking**: Provides flexibility similar to dynamic typing in early development stages, allowing application of stricter type checking as the project matures.
+Shall we end the era of engineers suffering in the shadows, together?
 
-## Conclusion
+**Sign - A new language spoken by symbols**
 
-This new language pushes the boundaries of programming expressiveness and flexibility through its innovative design without reserved words and unified abstraction model. By treating lambda expressions, pattern matching, and the concept of traits in a unified manner, it achieves unprecedented abstraction and expressiveness. With its simple yet powerful syntax, flexible type system, and design pursuing a balance between safety and performance, it can dramatically enhance the creativity and productivity of all programmers, from beginners to experts.
+---
 
-Through this language, we aim to build a world of software development that is more expressive, safe, and efficient. Would you like to join the community of this revolutionary language and co-create the new era of programming?
-
-Let's change the world together with the power of code.
+*Think better, act better.*  
+*With Sign.*

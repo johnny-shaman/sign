@@ -1,6 +1,6 @@
 # プログラミング言語 Sign - 統一された抽象化と表現力
 
-<img src="./Sign_logo.svg"  alt="Sign Logo" style="display:block; width:128px; margin:1.62%;"/>
+<img src="../../Sign_logo.svg"  alt="Sign Logo" style="display:block; width:128px; margin:1.62%;"/>
 
 ## 数学は言語である。ならば、誰もが理解できる形で表現できるはずだ。
 
