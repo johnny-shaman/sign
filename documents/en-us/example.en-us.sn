@@ -4,7 +4,7 @@
 `Therefore, comments are written as strings.`
 
 `Newline is a postfix operator that "evaluates".`
-`If you don't want a newline to represent evaluation, use a newline character.`
+`If you don't want a newline to represent evaluation, use \, which is the character designator.
 `Line-start indent forms a block.`
 
 `The typical evaluation strategy for this language is lazy evaluation.`
@@ -355,8 +355,8 @@ HWinEnter :
 
 `Logical operators are short-circuited.`
 
-0 & `me` = 0
+_ & `me` = _
 1 & `me` = `me`
 
-0 | `me` = `me`
+_ | `me` = `me`
 1 | `me` = 1
