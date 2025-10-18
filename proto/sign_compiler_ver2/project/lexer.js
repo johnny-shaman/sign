@@ -22,10 +22,17 @@ const tokenize = code => code
           .split('\x1F')                                            // And split by \x1F
   );
 
+const bracketToBlock = tokens => tokens.includes("[")
+  ? tokens.reduce(
+    (a, n, k) => n === '['
+      ? [...a , bracketToBlock(tokens.slice(k + 1))]
+      : n === ']' || (a.push(n), a)
+  )
+  : tokens
 
 const clean = tokens => tokens
   .map( t => Array.isArray(t) ? clean(t) : t )                        // If token is array, clean recursively
   .filter( t => t.length > 0 || t !== '[');                           // Remove empty tokens
 
-module.exports = code => clean( tokenize( preprocess( code ) ) );
+module.exports = code => clean( bracketToBlock( tokenize( preprocess( code ) ) ) );
 
