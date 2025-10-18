@@ -2,6 +2,8 @@
 
 <img src="./Sign_logo.svg"  alt="Sign Logo" style="display:block; width:128px; margin:1.62%;"/>
 
+[<img src="./my_bmc_button.svg"  alt="☕ Buy me a Coffee ☕" style="width:256px;"/>](https://buymeacoffee.com/johnny_shaman)
+
 Welcome to the Sign integrity generic notation Page!
 
 This is a language for expressing the integrity of data in a generic way.
