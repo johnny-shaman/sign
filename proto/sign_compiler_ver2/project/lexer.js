@@ -3,8 +3,8 @@
 
 const preprocess = code => code
   .replace(/^`[^\r\n]*$/gm, '')                                   // Remove comment lines (改行を含まない)
-  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, ''); // Remove Control Characters
-
+  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')  // Remove Control Characters
+  .replace(/(?<!\\)([^ ]*),([^ ]*)/g, '$1 , $2');                 // Add spaces around comma
 
 const tokenize = code => code
   .replace(/\r\n|[\r\n]/g, '\r')                                  // Normalize line endings to \r
@@ -23,18 +23,17 @@ const tokenize = code => code
   );
 
 const bracketToBlock = tokens => 
-  Array.isArray(tokens) 
+  Array.isArray(tokens)
     ? tokens.reduce(({ result, skip }, token, idx) => 
         skip > idx ? { result, skip }
         : Array.isArray(token) ? { result: [...result, bracketToBlock(token)], skip }
-        : ['[', '{', '('].includes(token) 
+        : ['['].includes(token) 
           ? (() => {
-              const close = { '[': ']', '{': '}', '(': ')' }[token];
               const findClose = (ts, depth = 1, pos = idx + 1) =>
                 depth === 0 ? pos
                 : pos >= ts.length ? pos
                 : findClose(ts, 
-                    depth + (ts[pos] === token ? 1 : ts[pos] === close ? -1 : 0), 
+                    depth + (ts[pos] === token ? 1 : ts[pos] === ']' ? -1 : 0), 
                     pos + 1);
               const end = findClose(tokens);
               return { 
@@ -42,14 +41,14 @@ const bracketToBlock = tokens =>
                 skip: end + 1 
               };
             })()
-        : [']', '}', ')'].includes(token) ? { result, skip }
+        : [']'].includes(token) ? { result, skip }
         : { result: [...result, token], skip }
       , { result: [], skip: 0 }).result
     : tokens;
 
 const clean = tokens => tokens
   .map( t => Array.isArray(t) ? clean(t) : t )                        // If token is array, clean recursively
-  .filter( t => t.length > 0 || t !== '[');                           // Remove empty tokens
+  .filter( t => t.length > 0 && t !== '[');                           // Remove empty tokens
 
 module.exports = code => clean( bracketToBlock( tokenize( preprocess( code ) ) ) );
 
