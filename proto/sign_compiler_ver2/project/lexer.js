@@ -27,8 +27,8 @@ const bracketToBlock = tokens => tokens.includes("[")
     (a, n, k) => n === '['
       ? [...a , bracketToBlock(tokens.slice(k + 1))]
       : n === ']'
-      ? a
-      : (a.push(n), a)
+        ? a
+        : (a.push(n), a)
     , []
   )
   : tokens
