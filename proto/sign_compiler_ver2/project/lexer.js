@@ -22,14 +22,30 @@ const tokenize = code => code
           .split('\x1F')                                            // And split by \x1F
   );
 
-const bracketToBlock = tokens => tokens.reduce(
-    (a, n, k) => Array.isArray(n)
-      ? [...a , bracketToBlock(tokens[k]), bracketToBlock(tokens.slice(k + 1))]
-      : n === '['
-        ? [...a , bracketToBlock(tokens.slice(k + 1))]
-        : (a.push(n), a)
-    , []
-  )
+const bracketToBlock = tokens => 
+  Array.isArray(tokens) 
+    ? tokens.reduce(({ result, skip }, token, idx) => 
+        skip > idx ? { result, skip }
+        : Array.isArray(token) ? { result: [...result, bracketToBlock(token)], skip }
+        : ['[', '{', '('].includes(token) 
+          ? (() => {
+              const close = { '[': ']', '{': '}', '(': ')' }[token];
+              const findClose = (ts, depth = 1, pos = idx + 1) =>
+                depth === 0 ? pos
+                : pos >= ts.length ? pos
+                : findClose(ts, 
+                    depth + (ts[pos] === token ? 1 : ts[pos] === close ? -1 : 0), 
+                    pos + 1);
+              const end = findClose(tokens);
+              return { 
+                result: [...result, bracketToBlock(tokens.slice(idx + 1, end))], 
+                skip: end + 1 
+              };
+            })()
+        : [']', '}', ')'].includes(token) ? { result, skip }
+        : { result: [...result, token], skip }
+      , { result: [], skip: 0 }).result
+    : tokens;
 
 const clean = tokens => tokens
   .map( t => Array.isArray(t) ? clean(t) : t )                        // If token is array, clean recursively
