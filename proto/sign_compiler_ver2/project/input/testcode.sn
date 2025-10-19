@@ -22,13 +22,13 @@ myConstructor : myX myY myZ ?
 [
 	x y ?
 		x < 3 : y
-		x
+		!x
 ]
 
 x :
 	v : -3
 	f : y ?
-		y = 0 : x ' v
+		!y = 0 : x ' v
 		y = 1 : y
 		y = 2 : `Hello	world` \
 		 `better	world	on Sign`
