@@ -1,10 +1,30 @@
 
 'use strict';
 
+/*
+  preprocess:
+    - Remove control characters
+    - Remove comments
+    - Add spaces around binary operators
+  tokenize:
+    - Split by line
+    - Handle indented blocks
+    - Handle brackets as blocks
+    - Split by spaces
+  bracketToBlock:
+    - Convert bracketed tokens to nested arrays
+  clean:
+    - Remove empty tokens
+*/
+
+
+
 const preprocess = code => code
-  .replace(/^`[^\r\n]*$/gm, '')                                   // Remove comment lines (改行を含まない)
-  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')  // Remove Control Characters
-  .replace(/(?<!\\)([^ ]*),([^ ]*)/g, '$1 , $2');                 // Add spaces around comma
+  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')                              
+  .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')                                                   
+  .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5')
+  .replace(/ ([#~!$@]|!!)([^\s]+)|(\\[\s\S])|(`[^`\n\r]+`)/g, ' $1_ $2$3$4')
+  .replace(/([^\s]+)([~!@]) |(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 _$2 $3$4');
 
 const tokenize = code => code
   .replace(/\r\n|[\r\n]/g, '\r')                                  // Normalize line endings to \r
