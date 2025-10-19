@@ -22,10 +22,8 @@
 const preprocess = code => code
   .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')                              
   .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')                                                   
-  .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5')
-  .replace(/ ([#~!$@]|!!)([^\s]+)|(\\[\s\S])|(`[^`\n\r]+`)/g, ' $1_ $2$3$4')
-  .replace(/([^\s]+)([~!@]) |(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 _$2 $3$4');
-
+  .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5');
+  
 const tokenize = code => code
   .replace(/\r\n|[\r\n]/g, '\r')                                  // Normalize line endings to \r
   .replace(/\r(\t+)/g, '\n$1')                                    // Next line starts with tabs, it is a code block, so convert \r to \n
