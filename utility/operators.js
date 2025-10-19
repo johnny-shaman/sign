@@ -4,12 +4,12 @@
 | 2 | `:` | 中置※ | define | 即ち（同一視） | 左辺の名前を右辺の値に束縛 |
 | 3 | `#` | 中置 | output | ハッシュタグ（関連付け） | アドレスにデータを関連付ける |
 | 4 | ` ` | 中置 | apply | 余積（連接） | 関数適用 |
+| 4 | `,` | 中置※ | product | 積（構造的組み立て） | 右結合なリスト構築 |
 | 5 | ` ` | 中置 | compose | 余積（連接） | 左結合な関数合成 |
 | 6 | ` ` | 中置 | push | 余積（連接） | リストへ追加 |
 | 6 | ` ` | 中置 | concat | 余積（連接） | リスト結合 |
 | 6 | ` ` | 中置 | construct | 余積（連接） | 左結合なリスト構築 |
 | 7 | `?` | 中置※ | lambda | 問いかけ（どうするか？） | 関数定義 |
-| 8 | `,` | 中置※ | product | 積（構造的組み立て） | 右結合なリスト構築 |
 | 9 | `~` | 中置 | range | around（範囲のその辺り） | 範囲リスト構築 |
 | 10 | `~` | 前置 | continuous | around（その辺り一帯） | 連続リスト構築 |
 | 11 | `|` | 中置 | or | または（通路） | 論理和（短絡評価） |
@@ -63,13 +63,13 @@ const OperatorSemantics = {
         ':' : 'define',
         '#' : 'output',
         lambda_list : 'apply',
+        ',' : 'product',
         lambda_lambda : 'compose',
         list_list : 'concat',
         literal_list : 'push_left',
         list_literal : 'push_right',
         literal_literal : 'product',
         '?' : 'lambda_construct',
-        ',' : 'product',
         '~' : 'range',
         '|' : 'or',
         ';' : 'xor',
