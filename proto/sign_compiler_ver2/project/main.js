@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const lexer = require('./lexer.js');
+const { parse } = require('./parser.js');
 
 /**
  * ファイルを読み込む
@@ -58,10 +59,13 @@ function main() {
     console.log('tokens: トークナイズ');
     const tokens = lexer(inputContent);
 
-    console.log(tokens);
     // tokensの結果をファイルに保存
     console.log(tokens);
     writeFile('./output/tokens.json', JSON.stringify(tokens, null, 2));
+
+    // tokensをパース
+    const parsed = parse(tokens);
+    writeFile('./output/parsed.json', JSON.stringify(parsed, null, 2));
 }
 
 // スクリプトが直接実行された場合にメイン処理を実行
