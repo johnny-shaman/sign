@@ -255,18 +255,175 @@ const mergeBlockLines = block =>
     })();
 
 // ====================================================================
-// メインパース処理
+// 単項演算子の定義と判定
 // ====================================================================
+
+// 前置演算子のリスト
+const prefixOperators = ['!', '@', '$', '#', '~', '!!'];
+
+// 後置演算子のリスト  
+const postfixOperators = ['!', '~', '@'];
+
+// 前置演算子かどうかを判定
+const isPrefixOperator = token => prefixOperators.includes(token);
+
+// 後置演算子かどうかを判定
+const isPostfixOperator = token => postfixOperators.includes(token);
+
+// ====================================================================
+// 単項演算子の前処理（改善版）
+// ====================================================================
+
+const preprocessUnaryOperatorsFlat = tokens => {
+    if (!isArray(tokens)) return tokens;
+    if (isEmpty(tokens)) return tokens;
+    
+    const result = [];
+    let i = 0;
+    
+    while (i < tokens.length) {
+        const current = tokens[i];
+        const next = i + 1 < tokens.length ? tokens[i + 1] : null;
+        const prev = result.length > 0 ? result[result.length - 1] : null;
+        
+        // 配列要素はそのまま追加（再帰しない）
+        if (isArray(current)) {
+            result.push(current);
+            i++;
+            continue;
+        }
+        
+        // 前置演算子がリテラルに付いている場合: !x → [!_, x]
+        if (typeof current === 'string') {
+            let foundPrefix = false;
+            for (const op of prefixOperators) {
+                if (current.startsWith(op) && current.length > op.length) {
+                    const operand = current.slice(op.length);
+                    result.push([op + '_', operand]);
+                    foundPrefix = true;
+                    break;
+                }
+            }
+            if (foundPrefix) {
+                i++;
+                continue;
+            }
+        }
+        
+        // 前置演算子が単独の場合: [!, x] → [!_, x]
+        if (isPrefixOperator(current) && next !== null && !isArray(next)) {
+            result.push([current + '_', next]);
+            i += 2;
+            continue;
+        }
+        
+        // 後置演算子が単独の場合: [x, !] → [x, _!]
+        if (isPostfixOperator(current) && prev !== null && !isArray(prev) && typeof prev === 'string') {
+            const operand = result.pop();
+            result.push([operand, '_' + current]);
+            i++;
+            continue;
+        }
+        
+        // 後置演算子がリテラルに付いている場合: x! → [x, _!]
+        if (typeof current === 'string') {
+            let foundPostfix = false;
+            for (const op of postfixOperators) {
+                if (current.endsWith(op) && current.length > op.length) {
+                    const operand = current.slice(0, -op.length);
+                    result.push([operand, '_' + op]);
+                    foundPostfix = true;
+                    break;
+                }
+            }
+            if (foundPostfix) {
+                i++;
+                continue;
+            }
+        }
+        
+        // 通常のトークンはそのまま追加
+        result.push(current);
+        i++;
+    }
+    
+    return result;
+};
+
+// ====================================================================
+// 前置記法への変換（操車場アルゴリズム）
+// ====================================================================
+
 /**
- * トークン配列を構文木に変換
- * 
- * 処理の順序:
- * 1. ブロック構造を認識・統合（mergeBlocks）
- * 2. 内側の配列を再帰的に処理
- * 3. 演算子の優先順位に基づいてグループ化（groupByPrecedence）
+ * 中置記法を前置記法（ポーランド記法）に変換
+ * 例: [x, +, y] → [[+], x, y]
+ *     [!_, x] → [[!_], x]
+ *     [x, _!] → [[_!], x]
  * 
  * @param {Array|*} tokens - トークン配列または単一トークン
- * @returns {Array|*} パース済みの構文木
+ * @returns {Array|*} 前置記法に変換された構造
+ */
+const convertToPrefix = tokens => {
+    // 配列でない場合はそのまま返す
+    if (!isArray(tokens)) return tokens;
+    
+    // 空配列はそのまま返す
+    if (isEmpty(tokens)) return tokens;
+    
+    // 要素が1つの場合
+    if (tokens.length === 1) {
+        const elem = first(tokens);
+        // 配列要素なら再帰的に処理
+        return isArray(elem) ? convertToPrefix(elem) : elem;
+    }
+    
+    // 要素が2つの場合（単項演算の可能性）
+    if (tokens.length === 2) {
+        const [first, second] = tokens;
+        
+        // 前置単項演算子の形式 [演算子_, オペランド] → [[演算子_], オペランド]
+        if (typeof first === 'string' && first.endsWith('_')) {
+            return [[first], isArray(second) ? convertToPrefix(second) : second];
+        }
+        
+        // 後置単項演算子の形式 [オペランド, _演算子] → [[_演算子], オペランド]
+        if (typeof second === 'string' && second.startsWith('_')) {
+            return [[second], isArray(first) ? convertToPrefix(first) : first];
+        }
+        
+        // それ以外の2要素配列は各要素を再帰的に処理
+        return [
+            isArray(first) ? convertToPrefix(first) : first,
+            isArray(second) ? convertToPrefix(second) : second
+        ];
+    }
+    
+    // 要素が3つの場合（二項演算の可能性）
+    if (tokens.length === 3) {
+        const [left, operator, right] = tokens;
+        
+        // 中置演算子の形式 [左辺, 演算子, 右辺] → [[演算子], 左辺, 右辺]
+        if (isOperator(operator)) {
+            return [
+                [operator],
+                isArray(left) ? convertToPrefix(left) : left,
+                isArray(right) ? convertToPrefix(right) : right
+            ];
+        }
+    }
+    
+    // それ以外の場合は各要素を再帰的に処理
+    return tokens.map(token => 
+        isArray(token) ? convertToPrefix(token) : token
+    );
+};
+
+// ====================================================================
+// メインパース処理を更新
+// ====================================================================
+
+/**
+ * トークン配列を構文木に変換
  */
 const parseTokens = tokens =>
     !isArray(tokens) ? tokens
@@ -274,13 +431,19 @@ const parseTokens = tokens =>
         // ステップ1: ブロック構造の統合
         const withBlocks = mergeBlocks(tokens);
         
-        // ステップ2: 各要素を再帰的に処理
+        // ステップ2: 各要素を再帰的に処理しつつ単項演算子を前処理
         const processed = withBlocks.map(element => 
             isArray(element) ? parseTokens(element) : element
         );
         
-        // ステップ3: 演算子優先順位に基づくグループ化
-        return groupByPrecedence(processed);
+        // ステップ3: 単項演算子の前処理（この階層のみ）
+        const withUnary = preprocessUnaryOperatorsFlat(processed);
+        
+        // ステップ4: 演算子優先順位に基づくグループ化
+        const grouped = groupByPrecedence(withUnary);
+        
+        // ステップ5: 前置記法に変換（NEW!）
+        return convertToPrefix(grouped);
     })();
 
 /**
