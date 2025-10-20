@@ -1,5 +1,3 @@
-test1 : !(a = b)
-test2 : (a + b)!
 `文字列と文字のテスト`
 Hello : `Hello World`
 backslash : `Sign\s language`
@@ -45,6 +43,10 @@ char01 : \M
 func1 : [+ 1]
 func2 : (x y ? x + y)
 func3 : {a, b, c} \( \) \{ \} \[ \]
+
+`ブロックの単項演算子テスト`
+test1 : !(a! = !b)
+test2 : (a + b)!
 
 abc | def
 abc d e f
