@@ -22,6 +22,8 @@
 const preprocess = code => code
   .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')                              
   .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')                                                   
+  .replace(/([!@$#~]+)([\[\{\(])/g, '$1 $2')           // 前置演算子 + 開きカッコ
+  .replace(/([\]\}\)])([!~@]+)/g, '$1 $2')             // 閉じカッコ + 後置演算子
   .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5');
   
 const tokenize = code => code

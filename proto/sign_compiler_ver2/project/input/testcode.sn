@@ -1,3 +1,5 @@
+test1 : !(a = b)
+test2 : (a + b)!
 `文字列と文字のテスト`
 Hello : `Hello World`
 backslash : `Sign\s language`
