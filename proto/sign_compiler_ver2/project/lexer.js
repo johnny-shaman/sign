@@ -27,27 +27,29 @@
     - Remove empty tokens
 */
 
-const tokenizePrefix = code => code
-  .replace(
-    /([#~!$@]|!!)([^\s]+)|(\\[\s\S])|(`[^\r\n`]*`)/g ,
-    (_, $1, $2, $3, $4) => $3 || $4
-      || `${$1}_ ${$2.match(/([#~!$@]|!!)([^\s]+)/) ? tokenizePrefix($2) : $2}`
-  );
+const tokenizeAffixes = code => code.replace(
+  /((?:[#~!$@]|!!)([^\s]+))|(([^\s]+)([!~@]))|(\\[\s\S])|(`[^`\r\n]*`)/g,
+  (m, p1, p2, p3, p4, p5, esc, lit) => {
+    if (esc || lit) return esc || lit;
+    if (p1) { // prefix: op + operand
+      const op = p1.match(/^([#~!$@]|!!)/)[0];
+      const rest = p2;
+      return `${op}_ ${rest.match(/^(?:[#~!$@]|!!)[^\s]+/) ? tokenizeAffixes(rest) : rest}`;
+    }
+    if (p3) { // postfix: operand + op
+      const operand = p4;
+      const op = p5;
+      return `${operand.match(/[^\s]+(?:[!~@])$/) ? tokenizeAffixes(operand) : operand} _${op}`;
+    }
+    return m;
+  }
+);
 
-const tokenizePostfix = code => code
-  .replace(
-    /([^\s]+)([!~@])|(\\[\s\S])|(`[^`\r\n]*`)/g,
-    (_, $1, $2, $3, $4) => $3 || $4
-      || `${$1.match(/([^\s]+)([!~@])/) ? tokenizePostfix($1) : $1} _${$2}`
-  );
-
-const preprocess = code => tokenizePrefix(
-  tokenizePostfix(
-    code
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')                              
-      .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')                                                   
-      .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5')
-  )
+const preprocess = code => tokenizeAffixes(
+  code
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')                              
+    .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')                                                   
+    .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5')
 );
   
 const tokenize = code => code
