@@ -22,8 +22,6 @@
 const preprocess = code => code
   .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')
   .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')
-  .replace(/([!@$#~]+)([\[\{\(])/g, '$1 $2')                      // Prefix operators + opening brackets
-  .replace(/([\]\}\)])([!~@]+)/g, '$1 $2')                        // Closing brackets + postfix operators
   .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5');
   
 const tokenize = code => code
