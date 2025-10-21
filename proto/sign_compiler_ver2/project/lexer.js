@@ -29,16 +29,16 @@
 
 const replacePrefix = code => code
   .replace(
-    /([#~!$@]|!!)([^\s]+)|(\\[\s\S])|(`[^\r\n`]*`)/g,
+    /([#~!$@]|!!)([^ \r\t]+)|(\\[\s\S])|(`[^\r\n`]*`)/g,
     (_, $1, $2, $3, $4) => $3 || $4
-      || `${$1}_ ${$2.match(/([#~!$@]|!!)([^\s]+)/) ? tokenizePrefix($2) : $2}`
+      || `${$1}_ ${$2.match(/([#~!$@]|!!)([^ \r\t]+)/) ? tokenizePrefix($2) : $2}`
   );
 
 const replacePostfix = code => code
   .replace(
-    /([^\s]+)([!~@])|(\\[\s\S])|(`[^`\r\n]*`)/g,
+    /([^ \r\t]+)([!~@])|(\\[\s\S])|(`[^`\r\n]*`)/g,
     (_, $1, $2, $3, $4) => $3 || $4
-      || `${$1.match(/([^\s]+)([!~@])/) ? tokenizePostfix($1) : $1} _${$2}`
+      || `${$1.match(/([^ \r\t]+)([!~@])/) ? tokenizePostfix($1) : $1} _${$2}`
   );
 
 const preprocess = code => code
