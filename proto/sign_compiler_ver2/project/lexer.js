@@ -36,7 +36,7 @@ const replacePrefix = code => code
 
 const replacePostfix = code => code
   .replace(
-    /([^ \r\t]+)([!~@])|(\\[\s\S])|(`[^`\r\n]*`)/g,
+    /([^ \r\t!~@]+)([!~@])|(\\[\s\S])|(`[^`\r\n]*`)/g,
     (_, $1, $2, $3, $4) => $3 || $4
       || `${$1.match(/([^ \r\t]+)([!~@])/) ? tokenizePostfix($1) : $1} _${$2}`
   );
