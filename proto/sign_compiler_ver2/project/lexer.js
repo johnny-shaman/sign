@@ -30,7 +30,7 @@
 const tokenizePrefix = code => code
   .replace(
     /([#~!$@]|!!)([^\s]+)|(\\[\s\S])|(`[^\r\n`]*`)/g ,
-    (_, $1, $2, $3, $4) => (!$3 || !$4)
+    (_, $1, $2, $3, $4) => (!$3 && !$4)
     ? `${$1}_ ${$2.match(/([#~!$@]|!!)([^\s]+)/) ? tokenizePrefix($2) : $2}`
     : ($3 || $4)
   );
@@ -38,8 +38,8 @@ const tokenizePrefix = code => code
 const tokenizePostfix = code => code
   .replace(
     /([^\s]+)([!~@])|(\\[\s\S])|(`[^\r\n`]*`)/g ,
-    (_, $1, $2, $3, $4) => (!$3 || !$4)
-    ? `${$1} _${$2.match(/([^\s]+)([!~@])/) ? tokenizePostfix($2) : $2}`
+    (_, $1, $2, $3, $4) => (!$3 && !$4)
+    ? `${ $1.match(/([^\s]+)([!~@])/) ? tokenizePostfix($1) : $1 } _${$2}`
     : ($3 || $4)
   );
 
