@@ -2,27 +2,55 @@
 'use strict';
 
 /*
+  tokenizPrefix:
+    - Add space after and tokenize prefix operators
+  tokenizePostfix:
+    - Add space before and tokenize postfix operators
+
   preprocess:
     - Remove control characters
     - Remove comments
     - Add spaces around binary operators
+    - Handle prefix operators
+    - Handle postfix operators
+  
   tokenize:
     - Split by line
     - Handle indented blocks
     - Handle brackets as blocks
     - Split by spaces
+  
   bracketToBlock:
     - Convert bracketed tokens to nested arrays
+  
   clean:
     - Remove empty tokens
 */
 
+const tokenizePrefix = code => code
+  .replace(
+    /([#~!$@]|!!)([^\s]+)|(\\[\s\S])|(`[^\r\n`]*`)/g ,
+    (_, $1, $2, $3, $4) => (!$3 || !$4)
+    ? `${$1}_ ${$2.match(/([#~!$@]|!!)([^\s]+)/) ? tokenizePrefix($2) : $2}`
+    : ($3 || $4)
+  );
 
+const tokenizePostfix = code => code
+  .replace(
+    /([^\s]+)([!~@])|(\\[\s\S])|(`[^\r\n`]*`)/g ,
+    (_, $1, $2, $3, $4) => (!$3 || !$4)
+    ? `${$1} _${$2.match(/([^\s]+)([!~@])/) ? tokenizePostfix($2) : $2}`
+    : ($3 || $4)
+  );
 
-const preprocess = code => code
-  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')
-  .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')
-  .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5');
+const preprocess = code => tokenizePrefix(
+  tokenizePostfix(
+    code
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')                              
+      .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')                                                   
+      .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5')
+  )
+);
   
 const tokenize = code => code
   .replace(/\r\n|[\r\n]/g, '\r')                                  // Normalize line endings to \r
@@ -56,7 +84,7 @@ const bracketToBlock = tokens =>
               const end = findClose(tokens);
               return { 
                 result: [...result, bracketToBlock(tokens.slice(idx + 1, end))], 
-                skip: end
+                skip: end + 1 
               };
             })()
         : [']'].includes(token) ? { result, skip }
@@ -69,4 +97,3 @@ const clean = tokens => tokens
   .filter( t => t.length > 0 && t !== '[');                           // Remove empty tokens
 
 module.exports = code => clean( bracketToBlock( tokenize( preprocess( code ) ) ) );
-
