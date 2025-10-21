@@ -373,28 +373,24 @@ const preprocessUnaryOperators = tokens =>
                 const next = idx + 1 < tokens.length ? tokens[idx + 1] : null;
                 const prev = result.length > 0 ? last(result) : null;
                 
-                // 配列要素はそのまま追加（再帰処理しない）
-                return isArray(current) ? process(idx + 1, [...result, current])
-                    // 前置演算子がリテラルに付着している場合
-                    : (() => {
-                        const prefixCheck = checkPrefixAttached(current);
-                        return prefixCheck.found 
-                            ? process(idx + 1, [...result, [prefixCheck.operator + '_', prefixCheck.operand]])
-                            // 前置演算子が単独の場合
-                            : isPrefixOperator(current) && next !== null && !isArray(next)
-                                ? process(idx + 2, [...result, [current + '_', next]])
-                                // 後置演算子が単独の場合（直前の要素を取り出して統合）
-                                : isPostfixOperator(current) && prev !== null && !isArray(prev) && typeof prev === 'string'
-                                    ? process(idx + 1, [...init(result), [prev, '_' + current]])
-                                    // 後置演算子がリテラルに付着している場合
-                                    : (() => {
-                                        const postfixCheck = checkPostfixAttached(current);
-                                        return postfixCheck.found
-                                            ? process(idx + 1, [...result, [postfixCheck.operand, '_' + postfixCheck.operator]])
-                                            // 通常のトークンはそのまま追加
-                                            : process(idx + 1, [...result, current]);
-                                    })();
-                    })();
+                // 前置演算子がリテラルに付着している場合
+                const prefixCheck = checkPrefixAttached(current);
+                return prefixCheck.found 
+                    ? process(idx + 1, [...result, [prefixCheck.operator + '_', prefixCheck.operand]])
+                    // 前置演算子が単独の場合（ブロックにも対応）
+                    : isPrefixOperator(current) && next !== null
+                        ? process(idx + 2, [...result, [current + '_', next]])
+                        // 後置演算子が単独の場合（ブロックにも対応）
+                        : isPostfixOperator(current) && prev !== null
+                            ? process(idx + 1, [...init(result), [prev, '_' + current]])
+                            // 後置演算子がリテラルに付着している場合
+                            : (() => {
+                                const postfixCheck = checkPostfixAttached(current);
+                                return postfixCheck.found
+                                    ? process(idx + 1, [...result, [postfixCheck.operand, '_' + postfixCheck.operator]])
+                                    // 通常のトークンはそのまま追加
+                                    : process(idx + 1, [...result, current]);
+                            })();
             })();
         
         return process(0, []);
@@ -438,12 +434,12 @@ const convertToPrefix = tokens =>
     : tokens.length === 2 ? (() => {
         const [firstElem, secondElem] = tokens;
         
-        // 前置単項演算子の形式 [演算子_, オペランド] → [[演算子_], オペランド]
+        // 前置単項演算子の形式 [演算子_, オペランド] → [演算子_, オペランド]
         return typeof firstElem === 'string' && firstElem.endsWith('_')
-            ? [[firstElem], isArray(secondElem) ? convertToPrefix(secondElem) : secondElem]
-            // 後置単項演算子の形式 [オペランド, _演算子] → [[_演算子], オペランド]
+            ? [firstElem, isArray(secondElem) ? convertToPrefix(secondElem) : secondElem]
+            // 後置単項演算子の形式 [オペランド, _演算子] → [_演算子, オペランド]
             : typeof secondElem === 'string' && secondElem.startsWith('_')
-                ? [[secondElem], isArray(firstElem) ? convertToPrefix(firstElem) : firstElem]
+                ? [secondElem, isArray(firstElem) ? convertToPrefix(firstElem) : firstElem]
                 // それ以外の2要素配列は各要素を再帰的に処理
                 : [
                     isArray(firstElem) ? convertToPrefix(firstElem) : firstElem,
@@ -454,10 +450,10 @@ const convertToPrefix = tokens =>
     : tokens.length === 3 ? (() => {
         const [left, operator, right] = tokens;
         
-        // 中置演算子の形式 [左辺, 演算子, 右辺] → [[演算子], 左辺, 右辺]
+        // 中置演算子の形式 [左辺, 演算子, 右辺] → [演算子, 左辺, 右辺]
         return isOperator(operator)
             ? [
-                [operator],
+                operator,
                 isArray(left) ? convertToPrefix(left) : left,
                 isArray(right) ? convertToPrefix(right) : right
             ]

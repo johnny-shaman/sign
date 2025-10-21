@@ -20,8 +20,8 @@
 
 
 const preprocess = code => code
-  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')                              
-  .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')                                                   
+  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')
+  .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')
   .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5');
   
 const tokenize = code => code
@@ -56,7 +56,7 @@ const bracketToBlock = tokens =>
               const end = findClose(tokens);
               return { 
                 result: [...result, bracketToBlock(tokens.slice(idx + 1, end))], 
-                skip: end + 1 
+                skip: end
               };
             })()
         : [']'].includes(token) ? { result, skip }
