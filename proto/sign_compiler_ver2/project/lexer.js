@@ -38,7 +38,7 @@ const tokenizePostfix = code => code
   .replace(
     /([^\s]+)([!~@])|(\\[\s\S])|(`[^`\r\n]*`)/g,
     (_, $1, $2, $3, $4) => $3 || $4
-      || `${$1.match(/([^\s]+)([!~@])/) ? tokenizePostfix($1) : $1} _ ${$2}`
+      || `${$1.match(/([^\s]+)([!~@])/) ? tokenizePostfix($1) : $1} _${$2}`
   );
 
 const preprocess = code => tokenizePrefix(
