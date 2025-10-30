@@ -45,7 +45,7 @@ const tokenize = code => code
   )
   .replace(
     /(`[^`\r\n]*`)|(?<!\\)(\[)|(?<!\\)(\])/g,
-    (_, $1, $2, $3) => $1 || ($2 && ' [ ') || ($3 && ' ] ')
+    (_, $1, $2, $3) => $1 || ($2 && '\x1D[') || ($3 && ']\x1D')
   )
   .replace(/(\r\n|[\r\n])/g, '\r')                                  // Normalize line endings to \r
   .replace(/\r(\t+)/g, '\n$1')                                    // Next line starts with tabs, it is a code block, so convert \r to \n
@@ -56,14 +56,16 @@ const tokenize = code => code
         line.match(/^\t+/gm)                                      // If in Block
         ? tokenize( line.replace(/^\t{1}/gm, '') )                  // in Block recursive tokenize without leading tabs
         : line
-          .match(/(?<!\\)\[{1}([\s\S]+)(?<!\\)\]{1}/g)
-          ?  // If contains brackets, recursive tokenize inside brackets
-          : line
-          .replace(/( )|(\\[\s\S])|(`[^`\n\r]+`)/g, '\x1F$2$3')     // And replace spaces with \x1F except in strings and escaped characters
-          .replace(/[\x1F]{2,}/g, '\x1F')                           // And replace multiple \x1F with single \x1F
-          .split('\x1F')                                            // And split by \x1F
+          .split('\x1D')
+          .map(
+            inline => inline.match(/^\[([\s\S+])\]$/gm)
+              ? tokenize( inline.replace(/^\[([\s\S]+)\]$/gm, '$1') )
+              : inline
+                .replace(/( )|(\\[\s\S])|(`[^`\n\r]+`)/g, '\x1F$2$3')     // And replace spaces with \x1F except in strings and escaped characters
+                .replace(/[\x1F]{2,}/g, '\x1F')                           // And replace multiple \x1F with single \x1F
+                .split('\x1F')                                            // And split by \x1F
+          )
   )
-
 
 const clean = tokens => tokens
   .map( t => Array.isArray(t) ? clean(t) : t )
