@@ -69,4 +69,4 @@ const clean = tokens => tokens
   .map( t => Array.isArray(t) ? clean(t) : t )
   .filter( t => t.length > 0);
 
-module.exports = code => clean( bracketToBlock( tokenize( code )));
+module.exports = code => clean( tokenize( code ));
