@@ -27,67 +27,46 @@
     - Remove empty tokens
 */
 
-const replacePrefix = code => code
-  .replace(
-    /([#~!$@]|!!)([^ \r\t]+)|(\\[\s\S])|(`[^\r\n`]*`)/g,
-    (_, $1, $2, $3, $4) => $3 || $4
-      || `${$1}_ ${$2.match(/([#~!$@]|!!)([^ \r\t]+)/) ? tokenizePrefix($2) : $2}`
-  );
 
-const replacePostfix = code => code
-  .replace(
-    /([^ \r\t!~@]+)([!~@])|(\\[\s\S])|(`[^`\r\n]*`)/g,
-    (_, $1, $2, $3, $4) => $3 || $4
-      || `${$1.match(/([^ \r\t!~@]+)([!~@])/) ? tokenizePostfix($1) : $1} _${$2}`
-  );
-
-const preprocess = code => code
-  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')                              
-  .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')                                                   
-  .replace(/([^ ]*)([:?,;&=<>+*/%^']+|!=)([^ ]*)|(\\[\s\S])|(`[^`\n\r]+`)/g, '$1 $2 $3$4$5')
-  
 const tokenize = code => code
-  .replace(/\r\n|[\r\n]/g, '\r')                                  // Normalize line endings to \r
+  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xA0\xAD]/g, '')
+  .replace(/^`[^\r\n]*(\r\n|[\r\n])/gm, '')
+  .replace(
+    /(\\[\s\S]{1})|(`[^\r\n`]*`)|([#~!$@]+)([^\r\t#~!$@]+)([!~@]+)/g,
+    (_, $1, $2, $3, $4, $5) => ($1 || $2) || (
+      $3 && $5
+        ? `${$3}_ ${$4} _${$5}`
+        : $3 ? `${$3}_ ${$4}` : `${$4} _${$5}`
+    )
+  )
+  .replace(
+    /(`[^`\r\n]*`)|(?<!\\)([\{\(])|(?<!\\)([\}\)])/g,
+    (_, $1, $2, $3) => $1 || ($2 && '[') || ($3 && ']')
+  )
+  .replace(
+    /(`[^`\r\n]*`)|(?<!\\)(\[)|(?<!\\)(\])/g,
+    (_, $1, $2, $3) => $1 || ($2 && ' [ ') || ($3 && ' ] ')
+  )
+  .replace(/(\r\n|[\r\n])/g, '\r')                                  // Normalize line endings to \r
   .replace(/\r(\t+)/g, '\n$1')                                    // Next line starts with tabs, it is a code block, so convert \r to \n
   .replace(/\\\r/g, '\\\n')                                       // Escaped \\\r to \\\n
   .split('\r')
   .map(
       line => 
-        line.match(/^\t{1}/gm)                                      // If in Block
+        line.match(/^\t+/gm)                                      // If in Block
         ? tokenize( line.replace(/^\t{1}/gm, '') )                  // in Block recursive tokenize without leading tabs
-        : replacePostfix(replacePrefix(line))
-          .replace(/(?<!\\)[\[\{\(]([^\r\n]+)(?<!\\)[\]\}\)]/, '[ $1 ]')
+        : line
+          .match(/(?<!\\)\[{1}([\s\S]+)(?<!\\)\]{1}/g)
+          ?  // If contains brackets, recursive tokenize inside brackets
+          : line
           .replace(/( )|(\\[\s\S])|(`[^`\n\r]+`)/g, '\x1F$2$3')     // And replace spaces with \x1F except in strings and escaped characters
           .replace(/[\x1F]{2,}/g, '\x1F')                           // And replace multiple \x1F with single \x1F
           .split('\x1F')                                            // And split by \x1F
-  );
+  )
 
-const bracketToBlock = tokens => 
-  Array.isArray(tokens)
-    ? tokens.reduce(({ result, skip }, token, idx) => 
-        skip > idx ? { result, skip }
-        : Array.isArray(token) ? { result: [...result, bracketToBlock(token)], skip }
-        : ['['].includes(token) 
-          ? (() => {
-              const findClose = (ts, depth = 1, pos = idx + 1) =>
-                depth === 0 ? pos
-                : pos >= ts.length ? pos
-                : findClose(ts, 
-                    depth + (ts[pos] === token ? 1 : ts[pos] === ']' ? -1 : 0), 
-                    pos + 1);
-              const end = findClose(tokens);
-              return { 
-                result: [...result, bracketToBlock(tokens.slice(idx + 1, end))], 
-                skip: end + 1 
-              };
-            })()
-        : [']'].includes(token) ? { result, skip }
-        : { result: [...result, token], skip }
-      , { result: [], skip: 0 }).result
-    : tokens;
 
 const clean = tokens => tokens
-  .map( t => Array.isArray(t) ? clean(t) : t )                        // If token is array, clean recursively
-  .filter( t => t.length > 0 && t !== '[');                           // Remove empty tokens
+  .map( t => Array.isArray(t) ? clean(t) : t )
+  .filter( t => t.length > 0);
 
-module.exports = code => clean( bracketToBlock( tokenize( preprocess( code ) ) ) );
+module.exports = code => clean( bracketToBlock( tokenize( code )));

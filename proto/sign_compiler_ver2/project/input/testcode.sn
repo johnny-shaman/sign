@@ -5,6 +5,7 @@ unclosedString : `これは閉じられない文字列
 char1 : \M
 char2 : \n
 char3 : \\
+
 `char4 : \` のようなエッジケースは実用性が低く複雑化要因のため除外
 HelloWorld : `Hello` \
  `	World`
